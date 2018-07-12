@@ -1,0 +1,19 @@
+{
+  "name": "sakiewka-client",
+  "version": "1.0.0",
+  "description": "Client-side Sakiewka app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/softwaremill/sakiewka-client.git"
+  },
+  "author": "SoftwareMill",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/softwaremill/sakiewka-client/issues"
+  },
+  "homepage": "https://github.com/softwaremill/sakiewka-client#readme"
+}
