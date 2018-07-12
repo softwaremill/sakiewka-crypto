@@ -2,9 +2,9 @@
   "name": "sakiewka-client",
   "version": "1.0.0",
   "description": "Client-side Sakiewka app",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha",
+    "test-watch": "mocha --compilers js:babel-core/register ./src/**/*.js -w"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,22 @@
   "bugs": {
     "url": "https://github.com/softwaremill/sakiewka-client/issues"
   },
-  "homepage": "https://github.com/softwaremill/sakiewka-client#readme"
+  "homepage": "https://github.com/softwaremill/sakiewka-client#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "chai": "^4.1.2",
+    "eslint": "^5.1.0",
+    "eslint-config-airbnb-base": "^13.0.0",
+    "eslint-plugin-import": "^2.13.0",
+    "mocha": "^5.2.0"
+  },
+  "dependencies": {
+    "express": "^4.16.3"
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  }
 }
