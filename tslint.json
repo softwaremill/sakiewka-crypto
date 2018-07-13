@@ -14,7 +14,7 @@
     "trailing-comma": [
       true,
       {
-        "multiline": "always",
+        "multiline": "never",
         "singleline": "never"
       }
     ],
@@ -25,6 +25,10 @@
       "property-declaration",
       "member-variable-declaration"
     ],
-    "semicolon": ["error", "never"]
+    "globals": {
+      "describe": true,
+      "it": true
+    },
+    "semicolon": false
   }
 }
