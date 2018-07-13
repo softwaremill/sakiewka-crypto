@@ -1,34 +1,34 @@
 import bitcoinjsLib from 'bitcoinjs-lib'
+
+import * as api from './api'
 import { getRandomBytes, encrypt } from './crypto'
+import { Keychain, WalletParams } from './interfaces'
 
-interface WalletParams {
-  password: string
-}
-
-export const createKeychain = () => {
+export const createKeychain = (label: string): Keychain => {
   const seed = getRandomBytes(512 / 8)
   const extendedKey = bitcoinjsLib.HDNode.fromSeedBuffer(seed)
   const xpub = extendedKey.neutered().toBase58()
 
   return {
+    label,
     xpub,
     xprv: extendedKey.toBase58()
   }
 }
 
 export const createWallet = (params: WalletParams) => {
-  const userKeychain = createKeychain()
-  const backupKeychain = createKeychain()
+  const userKeychain = createKeychain('user')
+  const backupKeychain = createKeychain('backup')
 
-  console.log('xprv: ', userKeychain.xprv)
+  const encryptedKeychains = [
+    userKeychain,
+    backupKeychain
+  ].map((keychain: Keychain) => {
+    return {
+      ...keychain,
+      xprv: encrypt(params.password, keychain.xprv)
+    }
+  })
 
-  const encryptedUserXprv = encrypt(params.password, userKeychain.xprv)
-  const encryptedBackupXprv = encrypt(params.password, backupKeychain.xprv)
-
-  // if (params.xpub) {}
-
-  // send to backend
-  return {
-
-  }
+  return api.createWallet(encryptedKeychains)
 }

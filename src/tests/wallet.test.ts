@@ -1,17 +1,23 @@
 import { expect } from 'chai'
+
 import * as wallet from '../wallet'
+import { Wallet } from '../interfaces'
 
 describe('createWallet', () => {
   it('should exist', () => {
     expect(wallet.createWallet).to.be.a('function')
   })
 
-  it('should return two pairs of extended keys', () => {
+  it('should return a wallet', () => {
     const params = {
       password: 'abcd'
     }
 
     const result = wallet.createWallet(params)
+
+    result.then((res: Wallet) => {
+      expect(res).to.be.an('object')
+    })
   })
 })
 
@@ -21,7 +27,7 @@ describe('createKeychain', () => {
   })
 
   it('should generate pair of keys', () => {
-    const result = wallet.createKeychain()
+    const result = wallet.createKeychain('testLabel')
 
     expect(result).to.be.a('object')
     expect(result.xpub).to.have.lengthOf(111)
