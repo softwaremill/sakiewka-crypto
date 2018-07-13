@@ -1,8 +1,8 @@
 import bitcoinjsLib from 'bitcoinjs-lib'
 
-import * as api from './api'
+import * as api from './backend-api'
 import { getRandomBytes, encrypt } from './crypto'
-import { Keychain, WalletParams } from './interfaces'
+import { Keychain, WalletParams } from './domain'
 
 export const createKeychain = (label: string): Keychain => {
   const seed = getRandomBytes(512 / 8)
