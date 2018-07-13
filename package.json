@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/softwaremill/sakiewka-client#readme",
   "devDependencies": {
+    "@types/chai": "^4.1.4",
+    "@types/mocha": "^5.2.4",
     "@types/node": "^10.5.2",
     "chai": "^4.1.2",
     "jest": "^23.4.0",
