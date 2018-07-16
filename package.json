@@ -17,7 +17,10 @@
   },
   "homepage": "https://github.com/softwaremill/sakiewka-client#readme",
   "devDependencies": {
+    "@types/chai": "^4.1.4",
+    "@types/mocha": "^5.2.4",
     "@types/node": "^10.5.2",
+    "@types/node-fetch": "^2.1.1",
     "chai": "^4.1.2",
     "jest": "^23.4.0",
     "ts-jest": "^23.0.0",
@@ -31,6 +34,7 @@
     "@types/sjcl": "^1.0.28",
     "bitcoinjs-lib": "^3.3.2",
     "express": "^4.16.3",
+    "node-fetch": "^2.1.2",
     "sjcl": "^1.0.7"
   }
 }
