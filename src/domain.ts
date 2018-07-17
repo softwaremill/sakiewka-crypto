@@ -8,6 +8,18 @@ export interface Keychain {
   label: string
 }
 
-export interface Wallet {
+export interface Address {
+  path: string,
+  value: string
+}
 
+export interface WalletAddresses {
+  change: Address[],
+  receive: Address[]
+}
+
+export interface Wallet {
+  id: number,
+  pubKeys: string[],
+  addresses?: WalletAddresses
 }
