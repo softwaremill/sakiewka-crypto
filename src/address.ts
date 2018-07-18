@@ -7,9 +7,8 @@ export const generateNewMultisigAddress = (
   rootKeys: String[], path: string, change: boolean = false
 ): string => {
   const derivedKeysBuffers = rootKeys.map((rootKey: string) => {
-    const derivedKey = deriveKey(rootKey, path, change).getPublicKeyBuffer()
-
-    return derivedKey
+    const derivedKey = deriveKey(rootKey, path, change)
+    return derivedKey.getPublicKeyBuffer()
   })
 
   const redeemScript = bitcoinjsLib.script.multisig.output.encode(2, derivedKeysBuffers)
