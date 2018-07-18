@@ -8,4 +8,9 @@ export const encrypt = (password: string, input: string) => {
   return sjcl.encrypt(password, input, encryptOptions)
 }
 
+export const decrypt = (password: string, input: string) => {
+  const encryptOptions = { iter: 10000, ks: 256 }
+  return sjcl.decrypt(password, input, encryptOptions)
+}
+
 export const getRandomBytes = crypto.randomBytes
