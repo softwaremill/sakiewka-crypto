@@ -25,10 +25,6 @@
       "property-declaration",
       "member-variable-declaration"
     ],
-    "globals": {
-      "describe": true,
-      "it": true
-    },
     "semicolon": false
   }
 }
