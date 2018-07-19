@@ -8,5 +8,13 @@ export const API_ERROR = {
   NOT_FOUND: {
     message: 'Not found',
     code: 404
+  },
+  SERVER_ERROR: {
+    message: 'Server error',
+    code: 500
+  },
+  BAD_REQUEST: {
+    message: 'Malformed request',
+    code: 400
   }
 }
