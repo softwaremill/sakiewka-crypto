@@ -1,12 +1,14 @@
-import express, { Request, Response } from 'express'
-import { RequestHandlerParams } from 'express-serve-static-core';
+import express from 'express'
+
+import clientApp from './client-app'
+import notFound from './not-found'
 
 const app = express()
 const port = process.env.PORT || 3000
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello world')
-})
+// Endpoints
+app.get('/', clientApp)
+app.get('*', notFound)
 
 const server = app.listen(port, () => {
   console.log(`Sakiewka-client server is running at http://localhost${port}`)
