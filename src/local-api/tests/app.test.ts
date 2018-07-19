@@ -2,6 +2,8 @@ import { expect } from 'chai'
 import app from '../app'
 import supertest from 'supertest'
 
+import { BASE_API_PATH } from '../../constants'
+
 let server
 
 describe('server', () => {
@@ -15,10 +17,34 @@ describe('server', () => {
     server.close()
   })
 
-  describe('path /', () => {
+  describe('/', () => {
     it('should exist', async () => {
       const response = await supertest(app).get('/')
       expect(response.status).to.be.equal(200)
+    })
+  })
+
+  describe('/register', () => {
+    it('should not accept incomplete request', async () => {
+      const response = await supertest(app)
+        .post(`/${BASE_API_PATH}/user/register`)
+        .send({ login: 'testLogin' })
+
+      expect(response.status).to.be.equal(400)
+      expect(response.body.message).to.be.equal('Property password is required.')
+    })
+
+    it('should not accept extra paramters', async () => {
+      const response = await supertest(app)
+        .post(`/${BASE_API_PATH}/user/register`)
+        .send({
+          login: 'testLogin',
+          password: 'abcd',
+          extraProp: 'test'
+        })
+
+      expect(response.status).to.be.equal(400)
+      expect(response.body.message).to.be.equal('Property extraProp is not supported.')
     })
   })
 })
