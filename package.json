@@ -4,7 +4,12 @@
   "description": "Client-side Sakiewka app",
   "scripts": {
     "test": "jest --forceExit --coverage --verbose",
-    "watch-test": "npm run test -- --watchAll"
+    "watch-test": "npm run test -- --watchAll",
+    "build": "tsc",
+    "watch": "tsc -w",
+    "serve": "node dist/local-api/server.js",
+    "serve-debug": "nodemon --inspect dist/local-api/server.js",
+    "watch-debug": "concurrently \"npm run watch\" \"npm run serve-debug\""
   },
   "repository": {
     "type": "git",
@@ -18,11 +23,14 @@
   "homepage": "https://github.com/softwaremill/sakiewka-client#readme",
   "devDependencies": {
     "@types/chai": "^4.1.4",
+    "@types/express": "^4.16.0",
     "@types/mocha": "^5.2.4",
     "@types/node": "^10.5.2",
     "@types/node-fetch": "^2.1.1",
     "chai": "^4.1.2",
+    "concurrently": "^3.6.0",
     "jest": "^23.4.0",
+    "nodemon": "^1.18.3",
     "ts-jest": "^23.0.0",
     "ts-node": "^7.0.0",
     "tslint": "^5.10.0",
