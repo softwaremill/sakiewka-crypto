@@ -4,3 +4,4 @@ node_modules/
 coverage/
 src/notes.ts
 dist/
+.env

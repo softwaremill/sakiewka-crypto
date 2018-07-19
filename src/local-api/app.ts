@@ -1,12 +1,15 @@
 import express, { Request, Response } from 'express'
 import bodyParser from 'body-parser'
 
+import dotenv from 'dotenv'
 import clientApp from './client-app'
 import notFound from './not-found'
 import login from './login'
 import register from './register'
 import { BASE_API_PATH, API_ERROR } from '../constants'
 import { errorResponse } from './response'
+
+dotenv.config()
 
 const app = express()
 app.use(bodyParser.json())
