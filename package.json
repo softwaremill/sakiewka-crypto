@@ -41,6 +41,7 @@
     "@types/bitcoinjs-lib": "^3.4.0",
     "@types/sjcl": "^1.0.28",
     "bitcoinjs-lib": "^3.3.2",
+    "body-parser": "^1.18.3",
     "express": "^4.16.3",
     "node-fetch": "^2.1.2",
     "sjcl": "^1.0.7"

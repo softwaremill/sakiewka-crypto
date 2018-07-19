@@ -13,4 +13,8 @@ export const decrypt = (password: string, input: string) => {
   return sjcl.decrypt(password, input, encryptOptions)
 }
 
+export const hashSha512 = (input: string) => {
+  return sjcl.hash.sha512.hash(input)
+}
+
 export const getRandomBytes = crypto.randomBytes

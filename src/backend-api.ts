@@ -27,3 +27,7 @@ export const getWalletUnspents = (id: number) => {
 export const getWalletKeychains = (id: number) => {
   return Promise.resolve([{}])
 }
+
+export const login = (login: string, password: string) => {
+  return Promise.resolve({ token: 'abc' })
+}
