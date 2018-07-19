@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import { login as loginUser } from '../backend-api'
+import { register } from '../backend-api'
 import { registerRequest } from './models'
 import { hashSha512 } from '../crypto'
 import { jsonResponse, errorResponse } from './response'
@@ -8,7 +8,6 @@ import validate from './validate'
 import { API_ERROR } from '../constants';
 
 const clientApp = async (req: Request, res: Response) => {
-  // TODO: validate request
   const validationErrors = validate(req.body, registerRequest)
 
   if (validationErrors.length > 0) {
@@ -17,13 +16,10 @@ const clientApp = async (req: Request, res: Response) => {
 
   const { login, password } = req.body
 
-  const backendResponse = await loginUser(login, hashSha512(password))
+  const backendResponse = await register(login, hashSha512(password))
 
   // TODO: check if there was no errors during backend request
-  const token = backendResponse.token
-
-  // TODO: send missing data: userData, tokenExp, etc.
-  jsonResponse(res, { token })
+  jsonResponse(res, {})
 }
 
 export default clientApp

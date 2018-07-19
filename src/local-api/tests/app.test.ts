@@ -6,6 +6,8 @@ import { BASE_API_PATH } from '../../constants'
 
 let server
 
+const randomString = () => Math.random().toString(36).substring(7)
+
 describe('server', () => {
   beforeEach(() => {
     server = app.listen('5678', () => {
@@ -45,6 +47,20 @@ describe('server', () => {
 
       expect(response.status).to.be.equal(400)
       expect(response.body.message).to.be.equal('Property extraProp is not supported.')
+    })
+
+    it('should register user', async () => {
+      const response = await supertest(app)
+        .post(`/${BASE_API_PATH}/user/register`)
+        .send({
+          login: `testLogin${randomString()}`,
+          password: 'abcd'
+        })
+
+      const responseBody = JSON.parse(response.body)
+
+      expect(response.status).to.be.equal(200)
+      expect(responseBody.data).to.be.empty
     })
   })
 })

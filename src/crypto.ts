@@ -14,7 +14,10 @@ export const decrypt = (password: string, input: string) => {
 }
 
 export const hashSha512 = (input: string) => {
-  return sjcl.hash.sha512.hash(input)
+  const bitArrayHash = sjcl.hash.sha512.hash(input)
+  const stringHash = sjcl.codec.hex.fromBits(bitArrayHash)
+
+  return stringHash
 }
 
 export const getRandomBytes = crypto.randomBytes

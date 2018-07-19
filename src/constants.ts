@@ -3,6 +3,7 @@ export const USER_KEYCHAIN_LABEL = 'user'
 export const BACKUP_KEYCHAIN_LABEL = 'user'
 
 export const BASE_API_PATH = 'api'
+export const BACKEND_API_PREFIX = 'api/v1'
 
 export const API_ERROR = {
   NOT_FOUND: {

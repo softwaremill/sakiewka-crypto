@@ -12,3 +12,9 @@ export namespace hash {
     export function hash(input: string)
   }
 }
+
+export namespace codec {
+  export namespace hex {
+    export function fromBits(input: String[])
+  }
+}
