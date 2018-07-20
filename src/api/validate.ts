@@ -18,7 +18,7 @@ export default (request: Request, model: RequestModel) => {
   })
 
   model.headers.forEach((modelHeader: string) => {
-    if (!request.headers[modelHeader]) {
+    if (!request.rawHeaders.includes(modelHeader)) {
       errors.push(`Request header ${modelHeader} is required.`)
     }
   })
