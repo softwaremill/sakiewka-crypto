@@ -1,4 +1,12 @@
-import { Keychain, Wallet, DetailedWallet } from './domain'
+import {
+  Keychain,
+  Wallet,
+  DetailedWallet
+} from '../types/domain'
+import {
+  LoginBackendResponse,
+  RegisterBackendResponse
+} from '../types/backend-response'
 import request from './utils/request'
 import { BACKEND_API_PREFIX } from './constants'
 
@@ -32,12 +40,20 @@ export const getWalletKeychains = (id: number) => {
   return Promise.resolve([{}])
 }
 
-export const login = (login: string, password: string) => {
-  return Promise.resolve({ token: 'abc' })
+// TODO: handle api errors
+export const login = (login: string, password: string): Promise<LoginBackendResponse>  => {
+  const options = {
+    method: 'POST',
+    body: JSON.stringify({
+      password,
+      email: login
+    })
+  }
+
+  return request(`${getUrlBase()}/user/login`, options)
 }
 
-export const register = (login: string, password: string) => {
-  // robię requesta do backendu
+export const register = (login: string, password: string): Promise<RegisterBackendResponse> => {
   const options = {
     method: 'POST',
     body: JSON.stringify({

@@ -1,8 +1,8 @@
 import { expect } from 'chai'
-import app from '../app'
+import app from '../../app'
 import supertest from 'supertest'
 
-import { BASE_API_PATH } from '../../common/constants'
+import { BASE_API_PATH } from '../../../common/constants'
 
 let server
 
@@ -61,6 +61,55 @@ describe('server', () => {
 
       expect(response.status).to.be.equal(200)
       expect(responseBody.data).to.be.empty
+    })
+  })
+
+  describe('/login', () => {
+    it('should not accept incomplete request', async () => {
+      const response = await supertest(app)
+        .post(`/${BASE_API_PATH}/user/login`)
+        .send({ login: 'testLogin' })
+
+      expect(response.status).to.be.equal(400)
+      expect(response.body.message).to.be.equal('Property password is required.')
+    })
+
+    it('should not accept extra paramters', async () => {
+      const response = await supertest(app)
+        .post(`/${BASE_API_PATH}/user/login`)
+        .send({
+          login: 'testLogin',
+          password: 'abcd',
+          extraProp: 'test'
+        })
+
+      expect(response.status).to.be.equal(400)
+      expect(response.body.message).to.be.equal('Property extraProp is not supported.')
+    })
+
+    it('should login user', async () => {
+      const login = `testLogin${randomString()}`
+
+      // first registers new user
+      await supertest(app)
+        .post(`/${BASE_API_PATH}/user/register`)
+        .send({
+          login,
+          password: 'abcd'
+        })
+
+      const response = await supertest(app)
+        .post(`/${BASE_API_PATH}/user/login`)
+        .send({
+          login,
+          password: 'abcd'
+        })
+
+      const responseBody = JSON.parse(response.body)
+
+      expect(response.status).to.be.equal(200)
+      expect(responseBody.data.token).to.be.a('string')
+      expect(responseBody.data.token).to.have.lengthOf(64)
     })
   })
 })

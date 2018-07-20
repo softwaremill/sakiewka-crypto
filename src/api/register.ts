@@ -19,7 +19,7 @@ const clientApp = async (req: Request, res: Response) => {
   const backendResponse = await register(login, hashSha512(password))
 
   // TODO: check if there was no errors during backend request
-  jsonResponse(res, {})
+  jsonResponse(res, backendResponse)
 }
 
 export default clientApp
