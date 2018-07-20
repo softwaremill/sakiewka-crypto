@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 
-import { login as loginUser } from '../backend-api'
-import { hashSha512 } from '../crypto'
+import { login as loginUser } from '../common/backend-api'
+import { hashSha512 } from '../common/crypto'
 import { jsonResponse } from './response'
 
 const clientApp = async (req: Request, res: Response) => {

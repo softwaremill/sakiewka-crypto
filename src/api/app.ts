@@ -6,7 +6,7 @@ import clientApp from './client-app'
 import notFound from './not-found'
 import login from './login'
 import register from './register'
-import { BASE_API_PATH, API_ERROR } from '../constants'
+import { BASE_API_PATH, API_ERROR } from '../common/constants'
 import { errorResponse } from './response'
 
 dotenv.config()

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import { API_ERROR } from '../constants'
+import { API_ERROR } from '../common/constants'
 import { errorResponse } from './response'
 
 const notFound = (req: Request, res: Response) => {

@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import app from '../app'
 import supertest from 'supertest'
 
-import { BASE_API_PATH } from '../../constants'
+import { BASE_API_PATH } from '../../common/constants'
 
 let server
 
