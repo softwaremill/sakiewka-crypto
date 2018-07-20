@@ -5,7 +5,8 @@ import {
 } from '../types/domain'
 import {
   LoginBackendResponse,
-  RegisterBackendResponse
+  RegisterBackendResponse,
+  InfoBackendResponse
 } from '../types/backend-response'
 import request from './utils/request'
 import { BACKEND_API_PREFIX } from './constants'
@@ -65,7 +66,7 @@ export const register = (login: string, password: string): Promise<RegisterBacke
   return request(`${getUrlBase()}/user/register`, options)
 }
 
-export const info = (token: string): Promise<RegisterBackendResponse> => {
+export const info = (token: string): Promise<InfoBackendResponse> => {
   const options = {
     method: 'GET',
     headers: {

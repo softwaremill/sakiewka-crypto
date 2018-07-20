@@ -3,3 +3,5 @@ export interface LoginBackendResponse {
 }
 
 export interface RegisterBackendResponse {}
+
+export interface InfoBackendResponse {}
