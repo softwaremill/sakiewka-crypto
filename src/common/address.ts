@@ -1,7 +1,7 @@
 import bitcoinjsLib from 'bitcoinjs-lib'
 
 import * as constants from './constants'
-import { Wallet, Address } from './domain'
+import { Wallet, Address } from '../types/domain'
 
 export const generateNewMultisigAddress = (
   rootKeys: String[], path: string, change: boolean = false

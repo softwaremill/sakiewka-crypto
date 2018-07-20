@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 
 import * as api from '../backend-api'
-import { Wallet, Keychain } from '../domain'
+import { Wallet, Keychain } from '../../types/domain'
 
 describe('createWallet', () => {
   it('should exist', () => {

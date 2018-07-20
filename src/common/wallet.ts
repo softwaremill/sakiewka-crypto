@@ -2,7 +2,7 @@ import bitcoinjsLib from 'bitcoinjs-lib'
 
 import * as api from './backend-api'
 import { getRandomBytes, encrypt, decrypt } from './crypto'
-import { Keychain, WalletParams, DetailedWallet } from './domain'
+import { Keychain, WalletParams, DetailedWallet } from '../types/domain'
 import { USER_KEYCHAIN_LABEL, BACKUP_KEYCHAIN_LABEL } from './constants'
 
 export const createKeychain = (label: string): Keychain => {

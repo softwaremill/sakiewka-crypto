@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 
 import * as wallet from '../wallet'
-import { Wallet } from '../domain'
+import { Wallet } from '../../types/domain'
 
 describe('createWallet', () => {
   it('should exist', () => {

@@ -1,6 +1,6 @@
 import bitcoinjsLib from 'bitcoinjs-lib'
 
-import { SendCoinsParams, UTXO } from './domain'
+import { SendCoinsParams, UTXO } from '../types/domain'
 import { getWalletDetailed } from './backend-api'
 import { getUserXprv } from './wallet'
 
