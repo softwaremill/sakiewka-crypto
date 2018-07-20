@@ -1,38 +1,81 @@
 import { expect } from 'chai'
 
 import * as wallet from '../wallet'
-import { Wallet } from '../../types/domain'
 
-describe('createWallet', () => {
+describe('generateNewKeypair', () => {
   it('should exist', () => {
-    expect(wallet.createWallet).to.be.a('function')
+    expect(wallet.generateNewKeypair).to.be.a('function')
   })
 
-  it('should return a wallet', () => {
-    const params = {
-      password: 'abcd'
-    }
+  it('should return new keypair', () => {
+    const result = wallet.generateNewKeypair()
 
-    const result = wallet.createWallet(params)
-
-    result.then((res: Wallet) => {
-      expect(res).to.be.an('object')
-    })
+    expect(result).to.haveOwnProperty('pubKey')
+    expect(result).to.haveOwnProperty('privKey')
+    expect(result.pubKey).to.have.lengthOf(111)
+    expect(result.privKey).to.have.lengthOf(111)
   })
 })
 
-describe('createKeychain', () => {
+describe('encryptKeyPair', () => {
   it('should exist', () => {
-    expect(wallet.createKeychain).to.be.a('function')
+    expect(wallet.encryptKeyPair).to.be.a('function')
   })
 
-  it('should generate pair of keys', () => {
-    const result = wallet.createKeychain('testLabel')
+  it('should return encrypted keypair', () => {
+    const result = wallet.encryptKeyPair({ pubKey: 'abc', privKey: 'bcd' }, 'pass')
 
-    expect(result).to.be.a('object')
-    expect(result.xpub).to.have.lengthOf(111)
-    expect(result.xprv).to.have.lengthOf(111)
-    expect(result.xpub.slice(0, 4)).to.be.equal('xpub')
-    expect(result.xprv.slice(0, 4)).to.be.equal('xprv')
+    expect(result).to.haveOwnProperty('pubKey')
+    expect(result).to.haveOwnProperty('privKey')
+    expect(result.pubKey).to.have.lengthOf(3)
+    expect(JSON.parse(result.privKey)).to.haveOwnProperty('cipher')
+  })
+})
+
+describe('prepareKeypairs', () => {
+  it('should exist', () => {
+    expect(wallet.prepareKeypairs).to.be.a('function')
+  })
+
+  it('should return newly generated keypairs', () => {
+    const params = {
+      passphrase: 'abcd'
+    }
+
+    const result = wallet.prepareKeypairs(params)
+
+    expect(result).to.haveOwnProperty('user')
+    expect(result).to.haveOwnProperty('backup')
+    expect(result.user.privKey).to.have.lengthOf(298)
+    expect(result.backup.privKey).to.have.lengthOf(298)
+  })
+
+  it('should return keys from params', () => {
+    const params = {
+      passphrase: 'abcd',
+      userPubKey: '123',
+      backupPubKey: '321'
+    }
+
+    const result = wallet.prepareKeypairs(params)
+
+    expect(result).to.haveOwnProperty('user')
+    expect(result).to.haveOwnProperty('backup')
+    expect(result.user).to.not.haveOwnProperty('privKey')
+    expect(result.backup).to.not.haveOwnProperty('privKey')
+  })
+
+  it('should combine params key with newly generated key', () => {
+    const params = {
+      passphrase: 'abcd',
+      backupPubKey: '321'
+    }
+
+    const result = wallet.prepareKeypairs(params)
+
+    expect(result).to.haveOwnProperty('user')
+    expect(result).to.haveOwnProperty('backup')
+    expect(result.user.privKey).to.have.lengthOf(298)
+    expect(result.backup).to.not.haveOwnProperty('privKey')
   })
 })
