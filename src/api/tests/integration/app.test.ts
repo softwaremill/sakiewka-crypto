@@ -8,11 +8,35 @@ let server
 
 const randomString = () => Math.random().toString(36).substring(7)
 
+const getUser = async () => {
+  const login = `testlogin${randomString()}`
+
+  // first register new user
+  await supertest(app)
+    .post(`/${BASE_API_PATH}/user/register`)
+    .send({
+      login,
+      password: 'abcd'
+    })
+
+  // then logs him in and get token
+  const response = await supertest(app)
+    .post(`/${BASE_API_PATH}/user/login`)
+    .send({
+      login,
+      password: 'abcd'
+    })
+
+  const responseBody = JSON.parse(response.body)
+  return {
+    login,
+    token: responseBody.data.token
+  }
+}
+
 describe('server', () => {
   beforeEach(() => {
-    server = app.listen('5678', () => {
-      console.log('test app listening on port 5678')
-    })
+    server = app.listen('5678', () => {})
   })
 
   afterEach(() => {
@@ -26,7 +50,7 @@ describe('server', () => {
     })
   })
 
-  describe('/register', () => {
+  describe('/user/register', () => {
     it('should not accept incomplete request', async () => {
       const response = await supertest(app)
         .post(`/${BASE_API_PATH}/user/register`)
@@ -53,7 +77,7 @@ describe('server', () => {
       const response = await supertest(app)
         .post(`/${BASE_API_PATH}/user/register`)
         .send({
-          login: `testLogin${randomString()}`,
+          login: `testlogin${randomString()}`,
           password: 'abcd'
         })
 
@@ -64,7 +88,7 @@ describe('server', () => {
     })
   })
 
-  describe('/login', () => {
+  describe('/user/login', () => {
     it('should not accept incomplete request', async () => {
       const response = await supertest(app)
         .post(`/${BASE_API_PATH}/user/login`)
@@ -88,7 +112,7 @@ describe('server', () => {
     })
 
     it('should login user', async () => {
-      const login = `testLogin${randomString()}`
+      const login = `testlogin${randomString()}`
 
       // first registers new user
       await supertest(app)
@@ -110,6 +134,31 @@ describe('server', () => {
       expect(response.status).to.be.equal(200)
       expect(responseBody.data.token).to.be.a('string')
       expect(responseBody.data.token).to.have.lengthOf(64)
+    })
+  })
+
+  describe('/user/info', () => {
+    it('should not accept request with missing header', async () => {
+      const response = await supertest(app)
+        .get(`/${BASE_API_PATH}/user/info`)
+
+      expect(response.status).to.be.equal(400)
+      expect(response.body.message).to.be.equal('Request header Authorization is required.')
+    })
+
+    it('should fetch user info', async () => {
+      const { token, login } = await getUser()
+
+      const response = await supertest(app)
+        .get(`/${BASE_API_PATH}/user/info`)
+        .set('Authorization', `Bearer ${token}`)
+
+      const responseBody = JSON.parse(response.body)
+
+      expect(response.status).to.be.equal(200)
+      expect(responseBody.data.email).to.be.equal(login)
+      expect(responseBody.data.token).to.have.lengthOf(64)
+      expect(responseBody.data.tokenInfo.expiry).to.be.a('string')
     })
   })
 })

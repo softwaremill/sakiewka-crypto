@@ -5,6 +5,7 @@ import dotenv from 'dotenv'
 import clientApp from './client-app'
 import notFound from './not-found'
 import login from './login'
+import info from './info'
 import register from './register'
 import { BASE_API_PATH, API_ERROR } from '../common/constants'
 import { errorResponse } from './response'
@@ -37,6 +38,7 @@ app.get('/', errorHandled(clientApp))
 
 app.post(`/${BASE_API_PATH}/user/login`, errorHandled(login))
 app.post(`/${BASE_API_PATH}/user/register`, errorHandled(register))
+app.get(`/${BASE_API_PATH}/user/info`, errorHandled(info))
 
 app.get('*', errorHandled(notFound))
 

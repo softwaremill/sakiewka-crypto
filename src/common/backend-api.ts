@@ -64,3 +64,14 @@ export const register = (login: string, password: string): Promise<RegisterBacke
 
   return request(`${getUrlBase()}/user/register`, options)
 }
+
+export const info = (token: string): Promise<RegisterBackendResponse> => {
+  const options = {
+    method: 'GET',
+    headers: {
+      Authorization: token
+    }
+  }
+
+  return request(`${getUrlBase()}/user/info`, options)
+}
