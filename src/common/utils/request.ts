@@ -1,10 +1,4 @@
-import nodeFetch from 'node-fetch'
-
-interface Response {
-  status: number,
-  statusText: string,
-  json: () => Promise<string>
-}
+import nodeFetch, { Response } from 'node-fetch'
 
 const parseJSON = (response: Response) => {
   if (response.status === 204 || response.status === 205) {
