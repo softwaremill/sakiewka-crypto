@@ -1,6 +1,6 @@
 import { Response } from 'express'
 
-import { ApiError } from './models'
+import { ApiError } from '../types/api'
 
 export const jsonResponse = (res: Response, data: object) => {
   const body = JSON.stringify({

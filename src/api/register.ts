@@ -8,7 +8,7 @@ import validate from './validate'
 import { API_ERROR } from '../common/constants';
 
 const clientApp = async (req: Request, res: Response) => {
-  const validationErrors = validate(req.body, registerRequest)
+  const validationErrors = validate(req, registerRequest)
 
   if (validationErrors.length > 0) {
     return errorResponse(res, API_ERROR.BAD_REQUEST, validationErrors[0])

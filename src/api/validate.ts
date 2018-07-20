@@ -1,16 +1,25 @@
-export default (requestBody: object, model: object) => {
-  const modelProperties = Object.keys(model)
-  const requestProperties = Object.keys(requestBody)
+import { Request } from 'express'
+import { RequestModel } from '../types/api'
+
+export default (request: Request, model: RequestModel) => {
+  const modelProperties = Object.keys(model.fields)
+  const requestProperties = Object.keys(request.body)
 
   const errors = []
 
   requestProperties.forEach((reqestProp: string) => {
-    if (!model[reqestProp]) errors.push(`Property ${reqestProp} is not supported.`)
+    if (!model.fields[reqestProp]) errors.push(`Property ${reqestProp} is not supported.`)
   })
 
   modelProperties.forEach((modelProperty: string) => {
-    if (!requestBody[modelProperty] && model[modelProperty].required) {
+    if (!request.body[modelProperty] && model.fields[modelProperty].required) {
       errors.push(`Property ${modelProperty} is required.`)
+    }
+  })
+
+  model.headers.forEach((modelHeader: string) => {
+    if (!request.headers[modelHeader]) {
+      errors.push(`Request header ${modelHeader} is required.`)
     }
   })
 
