@@ -13,10 +13,6 @@ import { BACKEND_API_PREFIX } from './constants'
 
 const getUrlBase = () => `${process.env.BACKEND_API_URL}/${BACKEND_API_PREFIX}`
 
-export const createWallet = (publicKeys: Keychain[]) => {
-  return Promise.resolve()
-}
-
 export const getWallet = (id: number) => {
   return Promise.resolve()
 }
@@ -75,4 +71,18 @@ export const info = (token: string): Promise<InfoBackendResponse> => {
   }
 
   return request(`${getUrlBase()}/user/info`, options)
+}
+
+export const createWallet = (token: string, params: object): Promise<InfoBackendResponse> => {
+  const options = {
+    method: 'POST',
+    headers: {
+      Authorization: token
+    },
+    body: JSON.stringify({
+      ...params
+    })
+  }
+
+  return request(`${getUrlBase()}/btc/wallet/create`, options)
 }

@@ -32,3 +32,27 @@ export const infoRequest = {
     'Authorization'
   ]
 }
+
+export const createWalletRequest = {
+  fields: {
+    label: {
+      required: true,
+      type: 'string'
+    },
+    userPubKey: {
+      required: false,
+      type: 'string'
+    },
+    backupPubKey: {
+      required: false,
+      type: 'string'
+    },
+    passphrase: {
+      required: true,
+      type: 'string'
+    }
+  },
+  headers: [
+    'Authorization'
+  ]
+}

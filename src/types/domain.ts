@@ -1,12 +1,12 @@
 export interface WalletParams {
-  password: string
+  passphrase: string,
+  userPubKey?: string,
+  backupPubKey?: string
 }
 
-export interface Keychain {
-  xpub: string,
-  label: string
-  xprv?: string,
-  encryptedXprv?: string
+export interface Keypair {
+  pubKey: string,
+  privKey?: string
 }
 
 export interface UTXO {
@@ -40,7 +40,7 @@ export interface Wallet {
 
 export interface DetailedWallet {
   id: number,
-  keychains: Keychain[],
+  keychains: Keypair[],
   addresses?: WalletAddresses,
   unspents: UTXO[]
 }

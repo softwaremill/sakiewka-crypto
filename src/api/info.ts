@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 
 import { info as infoUser } from '../common/backend-api'
-import { hashSha512 } from '../common/crypto'
 import { jsonResponse, errorResponse } from './response'
 import { infoRequest } from './models'
 import { API_ERROR } from '../common/constants';

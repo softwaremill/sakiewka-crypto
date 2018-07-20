@@ -9,6 +9,7 @@ import info from './info'
 import register from './register'
 import { BASE_API_PATH, API_ERROR } from '../common/constants'
 import { errorResponse } from './response'
+import createWallet from './create-wallet'
 
 dotenv.config()
 
@@ -33,12 +34,18 @@ const errorHandled = (fn: Function) => {
   }
 }
 
-// Endpoints
+// ENDPOINTS
+
+// site
 app.get('/', errorHandled(clientApp))
 
+// user
 app.post(`/${BASE_API_PATH}/user/login`, errorHandled(login))
 app.post(`/${BASE_API_PATH}/user/register`, errorHandled(register))
 app.get(`/${BASE_API_PATH}/user/info`, errorHandled(info))
+
+// wallet
+app.post(`/${BASE_API_PATH}/btc/wallet/create`, errorHandled(createWallet))
 
 app.get('*', errorHandled(notFound))
 

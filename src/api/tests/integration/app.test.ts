@@ -161,4 +161,50 @@ describe('server', () => {
       expect(responseBody.data.tokenInfo.expiry).to.be.a('string')
     })
   })
+
+  describe('/btc/wallet/create', () => {
+    it('should not accept incomplete request', async () => {
+      const response = await supertest(app)
+        .post(`/${BASE_API_PATH}/btc/wallet/create`)
+        .set('Authorization', `Bearer abc`)
+
+      expect(response.status).to.be.equal(400)
+      expect(response.body.message).to.be.equal('Property label is required.')
+    })
+
+    it('should not accept extra parameters', async () => {
+      const response = await supertest(app)
+        .post(`/${BASE_API_PATH}/btc/wallet/create`)
+        .set('Authorization', `Bearer abc`)
+        .send({
+          label: 'testLabel',
+          passphrase: 'aaa',
+          userPubKey: '123',
+          backupPubKey: '142',
+          extraProp: 'abcd'
+        })
+
+      expect(response.status).to.be.equal(400)
+      expect(response.body.message).to.be.equal('Property extraProp is not supported.')
+    })
+
+    it('should create wallet', async () => {
+      const { token, login } = await getUser()
+
+      const response = await supertest(app)
+        .post(`/${BASE_API_PATH}/btc/wallet/create`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          label: 'testLabel',
+          passphrase: 'aaa',
+          userPubKey: '123'
+        })
+
+      const responseBody = JSON.parse(response.body)
+
+      expect(response.status).to.be.equal(200)
+      expect(responseBody.data.id).to.have.lengthOf(64)
+      expect(responseBody.data.servicePubKey).to.be.a('string')
+    })
+  })
 })
