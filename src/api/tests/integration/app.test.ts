@@ -34,6 +34,20 @@ const getUser = async () => {
   }
 }
 
+const getWalletId = async (token: string) => {
+  const response = await supertest(app)
+    .post(`/${BASE_API_PATH}/btc/wallet/create`)
+    .set('Authorization', `Bearer ${token}`)
+    .send({
+      label: 'testLabel',
+      passphrase: 'aaa',
+      userPubKey: '123'
+    })
+
+  const responseBody = JSON.parse(response.body)
+  return responseBody.data.id
+}
+
 describe('server', () => {
   beforeEach(() => {
     server = app.listen('5678', () => {})
@@ -205,6 +219,36 @@ describe('server', () => {
       expect(response.status).to.be.equal(200)
       expect(responseBody.data.id).to.have.lengthOf(64)
       expect(responseBody.data.servicePubKey).to.be.a('string')
+    })
+  })
+
+  describe('/btc/wallet/get', () => {
+    it('should not accept incomplete request', async () => {
+      const response = await supertest(app)
+        .get(`/${BASE_API_PATH}/btc/wallet/1234`)
+
+      expect(response.status).to.be.equal(400)
+      expect(response.body.message).to.be.equal('Request header Authorization is required.')
+    })
+
+    it('should get wallet', async () => {
+      const { token } = await getUser()
+      const walletId = await getWalletId(token)
+
+      const response = await supertest(app)
+        .get(`/${BASE_API_PATH}/btc/wallet/${walletId}`)
+        .set('Authorization', `Bearer ${token}`)
+
+      const responseBody = JSON.parse(response.body)
+
+      expect(response.status).to.be.equal(200)
+      expect(responseBody.data).to.haveOwnProperty('id')
+      expect(responseBody.data).to.haveOwnProperty('label')
+      expect(responseBody.data).to.haveOwnProperty('currency')
+      expect(responseBody.data).to.haveOwnProperty('created')
+      expect(responseBody.data.id).to.equal(walletId)
+      expect(responseBody.data.label).to.equal('testLabel')
+      expect(responseBody.data.currency).to.equal('BTC')
     })
   })
 

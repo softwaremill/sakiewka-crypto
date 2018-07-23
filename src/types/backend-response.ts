@@ -1,7 +1,11 @@
 export interface LoginBackendResponse {
-  token: 'string'
+  token: string
 }
 
 export interface RegisterBackendResponse {}
 
 export interface InfoBackendResponse {}
+
+export interface CreateWalletBackendResponse {}
+
+export interface GetWalletBackendResponse {}

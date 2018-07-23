@@ -57,6 +57,13 @@ export const createWalletRequest = {
   ]
 }
 
+export const getWalletRequest = {
+  fields: {},
+  headers: [
+    'Authorization'
+  ]
+}
+
 export const createKeyRequest = {
   fields: {
     passphrase: {

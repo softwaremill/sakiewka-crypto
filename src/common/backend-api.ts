@@ -1,21 +1,17 @@
 import {
-  Keychain,
-  Wallet,
   DetailedWallet
 } from '../types/domain'
 import {
   LoginBackendResponse,
   RegisterBackendResponse,
-  InfoBackendResponse
+  InfoBackendResponse,
+  CreateWalletBackendResponse,
+  GetWalletBackendResponse
 } from '../types/backend-response'
 import request from './utils/request'
 import { BACKEND_API_PREFIX } from './constants'
 
 const getUrlBase = () => `${process.env.BACKEND_API_URL}/${BACKEND_API_PREFIX}`
-
-export const getWallet = (id: number) => {
-  return Promise.resolve()
-}
 
 export const getWalletDetailed = (id: number): Promise<DetailedWallet> => {
   return Promise.resolve({
@@ -73,7 +69,9 @@ export const info = (token: string): Promise<InfoBackendResponse> => {
   return request(`${getUrlBase()}/user/info`, options)
 }
 
-export const createWallet = (token: string, params: object): Promise<InfoBackendResponse> => {
+export const createWallet = (
+  token: string,
+  params: object): Promise<CreateWalletBackendResponse> => {
   const options = {
     method: 'POST',
     headers: {
@@ -85,4 +83,15 @@ export const createWallet = (token: string, params: object): Promise<InfoBackend
   }
 
   return request(`${getUrlBase()}/btc/wallet/create`, options)
+}
+
+export const getWallet = (token: string, id: string): Promise<GetWalletBackendResponse> => {
+  const options = {
+    method: 'GET',
+    headers: {
+      Authorization: token
+    }
+  }
+
+  return request(`${getUrlBase()}/btc/wallet/${id}`, options)
 }
