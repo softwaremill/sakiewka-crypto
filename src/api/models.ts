@@ -56,3 +56,13 @@ export const createWalletRequest = {
     'Authorization'
   ]
 }
+
+export const createKeyRequest = {
+  fields: {
+    passphrase: {
+      required: false,
+      type: 'string'
+    }
+  },
+  headers: []
+}

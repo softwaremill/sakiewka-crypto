@@ -207,4 +207,54 @@ describe('server', () => {
       expect(responseBody.data.servicePubKey).to.be.a('string')
     })
   })
+
+  describe('/btc/key/create', () => {
+    it('should not accept extra parameters', async () => {
+      const response = await supertest(app)
+        .post(`/${BASE_API_PATH}/btc/key/create`)
+        .set('Authorization', `Bearer abc`)
+        .send({
+          extraProp: 'test',
+          passphrase: 'aaa'
+        })
+
+      expect(response.status).to.be.equal(400)
+      expect(response.body.message).to.be.equal('Property extraProp is not supported.')
+    })
+
+    it('should return keys', async () => {
+      const { token } = await getUser()
+
+      const response = await supertest(app)
+        .post(`/${BASE_API_PATH}/btc/key/create`)
+
+      const responseBody = JSON.parse(response.body)
+
+      expect(response.status).to.be.equal(200)
+      expect(responseBody.data).to.haveOwnProperty('keypair')
+      expect(responseBody.data.keypair).to.haveOwnProperty('pubKey')
+      expect(responseBody.data.keypair).to.haveOwnProperty('privKey')
+      expect(responseBody.data.keypair.pubKey).to.have.lengthOf(111)
+      expect(responseBody.data.keypair.privKey).to.have.lengthOf(111)
+    })
+
+    it('should return encrypted key', async () => {
+      const { token } = await getUser()
+
+      const response = await supertest(app)
+        .post(`/${BASE_API_PATH}/btc/key/create`)
+        .send({
+          passphrase: 'abcd'
+        })
+
+      const responseBody = JSON.parse(response.body)
+
+      expect(response.status).to.be.equal(200)
+      expect(responseBody.data).to.haveOwnProperty('keypair')
+      expect(responseBody.data.keypair).to.haveOwnProperty('pubKey')
+      expect(responseBody.data.keypair).to.haveOwnProperty('privKey')
+      expect(responseBody.data.keypair.pubKey).to.have.lengthOf(111)
+      expect(responseBody.data.keypair.privKey).to.have.lengthOf(298)
+    })
+  })
 })

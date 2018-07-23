@@ -8,6 +8,7 @@ import login from './handlers/login'
 import info from './handlers/info'
 import register from './handlers/register'
 import createWallet from './handlers/create-wallet'
+import createKey from './handlers/create-key'
 import { BASE_API_PATH, API_ERROR } from '../common/constants'
 import { errorResponse } from './response'
 
@@ -46,6 +47,9 @@ app.get(`/${BASE_API_PATH}/user/info`, errorHandled(info))
 
 // wallet
 app.post(`/${BASE_API_PATH}/btc/wallet/create`, errorHandled(createWallet))
+
+// key
+app.post(`/${BASE_API_PATH}/btc/key/create`, errorHandled(createKey))
 
 app.get('*', errorHandled(notFound))
 
