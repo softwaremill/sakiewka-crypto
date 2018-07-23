@@ -1,10 +1,10 @@
 import { Request, Response } from 'express'
 
-import { info as infoUser } from '../common/backend-api'
-import { jsonResponse, errorResponse } from './response'
-import { infoRequest } from './models'
-import { API_ERROR } from '../common/constants';
-import validate from './validate'
+import { info as infoUser } from '../../common/backend-api'
+import { jsonResponse, errorResponse } from '../response'
+import { infoRequest } from '../models'
+import { API_ERROR } from '../../common/constants';
+import validate from '../validate'
 
 const info = async (req: Request, res: Response) => {
   const validationErrors = validate(req, infoRequest)

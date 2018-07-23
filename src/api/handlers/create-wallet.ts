@@ -1,12 +1,12 @@
 import { Request, Response } from 'express'
 
-import { createWallet as createWalletBackend } from '../common/backend-api'
-import { jsonResponse, errorResponse } from './response'
-import { createWalletRequest } from './models'
-import { API_ERROR } from '../common/constants'
-import validate from './validate'
-import { prepareKeypairs } from '../common/wallet'
-import { filterObject } from '../common/utils/helpers'
+import { createWallet as createWalletBackend } from '../../common/backend-api'
+import { jsonResponse, errorResponse } from '../response'
+import { createWalletRequest } from '../models'
+import { API_ERROR } from '../../common/constants'
+import validate from '../validate'
+import { prepareKeypairs } from '../../common/wallet'
+import { filterObject } from '../../common/utils/helpers'
 
 const crateWallet = async (req: Request, res: Response) => {
   const validationErrors = validate(req, createWalletRequest)

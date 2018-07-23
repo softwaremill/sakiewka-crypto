@@ -2,14 +2,14 @@ import express, { Request, Response } from 'express'
 import bodyParser from 'body-parser'
 
 import dotenv from 'dotenv'
-import clientApp from './client-app'
-import notFound from './not-found'
-import login from './login'
-import info from './info'
-import register from './register'
+import clientApp from './handlers/client-app'
+import notFound from './handlers/not-found'
+import login from './handlers/login'
+import info from './handlers/info'
+import register from './handlers/register'
+import createWallet from './handlers/create-wallet'
 import { BASE_API_PATH, API_ERROR } from '../common/constants'
 import { errorResponse } from './response'
-import createWallet from './create-wallet'
 
 dotenv.config()
 

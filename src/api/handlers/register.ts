@@ -1,11 +1,11 @@
 import { Request, Response } from 'express'
 
-import { register as registerUser } from '../common/backend-api'
-import { registerRequest } from './models'
-import { hashSha512 } from '../common/crypto'
-import { jsonResponse, errorResponse } from './response'
-import validate from './validate'
-import { API_ERROR } from '../common/constants';
+import { register as registerUser } from '../../common/backend-api'
+import { registerRequest } from '../models'
+import { hashSha512 } from '../../common/crypto'
+import { jsonResponse, errorResponse } from '../response'
+import validate from '../validate'
+import { API_ERROR } from '../../common/constants';
 
 const register = async (req: Request, res: Response) => {
   const validationErrors = validate(req, registerRequest)
