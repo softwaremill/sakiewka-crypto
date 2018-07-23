@@ -222,7 +222,7 @@ describe('server', () => {
     })
   })
 
-  describe('/btc/wallet/get', () => {
+  describe('/btc/wallet/id', () => {
     it('should not accept incomplete request', async () => {
       const response = await supertest(app)
         .get(`/${BASE_API_PATH}/btc/wallet/1234`)
@@ -249,6 +249,32 @@ describe('server', () => {
       expect(responseBody.data.id).to.equal(walletId)
       expect(responseBody.data.label).to.equal('testLabel')
       expect(responseBody.data.currency).to.equal('BTC')
+    })
+  })
+
+  describe('/btc/wallet', () => {
+    it('should not accept incomplete request', async () => {
+      const response = await supertest(app)
+        .get(`/${BASE_API_PATH}/btc/wallet`)
+
+      expect(response.status).to.be.equal(400)
+      expect(response.body.message).to.be.equal('Request header Authorization is required.')
+    })
+
+    it('should return list of wallets', async () => {
+      // TODO: Backend api returns 404
+      return
+
+      const { token } = await getUser()
+      const walletId = await getWalletId(token)
+
+      const response = await supertest(app)
+        .get(`/${BASE_API_PATH}/btc/wallet`)
+        .set('Authorization', `Bearer ${token}`)
+
+      const responseBody = JSON.parse(response.body)
+
+      expect(response.status).to.be.equal(200)
     })
   })
 

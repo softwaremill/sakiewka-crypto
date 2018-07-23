@@ -9,3 +9,5 @@ export interface InfoBackendResponse {}
 export interface CreateWalletBackendResponse {}
 
 export interface GetWalletBackendResponse {}
+
+export interface ListWalletsBackendResponse {}

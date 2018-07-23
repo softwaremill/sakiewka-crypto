@@ -6,7 +6,8 @@ import {
   RegisterBackendResponse,
   InfoBackendResponse,
   CreateWalletBackendResponse,
-  GetWalletBackendResponse
+  GetWalletBackendResponse,
+  ListWalletsBackendResponse
 } from '../types/backend-response'
 import request from './utils/request'
 import { BACKEND_API_PREFIX } from './constants'
@@ -94,4 +95,15 @@ export const getWallet = (token: string, id: string): Promise<GetWalletBackendRe
   }
 
   return request(`${getUrlBase()}/btc/wallet/${id}`, options)
+}
+
+export const listWallets = (token: string): Promise<ListWalletsBackendResponse> => {
+  const options = {
+    method: 'GET',
+    headers: {
+      Authorization: token
+    }
+  }
+
+  return request(`${getUrlBase()}/btc/wallet`, options)
 }
