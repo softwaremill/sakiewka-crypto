@@ -31,121 +31,19 @@ describe('deriveChildKey', () => {
 
   it('should create new hardened key for a given path', () => {
     const path = `0'`
-    const keychain = wallet.createKeychain('test_label')
+    const keychain = wallet.generateNewKeypair()
 
-    const result = address.deriveKey(keychain.xprv, path)
+    const result = address.deriveKey(keychain.privKey, path)
 
     expect(result).to.have.property('keyPair')
   })
 
   it('should create new normal key for a given path', () => {
     const path = `11/20/15`
-    const keychain = wallet.createKeychain('test_label')
+    const keychain = wallet.generateNewKeypair()
 
-    const result = address.deriveKey(keychain.xpub, path)
+    const result = address.deriveKey(keychain.pubKey, path)
 
     expect(result).to.have.property('keyPair')
   })
 })
-
-describe('getNextAddressIndex', () => {
-  it('should exist', () => {
-    expect(address.getNextAddressIndex).to.be.a('function')
-  })
-
-  it('should return index', () => {
-    const result = address.getNextAddressIndex(testWallet)
-
-    expect(result).to.be.a('number')
-  })
-
-  it('should return proper receive index', () => {
-    const testWalletModified = {
-      ...testWallet, addresses: {
-        receive: [
-          { path: '', value: '' }, { path: '', value: '' }, { path: '', value: '' }
-        ],
-        change: []
-      }
-    }
-
-    const result = address.getNextAddressIndex(testWalletModified)
-
-    expect(result).to.be.equal(3)
-  })
-
-  it('should return proper change index', () => {
-    const testWalletModified = {
-      ...testWallet, addresses: {
-        receive: [
-          { path: '', value: '' }, { path: '', value: '' }, { path: '', value: '' }
-        ],
-        change: []
-      }
-    }
-
-    const result = address.getNextAddressIndex(testWalletModified)
-
-    expect(result).to.be.equal(3)
-  })
-
-  it('should return proper receive index', () => {
-    const testWalletModified = {
-      ...testWallet, addresses: {
-        receive: [
-          { path: '', value: '' }, { path: '', value: '' }, { path: '', value: '' }
-        ],
-        change: []
-      }
-    }
-
-    const result = address.getNextAddressIndex(testWalletModified, true)
-
-    expect(result).to.be.equal(0)
-  })
-})
-
-describe('addNewAddress', () => {
-  it('should exist', () => {
-    expect(address.addNewAddress).to.be.a('function')
-  })
-
-  it('should should return a wallet with a new receive address', () => {
-    const result = address.addNewAddress(testWallet, testAddress)
-
-    expect(result.addresses.receive[0]).to.be.equal(testAddress)
-  })
-
-  it('should should return a wallet with a new change address', () => {
-    const testWalletModified = {
-      ...testWallet, addresses: {
-        receive: [],
-        change: [
-          { path: '', value: '' }, { path: '', value: '' }, { path: '', value: '' }
-        ]
-      }
-    }
-
-    const result = address.addNewAddress(testWalletModified, testAddress, true)
-
-    expect(result.addresses.change[3]).to.be.equal(testAddress)
-  })
-})
-
-const testWallet = {
-  id: 132,
-  pubKeys: [
-    wallet.createKeychain('userKey').xpub,
-    wallet.createKeychain('backupKey').xpub,
-    wallet.createKeychain('serverKey').xpub
-  ],
-  addresses: {
-    change: [],
-    receive: []
-  }
-}
-
-const testAddress = {
-  path: 'test_path',
-  value: 'test_value'
-}
