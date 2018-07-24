@@ -5,7 +5,9 @@
   "scripts": {
     "postinstall": "cd node_modules/sjcl && ./configure --with-sha512 && make sjcl.js",
     "test": "jest --forceExit --coverage --verbose",
+    "test-unit": "jest --forceExit --coverage --verbose --testPathIgnorePatterns=\"src/api/\"",
     "watch-test": "npm run test -- --watchAll",
+    "watch-test-unit": "npm run test-unit -- --watchAll",
     "build": "tsc",
     "watch": "tsc -w",
     "serve": "node dist/local-api/server.js",
