@@ -26,7 +26,7 @@ export const getWalletDetailed = (id: number): Promise<DetailedWallet> => {
   })
 }
 
-export const getWalletUnspents = (id: number) => {
+export const getWalletUnspents = (token: string, id: string, amount: number) => {
   return Promise.resolve([{}])
 }
 
@@ -106,4 +106,8 @@ export const listWallets = (token: string): Promise<ListWalletsBackendResponse> 
   }
 
   return request(`${getUrlBase()}/btc/wallet`, options)
+}
+
+export const sendTransaction = (token: string, transactionHex: string): Promise<boolean> => {
+  return Promise.resolve(true)
 }

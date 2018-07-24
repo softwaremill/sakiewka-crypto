@@ -1,38 +1,44 @@
 import bitcoinjsLib from 'bitcoinjs-lib'
 
 import { SendCoinsParams, UTXO } from '../types/domain'
-import { getWalletDetailed } from './backend-api'
-import { getUserXprv } from './wallet'
-
-export const sendTransaction = () => {}
-
-export const createTransaction = (amount: number, recipent: string, unspents: object[]) => {
-}
-export const signTransaction = () => {}
+import { getWalletUnspents, getWallet, sendTransaction } from './backend-api'
 
 export const sendCoins = async (params: SendCoinsParams) => {
-  const wallet = await getWalletDetailed(params.walletId)
-  const xprv = params.xprv || getUserXprv(wallet, params.walletPassphrase)
-  const keyPair = bitcoinjsLib.HDNode.fromBase58(xprv).keyPair
+  const unspents = await getWalletUnspents(params.userToken, params.walletId, 10000)
+  const wallet = await getWallet(params.userToken, params.walletId)
+  const signingKey = bitcoinjsLib.HDNode.fromBase58(params.xprv).keyPair
+  const pubKeys = wallet.pubKeys.map((key: string) => (
+    bitcoinjsLib.HDNode.fromBase58(key).getPublicKeyBuffer())
+  )
   const txb = new bitcoinjsLib.TransactionBuilder
 
-  // TODO: use only necessary amount of unspents
-  const unspents = wallet.unspents
+  const redeemScript = bitcoinjsLib.script.multisig.output.encode(2, pubKeys)
 
-  // TODO: add support for multiple destination addresses
-  txb.addOutput(bitcoinjsLib.address.toOutputScript(params.destinationAddress), params.amount)
-
-  unspents.forEach((uns: UTXO, idx: number) => {
+  unspents.forEach((uns: UTXO) => {
     txb.addInput(uns.txId, uns.index)
   })
 
+  txb.addOutput(bitcoinjsLib.address.toOutputScript(params.destinationAddress), params.amount)
+
   unspents.forEach((uns: UTXO, idx: number) => {
-    txb.sign(idx, keyPair)
+    txb.sign(idx, signingKey, redeemScript)
   })
 
+  // TODO: derives proper xpriv based on unspent chainPath
+  // TODO: derives 3 pubkeys based on unsepnt chainPath and creates redeemScript from them
   // TODO: calculate change
+  // TODO: calculate and subtract fee
+  // TODO: gets change address from api
+  // TODO: send transaction
+  // TODO: add support for multiple destination addresses
+
+  // TODO: retrieve userXprv from backend
 
   const transactionHex = txb.build().toHex()
+  const status = await sendTransaction(params.userToken, transactionHex)
 
-  // TODO: send transaction
+  return {
+    transactionHex,
+    status
+  }
 }

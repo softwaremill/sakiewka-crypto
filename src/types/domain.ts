@@ -13,7 +13,7 @@ export interface UTXO {
   txId: string,
   index: number,
   amount: number,
-  scriptSig?: string
+  path: 'string'
 }
 
 export interface EncryptedKeychain {
@@ -46,8 +46,9 @@ export interface DetailedWallet {
 }
 
 export interface SendCoinsParams {
-  walletId: number,
+  walletId: string,
   walletPassphrase: string,
+  userToken: string,
   destinationAddress: string,
   amount: number,
   xprv?: string
