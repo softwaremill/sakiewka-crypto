@@ -51,7 +51,8 @@ describe('sendCoins', () => {
           address,
           txId: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           index: 0,
-          path: '0/0'
+          path: '0/0',
+          amount: 7
         }
       ])
     })
@@ -65,6 +66,11 @@ describe('sendCoins', () => {
           serverKeypair.neutered().toBase58()
         ]
       })
+    })
+
+    // mocks getNewChangeAddress
+    backendApi.getNewChangeAddress = jest.fn(() => {
+      return Promise.resolve('3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM')
     })
 
     const { transactionHex, status } = await transaction.sendCoins({
@@ -94,5 +100,32 @@ describe('sendCoins', () => {
     }).to.throw('Key pair cannot sign for this input')
 
     expect(status).to.be.true
+    expect(tx.outs.length).to.be.eq(2)
+    expect(tx.ins.length).to.be.eq(1)
+  })
+})
+
+describe('calculateChange', () => {
+  it('should exist', () => {
+    expect(transaction.calculateChange).to.be.a('function')
+  })
+
+  it('should caluclate change', () => {
+    const unspents = [
+       { amount: 14, address: 'asda', txId: 'asda', index: 0, path: '0/0' },
+       { amount: 2, address: 'asda', txId: 'asda', index: 0, path: '0/0' },
+       { amount: 9, address: 'asda', txId: 'asda', index: 0, path: '0/0' }
+    ]
+
+    const result = transaction.calculateChange(unspents, 10)
+
+    expect(result).to.be.eq(15)
+  })
+
+  it('should caluclate change for empty unspents', () => {
+    const unspents = []
+    const result = transaction.calculateChange(unspents, 0)
+
+    expect(result).to.be.eq(0)
   })
 })

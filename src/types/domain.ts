@@ -13,7 +13,7 @@ export interface UTXO {
   txId: string,
   index: number,
   amount: number,
-  path: 'string'
+  path: string
 }
 
 export interface EncryptedKeychain {

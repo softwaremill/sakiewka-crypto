@@ -1,5 +1,5 @@
 import {
-  DetailedWallet
+  DetailedWallet, UTXO
 } from '../types/domain'
 import {
   LoginBackendResponse,
@@ -26,12 +26,16 @@ export const getWalletDetailed = (id: number): Promise<DetailedWallet> => {
   })
 }
 
-export const getWalletUnspents = (token: string, id: string, amount: number) => {
-  return Promise.resolve([{}])
+export const getWalletUnspents = (token: string, id: string, amount: number): Promise<UTXO[]> => {
+  return Promise.resolve([])
 }
 
 export const getWalletKeychains = (id: number) => {
   return Promise.resolve([{}])
+}
+
+export const getNewChangeAddress = (token: string, id: string): Promise<string> => {
+  return Promise.resolve('')
 }
 
 // TODO: handle api errors

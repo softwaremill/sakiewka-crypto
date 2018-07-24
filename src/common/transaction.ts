@@ -1,7 +1,18 @@
 import bitcoinjsLib from 'bitcoinjs-lib'
 
 import { SendCoinsParams, UTXO } from '../types/domain'
-import { getWalletUnspents, getWallet, sendTransaction } from './backend-api'
+import { getWalletUnspents, getWallet, sendTransaction, getNewChangeAddress } from './backend-api'
+
+export const calculateChange = (unspents: UTXO[], transactionAmount: number) => {
+  const unspentsSum = unspents.reduce(
+    (acc: number, uns: UTXO) => {
+      return acc + uns.amount
+    },
+    0
+  )
+
+  return unspentsSum - transactionAmount
+}
 
 export const sendCoins = async (params: SendCoinsParams) => {
   const unspents = await getWalletUnspents(params.userToken, params.walletId, 10000)
@@ -11,6 +22,8 @@ export const sendCoins = async (params: SendCoinsParams) => {
     bitcoinjsLib.HDNode.fromBase58(key).getPublicKeyBuffer())
   )
   const txb = new bitcoinjsLib.TransactionBuilder
+  const changeAmount = calculateChange(unspents, params.amount)
+  const changeAddres = await getNewChangeAddress(params.userToken, params.walletId)
 
   const redeemScript = bitcoinjsLib.script.multisig.output.encode(2, pubKeys)
 
@@ -19,6 +32,7 @@ export const sendCoins = async (params: SendCoinsParams) => {
   })
 
   txb.addOutput(bitcoinjsLib.address.toOutputScript(params.destinationAddress), params.amount)
+  txb.addOutput(bitcoinjsLib.address.toOutputScript(changeAddres), changeAmount)
 
   unspents.forEach((uns: UTXO, idx: number) => {
     txb.sign(idx, signingKey, redeemScript)
@@ -26,9 +40,7 @@ export const sendCoins = async (params: SendCoinsParams) => {
 
   // TODO: derives proper xpriv based on unspent chainPath
   // TODO: derives 3 pubkeys based on unsepnt chainPath and creates redeemScript from them
-  // TODO: calculate change
   // TODO: calculate and subtract fee
-  // TODO: gets change address from api
   // TODO: send transaction
   // TODO: add support for multiple destination addresses
 
