@@ -6,14 +6,9 @@
   "scripts": {
     "postinstall": "postinstall-build dist",
     "test": "jest --forceExit --coverage --verbose",
-    "test-unit": "jest --forceExit --coverage --verbose --testPathIgnorePatterns=\"src/api/\"",
     "watch-test": "npm run test -- --watchAll",
-    "watch-test-unit": "npm run test-unit -- --watchAll",
     "build": "tsc",
-    "watch": "tsc -w",
-    "serve": "node dist/local-api/server.js",
-    "serve-debug": "nodemon --inspect dist/local-api/server.js",
-    "watch-debug": "concurrently \"npm run watch\" \"npm run serve-debug\""
+    "watch": "tsc -w"
   },
   "repository": {
     "type": "git",
@@ -26,17 +21,13 @@
   },
   "homepage": "https://github.com/softwaremill/sakiewka-client#readme",
   "devDependencies": {
-    "@types/body-parser": "^1.17.0",
     "@types/chai": "^4.1.4",
-    "@types/express": "^4.16.0",
     "@types/mocha": "^5.2.4",
     "@types/node": "^10.5.2",
     "@types/node-fetch": "^2.1.1",
     "chai": "^4.1.2",
     "concurrently": "^3.6.0",
     "jest": "^23.4.0",
-    "nodemon": "^1.18.3",
-    "supertest": "^3.1.0",
     "ts-jest": "^23.0.0",
     "ts-node": "^7.0.0",
     "tslint": "^5.10.0",
@@ -47,9 +38,7 @@
     "@types/bitcoinjs-lib": "^3.4.0",
     "@types/sjcl": "^1.0.28",
     "bitcoinjs-lib": "^3.3.2",
-    "body-parser": "^1.18.3",
     "dotenv": "^6.0.0",
-    "express": "^4.16.3",
     "node-fetch": "^2.1.2",
     "postinstall-build": "^5.0.1",
     "sjcl": "https://github.com/bitwiseshiftleft/sjcl/tarball/master"
