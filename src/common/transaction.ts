@@ -1,6 +1,6 @@
 import bitcoinjsLib from 'bitcoinjs-lib'
 
-import { SendCoinsParams, UTXO } from '../types/domain'
+import { SendCoinsParams, UTXO, Recipent } from '../types/domain'
 import { getWalletUnspents, getWallet, sendTransaction, getNewChangeAddress } from './backend-api'
 import { getRecommendedFee } from './utils/fees'
 
@@ -19,6 +19,15 @@ export const calculateFee = (satoshiPerByte: number, numOfInputs: number, numOfO
   return (numOfInputs * 180 + numOfOutputs * 34 + 10) * satoshiPerByte
 }
 
+export const sumOutputAmounts = (outputs: Recipent[]) => {
+  return outputs.reduce(
+    (acc: number, out: Recipent) => {
+      return acc + out.amount
+    },
+    0
+  )
+}
+
 export const sendCoins = async (params: SendCoinsParams) => {
   const unspents = await getWalletUnspents(params.userToken, params.walletId, 10000)
   const wallet = await getWallet(params.userToken, params.walletId)
@@ -29,9 +38,11 @@ export const sendCoins = async (params: SendCoinsParams) => {
   const txb = new bitcoinjsLib.TransactionBuilder
 
   const recommendedFee = await getRecommendedFee()
-  const fee = calculateFee(recommendedFee, unspents.length, 2)
+  const fee = calculateFee(recommendedFee, unspents.length, params.recipents.length + 1)
 
-  const changeAmount = calculateChange(unspents, params.amount + fee)
+  const outputsAmount = sumOutputAmounts(params.recipents)
+
+  const changeAmount = calculateChange(unspents, outputsAmount + fee)
   const changeAddres = await getNewChangeAddress(params.userToken, params.walletId)
 
   const redeemScript = bitcoinjsLib.script.multisig.output.encode(2, pubKeys)
@@ -40,7 +51,10 @@ export const sendCoins = async (params: SendCoinsParams) => {
     txb.addInput(uns.txId, uns.index)
   })
 
-  txb.addOutput(bitcoinjsLib.address.toOutputScript(params.destinationAddress), params.amount)
+  params.recipents.forEach((out: Recipent) => {
+    txb.addOutput(bitcoinjsLib.address.toOutputScript(out.address), out.amount)
+  })
+
   txb.addOutput(bitcoinjsLib.address.toOutputScript(changeAddres), changeAmount)
 
   unspents.forEach((uns: UTXO, idx: number) => {
@@ -53,7 +67,6 @@ export const sendCoins = async (params: SendCoinsParams) => {
   // TODO: derives 3 pubkeys based on unsepnt chainPath and creates redeemScript from them
   // TODO: calculate and subtract fee
   // TODO: send transaction
-  // TODO: add support for multiple destination addresses
 
   // TODO: retrieve userXprv from backend
 

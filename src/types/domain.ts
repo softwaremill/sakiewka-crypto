@@ -45,11 +45,15 @@ export interface DetailedWallet {
   unspents: UTXO[]
 }
 
+export interface Recipent {
+  address: string,
+  amount: number
+}
+
 export interface SendCoinsParams {
   walletId: string,
   walletPassphrase: string,
   userToken: string,
-  destinationAddress: string,
-  amount: number,
+  recipents: Recipent[],
   xprv?: string
 }
