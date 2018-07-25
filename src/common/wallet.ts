@@ -41,12 +41,3 @@ export const prepareKeypairs = (params: WalletParams) => {
     backup: encryptKeyPair(backupKeychain, params.passphrase)
   }
 }
-
-export const getUserXprv = (wallet: DetailedWallet, walletPassphrase: string) => {
-  const encryptedXprv = wallet
-    .keychains
-    .find((k: Keypair) => k.label === USER_KEYCHAIN_LABEL)
-    .encryptedXprv
-
-  return decrypt(walletPassphrase, encryptedXprv)
-}

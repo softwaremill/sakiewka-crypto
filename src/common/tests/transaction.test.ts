@@ -29,10 +29,12 @@ const generateNewMultisigAddress = (rootKeys: Buffer[]) => {
 
 describe('sendCoins', () => {
   // mocks
+  // @ts-ignore
   backendApi.getNewChangeAddress = jest.fn(() => {
     return Promise.resolve('3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM')
   })
 
+  // @ts-ignore
   fees.getRecommendedFee = jest.fn(() => {
     return Promise.resolve(5)
   })
@@ -54,6 +56,7 @@ describe('sendCoins', () => {
       serverKeypair.getPublicKeyBuffer()
     ])
 
+  // @ts-ignore
     backendApi.getWalletUnspents = jest.fn(() => {
       return Promise.resolve([
         {
@@ -66,6 +69,7 @@ describe('sendCoins', () => {
       ])
     })
 
+  // @ts-ignore
     backendApi.getWallet = jest.fn(() => {
       return Promise.resolve({
         pubKeys: [
@@ -127,6 +131,7 @@ describe('sendCoins to multiple outputs', () => {
     ])
 
     // mocks getWalletUnspents
+  // @ts-ignore
     backendApi.getWalletUnspents = jest.fn(() => {
       return Promise.resolve([
         {
@@ -140,6 +145,7 @@ describe('sendCoins to multiple outputs', () => {
     })
 
     // mocks getWallet
+  // @ts-ignore
     backendApi.getWallet = jest.fn(() => {
       return Promise.resolve({
         pubKeys: [
@@ -151,6 +157,7 @@ describe('sendCoins to multiple outputs', () => {
     })
 
     // mocks getNewChangeAddress
+  // @ts-ignore
     backendApi.getNewChangeAddress = jest.fn(() => {
       return Promise.resolve('3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM')
     })
