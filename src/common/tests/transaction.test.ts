@@ -52,7 +52,7 @@ describe('sendCoins', () => {
           txId: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           index: 0,
           path: '0/0',
-          amount: 7
+          amount: 700000000
         }
       ])
     })
@@ -78,7 +78,7 @@ describe('sendCoins', () => {
       userToken: '1234',
       walletPassphrase: 'abcd',
       destinationAddress: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
-      amount: 5,
+      amount: 500000000,
       xprv: userKeypair.toBase58()
     })
 
@@ -88,7 +88,6 @@ describe('sendCoins', () => {
 
     // should be able to sign with other keys without errors
     txb.sign(0, serverKeypair.keyPair, redeemScript)
-    txb.sign(0, backupKeypair.keyPair, redeemScript)
 
     // signing again or using wrong key should throw errors
     expect(() => {
@@ -127,5 +126,16 @@ describe('calculateChange', () => {
     const result = transaction.calculateChange(unspents, 0)
 
     expect(result).to.be.eq(0)
+  })
+})
+
+describe('calculateFee', () => {
+  it('should exist', () => {
+    expect(transaction.calculateFee).to.be.a('function')
+  })
+
+  it('should properly calculate fee', () => {
+    const result = transaction.calculateFee(3, 4, 2)
+    expect(result).to.eq(2394)
   })
 })

@@ -5,6 +5,8 @@ export const BACKUP_KEYCHAIN_LABEL = 'user'
 export const BASE_API_PATH = 'api'
 export const BACKEND_API_PREFIX = 'api/v1'
 
+export const BTC_RECOMMENDED_FEE_URL = 'https://bitcoinfees.earn.com/api/v1/fees/recommended'
+
 export const API_ERROR = {
   NOT_FOUND: {
     message: 'Not found',
