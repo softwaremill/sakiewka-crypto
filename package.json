@@ -1,9 +1,10 @@
 {
-  "name": "sakiewka-client",
+  "name": "sakiewka-crypto",
   "version": "1.0.0",
   "description": "Client-side Sakiewka app",
+  "main": "dist/index.js",
   "scripts": {
-    "postinstall": "cd node_modules/sjcl && ./configure --with-sha512 && make sjcl.js",
+    "postinstall": "postinstall-build dist",
     "test": "jest --forceExit --coverage --verbose",
     "test-unit": "jest --forceExit --coverage --verbose --testPathIgnorePatterns=\"src/api/\"",
     "watch-test": "npm run test -- --watchAll",
@@ -50,6 +51,7 @@
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
     "node-fetch": "^2.1.2",
+    "postinstall-build": "^5.0.1",
     "sjcl": "https://github.com/bitwiseshiftleft/sjcl/tarball/master"
   }
 }
