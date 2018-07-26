@@ -7,7 +7,7 @@
     "postinstall": "postinstall-build dist",
     "test": "jest --forceExit --coverage --verbose",
     "watch-test": "npm run test -- --watchAll",
-    "build": "tsc",
+    "build": "tsc && cd node_modules/sjcl && ./configure --with-sha512 && make sjcl.js",
     "watch": "tsc -w"
   },
   "repository": {
