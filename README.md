@@ -1,8 +1,12 @@
-# sakiewka-client
+# sakiewka-crypto
+
+This is a library intended to be used as a dependency to other packages. It handles most of the wallet functionalities and communication with backend.
 
 ### Usage:
 
-First run `npm install`
+First run  
+1.  `npm install`
+2.  `npm run build-local`
 
 ##### Tests: 
 To run integration tests you have to specify `BACKEND_API_URL` in `.env` file.
@@ -13,7 +17,8 @@ To run integration tests you have to specify `BACKEND_API_URL` in `.env` file.
 `npm run watch-test-unit` - Runs unit tests in watch mode
 
 ##### Build: 
-`npm run build` - Builds .ts files into dist/ folder  
+`npm run build` - Builds files into dist/ folder  
+`npm run build-local` - Builds sjcl (crypto-library) files into into src/ folder  
 
 ##### Local api:  
 `npm run serve` - Runs local server.  
