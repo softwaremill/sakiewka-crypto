@@ -1,5 +1,6 @@
 import crypto from 'crypto'
-import sjcl from 'sjcl'
+// @ts-ignore
+import sjcl from '../sjcl'
 
 export const encrypt = (password: string, input: string) => {
   const randomSalt = sjcl.random.randomWords(2, 0)

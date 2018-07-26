@@ -3,5 +3,6 @@ node_modules/
 .vscode/
 coverage/
 src/notes.ts
+src/sjcl/
 dist/
 .env

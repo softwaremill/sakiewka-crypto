@@ -7,8 +7,14 @@
     "postinstall": "postinstall-build dist",
     "test": "jest --forceExit --coverage --verbose",
     "watch-test": "npm run test -- --watchAll",
-    "build": "tsc && cd node_modules/sjcl && ./configure --with-sha512 && make sjcl.js",
-    "watch": "tsc -w"
+    "build": "tsc && npm run sjcl",
+    "watch": "tsc -w",
+    "sjcl-install": "git clone https://github.com/bitwiseshiftleft/sjcl.git dist/sjcl",
+    "sjcl-build": "cd dist/sjcl && ./configure --compress=yui --with-sha512 && make sjcl.js",
+    "sjcl": "npm run sjcl-install && npm run sjcl-build",
+    "sjcl-install-local": "git clone https://github.com/bitwiseshiftleft/sjcl.git src/sjcl",
+    "sjcl-build-local": "cd src/sjcl && ./configure --compress=yui --with-sha512 && make sjcl.js",
+    "build-local": "npm run sjcl-install-local && npm run sjcl-build-local"
   },
   "repository": {
     "type": "git",
@@ -40,7 +46,6 @@
     "bitcoinjs-lib": "^3.3.2",
     "dotenv": "^6.0.0",
     "node-fetch": "^2.1.2",
-    "postinstall-build": "^5.0.1",
-    "sjcl": "https://github.com/bitwiseshiftleft/sjcl/tarball/master"
+    "postinstall-build": "^5.0.1"
   }
 }
