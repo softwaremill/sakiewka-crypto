@@ -79,3 +79,54 @@ describe('prepareKeypairs', () => {
     expect(result.backup).to.not.haveOwnProperty('privKey')
   })
 })
+
+describe('deriveChildKey', () => {
+  it('should exist', () => {
+    expect(wallet.deriveKey).to.be.a('function')
+  })
+
+  it('should create new hardened key for a given path', () => {
+    const path = `0'`
+    const keychain = wallet.generateNewKeypair()
+
+    const result = wallet.deriveKey(keychain.privKey, path)
+
+    expect(result).to.have.property('keyPair')
+  })
+
+  it('should create new normal key for a given path', () => {
+    const path = `11/20/15`
+    const keychain = wallet.generateNewKeypair()
+
+    const result = wallet.deriveKey(keychain.pubKey, path)
+
+    expect(result).to.have.property('keyPair')
+  })
+
+  it('should work the same for relative and absolute paths', () => {
+    const basePath = `m/45'/0`
+    const relativePath = '0/0'
+
+    const rootPrivKey = 'xprv9s21ZrQH143K27LPi9gM65jmXFuBfiY7S5HReQarD7dTX9svAXQmQYsqxVqMcbtRWxDwBkdRxSxhfPBX4Vt7Juc9CqY4i3AaPNwCeM1w1Ym'
+    const pubKey = 'xpub661MyMwAqRbcEbQrpBDMTDgW5Hjg5BFxoJD2SnzTmTASPxD4i4j1xMCKojYwgaRXXBRAHB7WPECxA2aQVfL61G4mWjnHMj6BJtAQKMVAiYs'
+
+    const partialResult = wallet.deriveKey(rootPrivKey, basePath)
+    const partialPrivKey = partialResult.toBase58()
+    const partialPubKey = partialResult.neutered().toBase58()
+
+    const relativeResult = wallet.deriveKey(partialPrivKey, relativePath)
+    const relativePrivKey = relativeResult.toBase58()
+    const relativePubKey = relativeResult.neutered().toBase58()
+
+    const absoluteResult = wallet.deriveKey(rootPrivKey, `${basePath}/${relativePath}`)
+    const absolutePrivKey = absoluteResult.toBase58()
+    const absolutePubKey = absoluteResult.neutered().toBase58()
+
+    const relativeResultFromPublic = wallet.deriveKey(partialPubKey, relativePath)
+    const relativePubKeyFromPublic = relativeResultFromPublic.toBase58()
+
+    expect(relativePrivKey).to.eq(absolutePrivKey)
+    expect(relativePubKey).to.eq(absolutePubKey)
+    expect(relativePubKeyFromPublic).to.eq(absolutePubKey)
+  })
+})
