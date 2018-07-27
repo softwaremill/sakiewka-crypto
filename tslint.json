@@ -9,6 +9,7 @@
     "export-name": false,
     "promise-function-async": false,
     "no-void-expression": false,
+    "max-line-length": false,
     "no-redundant-jsdoc": false,
     "prefer-type-cast": false,
     "trailing-comma": [
