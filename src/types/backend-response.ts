@@ -6,7 +6,9 @@ export interface RegisterBackendResponse {}
 
 export interface InfoBackendResponse {}
 
-export interface CreateWalletBackendResponse {}
+export interface CreateWalletBackendResponse {
+  id: string
+}
 
 export interface GetWalletBackendResponse {
   pubKeys: any

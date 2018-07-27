@@ -1,5 +1,6 @@
 export interface WalletParams {
   passphrase: string,
+  label: string,
   userPubKey?: string,
   backupPubKey?: string
 }

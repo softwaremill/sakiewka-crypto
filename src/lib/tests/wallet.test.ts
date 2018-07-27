@@ -1,6 +1,14 @@
 import { expect } from 'chai'
 
 import * as wallet from '../wallet'
+import * as backendApi from '../backend-api'
+
+// @ts-ignore
+backendApi.createWallet = jest.fn(() => {
+  return Promise.resolve({
+    id: '123'
+  })
+})
 
 describe('generateNewKeypair', () => {
   it('should exist', () => {
@@ -10,8 +18,7 @@ describe('generateNewKeypair', () => {
   it('should return new keypair', () => {
     const result = wallet.generateNewKeypair()
 
-    expect(result).to.haveOwnProperty('pubKey')
-    expect(result).to.haveOwnProperty('privKey')
+    expect(result).to.haveOwnProperty('pubKey', 'privKey')
     expect(result.pubKey).to.have.lengthOf(111)
     expect(result.privKey).to.have.lengthOf(111)
   })
@@ -32,51 +39,40 @@ describe('encryptKeyPair', () => {
   })
 })
 
-describe('prepareKeypairs', () => {
+describe('createWallet', () => {
   it('should exist', () => {
-    expect(wallet.prepareKeypairs).to.be.a('function')
+    expect(wallet.createWallet).to.be.a('function')
   })
 
-  it('should return newly generated keypairs', () => {
-    const params = {
-      passphrase: 'abcd'
-    }
-
-    const result = wallet.prepareKeypairs(params)
-
-    expect(result).to.haveOwnProperty('user')
-    expect(result).to.haveOwnProperty('backup')
-    expect(result.user.privKey).to.have.lengthOf(298)
-    expect(result.backup.privKey).to.have.lengthOf(298)
-  })
-
-  it('should return keys from params', () => {
+  it('should return keypairs and wallet id', async () => {
     const params = {
       passphrase: 'abcd',
+      label: 'testLabel'
+    }
+
+    const result = await wallet.createWallet('abcd', params)
+
+    expect(result).to.haveOwnProperty('walletId')
+    expect(result).to.haveOwnProperty('user')
+    expect(result).to.haveOwnProperty('backup')
+    expect(result.backup.privKey.slice(0, 4)).to.be.eq('xprv')
+    expect(result.user.pubKey.slice(0, 4)).to.be.eq('xpub')
+  })
+
+  it('should not return private key when public key provided', async () => {
+    const params = {
+      passphrase: 'abcd',
+      label: 'testLabel',
       userPubKey: '123',
       backupPubKey: '321'
     }
 
-    const result = wallet.prepareKeypairs(params)
+    const result = await wallet.createWallet('abcd', params)
 
-    expect(result).to.haveOwnProperty('user')
-    expect(result).to.haveOwnProperty('backup')
     expect(result.user).to.not.haveOwnProperty('privKey')
+    expect(result.user).to.haveOwnProperty('pubKey')
     expect(result.backup).to.not.haveOwnProperty('privKey')
-  })
-
-  it('should combine params key with newly generated key', () => {
-    const params = {
-      passphrase: 'abcd',
-      backupPubKey: '321'
-    }
-
-    const result = wallet.prepareKeypairs(params)
-
-    expect(result).to.haveOwnProperty('user')
-    expect(result).to.haveOwnProperty('backup')
-    expect(result.user.privKey).to.have.lengthOf(298)
-    expect(result.backup).to.not.haveOwnProperty('privKey')
+    expect(result.backup).to.haveOwnProperty('pubKey')
   })
 })
 
