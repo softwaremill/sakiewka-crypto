@@ -101,7 +101,9 @@ export const getWallet = (token: string, id: string): Promise<GetWalletBackendRe
   return request(`${getUrlBase()}/btc/wallet/${id}`, options)
 }
 
-export const listWallets = (token: string): Promise<ListWalletsBackendResponse> => {
+export const listWallets = (
+  token: string, limit: number, nextPageToken?: string
+): Promise<ListWalletsBackendResponse> => {
   const options = {
     method: 'GET',
     headers: {
@@ -109,7 +111,9 @@ export const listWallets = (token: string): Promise<ListWalletsBackendResponse> 
     }
   }
 
-  return request(`${getUrlBase()}/btc/wallet`, options)
+  const queryString = `limit=${limit}&${nextPageToken ? `nextPageToken=${nextPageToken}` : ''}`
+
+  return request(`${getUrlBase()}/btc/wallet?${queryString}`, options)
 }
 
 export const sendTransaction = (token: string, transactionHex: string): Promise<boolean> => {
