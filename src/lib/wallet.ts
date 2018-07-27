@@ -2,13 +2,14 @@ import bitcoinjsLib from 'bitcoinjs-lib'
 
 import { getRandomBytes, encrypt } from './crypto'
 import { Keypair, WalletParams } from '../types/domain'
-import { BITCOIN_NETWORK } from './constants'
+import { BITCOIN_NETWORK, ROOT_DERIVATION_PATH } from './constants'
 
-export const generateNewKeypair = (networkName: string = BITCOIN_NETWORK): Keypair => {
+export const generateNewKeypair = (path?: string, networkName: string = BITCOIN_NETWORK): Keypair => {
   const network = bitcoinjsLib.networks[networkName]
 
   const seed = getRandomBytes(512 / 8)
-  const extendedKey = bitcoinjsLib.HDNode.fromSeedBuffer(seed, network)
+  const rootExtendedKey = bitcoinjsLib.HDNode.fromSeedBuffer(seed, network)
+  const extendedKey = path ? rootExtendedKey.derivePath(path) : rootExtendedKey
   const pubKey = extendedKey.neutered().toBase58()
 
   return {
@@ -31,11 +32,11 @@ export const encryptKeyPair = (keypair: Keypair, passphrase: string): Keypair =>
 export const prepareKeypairs = (params: WalletParams) => {
   const userKeychain = params.userPubKey ?
     { pubKey: params.userPubKey } :
-    generateNewKeypair()
+    generateNewKeypair(`${ROOT_DERIVATION_PATH}/0`)
 
   const backupKeychain = params.backupPubKey ?
     { pubKey: params.backupPubKey } :
-    generateNewKeypair()
+    generateNewKeypair(`${ROOT_DERIVATION_PATH}/1`)
 
   return {
     user: encryptKeyPair(userKeychain, params.passphrase),
