@@ -42,3 +42,8 @@ export const prepareKeypairs = (params: WalletParams) => {
     backup: encryptKeyPair(backupKeychain, params.passphrase)
   }
 }
+
+export const deriveKey = (rootKey: string, path: string) => {
+  const node = bitcoinjsLib.HDNode.fromBase58(rootKey)
+  return node.derivePath(path)
+}
