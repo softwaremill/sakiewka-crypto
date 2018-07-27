@@ -1,13 +1,14 @@
 import bitcoinjsLib from 'bitcoinjs-lib'
 
-import * as api from './backend-api'
-import { getRandomBytes, encrypt, decrypt } from './crypto'
-import { Keypair, WalletParams, DetailedWallet } from '../types/domain'
-import { USER_KEYCHAIN_LABEL, BACKUP_KEYCHAIN_LABEL } from './constants'
+import { getRandomBytes, encrypt } from './crypto'
+import { Keypair, WalletParams } from '../types/domain'
+import { BITCOIN_NETWORK } from './constants'
 
-export const generateNewKeypair = (): Keypair => {
+export const generateNewKeypair = (networkName: string = BITCOIN_NETWORK): Keypair => {
+  const network = bitcoinjsLib.networks[networkName]
+
   const seed = getRandomBytes(512 / 8)
-  const extendedKey = bitcoinjsLib.HDNode.fromSeedBuffer(seed)
+  const extendedKey = bitcoinjsLib.HDNode.fromSeedBuffer(seed, network)
   const pubKey = extendedKey.neutered().toBase58()
 
   return {

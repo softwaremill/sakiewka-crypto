@@ -3,6 +3,7 @@ import bitcoinjsLib from 'bitcoinjs-lib'
 import { SendCoinsParams, UTXO, Recipent } from '../types/domain'
 import { getWalletUnspents, getWallet, sendTransaction, getNewChangeAddress } from './backend-api'
 import { getRecommendedFee } from './utils/fees'
+import { BITCOIN_NETWORK } from './constants'
 
 export const calculateChange = (unspents: UTXO[], transactionAmount: number) => {
   const unspentsSum = unspents.reduce(
@@ -28,14 +29,16 @@ export const sumOutputAmounts = (outputs: Recipent[]) => {
   )
 }
 
-export const sendCoins = async (params: SendCoinsParams) => {
+export const sendCoins = async (params: SendCoinsParams, networkName: string = BITCOIN_NETWORK) => {
+  const network = bitcoinjsLib.networks[networkName]
+
   const unspents = await getWalletUnspents(params.userToken, params.walletId, 10000)
   const wallet = await getWallet(params.userToken, params.walletId)
-  const signingKey = bitcoinjsLib.HDNode.fromBase58(params.xprv).keyPair
+  const signingKey = bitcoinjsLib.HDNode.fromBase58(params.xprv, network).keyPair
   const pubKeys = wallet.pubKeys.map((key: string) => (
-    bitcoinjsLib.HDNode.fromBase58(key).getPublicKeyBuffer())
+    bitcoinjsLib.HDNode.fromBase58(key, network).getPublicKeyBuffer())
   )
-  const txb = new bitcoinjsLib.TransactionBuilder
+  const txb = new bitcoinjsLib.TransactionBuilder(network)
 
   const recommendedFee = await getRecommendedFee()
   const fee = calculateFee(recommendedFee, unspents.length, params.recipents.length + 1)
@@ -52,10 +55,10 @@ export const sendCoins = async (params: SendCoinsParams) => {
   })
 
   params.recipents.forEach((out: Recipent) => {
-    txb.addOutput(bitcoinjsLib.address.toOutputScript(out.address), out.amount)
+    txb.addOutput(bitcoinjsLib.address.toOutputScript(out.address, network), out.amount)
   })
 
-  txb.addOutput(bitcoinjsLib.address.toOutputScript(changeAddres), changeAmount)
+  txb.addOutput(bitcoinjsLib.address.toOutputScript(changeAddres, network), changeAmount)
 
   unspents.forEach((uns: UTXO, idx: number) => {
     txb.sign(idx, signingKey, redeemScript)

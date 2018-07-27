@@ -5,20 +5,25 @@ import * as transaction from '../transaction'
 import * as backendApi from '../backend-api'
 import * as fees from '../utils/fees'
 import { getRandomBytes } from '../crypto'
+import { BITCOIN_NETWORK } from '../constants'
 
 // helpers
-export const generateNewKeypair = () => {
+export const generateNewKeypair = (networkName: string = BITCOIN_NETWORK) => {
   return bitcoinjsLib.HDNode.fromSeedBuffer(
-    new Buffer(getRandomBytes(512 / 8))
+    new Buffer(getRandomBytes(512 / 8)),
+    bitcoinjsLib.networks[networkName]
   )
 }
 
-const generateNewMultisigAddress = (rootKeys: Buffer[]) => {
+const generateNewMultisigAddress = (rootKeys: Buffer[], networkName: string = BITCOIN_NETWORK) => {
   const redeemScript = bitcoinjsLib.script.multisig.output.encode(2, rootKeys)
   const scriptPubKey = bitcoinjsLib.script.scriptHash.output.encode(
     bitcoinjsLib.crypto.hash160(redeemScript)
   )
-  const address = bitcoinjsLib.address.fromOutputScript(scriptPubKey)
+  const address = bitcoinjsLib.address.fromOutputScript(
+    scriptPubKey,
+    bitcoinjsLib.networks[networkName]
+  )
 
   return {
     address,
