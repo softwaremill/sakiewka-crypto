@@ -18,7 +18,8 @@ describe('generateNewKeypair', () => {
   it('should return new keypair', () => {
     const result = wallet.generateNewKeypair()
 
-    expect(result).to.haveOwnProperty('pubKey', 'privKey')
+    expect(result).to.haveOwnProperty('pubKey')
+    expect(result).to.haveOwnProperty('privKey')
     expect(result.pubKey).to.have.lengthOf(111)
     expect(result.privKey).to.have.lengthOf(111)
   })
