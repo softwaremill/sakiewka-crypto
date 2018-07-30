@@ -1,12 +1,11 @@
 import { expect } from 'chai'
-import bitcoinjsLib from 'bitcoinjs-lib'
 
-import * as address from '../address'
+import * as addressModule from '../address'
 import * as wallet from '../wallet'
 
 describe('generateNewMultisigAddress', () => {
   it('should exist', () => {
-    expect(address.generateNewMultisigAddress).to.be.a('function')
+    expect(addressModule.generateNewMultisigAddress).to.be.a('function')
   })
 
   it('should return proper address', () => {
@@ -16,10 +15,10 @@ describe('generateNewMultisigAddress', () => {
       'xpub661MyMwAqRbcGQQ9zYBFdkPxFBryTQwXCEr2zKsm2YBkeDFWbkKBUAWeRUaaseSmTWaat8npZ6nfyYqe1joSH6jsQdhK4W5fia35LgZfwVF'
     ]
 
-    const result = address.generateNewMultisigAddress(
+    const { address } = addressModule.generateNewMultisigAddress(
       pubKeys,
       '0/23')
 
-    expect(result).to.be.equal('32ora6gx1fLjdgbstMs4SdJhkC8QsMjcat')
+    expect(address).to.be.equal('32ora6gx1fLjdgbstMs4SdJhkC8QsMjcat')
   })
 })

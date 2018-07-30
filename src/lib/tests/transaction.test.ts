@@ -1,36 +1,13 @@
 import { expect } from 'chai'
-import bitcoinjsLib from 'bitcoinjs-lib'
 
 import * as transaction from '../transaction'
 import * as backendApi from '../backend-api'
 import * as fees from '../utils/fees'
-import { getRandomBytes } from '../crypto'
-import { BITCOIN_NETWORK } from '../constants'
-
-// helpers
-export const generateNewKeypair = (networkName: string = BITCOIN_NETWORK) => {
-  return bitcoinjsLib.HDNode.fromSeedBuffer(
-    new Buffer(getRandomBytes(512 / 8)),
-    bitcoinjsLib.networks[networkName]
-  )
-}
-
-const generateNewMultisigAddress = (rootKeys: Buffer[], networkName: string = BITCOIN_NETWORK) => {
-  const redeemScript = bitcoinjsLib.script.multisig.output.encode(2, rootKeys)
-  const scriptPubKey = bitcoinjsLib.script.scriptHash.output.encode(
-    bitcoinjsLib.crypto.hash160(redeemScript)
-  )
-  const address = bitcoinjsLib.address.fromOutputScript(
-    scriptPubKey,
-    bitcoinjsLib.networks[networkName]
-  )
-
-  return {
-    address,
-    redeemScript,
-    scriptPubKey
-  }
-}
+import { generateNewKeypair } from '../wallet'
+import { generateNewMultisigAddress } from '../address'
+import {
+  base58ToECPair, txFromHex, txBuilderFromTx
+} from '../bitcoin'
 
 describe('sendCoins', () => {
   // mocks
@@ -56,31 +33,31 @@ describe('sendCoins', () => {
     const anotherKeypair = generateNewKeypair()
 
     const { address, redeemScript } = generateNewMultisigAddress([
-      userKeypair.getPublicKeyBuffer(),
-      backupKeypair.getPublicKeyBuffer(),
-      serverKeypair.getPublicKeyBuffer()
-    ])
+      userKeypair.pubKey,
+      backupKeypair.pubKey,
+      serverKeypair.pubKey
+    ], '')
 
-  // @ts-ignore
+    // @ts-ignore
     backendApi.getWalletUnspents = jest.fn(() => {
       return Promise.resolve([
         {
           address,
           txId: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           index: 0,
-          path: '0/0',
+          path: '',
           amount: 700000000
         }
       ])
     })
 
-  // @ts-ignore
+    // @ts-ignore
     backendApi.getWallet = jest.fn(() => {
       return Promise.resolve({
         pubKeys: [
-          userKeypair.neutered().toBase58(),
-          backupKeypair.neutered().toBase58(),
-          serverKeypair.neutered().toBase58()
+          userKeypair.pubKey,
+          backupKeypair.pubKey,
+          serverKeypair.pubKey
         ]
       })
     })
@@ -93,23 +70,27 @@ describe('sendCoins', () => {
         address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
         amount: 500000000
       }],
-      xprv: userKeypair.toBase58()
+      xprv: userKeypair.privKey
     })
 
+    const serverECPair = base58ToECPair(serverKeypair.privKey)
+    const userECPair = base58ToECPair(userKeypair.privKey)
+    const anotherECPair = base58ToECPair(anotherKeypair.privKey)
+
     // recreates transaction builder
-    const tx = bitcoinjsLib.Transaction.fromHex(transactionHex)
-    const txb = bitcoinjsLib.TransactionBuilder.fromTransaction(tx, bitcoinjsLib.networks.bitcoin)
+    const tx = txFromHex(transactionHex)
+    const txb = txBuilderFromTx(tx)
 
     // should be able to sign with other keys without errors
-    txb.sign(0, serverKeypair.keyPair, redeemScript)
+    txb.sign(0, serverECPair, redeemScript)
 
     // signing again or using wrong key should throw errors
     expect(() => {
-      txb.sign(0, userKeypair.keyPair, redeemScript)
+      txb.sign(0, userECPair, redeemScript)
     }).to.throw('Signature already exists')
 
     expect(() => {
-      txb.sign(0, anotherKeypair.keyPair, redeemScript)
+      txb.sign(0, anotherECPair, redeemScript)
     }).to.throw('Key pair cannot sign for this input')
 
     expect(status).to.be.true
@@ -130,13 +111,13 @@ describe('sendCoins to multiple outputs', () => {
     const serverKeypair = generateNewKeypair()
 
     const { address } = generateNewMultisigAddress([
-      userKeypair.getPublicKeyBuffer(),
-      backupKeypair.getPublicKeyBuffer(),
-      serverKeypair.getPublicKeyBuffer()
-    ])
+      userKeypair.pubKey,
+      backupKeypair.pubKey,
+      serverKeypair.pubKey
+    ], '')
 
     // mocks getWalletUnspents
-  // @ts-ignore
+    // @ts-ignore
     backendApi.getWalletUnspents = jest.fn(() => {
       return Promise.resolve([
         {
@@ -150,19 +131,19 @@ describe('sendCoins to multiple outputs', () => {
     })
 
     // mocks getWallet
-  // @ts-ignore
+    // @ts-ignore
     backendApi.getWallet = jest.fn(() => {
       return Promise.resolve({
         pubKeys: [
-          userKeypair.neutered().toBase58(),
-          backupKeypair.neutered().toBase58(),
-          serverKeypair.neutered().toBase58()
+          userKeypair.pubKey,
+          backupKeypair.pubKey,
+          serverKeypair.pubKey
         ]
       })
     })
 
     // mocks getNewChangeAddress
-  // @ts-ignore
+    // @ts-ignore
     backendApi.getNewChangeAddress = jest.fn(() => {
       return Promise.resolve('3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM')
     })
@@ -181,10 +162,10 @@ describe('sendCoins to multiple outputs', () => {
           amount: 1500
         }
       ],
-      xprv: userKeypair.toBase58()
+      xprv: userKeypair.privKey
     })
 
-    const tx = bitcoinjsLib.Transaction.fromHex(transactionHex)
+    const tx = txFromHex(transactionHex)
 
     expect(status).to.be.true
     expect(tx.outs.length).to.be.eq(3)
@@ -242,3 +223,79 @@ describe('sumOutputAmounts', () => {
     expect(result).to.eq(14298)
   })
 })
+
+// Creating real testnet transaction
+// 1. Send testnet bitcoin to address
+// 2. Provide txId, txIndex and txAmount of this funding transaction
+// 3. Copy outputted txHash and broadcast it
+
+// describe('create real testnet transaction', () => {
+//   it('should generate testnet tx hash', async () => {
+//     const txId = '' // provide unspent txid here
+//     const txIdx = 0 // provide unspent transaction input index
+//     const txAmount = 0 // provide unspent tx
+
+//     const xprv1 = 'tprv8ZgxMBicQKsPd5efWXL7M9ZBgWiwU8xrdeXtVfSuJ5JbZABerqTrmHnbVZbi2ANbuYSb6J5ZD9LtQEPsUNt1zknTYHQKRzJedUUx442sk6Z'
+//     const xprv2 = 'tprv8ZgxMBicQKsPcy7qL5y7ggNfpX3DCVaZxe2yUrCNR2aKez4FuQSfSPBu5GafD16Qg8TQUZxShFunUhkNC8SSE8Z9URdSjjQsJnVDM4Utzyk'
+//     const xprv3 = 'tprv8ZgxMBicQKsPf4K18wyeji4CiWKvZo8fvYcEDGnsRhVTFRbrB9HJJxgiAtAceAgbARKcBKBx3gREx5yrZbywGZk5fvz7mrE42DS2dLYj27j'
+
+//     const xpub1 = 'tpubD6NzVbkrYhZ4WYgTQAzhkZDJFYEsdU9mCx8fnBVCiM6zPeSRVEHSwnQTfhsDNBSbQEoxwDG3ZsSRq66wXJLzy3FexB88qzNUUFTZ9zqtaj4'
+//     const xpub2 = 'tpubD6NzVbkrYhZ4WS9dDjdi662nPYZ9MpmUXwdkmNEfqJNiVUK2XoGFcsomFRS82nQXjLXRx1Yje7caAL6s4nai2y18ZvoBC27khgrUgThnmVv'
+//     const xpub3 = 'tpubD6NzVbkrYhZ4YXLo2beF97iKHXqrj8KaVrD1VnqAqyHr5urcoY6tVTJaM17jSVg5pGmrJTu5H9WuatB1cGBF4XQSeNzmm4D56BsBqnkN3vk'
+
+//     const pubKeyBuffers = [xpub1, xpub2, xpub3].map((key: string) => {
+//       return bitcoinjsLib.HDNode.fromBase58(key, bitcoinjsLib.networks.testnet).getPublicKeyBuffer()
+//     })
+
+//     const { address } = generateDerivedMultisigAddress(
+//       [xpub1, xpub2, xpub3], 'testnet'
+//     )
+
+//     // @ts-ignore
+//     backendApi.getWalletUnspents = jest.fn(() => {
+//       return Promise.resolve([
+//         {
+//           txId,
+//           txIdx,
+//           address,
+//           txAmount,
+//           path: '0/0'
+//         }
+//       ])
+//     })
+
+//     // @ts-ignore
+//     backendApi.getWallet = jest.fn(() => {
+//       return Promise.resolve({
+//         pubKeys: [xpub1, xpub2, xpub3]
+//       })
+//     })
+
+//     // @ts-ignore
+//     backendApi.getNewChangeAddress = jest.fn(() => {
+//       return Promise.resolve('2Muk5nSmkQaJuAhKRVSSdTz9UfRfw5jCXkg')
+//     })
+
+//     const { transactionHex, status } = await transaction.sendCoins({
+//       walletId: '13',
+//       userToken: '1234',
+//       walletPassphrase: 'abcd',
+//       recipents: [{
+//         address: '2NBMEXpkWZ4Fj1yHbQGgrzHLq2q7Z3nhfJK',
+//         amount: 5000
+//       }],
+//       xprv: xprv1
+//     }, 'testnet')
+
+//     const tx = bitcoinjsLib.Transaction.fromHex(transactionHex)
+//     const txb = bitcoinjsLib.TransactionBuilder.fromTransaction(tx, bitcoinjsLib.networks.testnet)
+
+//     // should be able to sign with other keys without errors
+//     txb.sign(0, bitcoinjsLib.HDNode.fromBase58(xprv2, bitcoinjsLib.networks.testnet).keyPair, redeemScript)
+
+//     const hex = txb.build().toHex()
+
+//     console.log(hex)
+//     console.log(address)
+//   })
+// })

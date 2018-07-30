@@ -1,16 +1,13 @@
-import bitcoinjsLib from 'bitcoinjs-lib'
-
 import { getRandomBytes, encrypt } from './crypto'
 import { Keypair, WalletParams } from '../types/domain'
 import { BITCOIN_NETWORK, ROOT_DERIVATION_PATH } from './constants'
 import { filterObject } from './utils/helpers'
 import { createWallet as createWalletBackend } from './backend-api'
+import { base58ToHDNode, seedBufferToHDNode } from './bitcoin'
 
 export const generateNewKeypair = (path?: string, networkName: string = BITCOIN_NETWORK): Keypair => {
-  const network = bitcoinjsLib.networks[networkName]
-
   const seed = getRandomBytes(512 / 8)
-  const rootExtendedKey = bitcoinjsLib.HDNode.fromSeedBuffer(seed, network)
+  const rootExtendedKey = seedBufferToHDNode(seed, networkName)
   const extendedKey = path ? rootExtendedKey.derivePath(path) : rootExtendedKey
   const pubKey = extendedKey.neutered().toBase58()
 
@@ -31,8 +28,12 @@ export const encryptKeyPair = (keypair: Keypair, passphrase: string): Keypair =>
   return { ...keypair }
 }
 
-export const deriveKey = (rootKey: string, path: string) => {
-  const node = bitcoinjsLib.HDNode.fromBase58(rootKey)
+export const deriveKey = (
+  rootKey: string, path: string, networkName: string = BITCOIN_NETWORK
+) => {
+  const node = base58ToHDNode(rootKey, networkName)
+
+  if (path === '') return node
   return node.derivePath(path)
 }
 

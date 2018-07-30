@@ -1,9 +1,13 @@
-import bitcoinjsLib from 'bitcoinjs-lib'
-
 import { SendCoinsParams, UTXO, Recipent } from '../types/domain'
 import { getWalletUnspents, getWallet, sendTransaction, getNewChangeAddress } from './backend-api'
 import { getRecommendedFee } from './utils/fees'
 import { BITCOIN_NETWORK } from './constants'
+import {
+  base58ToECPair,
+  createMultisigRedeemScript,
+  initializeTxBuilder,
+  addressToOutputScript
+} from './bitcoin'
 
 export const calculateChange = (unspents: UTXO[], transactionAmount: number) => {
   const unspentsSum = unspents.reduce(
@@ -30,15 +34,10 @@ export const sumOutputAmounts = (outputs: Recipent[]) => {
 }
 
 export const sendCoins = async (params: SendCoinsParams, networkName: string = BITCOIN_NETWORK) => {
-  const network = bitcoinjsLib.networks[networkName]
-
   const unspents = await getWalletUnspents(params.userToken, params.walletId, 10000)
   const wallet = await getWallet(params.userToken, params.walletId)
-  const signingKey = bitcoinjsLib.HDNode.fromBase58(params.xprv, network).keyPair
-  const pubKeys = wallet.pubKeys.map((key: string) => (
-    bitcoinjsLib.HDNode.fromBase58(key, network).getPublicKeyBuffer())
-  )
-  const txb = new bitcoinjsLib.TransactionBuilder(network)
+  const signingKey = base58ToECPair(params.xprv, networkName)
+  const txb = initializeTxBuilder(networkName)
 
   const recommendedFee = await getRecommendedFee()
   const fee = calculateFee(recommendedFee, unspents.length, params.recipents.length + 1)
@@ -48,17 +47,17 @@ export const sendCoins = async (params: SendCoinsParams, networkName: string = B
   const changeAmount = calculateChange(unspents, outputsAmount + fee)
   const changeAddres = await getNewChangeAddress(params.userToken, params.walletId)
 
-  const redeemScript = bitcoinjsLib.script.multisig.output.encode(2, pubKeys)
+  const redeemScript = createMultisigRedeemScript(wallet.pubKeys)
 
   unspents.forEach((uns: UTXO) => {
     txb.addInput(uns.txId, uns.index)
   })
 
   params.recipents.forEach((out: Recipent) => {
-    txb.addOutput(bitcoinjsLib.address.toOutputScript(out.address, network), out.amount)
+    txb.addOutput(addressToOutputScript(out.address, networkName), out.amount)
   })
 
-  txb.addOutput(bitcoinjsLib.address.toOutputScript(changeAddres, network), changeAmount)
+  txb.addOutput(addressToOutputScript(changeAddres, networkName), changeAmount)
 
   unspents.forEach((uns: UTXO, idx: number) => {
     txb.sign(idx, signingKey, redeemScript)
