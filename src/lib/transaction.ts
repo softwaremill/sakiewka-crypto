@@ -8,6 +8,7 @@ import {
   initializeTxBuilder,
   addressToOutputScript
 } from './bitcoin'
+import { deriveKey } from './wallet';
 
 export const calculateChange = (unspents: UTXO[], transactionAmount: number) => {
   const unspentsSum = unspents.reduce(
@@ -36,7 +37,6 @@ export const sumOutputAmounts = (outputs: Recipent[]) => {
 export const sendCoins = async (params: SendCoinsParams, networkName: string = BITCOIN_NETWORK) => {
   const unspents = await getWalletUnspents(params.userToken, params.walletId, 10000)
   const wallet = await getWallet(params.userToken, params.walletId)
-  const signingKey = base58ToECPair(params.xprv, networkName)
   const txb = initializeTxBuilder(networkName)
 
   const recommendedFee = await getRecommendedFee()
@@ -46,8 +46,6 @@ export const sendCoins = async (params: SendCoinsParams, networkName: string = B
 
   const changeAmount = calculateChange(unspents, outputsAmount + fee)
   const changeAddres = await getNewChangeAddress(params.userToken, params.walletId)
-
-  const redeemScript = createMultisigRedeemScript(wallet.pubKeys)
 
   unspents.forEach((uns: UTXO) => {
     txb.addInput(uns.txId, uns.index)
@@ -60,6 +58,11 @@ export const sendCoins = async (params: SendCoinsParams, networkName: string = B
   txb.addOutput(addressToOutputScript(changeAddres, networkName), changeAmount)
 
   unspents.forEach((uns: UTXO, idx: number) => {
+    const signingKey = deriveKey(params.xprv, uns.path, networkName).keyPair
+
+    const derivedPubKeys = wallet.pubKeys.map((key: string) => deriveKey(key, uns.path, networkName).neutered().toBase58())
+    const redeemScript = createMultisigRedeemScript(derivedPubKeys)
+
     txb.sign(idx, signingKey, redeemScript)
   })
 

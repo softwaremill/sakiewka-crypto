@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import * as transaction from '../transaction'
 import * as backendApi from '../backend-api'
 import * as fees from '../utils/fees'
-import { generateNewKeypair } from '../wallet'
+import { generateNewKeypair, deriveKey } from '../wallet'
 import { generateNewMultisigAddress } from '../address'
 import {
   base58ToECPair, txFromHex, txBuilderFromTx
@@ -36,7 +36,7 @@ describe('sendCoins', () => {
       userKeypair.pubKey,
       backupKeypair.pubKey,
       serverKeypair.pubKey
-    ], '')
+    ], '0/0')
 
     // @ts-ignore
     backendApi.getWalletUnspents = jest.fn(() => {
@@ -45,7 +45,7 @@ describe('sendCoins', () => {
           address,
           txId: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           index: 0,
-          path: '',
+          path: '0/0',
           amount: 700000000
         }
       ])
@@ -73,9 +73,9 @@ describe('sendCoins', () => {
       xprv: userKeypair.privKey
     })
 
-    const serverECPair = base58ToECPair(serverKeypair.privKey)
-    const userECPair = base58ToECPair(userKeypair.privKey)
-    const anotherECPair = base58ToECPair(anotherKeypair.privKey)
+    const serverECPair = deriveKey(serverKeypair.privKey, '0/0').keyPair
+    const userECPair = deriveKey(userKeypair.privKey, '0/0').keyPair
+    const anotherECPair = deriveKey(anotherKeypair.privKey, '0/0').keyPair
 
     // recreates transaction builder
     const tx = txFromHex(transactionHex)
