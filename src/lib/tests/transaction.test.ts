@@ -70,12 +70,12 @@ describe('sendCoins', () => {
         address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
         amount: 500000000
       }],
-      xprv: userKeypair.privKey
+      xprv: userKeypair.prvKey
     })
 
-    const serverECPair = deriveKey(serverKeypair.privKey, '0/0').keyPair
-    const userECPair = deriveKey(userKeypair.privKey, '0/0').keyPair
-    const anotherECPair = deriveKey(anotherKeypair.privKey, '0/0').keyPair
+    const serverECPair = deriveKey(serverKeypair.prvKey, '0/0').keyPair
+    const userECPair = deriveKey(userKeypair.prvKey, '0/0').keyPair
+    const anotherECPair = deriveKey(anotherKeypair.prvKey, '0/0').keyPair
 
     // recreates transaction builder
     const tx = txFromHex(transactionHex)
@@ -162,7 +162,7 @@ describe('sendCoins to multiple outputs', () => {
           amount: 1500
         }
       ],
-      xprv: userKeypair.privKey
+      xprv: userKeypair.prvKey
     })
 
     const tx = txFromHex(transactionHex)

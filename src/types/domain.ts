@@ -7,7 +7,7 @@ export interface WalletParams {
 
 export interface Keypair {
   pubKey: string,
-  privKey?: string
+  prvKey?: string
 }
 
 export interface UTXO {

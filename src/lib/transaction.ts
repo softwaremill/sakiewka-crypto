@@ -68,10 +68,6 @@ export const sendCoins = async (params: SendCoinsParams, networkName: string = B
 
   // TODO: amount when collecting unspent should be increased by fee
   // TODO: check if change amount is not to small to create output
-  // TODO: derives proper xpriv based on unspent chainPath
-  // TODO: derives 3 pubkeys based on unsepnt chainPath and creates redeemScript from them
-  // TODO: calculate and subtract fee
-  // TODO: send transaction
 
   // TODO: retrieve userXprv from backend
 

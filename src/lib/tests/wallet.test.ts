@@ -19,9 +19,9 @@ describe('generateNewKeypair', () => {
     const result = wallet.generateNewKeypair()
 
     expect(result).to.haveOwnProperty('pubKey')
-    expect(result).to.haveOwnProperty('privKey')
+    expect(result).to.haveOwnProperty('prvKey')
     expect(result.pubKey).to.have.lengthOf(111)
-    expect(result.privKey).to.have.lengthOf(111)
+    expect(result.prvKey).to.have.lengthOf(111)
   })
 })
 
@@ -31,12 +31,12 @@ describe('encryptKeyPair', () => {
   })
 
   it('should return encrypted keypair', () => {
-    const result = wallet.encryptKeyPair({ pubKey: 'abc', privKey: 'bcd' }, 'pass')
+    const result = wallet.encryptKeyPair({ pubKey: 'abc', prvKey: 'bcd' }, 'pass')
 
     expect(result).to.haveOwnProperty('pubKey')
-    expect(result).to.haveOwnProperty('privKey')
+    expect(result).to.haveOwnProperty('prvKey')
     expect(result.pubKey).to.have.lengthOf(3)
-    expect(JSON.parse(result.privKey)).to.haveOwnProperty('cipher')
+    expect(JSON.parse(result.prvKey)).to.haveOwnProperty('cipher')
   })
 })
 
@@ -56,7 +56,7 @@ describe('createWallet', () => {
     expect(result).to.haveOwnProperty('walletId')
     expect(result).to.haveOwnProperty('user')
     expect(result).to.haveOwnProperty('backup')
-    expect(result.backup.privKey.slice(0, 4)).to.be.eq('xprv')
+    expect(result.backup.prvKey.slice(0, 4)).to.be.eq('xprv')
     expect(result.user.pubKey.slice(0, 4)).to.be.eq('xpub')
   })
 
@@ -70,9 +70,9 @@ describe('createWallet', () => {
 
     const result = await wallet.createWallet('abcd', params)
 
-    expect(result.user).to.not.haveOwnProperty('privKey')
+    expect(result.user).to.not.haveOwnProperty('prvKey')
     expect(result.user).to.haveOwnProperty('pubKey')
-    expect(result.backup).to.not.haveOwnProperty('privKey')
+    expect(result.backup).to.not.haveOwnProperty('prvKey')
     expect(result.backup).to.haveOwnProperty('pubKey')
   })
 })
@@ -86,7 +86,7 @@ describe('deriveChildKey', () => {
     const path = `0'`
     const keychain = wallet.generateNewKeypair()
 
-    const result = wallet.deriveKey(keychain.privKey, path)
+    const result = wallet.deriveKey(keychain.prvKey, path)
 
     expect(result).to.have.property('keyPair')
   })
@@ -104,25 +104,25 @@ describe('deriveChildKey', () => {
     const basePath = `m/45'/0`
     const relativePath = '0/0'
 
-    const rootPrivKey = 'xprv9s21ZrQH143K27LPi9gM65jmXFuBfiY7S5HReQarD7dTX9svAXQmQYsqxVqMcbtRWxDwBkdRxSxhfPBX4Vt7Juc9CqY4i3AaPNwCeM1w1Ym'
+    const rootPrvKey = 'xprv9s21ZrQH143K27LPi9gM65jmXFuBfiY7S5HReQarD7dTX9svAXQmQYsqxVqMcbtRWxDwBkdRxSxhfPBX4Vt7Juc9CqY4i3AaPNwCeM1w1Ym'
     const pubKey = 'xpub661MyMwAqRbcEbQrpBDMTDgW5Hjg5BFxoJD2SnzTmTASPxD4i4j1xMCKojYwgaRXXBRAHB7WPECxA2aQVfL61G4mWjnHMj6BJtAQKMVAiYs'
 
-    const partialResult = wallet.deriveKey(rootPrivKey, basePath)
-    const partialPrivKey = partialResult.toBase58()
+    const partialResult = wallet.deriveKey(rootPrvKey, basePath)
+    const partialPrvKey = partialResult.toBase58()
     const partialPubKey = partialResult.neutered().toBase58()
 
-    const relativeResult = wallet.deriveKey(partialPrivKey, relativePath)
-    const relativePrivKey = relativeResult.toBase58()
+    const relativeResult = wallet.deriveKey(partialPrvKey, relativePath)
+    const relativePrvKey = relativeResult.toBase58()
     const relativePubKey = relativeResult.neutered().toBase58()
 
-    const absoluteResult = wallet.deriveKey(rootPrivKey, `${basePath}/${relativePath}`)
-    const absolutePrivKey = absoluteResult.toBase58()
+    const absoluteResult = wallet.deriveKey(rootPrvKey, `${basePath}/${relativePath}`)
+    const absolutePrvKey = absoluteResult.toBase58()
     const absolutePubKey = absoluteResult.neutered().toBase58()
 
     const relativeResultFromPublic = wallet.deriveKey(partialPubKey, relativePath)
     const relativePubKeyFromPublic = relativeResultFromPublic.toBase58()
 
-    expect(relativePrivKey).to.eq(absolutePrivKey)
+    expect(relativePrvKey).to.eq(absolutePrvKey)
     expect(relativePubKey).to.eq(absolutePubKey)
     expect(relativePubKeyFromPublic).to.eq(absolutePubKey)
   })

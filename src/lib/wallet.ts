@@ -13,15 +13,15 @@ export const generateNewKeypair = (path?: string, networkName: string = BITCOIN_
 
   return {
     pubKey,
-    privKey: extendedKey.toBase58()
+    prvKey: extendedKey.toBase58()
   }
 }
 
 export const encryptKeyPair = (keypair: Keypair, passphrase: string): Keypair => {
-  if (keypair.privKey) {
+  if (keypair.prvKey) {
     return {
       ...keypair,
-      privKey: encrypt(passphrase, keypair.privKey)
+      prvKey: encrypt(passphrase, keypair.prvKey)
     }
   }
 
@@ -53,9 +53,9 @@ export const createWallet = async (userToken: string, params: WalletParams) => {
     {
       label: params.label,
       userPubKey: encryptedUserKeychain.pubKey,
-      userPrivKey: encryptedUserKeychain.privKey,
+      userPrvKey: encryptedUserKeychain.prvKey,
       backupPubKey: encryptedBackupKeychain.pubKey,
-      backupPrivKey: encryptedBackupKeychain.privKey
+      backupPrvKey: encryptedBackupKeychain.prvKey
     },
     (value: any) => value
   )
