@@ -11,6 +11,13 @@ export namespace hash {
   export namespace sha512 {
     export function hash(input: string)
   }
+  export namespace sha1 {
+    export function hash(input: string)
+  }
+}
+
+export namespace misc {
+  export function scrypt(input: string, salt: string)
 }
 
 export namespace codec {

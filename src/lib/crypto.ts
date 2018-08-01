@@ -22,10 +22,18 @@ export const hashSha512 = (input: string) => {
 }
 
 export const hashSha1 = (input: string) => {
+  const bitArrayHash = sjcl.hash.sha1.hash(input)
+  const stringHash = sjcl.codec.hex.fromBits(bitArrayHash)
 
+  return stringHash
 }
 
 export const hashPassword = (input: string) => {
+  const salt = hashSha1(input)
+  const bitArrayHash = sjcl.misc.scrypt(input, salt)
+  const stringHash = sjcl.codec.hex.fromBits(bitArrayHash)
+
+  return stringHash
 }
 
 export const getRandomBytes = crypto.randomBytes
