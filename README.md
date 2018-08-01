@@ -4,9 +4,7 @@ This is a library intended to be used as a dependency to other packages. It hand
 
 ### Usage:
 
-First run  
-1.  `npm install`
-2.  `npm run build-local`
+First run  `npm install`
 
 ##### Tests: 
 To run integration tests you have to specify `BACKEND_API_URL` in `.env` file.
@@ -18,7 +16,6 @@ To run integration tests you have to specify `BACKEND_API_URL` in `.env` file.
 
 ##### Build: 
 `npm run build` - Builds files into dist/ folder  
-`npm run build-local` - Builds sjcl (crypto-library) files into into src/ folder  
 
 ##### Local api:  
 `npm run serve` - Runs local server.  
