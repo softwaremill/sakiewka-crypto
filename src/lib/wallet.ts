@@ -3,7 +3,7 @@ import { Keypair, WalletParams } from '../types/domain'
 import { BITCOIN_NETWORK, ROOT_DERIVATION_PATH } from './constants'
 import { filterObject } from './utils/helpers'
 import { createWallet as createWalletBackend } from './backend-api'
-import { base58ToHDNode, seedBufferToHDNode } from './bitcoin'
+import { base58ToHDNode, seedBufferToHDNode, hdNodeToBase58Pub, hdNodeToBase58Prv } from './bitcoin'
 
 export const generateNewKeypair = (path?: string, networkName: string = BITCOIN_NETWORK): Keypair => {
   const seed = getRandomBytes(512 / 8)
@@ -13,7 +13,7 @@ export const generateNewKeypair = (path?: string, networkName: string = BITCOIN_
 
   return {
     pubKey,
-    prvKey: extendedKey.toBase58()
+    prvKey: rootExtendedKey.toBase58()
   }
 }
 
@@ -28,6 +28,18 @@ export const encryptKeyPair = (keypair: Keypair, passphrase: string): Keypair =>
   return { ...keypair }
 }
 
+export const deriveKeypair = (
+  keypair: Keypair, path: string, onlyPub: boolean = true
+): Keypair => {
+  const rootExtendedKey = base58ToHDNode(keypair.prvKey)
+  const derivedExtendedKey = rootExtendedKey.derivePath(path)
+  const pubKey = hdNodeToBase58Pub(derivedExtendedKey)
+  const prvKey = onlyPub ?
+    hdNodeToBase58Prv(rootExtendedKey) : hdNodeToBase58Prv(derivedExtendedKey)
+
+  return { pubKey, prvKey }
+}
+
 export const deriveKey = (
   rootKey: string, path: string, networkName: string = BITCOIN_NETWORK
 ) => {
@@ -40,11 +52,11 @@ export const deriveKey = (
 export const createWallet = async (userToken: string, params: WalletParams) => {
   const userKeychain = params.userPubKey ?
     { pubKey: params.userPubKey } :
-    generateNewKeypair(`${ROOT_DERIVATION_PATH}/0`)
+    deriveKeypair(generateNewKeypair(), ROOT_DERIVATION_PATH)
 
   const backupKeychain = params.backupPubKey ?
     { pubKey: params.backupPubKey } :
-    generateNewKeypair(`${ROOT_DERIVATION_PATH}/1`)
+    deriveKeypair(generateNewKeypair(), ROOT_DERIVATION_PATH)
 
   const encryptedUserKeychain = encryptKeyPair(userKeychain, params.passphrase)
   const encryptedBackupKeychain = encryptKeyPair(backupKeychain, params.passphrase)

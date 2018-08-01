@@ -127,3 +127,29 @@ describe('deriveChildKey', () => {
     expect(relativePubKeyFromPublic).to.eq(absolutePubKey)
   })
 })
+
+describe('deriveKeypair', () => {
+  it('should exist', () => {
+    expect(wallet.deriveKeypair).to.be.a('function')
+  })
+
+  it('should create new keypair with derived pubKey', () => {
+    const path = `0'`
+    const rootKeypair = wallet.generateNewKeypair()
+
+    const derivedKeypair = wallet.deriveKeypair(rootKeypair, path)
+
+    expect(rootKeypair.prvKey).to.eq(derivedKeypair.prvKey)
+    expect(rootKeypair.pubKey).to.not.eq(derivedKeypair.pubKey)
+  })
+
+  it('should create new keypair with derived bothKeys', () => {
+    const path = `0'`
+    const rootKeypair = wallet.generateNewKeypair()
+
+    const derivedKeypair = wallet.deriveKeypair(rootKeypair, path, false)
+
+    expect(rootKeypair.prvKey).to.not.eq(derivedKeypair.prvKey)
+    expect(rootKeypair.pubKey).to.not.eq(derivedKeypair.pubKey)
+  })
+})

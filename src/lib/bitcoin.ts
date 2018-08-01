@@ -1,4 +1,4 @@
-import bitcoinjsLib, { Transaction } from 'bitcoinjs-lib'
+import bitcoinjsLib, { Transaction, HDNode } from 'bitcoinjs-lib'
 
 import { BITCOIN_NETWORK } from './constants'
 
@@ -39,6 +39,14 @@ export const base58ToECPair = (base58Key: string, networkName: string = BITCOIN_
 export const base58ToHDNode = (base58Key: string, networkName: string = BITCOIN_NETWORK) => {
   const network = getNetwork(networkName)
   return bitcoinjsLib.HDNode.fromBase58(base58Key, network)
+}
+
+export const hdNodeToBase58Pub = (node: HDNode) => {
+  return node.neutered().toBase58()
+}
+
+export const hdNodeToBase58Prv = (node: HDNode) => {
+  return node.toBase58()
 }
 
 export const seedBufferToHDNode = (seedBuffer: Buffer, networkName: string = BITCOIN_NETWORK) => {
