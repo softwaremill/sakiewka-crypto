@@ -4,6 +4,7 @@
   "description": "Client-side Sakiewka app",
   "main": "dist/index.js",
   "scripts": {
+    "postinstall": "postinstall-build dist",
     "test": "jest --forceExit --coverage --verbose",
     "watch-test": "npm run test -- --watchAll",
     "build": "tsc",
@@ -39,6 +40,7 @@
     "bitcoinjs-lib": "^3.3.2",
     "dotenv": "^6.0.0",
     "node-fetch": "^2.1.2",
+    "postinstall-build": "^5.0.1",
     "sjcl-complete": "^1.0.0"
   }
 }
