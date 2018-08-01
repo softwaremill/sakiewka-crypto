@@ -1,4 +1,4 @@
-export as namespace sjc
+export as namespace sjcl
 
 export function encrypt(password: string, plaintext: string, params?: object, rp?: object): string
 export function decrypt(password: string, json: string, params?: object): string

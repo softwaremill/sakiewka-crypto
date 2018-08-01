@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 // @ts-ignore
-import sjcl from '../sjcl'
+import sjcl from 'sjcl-complete'
 
 export const encrypt = (password: string, input: string) => {
   const randomSalt = sjcl.random.randomWords(2, 0)
@@ -19,6 +19,13 @@ export const hashSha512 = (input: string) => {
   const stringHash = sjcl.codec.hex.fromBits(bitArrayHash)
 
   return stringHash
+}
+
+export const hashSha1 = (input: string) => {
+
+}
+
+export const hashPassword = (input: string) => {
 }
 
 export const getRandomBytes = crypto.randomBytes
