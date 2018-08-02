@@ -14,10 +14,11 @@ describe('generateNewMultisigAddress', () => {
       'xpub661MyMwAqRbcGQQ9zYBFdkPxFBryTQwXCEr2zKsm2YBkeDFWbkKBUAWeRUaaseSmTWaat8npZ6nfyYqe1joSH6jsQdhK4W5fia35LgZfwVF'
     ]
 
-    const { address } = addressModule.generateNewMultisigAddress(
+    const { address, redeemScript } = addressModule.generateNewMultisigAddress(
       pubKeys,
       '0/23')
 
     expect(address).to.be.equal('32ora6gx1fLjdgbstMs4SdJhkC8QsMjcat')
+    expect(redeemScript).to.be.an('Uint8Array')
   })
 })

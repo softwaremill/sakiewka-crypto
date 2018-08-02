@@ -17,7 +17,7 @@ const checkStatus = (response: Response): void | Response => {
   throw error
 }
 
-export default function request(url: string, options: object): Promise<object> {
+export default function request(url: string, options: object): Promise<any> {
   return nodeFetch(url, options)
     .then(checkStatus)
     .then(parseJSON)
