@@ -7,7 +7,7 @@ import {
   initializeTxBuilder,
   addressToOutputScript
 } from './bitcoin'
-import { deriveKey } from './wallet';
+import { deriveKey } from './key'
 
 export const calculateChange = (unspents: UTXO[], transactionAmount: number): number => {
   const unspentsSum = unspents.reduce(

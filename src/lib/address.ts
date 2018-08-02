@@ -1,6 +1,6 @@
 import { createMultisigRedeemScript, redeemScriptToAddress } from './bitcoin'
 
-import { deriveKey } from './wallet'
+import { deriveKey } from './key'
 import { BITCOIN_NETWORK } from './constants'
 
 export const generateNewMultisigAddress = (

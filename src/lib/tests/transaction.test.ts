@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import * as transaction from '../transaction'
 import * as backendApi from '../backend-api'
 import * as fees from '../utils/fees'
-import { generateNewKeyPair, deriveKey } from '../wallet'
+import { generateNewKeyPair, deriveKey } from '../key'
 import { generateNewMultisigAddress } from '../address'
 import {
   txFromHex, txBuilderFromTx

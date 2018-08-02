@@ -1,6 +1,4 @@
 export const ROOT_DERIVATION_PATH = 'm/45\''
-export const USER_KEYCHAIN_LABEL = 'user'
-export const BACKUP_KEYCHAIN_LABEL = 'user'
 
 export const BASE_API_PATH = 'api'
 export const BACKEND_API_PREFIX = 'api/v1'
