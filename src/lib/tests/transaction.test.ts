@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import * as transaction from '../transaction'
 import * as backendApi from '../backend-api'
 import * as fees from '../utils/fees'
-import { generateNewKeypair, deriveKey } from '../wallet'
+import { generateNewKeyPair, deriveKey } from '../wallet'
 import { generateNewMultisigAddress } from '../address'
 import {
   txFromHex, txBuilderFromTx
@@ -26,16 +26,16 @@ describe('sendCoins', () => {
   })
 
   it('should send coins', async () => {
-    // generates keypairs and address
-    const userKeypair = generateNewKeypair()
-    const backupKeypair = generateNewKeypair()
-    const serverKeypair = generateNewKeypair()
-    const anotherKeypair = generateNewKeypair()
+    // generates keyPairs and address
+    const userKeyPair = generateNewKeyPair()
+    const backupKeyPair = generateNewKeyPair()
+    const serverKeyPair = generateNewKeyPair()
+    const anotherKeyPair = generateNewKeyPair()
 
     const { address, redeemScript } = generateNewMultisigAddress([
-      userKeypair.pubKey,
-      backupKeypair.pubKey,
-      serverKeypair.pubKey
+      userKeyPair.pubKey,
+      backupKeyPair.pubKey,
+      serverKeyPair.pubKey
     ], '0/0')
 
     // @ts-ignore
@@ -55,9 +55,9 @@ describe('sendCoins', () => {
     backendApi.getWallet = jest.fn(() => {
       return Promise.resolve({
         pubKeys: [
-          userKeypair.pubKey,
-          backupKeypair.pubKey,
-          serverKeypair.pubKey
+          userKeyPair.pubKey,
+          backupKeyPair.pubKey,
+          serverKeyPair.pubKey
         ]
       })
     })
@@ -70,12 +70,12 @@ describe('sendCoins', () => {
         address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
         amount: 500000000
       }],
-      xprv: userKeypair.prvKey
+      xprv: userKeyPair.prvKey
     })
 
-    const serverECPair = deriveKey(serverKeypair.prvKey, '0/0').keyPair
-    const userECPair = deriveKey(userKeypair.prvKey, '0/0').keyPair
-    const anotherECPair = deriveKey(anotherKeypair.prvKey, '0/0').keyPair
+    const serverECPair = deriveKey(serverKeyPair.prvKey, '0/0').keyPair
+    const userECPair = deriveKey(userKeyPair.prvKey, '0/0').keyPair
+    const anotherECPair = deriveKey(anotherKeyPair.prvKey, '0/0').keyPair
 
     // recreates transaction builder
     const tx = txFromHex(transactionHex)
@@ -105,15 +105,15 @@ describe('sendCoins to multiple outputs', () => {
   })
 
   it('should send coins', async () => {
-    // generates keypairs and address
-    const userKeypair = generateNewKeypair()
-    const backupKeypair = generateNewKeypair()
-    const serverKeypair = generateNewKeypair()
+    // generates keyPairs and address
+    const userKeyPair = generateNewKeyPair()
+    const backupKeyPair = generateNewKeyPair()
+    const serverKeyPair = generateNewKeyPair()
 
     const { address } = generateNewMultisigAddress([
-      userKeypair.pubKey,
-      backupKeypair.pubKey,
-      serverKeypair.pubKey
+      userKeyPair.pubKey,
+      backupKeyPair.pubKey,
+      serverKeyPair.pubKey
     ], '')
 
     // mocks getWalletUnspents
@@ -135,9 +135,9 @@ describe('sendCoins to multiple outputs', () => {
     backendApi.getWallet = jest.fn(() => {
       return Promise.resolve({
         pubKeys: [
-          userKeypair.pubKey,
-          backupKeypair.pubKey,
-          serverKeypair.pubKey
+          userKeyPair.pubKey,
+          backupKeyPair.pubKey,
+          serverKeyPair.pubKey
         ]
       })
     })
@@ -162,7 +162,7 @@ describe('sendCoins to multiple outputs', () => {
           amount: 1500
         }
       ],
-      xprv: userKeypair.prvKey
+      xprv: userKeyPair.prvKey
     })
 
     const tx = txFromHex(transactionHex)

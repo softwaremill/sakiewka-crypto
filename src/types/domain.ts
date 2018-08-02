@@ -5,7 +5,7 @@ export interface WalletParams {
   backupPubKey?: string
 }
 
-export interface Keypair {
+export interface KeyPair {
   pubKey: string,
   prvKey?: string
 }
@@ -41,7 +41,7 @@ export interface Wallet {
 
 export interface DetailedWallet {
   id: number,
-  keychains: Keypair[],
+  keychains: KeyPair[],
   addresses?: WalletAddresses,
   unspents: UTXO[]
 }

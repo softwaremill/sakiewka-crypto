@@ -1,14 +1,14 @@
 import { getRandomBytes, encrypt } from './crypto'
-import { Keypair, WalletParams } from '../types/domain'
+import { KeyPair, WalletParams } from '../types/domain'
 import { BITCOIN_NETWORK, ROOT_DERIVATION_PATH } from './constants'
 import { filterObject } from './utils/helpers'
 import { createWallet as createWalletBackend } from './backend-api'
 import { base58ToHDNode, seedBufferToHDNode, hdNodeToBase58Pub, hdNodeToBase58Prv } from './bitcoin'
 import { HDNode } from 'bitcoinjs-lib'
 
-export const generateNewKeypair = (
+export const generateNewKeyPair = (
   path?: string, networkName: string = BITCOIN_NETWORK
-): Keypair => {
+): KeyPair => {
   const seed = getRandomBytes(512 / 8)
   const rootExtendedKey = seedBufferToHDNode(seed, networkName)
   const extendedKey = path ? rootExtendedKey.derivePath(path) : rootExtendedKey
@@ -20,21 +20,21 @@ export const generateNewKeypair = (
   }
 }
 
-export const encryptKeyPair = (keypair: Keypair, passphrase: string): Keypair => {
-  if (keypair.prvKey) {
+export const encryptKeyPair = (keyPair: KeyPair, passphrase: string): KeyPair => {
+  if (keyPair.prvKey) {
     return {
-      ...keypair,
-      prvKey: encrypt(passphrase, keypair.prvKey)
+      ...keyPair,
+      prvKey: encrypt(passphrase, keyPair.prvKey)
     }
   }
 
-  return { ...keypair }
+  return { ...keyPair }
 }
 
-export const deriveKeypair = (
-  keypair: Keypair, path: string, onlyPub: boolean = true
-): Keypair => {
-  const rootExtendedKey = base58ToHDNode(keypair.prvKey)
+export const deriveKeyPair = (
+  keyPair: KeyPair, path: string, onlyPub: boolean = true
+): KeyPair => {
+  const rootExtendedKey = base58ToHDNode(keyPair.prvKey)
   const derivedExtendedKey = rootExtendedKey.derivePath(path)
   const pubKey = hdNodeToBase58Pub(derivedExtendedKey)
   const prvKey = onlyPub ?
@@ -55,11 +55,11 @@ export const deriveKey = (
 export const createWallet = async (userToken: string, params: WalletParams): Promise<any> => {
   const userKeychain = params.userPubKey ?
     { pubKey: params.userPubKey } :
-    deriveKeypair(generateNewKeypair(), ROOT_DERIVATION_PATH)
+    deriveKeyPair(generateNewKeyPair(), ROOT_DERIVATION_PATH)
 
   const backupKeychain = params.backupPubKey ?
     { pubKey: params.backupPubKey } :
-    deriveKeypair(generateNewKeypair(), ROOT_DERIVATION_PATH)
+    deriveKeyPair(generateNewKeyPair(), ROOT_DERIVATION_PATH)
 
   const encryptedUserKeychain = encryptKeyPair(userKeychain, params.passphrase)
   const encryptedBackupKeychain = encryptKeyPair(backupKeychain, params.passphrase)

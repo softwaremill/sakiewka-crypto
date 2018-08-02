@@ -10,13 +10,13 @@ backendApi.createWallet = jest.fn(() => {
   })
 })
 
-describe('generateNewKeypair', () => {
+describe('generateNewKeyPair', () => {
   it('should exist', () => {
-    expect(wallet.generateNewKeypair).to.be.a('function')
+    expect(wallet.generateNewKeyPair).to.be.a('function')
   })
 
-  it('should return new keypair', () => {
-    const result = wallet.generateNewKeypair()
+  it('should return new keyPair', () => {
+    const result = wallet.generateNewKeyPair()
 
     expect(result).to.haveOwnProperty('pubKey')
     expect(result).to.haveOwnProperty('prvKey')
@@ -30,7 +30,7 @@ describe('encryptKeyPair', () => {
     expect(wallet.encryptKeyPair).to.be.a('function')
   })
 
-  it('should return encrypted keypair', () => {
+  it('should return encrypted keyPair', () => {
     const result = wallet.encryptKeyPair({ pubKey: 'abc', prvKey: 'bcd' }, 'pass')
 
     expect(result).to.haveOwnProperty('pubKey')
@@ -45,7 +45,7 @@ describe('createWallet', () => {
     expect(wallet.createWallet).to.be.a('function')
   })
 
-  it('should return keypairs and wallet id', async () => {
+  it('should return keyPairs and wallet id', async () => {
     const params = {
       passphrase: 'abcd',
       label: 'testLabel'
@@ -84,7 +84,7 @@ describe('deriveChildKey', () => {
 
   it('should create new hardened key for a given path', () => {
     const path = `0'`
-    const keychain = wallet.generateNewKeypair()
+    const keychain = wallet.generateNewKeyPair()
 
     const result = wallet.deriveKey(keychain.prvKey, path)
 
@@ -93,7 +93,7 @@ describe('deriveChildKey', () => {
 
   it('should create new normal key for a given path', () => {
     const path = `11/20/15`
-    const keychain = wallet.generateNewKeypair()
+    const keychain = wallet.generateNewKeyPair()
 
     const result = wallet.deriveKey(keychain.pubKey, path)
 
@@ -128,28 +128,28 @@ describe('deriveChildKey', () => {
   })
 })
 
-describe('deriveKeypair', () => {
+describe('deriveKeyPair', () => {
   it('should exist', () => {
-    expect(wallet.deriveKeypair).to.be.a('function')
+    expect(wallet.deriveKeyPair).to.be.a('function')
   })
 
-  it('should create new keypair with derived pubKey', () => {
+  it('should create new keyPair with derived pubKey', () => {
     const path = `0'`
-    const rootKeypair = wallet.generateNewKeypair()
+    const rootKeyPair = wallet.generateNewKeyPair()
 
-    const derivedKeypair = wallet.deriveKeypair(rootKeypair, path)
+    const derivedKeyPair = wallet.deriveKeyPair(rootKeyPair, path)
 
-    expect(rootKeypair.prvKey).to.eq(derivedKeypair.prvKey)
-    expect(rootKeypair.pubKey).to.not.eq(derivedKeypair.pubKey)
+    expect(rootKeyPair.prvKey).to.eq(derivedKeyPair.prvKey)
+    expect(rootKeyPair.pubKey).to.not.eq(derivedKeyPair.pubKey)
   })
 
-  it('should create new keypair with derived bothKeys', () => {
+  it('should create new keyPair with derived bothKeys', () => {
     const path = `0'`
-    const rootKeypair = wallet.generateNewKeypair()
+    const rootKeyPair = wallet.generateNewKeyPair()
 
-    const derivedKeypair = wallet.deriveKeypair(rootKeypair, path, false)
+    const derivedKeyPair = wallet.deriveKeyPair(rootKeyPair, path, false)
 
-    expect(rootKeypair.prvKey).to.not.eq(derivedKeypair.prvKey)
-    expect(rootKeypair.pubKey).to.not.eq(derivedKeypair.pubKey)
+    expect(rootKeyPair.prvKey).to.not.eq(derivedKeyPair.prvKey)
+    expect(rootKeyPair.pubKey).to.not.eq(derivedKeyPair.pubKey)
   })
 })
