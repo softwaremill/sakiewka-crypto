@@ -84,18 +84,18 @@ describe('deriveChildKey', () => {
 
   it('should create new hardened key for a given path', () => {
     const path = `0'`
-    const keychain = wallet.generateNewKeyPair()
+    const keyPair = wallet.generateNewKeyPair()
 
-    const result = wallet.deriveKey(keychain.prvKey, path)
+    const result = wallet.deriveKey(keyPair.prvKey, path)
 
     expect(result).to.have.property('keyPair')
   })
 
   it('should create new normal key for a given path', () => {
     const path = `11/20/15`
-    const keychain = wallet.generateNewKeyPair()
+    const keyPair = wallet.generateNewKeyPair()
 
-    const result = wallet.deriveKey(keychain.pubKey, path)
+    const result = wallet.deriveKey(keyPair.pubKey, path)
 
     expect(result).to.have.property('keyPair')
   })

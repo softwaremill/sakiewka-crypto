@@ -53,24 +53,24 @@ export const deriveKey = (
 }
 
 export const createWallet = async (userToken: string, params: WalletParams): Promise<any> => {
-  const userKeychain = params.userPubKey ?
+  const userKeyPair = params.userPubKey ?
     { pubKey: params.userPubKey } :
     deriveKeyPair(generateNewKeyPair(), ROOT_DERIVATION_PATH)
 
-  const backupKeychain = params.backupPubKey ?
+  const backupKeyPair = params.backupPubKey ?
     { pubKey: params.backupPubKey } :
     deriveKeyPair(generateNewKeyPair(), ROOT_DERIVATION_PATH)
 
-  const encryptedUserKeychain = encryptKeyPair(userKeychain, params.passphrase)
-  const encryptedBackupKeychain = encryptKeyPair(backupKeychain, params.passphrase)
+  const encryptedUserKeyPair = encryptKeyPair(userKeyPair, params.passphrase)
+  const encryptedBackupKeyPair = encryptKeyPair(backupKeyPair, params.passphrase)
 
   const backendRequestParams = filterObject(
     {
       label: params.label,
-      userPubKey: encryptedUserKeychain.pubKey,
-      userPrvKey: encryptedUserKeychain.prvKey,
-      backupPubKey: encryptedBackupKeychain.pubKey,
-      backupPrvKey: encryptedBackupKeychain.prvKey
+      userPubKey: encryptedUserKeyPair.pubKey,
+      userPrvKey: encryptedUserKeyPair.prvKey,
+      backupPubKey: encryptedBackupKeyPair.pubKey,
+      backupPrvKey: encryptedBackupKeyPair.prvKey
     },
     (value: any) => value
   )
@@ -79,7 +79,7 @@ export const createWallet = async (userToken: string, params: WalletParams): Pro
 
   return {
     walletId: backendResponse.id,
-    user: userKeychain,
-    backup: backupKeychain
+    user: userKeyPair,
+    backup: backupKeyPair
   }
 }

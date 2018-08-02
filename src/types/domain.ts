@@ -17,35 +17,6 @@ export interface UTXO {
   path: string
 }
 
-export interface EncryptedKeychain {
-  xpub: string,
-  xprv: string,
-  label: string
-}
-
-export interface Address {
-  path: string,
-  value: string
-}
-
-export interface WalletAddresses {
-  change: Address[],
-  receive: Address[]
-}
-
-export interface Wallet {
-  id: number,
-  pubKeys: string[],
-  addresses?: WalletAddresses
-}
-
-export interface DetailedWallet {
-  id: number,
-  keychains: KeyPair[],
-  addresses?: WalletAddresses,
-  unspents: UTXO[]
-}
-
 export interface Recipent {
   address: string,
   amount: number

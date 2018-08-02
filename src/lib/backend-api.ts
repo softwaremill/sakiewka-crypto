@@ -1,5 +1,5 @@
 import {
-  DetailedWallet, UTXO
+  UTXO
 } from '../types/domain'
 import {
   LoginBackendResponse,
@@ -14,24 +14,8 @@ import { BACKEND_API_PREFIX } from './constants'
 
 const getUrlBase = () => `${process.env.BACKEND_API_URL}/${BACKEND_API_PREFIX}`
 
-export const getWalletDetailed = (id: number): Promise<DetailedWallet> => {
-  return Promise.resolve({
-    id: 13,
-    unspents: [],
-    addresses: {
-      change: [],
-      receive: []
-    },
-    keychains: []
-  })
-}
-
 export const getWalletUnspents = (token: string, id: string, amount: number): Promise<UTXO[]> => {
   return Promise.resolve([])
-}
-
-export const getWalletKeychains = (id: number) => {
-  return Promise.resolve([{}])
 }
 
 export const getNewChangeAddress = (token: string, id: string): Promise<string> => {
