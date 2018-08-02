@@ -71,7 +71,7 @@ export const createWallet = (
     })
   }
 
-  return request(`${getUrlBase()}/btc/wallet/create`, options)
+  return request(`${getUrlBase()}/btc/wallet`, options)
 }
 
 export const getWallet = (token: string, id: string): Promise<GetWalletBackendResponse> => {
