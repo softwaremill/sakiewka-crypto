@@ -1,7 +1,11 @@
 import { WalletParams } from '../types/domain'
 import { ROOT_DERIVATION_PATH } from './constants'
 import { filterObject } from './utils/helpers'
-import { createWallet as createWalletBackend } from './backend-api'
+import {
+  createWallet as createWalletBackend,
+  getWallet as getWalletBackend,
+  listWallets as listWaletsBackend
+} from './backend-api'
 import { deriveKeyPair, generateNewKeyPair, encryptKeyPair } from './key'
 
 export const createWallet = async (userToken: string, params: WalletParams): Promise<any> => {
@@ -34,4 +38,14 @@ export const createWallet = async (userToken: string, params: WalletParams): Pro
     user: userKeyPair,
     backup: backupKeyPair
   }
+}
+
+export const getWallet = (userToken: string, walletId: string) => {
+  return getWalletBackend(userToken, walletId)
+}
+
+export const listWallets = (
+  userToken: string, limit: number, nextPageToken?: string
+) => {
+  return listWaletsBackend(userToken, limit, nextPageToken)
 }
