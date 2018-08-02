@@ -5,4 +5,5 @@ coverage/
 src/notes.ts
 src/sjcl/
 dist/
+docs/
 .env
