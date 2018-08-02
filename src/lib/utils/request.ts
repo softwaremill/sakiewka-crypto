@@ -1,6 +1,6 @@
 import nodeFetch, { Response } from 'node-fetch'
 
-const parseJSON = (response: Response) => {
+const parseJSON = (response: Response): null | object => {
   if (response.status === 204 || response.status === 205) {
     return null
   }
@@ -8,7 +8,7 @@ const parseJSON = (response: Response) => {
   return response.json()
 }
 
-const checkStatus = (response: Response) => {
+const checkStatus = (response: Response): void | Response => {
   if (response.status >= 200 && response.status < 300) {
     return response
   }
@@ -17,7 +17,7 @@ const checkStatus = (response: Response) => {
   throw error
 }
 
-export default function request(url: string, options: object) {
+export default function request(url: string, options: object): Promise<object> {
   return nodeFetch(url, options)
     .then(checkStatus)
     .then(parseJSON)

@@ -1,7 +1,6 @@
 import { expect } from 'chai'
 
 import * as addressModule from '../address'
-import * as wallet from '../wallet'
 
 describe('generateNewMultisigAddress', () => {
   it('should exist', () => {

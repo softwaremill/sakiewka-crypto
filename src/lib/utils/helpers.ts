@@ -1,4 +1,4 @@
-export const filterObject = (obj: object, predicate: Function) => {
+export const filterObject = (obj: object, predicate: Function): object => {
   const objKeys = Object.keys(obj)
 
   return objKeys.reduce(

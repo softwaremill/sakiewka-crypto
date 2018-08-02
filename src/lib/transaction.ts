@@ -3,14 +3,13 @@ import { getWalletUnspents, getWallet, sendTransaction, getNewChangeAddress } fr
 import { getRecommendedFee } from './utils/fees'
 import { BITCOIN_NETWORK } from './constants'
 import {
-  base58ToECPair,
   createMultisigRedeemScript,
   initializeTxBuilder,
   addressToOutputScript
 } from './bitcoin'
 import { deriveKey } from './wallet';
 
-export const calculateChange = (unspents: UTXO[], transactionAmount: number) => {
+export const calculateChange = (unspents: UTXO[], transactionAmount: number): number => {
   const unspentsSum = unspents.reduce(
     (acc: number, uns: UTXO) => {
       return acc + uns.amount
@@ -21,11 +20,13 @@ export const calculateChange = (unspents: UTXO[], transactionAmount: number) => 
   return unspentsSum - transactionAmount
 }
 
-export const calculateFee = (satoshiPerByte: number, numOfInputs: number, numOfOutputs: number) => {
+export const calculateFee = (
+  satoshiPerByte: number, numOfInputs: number, numOfOutputs: number
+): number => {
   return (numOfInputs * 180 + numOfOutputs * 34 + 10) * satoshiPerByte
 }
 
-export const sumOutputAmounts = (outputs: Recipent[]) => {
+export const sumOutputAmounts = (outputs: Recipent[]): number => {
   return outputs.reduce(
     (acc: number, out: Recipent) => {
       return acc + out.amount
@@ -34,7 +35,9 @@ export const sumOutputAmounts = (outputs: Recipent[]) => {
   )
 }
 
-export const sendCoins = async (params: SendCoinsParams, networkName: string = BITCOIN_NETWORK) => {
+export const sendCoins = async (
+  params: SendCoinsParams, networkName: string = BITCOIN_NETWORK
+): Promise<any> => {
   const unspents = await getWalletUnspents(params.userToken, params.walletId, 10000)
   const wallet = await getWallet(params.userToken, params.walletId)
   const txb = initializeTxBuilder(networkName)

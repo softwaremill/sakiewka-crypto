@@ -6,7 +6,7 @@ import * as fees from '../utils/fees'
 import { generateNewKeypair, deriveKey } from '../wallet'
 import { generateNewMultisigAddress } from '../address'
 import {
-  base58ToECPair, txFromHex, txBuilderFromTx
+  txFromHex, txBuilderFromTx
 } from '../bitcoin'
 
 describe('sendCoins', () => {

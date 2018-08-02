@@ -5,7 +5,7 @@ import { BITCOIN_NETWORK } from './constants'
 
 export const generateNewMultisigAddress = (
   rootKeys: String[], path: string, networkName: string = BITCOIN_NETWORK
-) => {
+): any => {
   const derivedKeys = rootKeys.map((rootKey: string) => {
     return deriveKey(rootKey, path).neutered().toBase58()
   })
