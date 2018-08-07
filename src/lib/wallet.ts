@@ -22,7 +22,7 @@ export const createWallet = async (userToken: string, params: WalletParams): Pro
 
   const backendRequestParams = filterObject(
     {
-      label: params.label,
+      name: params.name,
       userPubKey: encryptedUserKeyPair.pubKey,
       userPrvKey: encryptedUserKeyPair.prvKey,
       backupPubKey: encryptedBackupKeyPair.pubKey,
@@ -36,7 +36,10 @@ export const createWallet = async (userToken: string, params: WalletParams): Pro
   return {
     walletId: backendResponse.id,
     user: userKeyPair,
-    backup: backupKeyPair
+    backup: backupKeyPair,
+    service: {
+      pubKey: backendResponse.servicePubKey
+    }
   }
 }
 

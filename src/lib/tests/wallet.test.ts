@@ -18,7 +18,7 @@ describe('createWallet', () => {
   it('should return keyPairs and wallet id', async () => {
     const params = {
       passphrase: 'abcd',
-      label: 'testLabel'
+      name: 'testLabel'
     }
 
     const result = await wallet.createWallet('abcd', params)
@@ -33,7 +33,7 @@ describe('createWallet', () => {
   it('should not return private key when public key provided', async () => {
     const params = {
       passphrase: 'abcd',
-      label: 'testLabel',
+      name: 'testLabel',
       userPubKey: '123',
       backupPubKey: '321'
     }

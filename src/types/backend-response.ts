@@ -7,7 +7,12 @@ export interface RegisterBackendResponse {}
 export interface InfoBackendResponse {}
 
 export interface CreateWalletBackendResponse {
-  id: string
+  id: string,
+  servicePubKey: string,
+  initialAddress: {
+    address: string,
+    path: {}
+  }
 }
 
 export interface GetWalletBackendResponse {

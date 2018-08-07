@@ -23,7 +23,7 @@ export const getNewChangeAddress = (token: string, id: string): Promise<string> 
 }
 
 // TODO: handle api errors
-export const login = (login: string, password: string): Promise<LoginBackendResponse>  => {
+export const login = async (login: string, password: string): Promise<LoginBackendResponse>  => {
   const options = {
     method: 'POST',
     body: JSON.stringify({
@@ -32,10 +32,11 @@ export const login = (login: string, password: string): Promise<LoginBackendResp
     })
   }
 
-  return request(`${getUrlBase()}/user/login`, options)
+  const response = await request(`${getUrlBase()}/user/login`, options)
+  return response.data
 }
 
-export const register = (login: string, password: string): Promise<RegisterBackendResponse> => {
+export const register = async (login: string, password: string): Promise<RegisterBackendResponse> => {
   const options = {
     method: 'POST',
     body: JSON.stringify({
@@ -44,10 +45,11 @@ export const register = (login: string, password: string): Promise<RegisterBacke
     })
   }
 
-  return request(`${getUrlBase()}/user/register`, options)
+  const response = await request(`${getUrlBase()}/user/register`, options)
+  return response.data
 }
 
-export const info = (token: string): Promise<InfoBackendResponse> => {
+export const info = async (token: string): Promise<InfoBackendResponse> => {
   const options = {
     method: 'GET',
     headers: {
@@ -55,10 +57,11 @@ export const info = (token: string): Promise<InfoBackendResponse> => {
     }
   }
 
-  return request(`${getUrlBase()}/user/info`, options)
+  const response = await request(`${getUrlBase()}/user/info`, options)
+  return response.data
 }
 
-export const createWallet = (
+export const createWallet = async (
   token: string,
   params: object): Promise<CreateWalletBackendResponse> => {
   const options = {
@@ -71,10 +74,11 @@ export const createWallet = (
     })
   }
 
-  return request(`${getUrlBase()}/btc/wallet`, options)
+  const response = await request(`${getUrlBase()}/btc/wallet`, options)
+  return response.data
 }
 
-export const getWallet = (token: string, id: string): Promise<GetWalletBackendResponse> => {
+export const getWallet = async (token: string, id: string): Promise<GetWalletBackendResponse> => {
   const options = {
     method: 'GET',
     headers: {
@@ -82,10 +86,11 @@ export const getWallet = (token: string, id: string): Promise<GetWalletBackendRe
     }
   }
 
-  return request(`${getUrlBase()}/btc/wallet/${id}`, options)
+  const response = await request(`${getUrlBase()}/btc/wallet/${id}`, options)
+  return response.data
 }
 
-export const listWallets = (
+export const listWallets = async (
   token: string, limit: number, nextPageToken?: string
 ): Promise<ListWalletsBackendResponse> => {
   const options = {
@@ -97,7 +102,8 @@ export const listWallets = (
 
   const queryString = `limit=${limit}&${nextPageToken ? `nextPageToken=${nextPageToken}` : ''}`
 
-  return request(`${getUrlBase()}/btc/wallet?${queryString}`, options)
+  const response = await request(`${getUrlBase()}/btc/wallet?${queryString}`, options)
+  return response.data
 }
 
 export const sendTransaction = (token: string, transactionHex: string): Promise<boolean> => {
