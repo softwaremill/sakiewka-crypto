@@ -20,3 +20,10 @@ export interface GetWalletBackendResponse {
 }
 
 export interface ListWalletsBackendResponse {}
+
+export interface EthGetTransactionParamsResponse {
+  gasLimit: string,
+  gasPrice: string,
+  nonce: number,
+  contractNonce: number
+}

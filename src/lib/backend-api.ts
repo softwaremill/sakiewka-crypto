@@ -7,7 +7,8 @@ import {
   InfoBackendResponse,
   CreateWalletBackendResponse,
   GetWalletBackendResponse,
-  ListWalletsBackendResponse
+  ListWalletsBackendResponse,
+  EthGetTransactionParamsResponse
 } from '../types/backend-response'
 import request from './utils/request'
 import { BACKEND_API_PREFIX } from './constants'
@@ -108,4 +109,19 @@ export const listWallets = async (
 
 export const sendTransaction = (token: string, transactionHex: string): Promise<boolean> => {
   return Promise.resolve(true)
+}
+
+export const ethGetTransactionParams = (
+  address: string
+): Promise<EthGetTransactionParamsResponse> => {
+  return Promise.resolve({
+    gasLimit: '123',
+    gasPrice: '123',
+    nonce: 10,
+    contractNonce: 2
+  })
+}
+
+export const ethSendTransaction = (signature: string) => {
+  return Promise.resolve({})
 }
