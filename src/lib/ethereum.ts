@@ -1,8 +1,7 @@
 import ethAbi from 'ethereumjs-abi'
 import ethUtil from 'ethereumjs-util'
 
-import { ethGetTransactionParams, ethSendTransaction } from '../backend-api'
-import { base58ToHDNode } from '../bitcoin'
+import { base58ToHDNode } from './bitcoin'
 
 export const createOperationHash = (
   address: string, amount: number, expireTime: number, contractNonce: number
@@ -38,21 +37,4 @@ export const xprvToEthPrivateKey = (xprv: string) => {
   const hdNode = base58ToHDNode(xprv)
   const ethPrvKey = new Buffer(hdNode.keyPair.d.toHex(), 'hex')
   return ethUtil.setLengthLeft(ethPrvKey, 32).toString('hex')
-}
-
-export const send = async (
-  passphrase: string, toAddress: string, amount: number
-) => {
-  const xprv = process.env.ETH_PRV_KEY
-
-  const {
-    gasLimit, gasPrice, nonce, contractNonce
-  } = await ethGetTransactionParams(toAddress)
-
-  const ethPrvKey = xprvToEthPrivateKey(xprv)
-
-  const operationHash = createOperationHash(toAddress, amount, 123, contractNonce)
-  const signature = createSignature(operationHash, ethPrvKey)
-
-  const status = await ethSendTransaction(signature, operationHash)
 }

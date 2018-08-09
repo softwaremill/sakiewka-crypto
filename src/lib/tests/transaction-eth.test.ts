@@ -1,10 +1,9 @@
 import { expect } from 'chai'
-import ethAbi from 'ethereumjs-abi'
 import ethUtil from 'ethereumjs-util'
-import { base58ToECPair } from '../../bitcoin'
+import { base58ToECPair } from '../bitcoin'
 
-import * as transaction from '../transaction'
-import * as backendApi from '../../backend-api'
+import * as transaction from '../transaction-eth'
+import * as backendApi from '../backend-api'
 
 // @ts-ignore
 backendApi.ethGetTransactionParams = jest.fn(() => {
