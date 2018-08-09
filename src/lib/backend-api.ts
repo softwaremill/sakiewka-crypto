@@ -8,8 +8,9 @@ import {
   CreateWalletBackendResponse,
   GetWalletBackendResponse,
   ListWalletsBackendResponse,
-  EthGetTransactionParamsResponse
-} from '../types/backend-response'
+  EthGetTransactionParamsResponse,
+  EthSendTransactionResponse
+} from 'backend-response'
 import request from './utils/request'
 import { BACKEND_API_PREFIX } from './constants'
 
@@ -122,6 +123,8 @@ export const ethGetTransactionParams = (
   })
 }
 
-export const ethSendTransaction = (signature: string) => {
+export const ethSendTransaction = (
+  signature: string, operationHash: string
+): Promise<EthSendTransactionResponse> => {
   return Promise.resolve({})
 }

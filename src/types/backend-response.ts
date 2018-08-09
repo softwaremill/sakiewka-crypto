@@ -27,3 +27,5 @@ export interface EthGetTransactionParamsResponse {
   nonce: number,
   contractNonce: number
 }
+
+export interface EthSendTransactionResponse {}

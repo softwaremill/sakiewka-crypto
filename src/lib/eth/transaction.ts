@@ -36,7 +36,7 @@ export const createSignature = (operationHash: string, prvKey: string) => {
 
 export const xprvToEthPrivateKey = (xprv: string) => {
   const hdNode = base58ToHDNode(xprv)
-  const ethPrvKey = hdNode.keyPair.d.toBuffer()
+  const ethPrvKey = new Buffer(hdNode.keyPair.d.toHex(), 'hex')
   return ethUtil.setLengthLeft(ethPrvKey, 32).toString('hex')
 }
 
@@ -54,8 +54,5 @@ export const send = async (
   const operationHash = createOperationHash(toAddress, amount, 123, contractNonce)
   const signature = createSignature(operationHash, ethPrvKey)
 
-  const status = await ethSendTransaction({
-    operationHash,
-    signature
-  })
+  const status = await ethSendTransaction(signature, operationHash)
 }

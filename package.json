@@ -28,7 +28,6 @@
     "@types/node-fetch": "^2.1.1",
     "@types/bitcoinjs-lib": "^3.4.0",
     "@types/ethereumjs-abi": "^0.6.1",
-    "@types/ethereumjs-util": "^5.2.0",
     "@types/sjcl": "^1.0.28",
     "chai": "^4.1.2",
     "concurrently": "^3.6.0",

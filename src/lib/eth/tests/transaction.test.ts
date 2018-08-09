@@ -36,7 +36,9 @@ describe('send', () => {
     const signerAddress = ethUtil.privateToAddress(new Buffer(xprv, 'hex')).toString('hex')
 
     await transaction.send(passphrase, address, amount)
-    const { operationHash, signature } = backendApi.ethSendTransaction.mock.calls[0][0]
+
+    // @ts-ignore
+    const [signature, operationHash] = backendApi.ethSendTransaction.mock.calls[0]
 
     const sigParams = ethUtil.fromRpcSig(signature)
     const pub = ethUtil.ecrecover(
