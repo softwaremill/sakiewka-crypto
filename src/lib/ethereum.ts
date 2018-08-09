@@ -8,8 +8,9 @@ export const createOperationHash = (
 ) => {
   return ethUtil.bufferToHex(
     ethAbi.soliditySHA3(
-      ['address', 'uint', 'string', 'uint', 'uint'],
+      ['string', 'address', 'uint', 'string', 'uint', 'uint'],
       [
+        'ETHER',
         new ethUtil.BN(address, 16),
         amount,
         '',
