@@ -113,7 +113,7 @@ export const sendTransaction = (token: string, transactionHex: string): Promise<
 }
 
 export const ethGetTransactionParams = (
-  address: string
+  userToken: string
 ): Promise<EthGetTransactionParamsResponse> => {
   return Promise.resolve({
     gasLimit: '123',
@@ -124,7 +124,7 @@ export const ethGetTransactionParams = (
 }
 
 export const ethSendTransaction = (
-  signature: string, operationHash: string
+  userToken: string, signature: string, operationHash: string
 ): Promise<EthSendTransactionResponse> => {
   return Promise.resolve({})
 }

@@ -28,16 +28,16 @@ describe('send', () => {
   })
 
   it('should send transaction', async () => {
-    const passphrase = 'abcd'
     const address = '0xa378869a5009b131Ef9c0b300f4049F7bB7091e6'
+    const userToken = '123'
     const amount = 1000000000
     const xprv = base58ToECPair(process.env.ETH_PRV_KEY).d.toHex()
     const signerAddress = ethUtil.privateToAddress(new Buffer(xprv, 'hex')).toString('hex')
 
-    await transaction.send(passphrase, address, amount)
+    await transaction.send(userToken, address, amount)
 
     // @ts-ignore
-    const [signature, operationHash] = backendApi.ethSendTransaction.mock.calls[0]
+    const [, signature, operationHash] = backendApi.ethSendTransaction.mock.calls[0]
 
     const sigParams = ethUtil.fromRpcSig(signature)
     const pub = ethUtil.ecrecover(

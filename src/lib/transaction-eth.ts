@@ -6,18 +6,16 @@ import {
 } from './ethereum'
 
 export const send = async (
-  passphrase: string, toAddress: string, amount: number
+  userToken: string, toAddress: string, amount: number
 ) => {
   const xprv = process.env.ETH_PRV_KEY
 
-  const {
-    gasLimit, gasPrice, nonce, contractNonce
-  } = await ethGetTransactionParams(toAddress)
+  const { contractNonce } = await ethGetTransactionParams(userToken)
 
   const ethPrvKey = xprvToEthPrivateKey(xprv)
 
   const operationHash = createOperationHash(toAddress, amount, 123, contractNonce)
   const signature = createSignature(operationHash, ethPrvKey)
 
-  await ethSendTransaction(signature, operationHash)
+  await ethSendTransaction(userToken, signature, operationHash)
 }
