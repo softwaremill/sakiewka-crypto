@@ -1,4 +1,7 @@
 import { expect } from 'chai'
+import ethAbi from 'ethereumjs-abi'
+import ethUtil from 'ethereumjs-util'
+import { base58ToECPair } from '../../bitcoin'
 
 import * as transaction from '../transaction'
 import * as backendApi from '../../backend-api'
@@ -29,8 +32,20 @@ describe('send', () => {
     const passphrase = 'abcd'
     const address = '0xa378869a5009b131Ef9c0b300f4049F7bB7091e6'
     const amount = 1000000000
+    const xprv = base58ToECPair(process.env.ETH_PRV_KEY).d.toHex()
+    const signerAddress = ethUtil.privateToAddress(new Buffer(xprv, 'hex')).toString('hex')
 
-    const result = await transaction.send(passphrase, address, amount)
-    expect(result.status).to.eq('ok')
+    await transaction.send(passphrase, address, amount)
+    const { operationHash, signature } = backendApi.ethSendTransaction.mock.calls[0][0]
+
+    const sigParams = ethUtil.fromRpcSig(signature)
+    const pub = ethUtil.ecrecover(
+      new Buffer(ethUtil.stripHexPrefix(operationHash), 'hex'),
+      sigParams.v, sigParams.r, sigParams.s
+    )
+    const recoveredAddressBuff = ethUtil.pubToAddress(pub)
+    const recoveredAddress = ethUtil.bufferToHex(recoveredAddressBuff)
+
+    expect(ethUtil.stripHexPrefix(recoveredAddress)).to.eq(signerAddress)
   })
 })

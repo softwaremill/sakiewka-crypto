@@ -22,7 +22,6 @@ export const createOperationHash = (
 }
 
 export const createSignature = (operationHash: string, prvKey: string) => {
-
   const signatureInParts = ethUtil.ecsign(
     new Buffer(ethUtil.stripHexPrefix(operationHash), 'hex'),
     new Buffer(prvKey, 'hex')
@@ -55,7 +54,8 @@ export const send = async (
   const operationHash = createOperationHash(toAddress, amount, 123, contractNonce)
   const signature = createSignature(operationHash, ethPrvKey)
 
-  const status = await ethSendTransaction(signature)
-
-  return status
+  const status = await ethSendTransaction({
+    operationHash,
+    signature
+  })
 }
