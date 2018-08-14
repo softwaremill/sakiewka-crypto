@@ -1,12 +1,13 @@
 import { ethGetTransactionParams, ethSendTransaction } from './backend-api'
 import {
-  createOperationHash,
+  createETHOperationHash,
+  createTokenOperationHash,
   createSignature,
   xprvToEthPrivateKey
 } from './ethereum'
 
-export const send = async (
-  userToken: string, toAddress: string, amount: number
+export const sendETH = async (
+  userToken: string, toAddress: string, amount: number, data: string
 ) => {
   const xprv = process.env.ETH_PRV_KEY
 
@@ -14,8 +15,25 @@ export const send = async (
 
   const ethPrvKey = xprvToEthPrivateKey(xprv)
 
-  const operationHash = createOperationHash(toAddress, amount, 123, contractNonce)
+  const operationHash = createETHOperationHash(toAddress, amount, data, hourFromNow(), contractNonce)
   const signature = createSignature(operationHash, ethPrvKey)
 
   await ethSendTransaction(userToken, signature, operationHash)
 }
+
+export const sendToken = async (
+  userToken: string, toAddress: string, contractAddress: string, amount: number
+) => {
+  const xprv = process.env.ETH_PRV_KEY
+
+  const { contractNonce } = await ethGetTransactionParams(userToken)
+
+  const ethPrvKey = xprvToEthPrivateKey(xprv)
+
+  const operationHash = createTokenOperationHash(toAddress, amount, contractAddress, hourFromNow(), contractNonce)
+  const signature = createSignature(operationHash, ethPrvKey)
+
+  await ethSendTransaction(userToken, signature, operationHash)
+}
+
+const hourFromNow = () => (new Date().getTime() + (1000 * 60 * 60));
