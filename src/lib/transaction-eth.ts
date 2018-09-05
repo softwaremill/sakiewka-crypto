@@ -15,10 +15,9 @@ export const sendETH = async (
 
   const ethPrvKey = xprvToEthPrivateKey(xprv)
 
-  const operationHash = createETHOperationHash(toAddress, amount, data, hourFromNow(), contractNonce)
-  const signature = createSignature(operationHash, ethPrvKey)
+  const signature = signETHTransaction(toAddress, amount, data, hourFromNow(), contractNonce, ethPrvKey)
 
-  await ethSendTransaction(userToken, signature, operationHash)
+  await ethSendTransaction(userToken, signature.signature, signature.operationHash)
 }
 
 export const sendToken = async (
@@ -30,10 +29,33 @@ export const sendToken = async (
 
   const ethPrvKey = xprvToEthPrivateKey(xprv)
 
-  const operationHash = createTokenOperationHash(toAddress, amount, contractAddress, hourFromNow(), contractNonce)
-  const signature = createSignature(operationHash, ethPrvKey)
+  const signature = signTokenTransaction(toAddress, amount, contractAddress, hourFromNow(), contractNonce, ethPrvKey)
 
-  await ethSendTransaction(userToken, signature, operationHash)
+  await ethSendTransaction(userToken, signature.signature, signature.operationHash)
 }
 
+export const signTokenTransaction = (toAddress: string, amount: number, contractAddress: string, expiryDate: number, 
+  contractNonce: number, ethPrvKey: string) => {
+    const operationHash = createTokenOperationHash(toAddress, amount, contractAddress, expiryDate, contractNonce)
+    return new Signature(operationHash, createSignature(operationHash, ethPrvKey), contractNonce)
+  }
+
+export const signETHTransaction = (toAddress: string, amount: number, data: string, expiryDate: number,
+  contractNonce: number, ethPrvKey: string) => {
+    const operationHash = createETHOperationHash(toAddress, amount, data, expiryDate, contractNonce)
+    return new Signature(operationHash, createSignature(operationHash, ethPrvKey), contractNonce)
+  }
+
 const hourFromNow = () => (new Date().getTime() + (1000 * 60 * 60));
+
+class Signature {
+  operationHash: string;
+  signature: string;
+  contractNonce: number;
+
+  constructor (operationHash: string, signature: string, contractNonce: number) {
+    this.operationHash = operationHash;
+    this.signature = signature;
+    this.contractNonce = contractNonce;
+  }
+}
