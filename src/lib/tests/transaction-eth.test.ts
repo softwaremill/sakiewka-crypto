@@ -20,7 +20,6 @@ backendApi.ethSendTransaction = jest.fn(() => {
   return Promise.resolve({ status: 'ok' })
 })
 
-process.env.ETH_PRV_KEY = 'xprv9s21ZrQH143K27LPi9gM65jmXFuBfiY7S5HReQarD7dTX9svAXQmQYsqxVqMcbtRWxDwBkdRxSxhfPBX4Vt7Juc9CqY4i3AaPNwCeM1w1Ym'
 
 describe('send ETH', () => {
   it('should exist', () => {
@@ -32,10 +31,11 @@ describe('send ETH', () => {
     const userToken = '123'
     const amount = 1000000000
     const data = ''
-    const xprv = base58ToECPair(process.env.ETH_PRV_KEY).d.toHex()
-    const signerAddress = ethUtil.privateToAddress(new Buffer(xprv, 'hex')).toString('hex')
+    const prvKey = 'xprv9s21ZrQH143K27LPi9gM65jmXFuBfiY7S5HReQarD7dTX9svAXQmQYsqxVqMcbtRWxDwBkdRxSxhfPBX4Vt7Juc9CqY4i3AaPNwCeM1w1Ym'
+    const hexPrvKey = base58ToECPair(prvKey).d.toHex()
+    const signerAddress = ethUtil.privateToAddress(new Buffer(hexPrvKey, 'hex')).toString('hex')
 
-    await transaction.sendETH(userToken, address, amount, data)
+    await transaction.sendETH(userToken, prvKey, address, amount, data)
 
     // @ts-ignore
     const [, signature, operationHash] = backendApi.ethSendTransaction.mock.calls[0]
@@ -62,10 +62,11 @@ describe('send Token', () => {
     const contractAddress = '0x627306090abab3a6e1400e9345bc60c78a8bef57'
     const userToken = '123'
     const amount = 1000000000
-    const xprv = base58ToECPair(process.env.ETH_PRV_KEY).d.toHex()
-    const signerAddress = ethUtil.privateToAddress(new Buffer(xprv, 'hex')).toString('hex')
+    const prvKey = 'xprv9s21ZrQH143K27LPi9gM65jmXFuBfiY7S5HReQarD7dTX9svAXQmQYsqxVqMcbtRWxDwBkdRxSxhfPBX4Vt7Juc9CqY4i3AaPNwCeM1w1Ym'
+    const hexPrvKey = base58ToECPair(prvKey).d.toHex()
+    const signerAddress = ethUtil.privateToAddress(new Buffer(hexPrvKey, 'hex')).toString('hex')
 
-    await transaction.sendToken(userToken, address, contractAddress, amount)
+    await transaction.sendToken(userToken, prvKey, address, contractAddress, amount)
 
     // @ts-ignore
     const [, signature, operationHash] = backendApi.ethSendTransaction.mock.calls[0]
