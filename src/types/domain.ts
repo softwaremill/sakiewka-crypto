@@ -29,3 +29,9 @@ export interface SendCoinsParams {
   recipents: Recipent[],
   xprv?: string
 }
+
+export interface Signature {
+  operationHash: string
+  signature: string
+  contractNonce: number
+}
