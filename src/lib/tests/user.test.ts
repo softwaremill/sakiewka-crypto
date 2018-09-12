@@ -1,33 +1,25 @@
 import { expect } from 'chai'
 
 import * as user from '../user'
-import * as request from '../utils/request'
-
-// @ts-ignore
-const mockImplementation = jest.fn(() => ({ data: 'testToken' }))
-request.default = mockImplementation
-
-beforeEach(() => {
-  // @ts-ignore
-  mockImplementation.mockClear()
-})
+import * as api from '../backend-api'
 
 describe('login', () => {
   it('should exist', () => {
     expect(user.login).to.be.a('function')
   })
 
-  it('should send proper request', async () => {
-    process.env.BACKEND_API_URL = 'backurl'
-    await user.login('a', 'b')
+  it('should pass proper arguments to backend-api method and return result of its call', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    api.login = mockImplementation
 
-    const [url, params] = mockImplementation.mock.calls[0]
-    const reqBody = JSON.parse(params.body)
+    const res = await user.login('a', 'b')
 
-    expect(url).to.eq('backurl/api/v1/user/login')
-    expect(params.method).to.eq('POST')
-    expect(reqBody.email).to.eq('a')
-    expect(reqBody.password).to.eq('b')
+    const [login, password] = mockImplementation.mock.calls[0]
+    expect(login).to.eq('a')
+    expect(password).to.eq('b')
+    expect(res).to.eq('backend response')
   })
 })
 
@@ -36,17 +28,18 @@ describe('register', () => {
     expect(user.register).to.be.a('function')
   })
 
-  it('should send proper request', async () => {
-    process.env.BACKEND_API_URL = 'backurl'
-    await user.register('a', 'b')
+  it('should pass proper arguments to backend-api method and return result of its call', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    api.register = mockImplementation
 
-    const [url, params] = mockImplementation.mock.calls[0]
-    const reqBody = JSON.parse(params.body)
+    const res = await user.register('a', 'b')
 
-    expect(url).to.eq('backurl/api/v1/user/register')
-    expect(params.method).to.eq('POST')
-    expect(reqBody.email).to.eq('a')
-    expect(reqBody.password).to.eq('b')
+    const [login, password] = mockImplementation.mock.calls[0]
+    expect(login).to.eq('a')
+    expect(password).to.eq('b')
+    expect(res).to.eq('backend response')
   })
 })
 
@@ -55,14 +48,16 @@ describe('info', () => {
     expect(user.info).to.be.a('function')
   })
 
-  it('should send proper request', async () => {
-    process.env.BACKEND_API_URL = 'backurl'
-    await user.info('testToken')
+  it('should pass proper arguments to backend-api method and return result of its call', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    api.info = mockImplementation
 
-    const [url, params] = mockImplementation.mock.calls[0]
+    const res = await user.info('testToken')
 
-    expect(url).to.eq('backurl/api/v1/user/info')
-    expect(params.method).to.eq('GET')
-    expect(params.headers.Authorization).to.eq('testToken')
+    const [token] = mockImplementation.mock.calls[0]
+    expect(token).to.eq('testToken')
+    expect(res).to.eq('backend response')
   })
 })
