@@ -10,3 +10,5 @@ export const filterObject = (obj: object, predicate: Function): object => {
     {}
   )
 }
+
+export const hourFromNow = () => (new Date().getTime() + (1000 * 60 * 60));

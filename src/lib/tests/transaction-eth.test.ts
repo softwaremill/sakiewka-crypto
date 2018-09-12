@@ -20,7 +20,6 @@ backendApi.ethSendTransaction = jest.fn(() => {
   return Promise.resolve({ status: 'ok' })
 })
 
-
 describe('send ETH', () => {
   it('should exist', () => {
     expect(transaction.sendETH).to.be.a('function')

@@ -1,5 +1,6 @@
 import { ethGetTransactionParams, ethSendTransaction } from './backend-api'
 import { Signature } from '../types/domain'
+import { hourFromNow } from './utils/helpers'
 import {
   createETHOperationHash,
   createTokenOperationHash,
@@ -52,5 +53,3 @@ export const signETHTransaction = (
     signature: createSignature(operationHash, ethPrvKey)
   }
 }
-
-const hourFromNow = () => (new Date().getTime() + (1000 * 60 * 60));
