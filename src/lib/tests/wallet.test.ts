@@ -46,3 +46,44 @@ describe('createWallet', () => {
     expect(result.backup).to.haveOwnProperty('pubKey')
   })
 })
+
+describe('getWallet', () => {
+  it('should exist', () => {
+    expect(wallet.getWallet).to.be.a('function')
+  })
+
+  it('should pass proper arguments to backend-api method and return result of its call', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    wallet.getWallet = mockImplementation
+
+    const res = await wallet.getWallet('testToken', 'walletId')
+
+    const [token, walletId] = mockImplementation.mock.calls[0]
+    expect(token).to.eq('testToken')
+    expect(walletId).to.eq('walletId')
+    expect(res).to.eq('backend response')
+  })
+})
+
+describe('listWallets', () => {
+  it('should exist', () => {
+    expect(wallet.listWallets).to.be.a('function')
+  })
+
+  it('should pass proper arguments to backend-api method and return result of its call', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    wallet.listWallets = mockImplementation
+
+    const res = await wallet.listWallets('testToken', 10, 'nextPageToken')
+
+    const [token, limit, nextPageToken] = mockImplementation.mock.calls[0]
+    expect(token).to.eq('testToken')
+    expect(limit).to.eq(10)
+    expect(nextPageToken).to.eq('nextPageToken')
+    expect(res).to.eq('backend response')
+  })
+})
