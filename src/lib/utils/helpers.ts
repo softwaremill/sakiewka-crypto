@@ -11,4 +11,8 @@ export const filterObject = (obj: object, predicate: Function): object => {
   )
 }
 
-export const hourFromNow = () => (new Date().getTime() + (1000 * 60 * 60));
+export const removeUndefinedFromObject = (obj: object): object => {
+  return filterObject(obj, (value: any) => value !== undefined)
+}
+
+export const hourFromNow = () => (new Date().getTime() + (1000 * 60 * 60))

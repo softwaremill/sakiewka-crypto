@@ -1,12 +1,13 @@
 import { WalletParams } from '../types/domain'
 import { ROOT_DERIVATION_PATH } from './constants'
-import { filterObject } from './utils/helpers'
+import { removeUndefinedFromObject } from './utils/helpers'
 import {
   createWallet as createWalletBackend,
   getWallet as getWalletBackend,
   listWallets as listWaletsBackend
 } from './backend-api'
 import { deriveKeyPair, generateNewKeyPair, encryptKeyPair } from './key'
+import { CreateWalletBackendParams } from '../types/backend-api'
 
 export const createWallet = async (userToken: string, params: WalletParams): Promise<any> => {
   const userKeyPair = params.userPubKey ?
@@ -20,18 +21,18 @@ export const createWallet = async (userToken: string, params: WalletParams): Pro
   const encryptedUserKeyPair = encryptKeyPair(userKeyPair, params.passphrase)
   const encryptedBackupKeyPair = encryptKeyPair(backupKeyPair, params.passphrase)
 
-  const backendRequestParams = filterObject(
-    {
-      name: params.name,
-      userPubKey: encryptedUserKeyPair.pubKey,
-      userPrvKey: encryptedUserKeyPair.prvKey,
-      backupPubKey: encryptedBackupKeyPair.pubKey,
-      backupPrvKey: encryptedBackupKeyPair.prvKey
-    },
-    (value: any) => value
-  )
+  const backendRequestParams = removeUndefinedFromObject({
+    name: params.name,
+    userPubKey: encryptedUserKeyPair.pubKey,
+    userPrvKey: encryptedUserKeyPair.prvKey,
+    backupPubKey: encryptedBackupKeyPair.pubKey,
+    backupPrvKey: encryptedBackupKeyPair.prvKey
+  })
 
-  const backendResponse = await createWalletBackend(userToken, backendRequestParams)
+  const backendResponse = await createWalletBackend(
+    userToken,
+    <CreateWalletBackendParams> backendRequestParams
+  )
 
   return {
     walletId: backendResponse.id,
