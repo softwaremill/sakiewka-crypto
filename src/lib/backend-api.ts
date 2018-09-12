@@ -6,25 +6,20 @@ import {
   RegisterBackendResponse,
   InfoBackendResponse,
   CreateWalletBackendResponse,
+  CreateWalletBackendParams,
   GetWalletBackendResponse,
   ListWalletsBackendResponse,
   EthGetTransactionParamsResponse,
   EthSendTransactionResponse
-} from 'backend-response'
+} from 'backend-api'
 import request from './utils/request'
 import { BACKEND_API_PREFIX } from './constants'
 
-const getUrlBase = () => `${process.env.BACKEND_API_URL}/${BACKEND_API_PREFIX}`
-
-export const getWalletUnspents = (token: string, id: string, amount: number): Promise<UTXO[]> => {
-  return Promise.resolve([])
-}
-
-export const getNewChangeAddress = (token: string, id: string): Promise<string> => {
-  return Promise.resolve('')
-}
-
 // TODO: handle api errors
+
+const getUrlBase = () => `${process.env.BACKEND_API_URL}/${BACKEND_API_PREFIX}`
+// BTC
+// user
 export const login = async (login: string, password: string): Promise<LoginBackendResponse>  => {
   const options = {
     method: 'POST',
@@ -63,9 +58,11 @@ export const info = async (token: string): Promise<InfoBackendResponse> => {
   return response.data
 }
 
+// wallet
 export const createWallet = async (
   token: string,
-  params: object): Promise<CreateWalletBackendResponse> => {
+  params: CreateWalletBackendParams
+): Promise<CreateWalletBackendResponse> => {
   const options = {
     method: 'POST',
     headers: {
@@ -80,7 +77,10 @@ export const createWallet = async (
   return response.data
 }
 
-export const getWallet = async (token: string, id: string): Promise<GetWalletBackendResponse> => {
+export const getWallet = async (
+  token: string,
+  id: string
+): Promise<GetWalletBackendResponse> => {
   const options = {
     method: 'GET',
     headers: {
@@ -93,7 +93,9 @@ export const getWallet = async (token: string, id: string): Promise<GetWalletBac
 }
 
 export const listWallets = async (
-  token: string, limit: number, nextPageToken?: string
+  token: string,
+  limit: number,
+  nextPageToken?: string
 ): Promise<ListWalletsBackendResponse> => {
   const options = {
     method: 'GET',
@@ -102,16 +104,27 @@ export const listWallets = async (
     }
   }
 
-  const queryString = `limit=${limit}&${nextPageToken ? `nextPageToken=${nextPageToken}` : ''}`
+  const queryString = `limit=${limit}${nextPageToken ? `&nextPageToken=${nextPageToken}` : ''}`
 
   const response = await request(`${getUrlBase()}/btc/wallet?${queryString}`, options)
   return response.data
 }
 
+export const getWalletUnspents = (token: string, id: string, amount: number): Promise<UTXO[]> => {
+  return Promise.resolve([])
+}
+
+export const getNewChangeAddress = (token: string, id: string): Promise<string> => {
+  return Promise.resolve('')
+}
+
+// transaction
 export const sendTransaction = (token: string, transactionHex: string): Promise<boolean> => {
   return Promise.resolve(true)
 }
 
+// ETH
+// transaction
 export const ethGetTransactionParams = (
   userToken: string
 ): Promise<EthGetTransactionParamsResponse> => {

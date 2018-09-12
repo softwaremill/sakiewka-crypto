@@ -13,13 +13,14 @@ beforeEach(() => {
   mockImplementation.mockClear()
 })
 
+process.env.BACKEND_API_URL = 'backurl'
+
 describe('login', () => {
   it('should exist', () => {
     expect(api.login).to.be.a('function')
   })
 
   it('should send proper request', async () => {
-    process.env.BACKEND_API_URL = 'backurl'
     await api.login('a', 'b')
 
     const [url, params] = mockImplementation.mock.calls[0]
@@ -38,7 +39,6 @@ describe('register', () => {
   })
 
   it('should send proper request', async () => {
-    process.env.BACKEND_API_URL = 'backurl'
     await api.register('a', 'b')
 
     const [url, params] = mockImplementation.mock.calls[0]
@@ -57,7 +57,6 @@ describe('info', () => {
   })
 
   it('should send proper request', async () => {
-    process.env.BACKEND_API_URL = 'backurl'
     await api.info('testToken')
 
     const [url, params] = mockImplementation.mock.calls[0]
@@ -71,5 +70,96 @@ describe('info', () => {
 describe('createWallet', () => {
   it('should exist', () => {
     expect(api.createWallet).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    const data = {
+      name: 'testName',
+      userPubKey: '123',
+      backupPubKey: '456'
+    }
+    await api.createWallet('testToken', data)
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    const reqBody = JSON.parse(params.body)
+
+    expect(url).to.eq('backurl/api/v1/btc/wallet')
+    expect(params.method).to.eq('POST')
+    expect(params.headers.Authorization).to.eq('testToken')
+    expect(reqBody.name).to.eq('testName')
+    expect(reqBody.userPubKey).to.eq('123')
+    expect(reqBody.backupPubKey).to.eq('456')
+  })
+})
+
+describe('getWallet', () => {
+  it('should exist', () => {
+    expect(api.getWallet).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    await api.getWallet('testToken', '13')
+
+    const [url, params] = mockImplementation.mock.calls[0]
+
+    expect(url).to.eq('backurl/api/v1/btc/wallet/13')
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
+  })
+})
+
+describe('listWallets', () => {
+  it('should exist', () => {
+    expect(api.getWallet).to.be.a('function')
+  })
+
+  it('should send proper request without nextPageToken', async () => {
+    await api.listWallets('testToken', 10)
+
+    const [url, params] = mockImplementation.mock.calls[0]
+
+    expect(url).to.eq('backurl/api/v1/btc/wallet?limit=10')
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
+  })
+
+  it('should send proper request with nextPageToken', async () => {
+    await api.listWallets('testToken', 10, 'abcd')
+
+    const [url, params] = mockImplementation.mock.calls[0]
+
+    expect(url).to.eq('backurl/api/v1/btc/wallet?limit=10&nextPageToken=abcd')
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
+  })
+})
+
+describe('getWalletUnspents', () => {
+  it('should exist', () => {
+    expect(api.getWalletUnspents).to.be.a('function')
+  })
+})
+
+describe('getNewChangeAddress', () => {
+  it('should exist', () => {
+    expect(api.getNewChangeAddress).to.be.a('function')
+  })
+})
+
+describe('sendTransaction', () => {
+  it('should exist', () => {
+    expect(api.sendTransaction).to.be.a('function')
+  })
+})
+
+describe('ethGetTransactionParams', () => {
+  it('should exist', () => {
+    expect(api.ethGetTransactionParams).to.be.a('function')
+  })
+})
+
+describe('ethSendTransaction', () => {
+  it('should exist', () => {
+    expect(api.ethSendTransaction).to.be.a('function')
   })
 })

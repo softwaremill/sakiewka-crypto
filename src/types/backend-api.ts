@@ -6,6 +6,14 @@ export interface RegisterBackendResponse {}
 
 export interface InfoBackendResponse {}
 
+export interface CreateWalletBackendParams {
+  name: string,
+  userPubKey: string,
+  userPrvKey?: string,
+  backupPubKey: string,
+  backupPrvKey?: string
+}
+
 export interface CreateWalletBackendResponse {
   id: string,
   servicePubKey: string,
