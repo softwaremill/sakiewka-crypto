@@ -29,7 +29,22 @@ export interface GetWalletBackendResponse {
 
 export interface CreateNewAddressBackendResponse {
   address: string,
-  path: string
+  path: {
+    cosignerIndex: string,
+    change: string,
+    addressIndex: string
+  }
+}
+
+export interface GetAddressBackendResponse {
+  address: string,
+  path: {
+    cosignerIndex: string,
+    change: string,
+    addressIndex: string
+  },
+  name: string,
+  created: string
 }
 
 export interface ListWalletsBackendResponse {}

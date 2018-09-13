@@ -164,6 +164,22 @@ describe('createNewAddress', () => {
   })
 })
 
+describe('getAddress', () => {
+  it('should exist', () => {
+    expect(api.getAddress).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    await api.getAddress('testToken', 'testWalletId', 'addressValue')
+
+    const [url, params] = mockImplementation.mock.calls[0]
+
+    expect(url).to.eq('backurl/api/v1/btc/wallet/testWalletId/address/addressValue')
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
+  })
+})
+
 describe('getWalletUnspents', () => {
   it('should exist', () => {
     expect(api.getWalletUnspents).to.be.a('function')

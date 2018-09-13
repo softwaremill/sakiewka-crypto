@@ -10,6 +10,7 @@ import {
   GetWalletBackendResponse,
   ListWalletsBackendResponse,
   CreateNewAddressBackendResponse,
+  GetAddressBackendResponse,
   EthGetTransactionParamsResponse,
   EthSendTransactionResponse
 } from 'backend-api'
@@ -81,7 +82,7 @@ export const createWallet = async (
 
 export const getWallet = async (
   token: string,
-  id: string
+  walletId: string
 ): Promise<GetWalletBackendResponse> => {
   const options = {
     method: 'GET',
@@ -90,7 +91,7 @@ export const getWallet = async (
     }
   }
 
-  const response = await request(`${getUrlBase()}/btc/wallet/${id}`, options)
+  const response = await request(`${getUrlBase()}/btc/wallet/${walletId}`, options)
   return response.data
 }
 
@@ -112,7 +113,7 @@ export const listWallets = async (
   return response.data
 }
 
-export const createNewAddress = async (token: string, id: string, name?: string): Promise<CreateNewAddressBackendResponse> => {
+export const createNewAddress = async (token: string, walletId: string, name?: string): Promise<CreateNewAddressBackendResponse> => {
   const options = {
     method: 'POST',
     headers: {
@@ -123,7 +124,19 @@ export const createNewAddress = async (token: string, id: string, name?: string)
     }))
   }
 
-  const response = await request(`${getUrlBase()}/btc/wallet/${id}/address`, options)
+  const response = await request(`${getUrlBase()}/btc/wallet/${walletId}/address`, options)
+  return response.data
+}
+
+export const getAddress = async (token: string, walletId: string, address: string): Promise<GetAddressBackendResponse> => {
+  const options = {
+    method: 'GET',
+    headers: {
+      Authorization: token
+    }
+  }
+
+  const response = await request(`${getUrlBase()}/btc/wallet/${walletId}/address/${address}`, options)
   return response.data
 }
 
