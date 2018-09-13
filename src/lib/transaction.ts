@@ -58,7 +58,7 @@ export const sendCoins = async (
     txb.addOutput(addressToOutputScript(out.address, networkName), out.amount)
   })
 
-  txb.addOutput(addressToOutputScript(changeAddres, networkName), changeAmount)
+  txb.addOutput(addressToOutputScript(changeAddres.address, networkName), changeAmount)
 
   unspents.forEach((uns: UTXO, idx: number) => {
     const signingKey = deriveKey(params.xprv, uns.path, networkName).keyPair
