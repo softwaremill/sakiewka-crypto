@@ -22,3 +22,39 @@ describe('generateNewMultisigAddress', () => {
     expect(redeemScript).to.be.an('Uint8Array')
   })
 })
+
+describe('createNewAddress', () => {
+  it('should exist', () => {
+    expect(addressModule.createNewAddress).to.be.a('function')
+  })
+
+  it('should accept 2 arguments and pass them backend-api method and return result of its call', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    addressModule.createNewAddress = mockImplementation
+
+    const res = await addressModule.createNewAddress('testToken', 'abcd')
+
+    const [token, walletId, name] = mockImplementation.mock.calls[0]
+    expect(token).to.eq('testToken')
+    expect(walletId).to.eq('abcd')
+    expect(name).to.eq(undefined)
+    expect(res).to.eq('backend response')
+  })
+
+  it('should accept 3 arguments and pass them backend-api method and return result of its call', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    addressModule.createNewAddress = mockImplementation
+
+    const res = await addressModule.createNewAddress('testToken', 'abcd', 'testName')
+
+    const [token, walletId, name] = mockImplementation.mock.calls[0]
+    expect(token).to.eq('testToken')
+    expect(walletId).to.eq('abcd')
+    expect(name).to.eq('testName')
+    expect(res).to.eq('backend response')
+  })
+})

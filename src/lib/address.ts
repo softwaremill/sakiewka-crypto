@@ -1,5 +1,5 @@
 import { createMultisigRedeemScript, redeemScriptToAddress } from './bitcoin'
-
+import { createNewAddress as createNewAddressBackend } from './backend-api'
 import { deriveKey } from './key'
 import { BITCOIN_NETWORK } from './constants'
 
@@ -14,4 +14,12 @@ export const generateNewMultisigAddress = (
   const address = redeemScriptToAddress(redeemScript, networkName)
 
   return { address, redeemScript }
+}
+
+export const createNewAddress = (
+  userToken: string,
+  walletId: string,
+  name?: string
+) => {
+  return createNewAddressBackend(userToken, walletId, name)
 }
