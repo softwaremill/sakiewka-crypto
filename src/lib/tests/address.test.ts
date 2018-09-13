@@ -58,3 +58,24 @@ describe('createNewAddress', () => {
     expect(res).to.eq('backend response')
   })
 })
+
+describe('getAddress', () => {
+  it('should exist', () => {
+    expect(addressModule.getAddress).to.be.a('function')
+  })
+
+  it('should pass proper arguments to backend-api method and return result of its call', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    addressModule.getAddress = mockImplementation
+
+    const res = await addressModule.getAddress('testToken', 'abcd', 'testAddress')
+
+    const [token, walletId, address] = mockImplementation.mock.calls[0]
+    expect(token).to.eq('testToken')
+    expect(walletId).to.eq('abcd')
+    expect(address).to.eq('testAddress')
+    expect(res).to.eq('backend response')
+  })
+})
