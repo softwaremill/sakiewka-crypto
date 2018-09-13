@@ -27,6 +27,11 @@ export interface GetWalletBackendResponse {
   pubKeys: any
 }
 
+export interface CreateNewAddressBackendResponse {
+  address: string,
+  path: string
+}
+
 export interface ListWalletsBackendResponse {}
 
 export interface EthGetTransactionParamsResponse {

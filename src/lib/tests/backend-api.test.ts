@@ -134,15 +134,39 @@ describe('listWallets', () => {
   })
 })
 
-describe('getWalletUnspents', () => {
+describe('createNewAddress', () => {
   it('should exist', () => {
-    expect(api.getWalletUnspents).to.be.a('function')
+    expect(api.createNewAddress).to.be.a('function')
+  })
+
+  it('should send proper request without name param', async () => {
+    await api.createNewAddress('testToken', 'walletId')
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    const reqBody = JSON.parse(params.body)
+
+    expect(url).to.eq('backurl/api/v1/btc/wallet/walletId/address')
+    expect(params.method).to.eq('POST')
+    expect(params.headers.Authorization).to.eq('testToken')
+    expect(reqBody.name).to.eq(undefined)
+  })
+
+  it('should send proper request with name param', async () => {
+    await api.createNewAddress('testToken', 'walletId', 'testName')
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    const reqBody = JSON.parse(params.body)
+
+    expect(url).to.eq('backurl/api/v1/btc/wallet/walletId/address')
+    expect(params.method).to.eq('POST')
+    expect(params.headers.Authorization).to.eq('testToken')
+    expect(reqBody.name).to.eq('testName')
   })
 })
 
-describe('getNewChangeAddress', () => {
+describe('getWalletUnspents', () => {
   it('should exist', () => {
-    expect(api.getNewChangeAddress).to.be.a('function')
+    expect(api.getWalletUnspents).to.be.a('function')
   })
 })
 

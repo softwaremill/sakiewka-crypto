@@ -9,11 +9,13 @@ import {
   CreateWalletBackendParams,
   GetWalletBackendResponse,
   ListWalletsBackendResponse,
+  CreateNewAddressBackendResponse,
   EthGetTransactionParamsResponse,
   EthSendTransactionResponse
 } from 'backend-api'
 import request from './utils/request'
 import { BACKEND_API_PREFIX } from './constants'
+import { removeUndefinedFromObject } from './utils/helpers'
 
 // TODO: handle api errors
 
@@ -110,12 +112,23 @@ export const listWallets = async (
   return response.data
 }
 
-export const getWalletUnspents = (token: string, id: string, amount: number): Promise<UTXO[]> => {
-  return Promise.resolve([])
+export const createNewAddress = async (token: string, id: string, name?: string): Promise<CreateNewAddressBackendResponse> => {
+  const options = {
+    method: 'POST',
+    headers: {
+      Authorization: token
+    },
+    body: JSON.stringify(removeUndefinedFromObject({
+      name
+    }))
+  }
+
+  const response = await request(`${getUrlBase()}/btc/wallet/${id}/address`, options)
+  return response.data
 }
 
-export const getNewChangeAddress = (token: string, id: string): Promise<string> => {
-  return Promise.resolve('')
+export const getWalletUnspents = (token: string, id: string, amount: number): Promise<UTXO[]> => {
+  return Promise.resolve([])
 }
 
 // transaction
