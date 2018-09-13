@@ -12,7 +12,7 @@ import {
 describe('sendCoins', () => {
   // mocks
   // @ts-ignore
-  backendApi.getNewChangeAddress = jest.fn(() => {
+  backendApi.createNewAddress = jest.fn(() => {
     return Promise.resolve('3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM')
   })
 
@@ -142,9 +142,9 @@ describe('sendCoins to multiple outputs', () => {
       })
     })
 
-    // mocks getNewChangeAddress
+    // mocks createNewAddress
     // @ts-ignore
-    backendApi.getNewChangeAddress = jest.fn(() => {
+    backendApi.createNewAddress = jest.fn(() => {
       return Promise.resolve('3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM')
     })
 
@@ -272,7 +272,7 @@ describe('sumOutputAmounts', () => {
 //     })
 
 //     // @ts-ignore
-//     backendApi.getNewChangeAddress = jest.fn(() => {
+//     backendApi.createNewAddress = jest.fn(() => {
 //       return Promise.resolve('2Muk5nSmkQaJuAhKRVSSdTz9UfRfw5jCXkg')
 //     })
 

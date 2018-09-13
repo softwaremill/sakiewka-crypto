@@ -1,5 +1,5 @@
 import { SendCoinsParams, UTXO, Recipent } from '../types/domain'
-import { getWalletUnspents, getWallet, sendTransaction, getNewChangeAddress } from './backend-api'
+import { getWalletUnspents, getWallet, sendTransaction, createNewAddress } from './backend-api'
 import { getRecommendedFee } from './utils/fees'
 import { BITCOIN_NETWORK } from './constants'
 import {
@@ -48,7 +48,7 @@ export const sendCoins = async (
   const outputsAmount = sumOutputAmounts(params.recipents)
 
   const changeAmount = calculateChange(unspents, outputsAmount + fee)
-  const changeAddres = await getNewChangeAddress(params.userToken, params.walletId)
+  const changeAddres = await createNewAddress(params.userToken, params.walletId)
 
   unspents.forEach((uns: UTXO) => {
     txb.addInput(uns.txId, uns.index)
