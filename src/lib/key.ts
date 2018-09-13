@@ -3,6 +3,7 @@ import { KeyPair } from '../types/domain'
 import { getRandomBytes, encrypt } from './crypto'
 import { base58ToHDNode, seedBufferToHDNode, hdNodeToBase58Pub, hdNodeToBase58Prv } from './bitcoin'
 import { HDNode } from 'bitcoinjs-lib'
+import { getKey as getKeyBackend } from './backend-api'
 
 export const generateNewKeyPair = (
   path?: string, networkName: string = BITCOIN_NETWORK
@@ -49,3 +50,9 @@ export const deriveKey = (
   if (path === '') return node
   return node.derivePath(path)
 }
+
+export const getKey = (
+  userToken: string,
+  keyId: string,
+  includePrivate?: boolean
+) => getKeyBackend(userToken, keyId, includePrivate)

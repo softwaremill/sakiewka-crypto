@@ -116,3 +116,24 @@ describe('deriveKeyPair', () => {
     expect(rootKeyPair.pubKey).to.not.eq(derivedKeyPair.pubKey)
   })
 })
+
+describe('getKey', () => {
+  it('should exist', () => {
+    expect(keyModule.getKey).to.be.a('function')
+  })
+
+  it('should pass proper arguments to backend-api method and return result of its call', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    keyModule.getKey = mockImplementation
+
+    const res = await keyModule.getKey('testToken', 'abcd')
+
+    const [token, keyId, includePrivate] = mockImplementation.mock.calls[0]
+    expect(token).to.eq('testToken')
+    expect(keyId).to.eq('abcd')
+    expect(includePrivate).to.eq(undefined)
+    expect(res).to.eq('backend response')
+  })
+})
