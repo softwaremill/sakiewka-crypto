@@ -12,7 +12,8 @@ import {
   CreateNewAddressBackendResponse,
   GetAddressBackendResponse,
   EthGetTransactionParamsResponse,
-  EthSendTransactionResponse
+  EthSendTransactionResponse,
+  GetKeyBackendResponse
 } from 'backend-api'
 import request from './utils/request'
 import { BACKEND_API_PREFIX } from './constants'
@@ -147,6 +148,22 @@ export const getWalletUnspents = (token: string, id: string, amount: number): Pr
 // transaction
 export const sendTransaction = (token: string, transactionHex: string): Promise<boolean> => {
   return Promise.resolve(true)
+}
+
+export const getKey = async (
+  token: string,
+  keyId: string,
+  includePrivate?: boolean
+): Promise<GetKeyBackendResponse> => {
+  const options = {
+    method: 'GET',
+    headers: {
+      Authorization: token
+    }
+  }
+
+  const response = await request(`${getUrlBase()}/btc/key/${keyId}${includePrivate ? `?includePrivate=${includePrivate}` : ''}`, options)
+  return response.data
 }
 
 // ETH

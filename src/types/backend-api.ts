@@ -49,6 +49,8 @@ export interface GetAddressBackendResponse {
 
 export interface ListWalletsBackendResponse {}
 
+export interface GetKeyBackendResponse {}
+
 export interface EthGetTransactionParamsResponse {
   gasLimit: string,
   gasPrice: string,

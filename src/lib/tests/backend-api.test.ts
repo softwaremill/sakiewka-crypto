@@ -179,7 +179,6 @@ describe('getAddress', () => {
     expect(params.headers.Authorization).to.eq('testToken')
   })
 })
-
 describe('getWalletUnspents', () => {
   it('should exist', () => {
     expect(api.getWalletUnspents).to.be.a('function')
@@ -189,6 +188,32 @@ describe('getWalletUnspents', () => {
 describe('sendTransaction', () => {
   it('should exist', () => {
     expect(api.sendTransaction).to.be.a('function')
+  })
+})
+
+describe('getKey', () => {
+  it('should exist', () => {
+    expect(api.getKey).to.be.a('function')
+  })
+
+  it('should send proper request without includePrivate param', async () => {
+    await api.getKey('testToken', 'testKeyId')
+
+    const [url, params] = mockImplementation.mock.calls[0]
+
+    expect(url).to.eq('backurl/api/v1/btc/key/testKeyId')
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
+  })
+
+  it('should send proper request with includePrivate param', async () => {
+    await api.getKey('testToken', 'testKeyId', true)
+
+    const [url, params] = mockImplementation.mock.calls[0]
+
+    expect(url).to.eq('backurl/api/v1/btc/key/testKeyId?includePrivate=true')
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
   })
 })
 
