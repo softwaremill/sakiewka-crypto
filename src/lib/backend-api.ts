@@ -11,6 +11,7 @@ import {
   ListWalletsBackendResponse,
   CreateNewAddressBackendResponse,
   GetAddressBackendResponse,
+  ListAddressesBackendResponse,
   EthGetTransactionParamsResponse,
   EthSendTransactionResponse,
   GetKeyBackendResponse
@@ -138,6 +139,25 @@ export const getAddress = async (token: string, walletId: string, address: strin
   }
 
   const response = await request(`${getUrlBase()}/btc/wallet/${walletId}/address/${address}`, options)
+  return response.data
+}
+
+export const listAddresses = async (
+  token: string,
+  walletId: string,
+  limit: number,
+  nextPageToken?: string
+): Promise<ListAddressesBackendResponse> => {
+  const options = {
+    method: 'GET',
+    headers: {
+      Authorization: token
+    }
+  }
+
+  const queryString = `limit=${limit}${nextPageToken ? `&nextPageToken=${nextPageToken}` : ''}`
+
+  const response = await request(`${getUrlBase()}/btc/wallet/${walletId}/address?${queryString}`, options)
   return response.data
 }
 

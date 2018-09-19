@@ -179,6 +179,33 @@ describe('getAddress', () => {
     expect(params.headers.Authorization).to.eq('testToken')
   })
 })
+
+describe('listAddresses', () => {
+  it('should exist', () => {
+    expect(api.listAddresses).to.be.a('function')
+  })
+
+  it('should send proper request without nextPageToken', async () => {
+    await api.listAddresses('testToken', 'testWalletId', 10)
+
+    const [url, params] = mockImplementation.mock.calls[0]
+
+    expect(url).to.eq('backurl/api/v1/btc/wallet/testWalletId/address?limit=10')
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
+  })
+
+  it('should send proper request with nextPageToken', async () => {
+    await api.listAddresses('testToken', 'testWalletId', 10, 'abcd')
+
+    const [url, params] = mockImplementation.mock.calls[0]
+
+    expect(url).to.eq('backurl/api/v1/btc/wallet/testWalletId/address?limit=10&nextPageToken=abcd')
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
+  })
+})
+
 describe('getWalletUnspents', () => {
   it('should exist', () => {
     expect(api.getWalletUnspents).to.be.a('function')

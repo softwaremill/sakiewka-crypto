@@ -47,6 +47,8 @@ export interface GetAddressBackendResponse {
   created: string
 }
 
+export interface ListAddressesBackendResponse {}
+
 export interface ListWalletsBackendResponse {}
 
 export interface GetKeyBackendResponse {}
