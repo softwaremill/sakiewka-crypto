@@ -79,3 +79,25 @@ describe('getAddress', () => {
     expect(res).to.eq('backend response')
   })
 })
+
+describe('listAddresses', () => {
+  it('should exist', () => {
+    expect(addressModule.listAddresses).to.be.a('function')
+  })
+
+  it('should pass proper arguments to backend-api method and return result of its call', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    addressModule.listAddresses = mockImplementation
+
+    const res = await addressModule.listAddresses('testToken', 'testWalletId', 101, 'testNextPageToken')
+
+    const [token, walletId, limit, nextPageToken] = mockImplementation.mock.calls[0]
+    expect(token).to.eq('testToken')
+    expect(walletId).to.eq('testWalletId')
+    expect(limit).to.eq(101)
+    expect(nextPageToken).to.eq('testNextPageToken')
+    expect(res).to.eq('backend response')
+  })
+})

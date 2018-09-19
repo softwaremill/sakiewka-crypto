@@ -1,7 +1,8 @@
 import { createMultisigRedeemScript, redeemScriptToAddress } from './bitcoin'
 import {
   createNewAddress as createNewAddressBackend,
-  getAddress as getAddressBackend
+  getAddress as getAddressBackend,
+  listAddresses as listAddressesBackend
 } from './backend-api'
 import { deriveKey } from './key'
 import { BITCOIN_NETWORK } from './constants'
@@ -30,3 +31,10 @@ export const getAddress = (
   walletId: string,
   address: string
 ) => getAddressBackend(userToken, walletId, address)
+
+export const listAddresses = (
+  userToken: string,
+  walletId: string,
+  limit: number,
+  nextPageToken?: string
+) => listAddressesBackend(userToken, walletId, limit, nextPageToken)
