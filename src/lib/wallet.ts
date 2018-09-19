@@ -4,7 +4,8 @@ import { removeUndefinedFromObject } from './utils/helpers'
 import {
   createWallet as createWalletBackend,
   getWallet as getWalletBackend,
-  listWallets as listWaletsBackend
+  listWallets as listWaletsBackend,
+  getWalletBalance as getWalletBalanceBackend,
 } from './backend-api'
 import { deriveKeyPair, generateNewKeyPair, encryptKeyPair } from './key'
 import { CreateWalletBackendParams } from '../types/backend-api'
@@ -52,4 +53,10 @@ export const listWallets = (
   userToken: string, limit: number, nextPageToken?: string
 ) => {
   return listWaletsBackend(userToken, limit, nextPageToken)
+}
+
+export const getWalletBalance = (
+  userToken: string, walletId: string
+) => {
+  return getWalletBalanceBackend(userToken, walletId)
 }
