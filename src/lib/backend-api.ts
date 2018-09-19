@@ -9,6 +9,7 @@ import {
   CreateWalletBackendParams,
   GetWalletBackendResponse,
   ListWalletsBackendResponse,
+  GetWalletBalanceBackendResponse,
   CreateNewAddressBackendResponse,
   GetAddressBackendResponse,
   ListAddressesBackendResponse,
@@ -112,6 +113,21 @@ export const listWallets = async (
   const queryString = `limit=${limit}${nextPageToken ? `&nextPageToken=${nextPageToken}` : ''}`
 
   const response = await request(`${getUrlBase()}/btc/wallet?${queryString}`, options)
+  return response.data
+}
+
+export const getWalletBalance = async (
+  token: string,
+  walletId: string
+): Promise<GetWalletBalanceBackendResponse> => {
+  const options = {
+    method: 'GET',
+    headers: {
+      Authorization: token
+    }
+  }
+
+  const response = await request(`${getUrlBase()}/btc/wallet/${walletId}/balance`, options)
   return response.data
 }
 

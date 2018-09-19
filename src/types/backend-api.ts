@@ -51,6 +51,8 @@ export interface ListAddressesBackendResponse {}
 
 export interface ListWalletsBackendResponse {}
 
+export interface GetWalletBalanceBackendResponse {}
+
 export interface GetKeyBackendResponse {}
 
 export interface EthGetTransactionParamsResponse {
