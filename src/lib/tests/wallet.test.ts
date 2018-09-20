@@ -3,34 +3,48 @@ import { expect } from 'chai'
 import * as wallet from '../wallet'
 import * as backendApi from '../backend-api'
 
-// @ts-ignore
-backendApi.createWallet = jest.fn(() => {
-  return Promise.resolve({
-    id: '123'
-  })
-})
-
 describe('createWallet', () => {
   it('should exist', () => {
     expect(wallet.createWallet).to.be.a('function')
   })
 
-  it('should return keyPairs and wallet id', async () => {
+  it('should pass proper arguments (when no pub keys provided) to backend-api method and return result of its call', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    backendApi.createWallet = mockImplementation
+
     const params = {
       passphrase: 'abcd',
       name: 'testLabel'
     }
 
     const result = await wallet.createWallet('abcd', params)
+    const [token, backendRequestParams] = mockImplementation.mock.calls[0]
 
-    expect(result).to.haveOwnProperty('walletId')
-    expect(result).to.haveOwnProperty('user')
-    expect(result).to.haveOwnProperty('backup')
-    expect(result.backup.prvKey.slice(0, 4)).to.be.eq('xprv')
-    expect(result.user.pubKey.slice(0, 4)).to.be.eq('xpub')
+    expect(token).to.eq('abcd')
+    expect(backendRequestParams).to.haveOwnProperty('userPrvKey')
+    expect(backendRequestParams).to.haveOwnProperty('backupPrvKey')
+    expect(backendRequestParams).to.haveOwnProperty('name')
+    expect(backendRequestParams).to.haveOwnProperty('userPubKey')
+    expect(backendRequestParams).to.haveOwnProperty('backupPubKey')
+    expect(result).to.eq('backend response')
+
+    // check if sending encrypted xprvs
+    expect(JSON.parse(backendRequestParams.userPrvKey)).to.haveOwnProperty('ct')
+    expect(JSON.parse(backendRequestParams.backupPrvKey)).to.haveOwnProperty('ct')
+
+    // check if really sending xpubs
+    expect(backendRequestParams.userPubKey.slice(0, 4)).to.be.eq('xpub')
+    expect(backendRequestParams.backupPubKey.slice(0, 4)).to.be.eq('xpub')
   })
 
-  it('should not return private key when public key provided', async () => {
+  it('should pass proper arguments (when pub keys provided) to backend-api method and return result of its call', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    backendApi.createWallet = mockImplementation
+
     const params = {
       passphrase: 'abcd',
       name: 'testLabel',
@@ -39,11 +53,18 @@ describe('createWallet', () => {
     }
 
     const result = await wallet.createWallet('abcd', params)
+    const [token, backendRequestParams] = mockImplementation.mock.calls[0]
 
-    expect(result.user).to.not.haveOwnProperty('prvKey')
-    expect(result.user).to.haveOwnProperty('pubKey')
-    expect(result.backup).to.not.haveOwnProperty('prvKey')
-    expect(result.backup).to.haveOwnProperty('pubKey')
+    expect(token).to.eq('abcd')
+    expect(backendRequestParams).to.not.haveOwnProperty('userPrvKey')
+    expect(backendRequestParams).to.not.haveOwnProperty('backupPrvKey')
+    expect(backendRequestParams).to.haveOwnProperty('name')
+    expect(backendRequestParams).to.haveOwnProperty('userPubKey')
+    expect(backendRequestParams).to.haveOwnProperty('backupPubKey')
+    expect(result).to.eq('backend response')
+
+    expect(backendRequestParams.userPubKey).to.be.eq('123')
+    expect(backendRequestParams.backupPubKey).to.be.eq('321')
   })
 })
 
@@ -56,7 +77,7 @@ describe('getWallet', () => {
     // @ts-ignore
     const mockImplementation = jest.fn(() => 'backend response')
     // @ts-ignore
-    wallet.getWallet = mockImplementation
+    backendApi.getWallet = mockImplementation
 
     const res = await wallet.getWallet('testToken', 'walletId')
 
@@ -76,7 +97,7 @@ describe('listWallets', () => {
     // @ts-ignore
     const mockImplementation = jest.fn(() => 'backend response')
     // @ts-ignore
-    wallet.listWallets = mockImplementation
+    backendApi.listWallets = mockImplementation
 
     const res = await wallet.listWallets('testToken', 10, 'nextPageToken')
 
@@ -97,7 +118,7 @@ describe('getWalletBalance', () => {
     // @ts-ignore
     const mockImplementation = jest.fn(() => 'backend response')
     // @ts-ignore
-    wallet.getWalletBalance = mockImplementation
+    backendApi.getWalletBalance = mockImplementation
 
     const res = await wallet.getWalletBalance('testToken', 'walletId')
 
