@@ -5,7 +5,7 @@ import {
   createWallet as createWalletBackend,
   getWallet as getWalletBackend,
   listWallets as listWaletsBackend,
-  getWalletBalance as getWalletBalanceBackend,
+  getWalletBalance as getWalletBalanceBackend
 } from './backend-api'
 import { deriveKeyPair, generateNewKeyPair, encryptKeyPair } from './key'
 import { CreateWalletBackendParams } from '../types/backend-api'
@@ -30,19 +30,10 @@ export const createWallet = async (userToken: string, params: WalletParams): Pro
     backupPrvKey: encryptedBackupKeyPair.prvKey
   })
 
-  const backendResponse = await createWalletBackend(
+  return createWalletBackend(
     userToken,
     <CreateWalletBackendParams> backendRequestParams
   )
-
-  return {
-    walletId: backendResponse.id,
-    user: userKeyPair,
-    backup: backupKeyPair,
-    service: {
-      pubKey: backendResponse.servicePubKey
-    }
-  }
 }
 
 export const getWallet = (userToken: string, walletId: string) => {
