@@ -3,6 +3,7 @@ module.exports = {
   exclude: [
     '**/tests/**/*',
     '**/bitcoin.ts',
+    '**/ethereum.ts',
     '**/index.ts',
     '**/notes.ts',
     '**/backend-api.ts',
