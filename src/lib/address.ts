@@ -5,17 +5,16 @@ import {
   listAddresses as listAddressesBackend
 } from './backend-api'
 import { deriveKey } from './key'
-import { BITCOIN_NETWORK } from './constants'
 
 export const generateNewMultisigAddress = (
-  rootKeys: String[], path: string, networkName: string = BITCOIN_NETWORK
+  rootKeys: String[], path: string
 ): any => {
   const derivedKeys = rootKeys.map((rootKey: string) => {
     return deriveKey(rootKey, path).neutered().toBase58()
   })
 
   const redeemScript = createMultisigRedeemScript(derivedKeys)
-  const address = redeemScriptToAddress(redeemScript, networkName)
+  const address = redeemScriptToAddress(redeemScript)
 
   return { address, redeemScript }
 }

@@ -1,7 +1,6 @@
 import { SendCoinsParams, UTXO, Recipent } from '../types/domain'
 import { getWalletUnspents, getWallet, sendTransaction, createNewAddress } from './backend-api'
 import { getRecommendedFee } from './utils/fees'
-import { BITCOIN_NETWORK } from './constants'
 import {
   createMultisigRedeemScript,
   initializeTxBuilder,
@@ -36,11 +35,11 @@ export const sumOutputAmounts = (outputs: Recipent[]): number => {
 }
 
 export const sendCoins = async (
-  params: SendCoinsParams, networkName: string = BITCOIN_NETWORK
+  params: SendCoinsParams
 ): Promise<any> => {
   const unspents = await getWalletUnspents(params.userToken, params.walletId, 10000)
   const wallet = await getWallet(params.userToken, params.walletId)
-  const txb = initializeTxBuilder(networkName)
+  const txb = initializeTxBuilder()
 
   const recommendedFee = await getRecommendedFee()
   const fee = calculateFee(recommendedFee, unspents.length, params.recipents.length + 1)
@@ -55,15 +54,15 @@ export const sendCoins = async (
   })
 
   params.recipents.forEach((out: Recipent) => {
-    txb.addOutput(addressToOutputScript(out.address, networkName), out.amount)
+    txb.addOutput(addressToOutputScript(out.address), out.amount)
   })
 
-  txb.addOutput(addressToOutputScript(changeAddres.address, networkName), changeAmount)
+  txb.addOutput(addressToOutputScript(changeAddres.address), changeAmount)
 
   unspents.forEach((uns: UTXO, idx: number) => {
-    const signingKey = deriveKey(params.xprv, uns.path, networkName).keyPair
+    const signingKey = deriveKey(params.xprv, uns.path).keyPair
 
-    const derivedPubKeys = wallet.pubKeys.map((key: string) => deriveKey(key, uns.path, networkName).neutered().toBase58())
+    const derivedPubKeys = wallet.pubKeys.map((key: string) => deriveKey(key, uns.path).neutered().toBase58())
     const redeemScript = createMultisigRedeemScript(derivedPubKeys)
 
     txb.sign(idx, signingKey, redeemScript)
