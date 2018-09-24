@@ -6,6 +6,8 @@ This is a library intended to be used as a dependency to other packages. It hand
 
 First run  `npm install`
 
+To use Testnet set `BTC_NETWORK` env variable to `testnet`.
+
 ### Docs:
 Run `npm run generate-docs`  
 Open `/docs/index.html`
