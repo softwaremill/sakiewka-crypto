@@ -6,6 +6,10 @@ This is a library intended to be used as a dependency to other packages. It hand
 
 First run  `npm install`
 
+### Docs:
+Run `npm run generate-docs`  
+Open `/docs/index.html`
+
 ##### Tests: 
 To run integration tests you have to specify `BACKEND_API_URL` in `.env` file.
 
