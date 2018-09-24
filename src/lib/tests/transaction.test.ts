@@ -8,13 +8,22 @@ import { generateNewMultisigAddress } from '../address'
 import {
   txFromHex, txBuilderFromTx
 } from '../bitcoin'
+import * as config from '../config'
 
-describe('sendCoins', () => {
+beforeEach(() => {
+  // @ts-ignore
+  config.network = 'bitcoin'
+
   // mocks
   // @ts-ignore
   backendApi.createNewAddress = jest.fn(() => {
-    return Promise.resolve('3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM')
+    return Promise.resolve({
+      address: '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM'
+    })
   })
+})
+
+describe('sendCoins', () => {
 
   // @ts-ignore
   fees.getRecommendedFee = jest.fn(() => {
@@ -97,6 +106,89 @@ describe('sendCoins', () => {
     expect(tx.outs.length).to.be.eq(2)
     expect(tx.ins.length).to.be.eq(1)
   })
+
+  it('should send coins to testnet', async () => {
+    // @ts-ignore
+    config.network = 'testnet'
+
+    // @ts-ignore
+    backendApi.createNewAddress = jest.fn(() => {
+      return Promise.resolve({
+        address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi'
+      })
+    })
+
+    // generates keyPairs and address
+    const userKeyPair = generateNewKeyPair()
+    const backupKeyPair = generateNewKeyPair()
+    const serverKeyPair = generateNewKeyPair()
+    const anotherKeyPair = generateNewKeyPair()
+
+    const { address, redeemScript } = generateNewMultisigAddress([
+      userKeyPair.pubKey,
+      backupKeyPair.pubKey,
+      serverKeyPair.pubKey
+    ], '0/0')
+
+    // @ts-ignore
+    backendApi.getWalletUnspents = jest.fn(() => {
+      return Promise.resolve([
+        {
+          address,
+          txId: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+          index: 0,
+          path: '0/0',
+          amount: 700000000
+        }
+      ])
+    })
+
+    // @ts-ignore
+    backendApi.getWallet = jest.fn(() => {
+      return Promise.resolve({
+        pubKeys: [
+          userKeyPair.pubKey,
+          backupKeyPair.pubKey,
+          serverKeyPair.pubKey
+        ]
+      })
+    })
+
+    const { transactionHex, status } = await transaction.sendCoins({
+      walletId: '13',
+      userToken: '1234',
+      walletPassphrase: 'abcd',
+      recipents: [{
+        address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi',
+        amount: 500000000
+      }],
+      xprv: userKeyPair.prvKey
+    })
+
+    const serverECPair = deriveKey(serverKeyPair.prvKey, '0/0').keyPair
+    const userECPair = deriveKey(userKeyPair.prvKey, '0/0').keyPair
+    const anotherECPair = deriveKey(anotherKeyPair.prvKey, '0/0').keyPair
+
+    // recreates transaction builder
+    const tx = txFromHex(transactionHex)
+    const txb = txBuilderFromTx(tx)
+
+    // should be able to sign with other keys without errors
+    txb.sign(0, serverECPair, redeemScript)
+
+    // signing again or using wrong key should throw errors
+    expect(() => {
+      txb.sign(0, userECPair, redeemScript)
+    }).to.throw('Signature already exists')
+
+    expect(() => {
+      txb.sign(0, anotherECPair, redeemScript)
+    }).to.throw('Key pair cannot sign for this input')
+
+    expect(status).to.be.true
+    expect(tx.outs.length).to.be.eq(2)
+    expect(tx.ins.length).to.be.eq(1)
+  })
 })
 
 describe('sendCoins to multiple outputs', () => {
@@ -145,7 +237,9 @@ describe('sendCoins to multiple outputs', () => {
     // mocks createNewAddress
     // @ts-ignore
     backendApi.createNewAddress = jest.fn(() => {
-      return Promise.resolve('3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM')
+      return Promise.resolve({
+        address: '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM'
+      })
     })
 
     const { transactionHex, status } = await transaction.sendCoins({

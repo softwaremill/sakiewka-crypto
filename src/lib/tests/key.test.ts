@@ -2,12 +2,18 @@ import { expect } from 'chai'
 
 import * as keyModule from '../key'
 import * as backendApi from '../backend-api'
+import * as config from '../config'
 
 // @ts-ignore
 backendApi.createWallet = jest.fn(() => {
   return Promise.resolve({
     id: '123'
   })
+})
+
+beforeEach(() => {
+  // @ts-ignore
+  config.network = 'bitcoin'
 })
 
 describe('generateNewKeyPair', () => {
@@ -22,6 +28,22 @@ describe('generateNewKeyPair', () => {
     expect(result).to.haveOwnProperty('prvKey')
     expect(result.pubKey).to.have.lengthOf(111)
     expect(result.prvKey).to.have.lengthOf(111)
+    expect(result.pubKey.slice(0, 4)).to.eq('xpub')
+  })
+
+  it('should return new testnet keyPair', () => {
+    // @ts-ignore
+    config.network = 'testnet'
+    const result = keyModule.generateNewKeyPair()
+
+    expect(result).to.haveOwnProperty('pubKey')
+    expect(result).to.haveOwnProperty('prvKey')
+    expect(result.pubKey).to.have.lengthOf(111)
+    expect(result.prvKey).to.have.lengthOf(111)
+    expect(result.pubKey.slice(0, 4)).to.eq('tpub')
+    console.log(result.pubKey)
+    console.log(result.pubKey)
+    console.log(result.pubKey)
   })
 })
 
@@ -40,7 +62,7 @@ describe('encryptKeyPair', () => {
   })
 })
 
-describe('derivedKey', () => {
+describe('deriveKey', () => {
   it('should exist', () => {
     expect(keyModule.deriveKey).to.be.a('function')
   })
@@ -61,6 +83,7 @@ describe('derivedKey', () => {
     const result = keyModule.deriveKey(keyPair.pubKey, path)
 
     expect(result).to.have.property('keyPair')
+    expect(result.toBase58().slice(0, 4)).to.eq('xpub')
   })
 
   it('should work the same for relative and absolute paths', () => {
@@ -88,6 +111,18 @@ describe('derivedKey', () => {
     expect(relativePrvKey).to.eq(absolutePrvKey)
     expect(relativePubKey).to.eq(absolutePubKey)
     expect(relativePubKeyFromPublic).to.eq(absolutePubKey)
+  })
+
+  it('should create testnet key', () => {
+    // @ts-ignore
+    config.network = 'testnet'
+    const path = `11/20/15`
+    const keyPair = keyModule.generateNewKeyPair()
+
+    const result = keyModule.deriveKey(keyPair.pubKey, path)
+
+    expect(result).to.have.property('keyPair')
+    expect(result.toBase58().slice(0, 4)).to.eq('tpub')
   })
 })
 

@@ -1,6 +1,12 @@
 import { expect } from 'chai'
 
 import * as addressModule from '../address'
+import * as config from '../config'
+
+beforeEach(() => {
+  // @ts-ignore
+  config.network = 'bitcoin'
+})
 
 describe('generateNewMultisigAddress', () => {
   it('should exist', () => {
@@ -19,6 +25,23 @@ describe('generateNewMultisigAddress', () => {
       '0/23')
 
     expect(address).to.be.equal('32ora6gx1fLjdgbstMs4SdJhkC8QsMjcat')
+    expect(redeemScript).to.be.an('Uint8Array')
+  })
+
+  it('should return proper testnet address', () => {
+    // @ts-ignore
+    config.network = 'testnet'
+    const pubKeys = [
+      'tpubD6NzVbkrYhZ4YLQpJAWwxCiNVAH13QSiFHWWTRmocy5zCMN6Nr8fbLVN38Y5nu7KwZ24ux74qotyyNkeF9KN52Gawcjr4ujHkQUDTBmw8Bu',
+      'tpubD6NzVbkrYhZ4YWW2LBu48ZLMDtU6YZNug3dArpmhCZVCeRduVLF9FRNaLbwkND5Twf4DS1aXuFqvYd1S4BBTFGwjDM7iy1CK8vuwJHYqpdd',
+      'tpubD6NzVbkrYhZ4YjDKW7sGf2uqBaCPzstZwrEAXSNhWKze43HqujV38SeGLAtjq4XPts9D5Fb4dWbiP9DtuZPt75DQSeU5U9QLzoMtCtsf92b'
+    ]
+
+    const { address, redeemScript } = addressModule.generateNewMultisigAddress(
+      pubKeys,
+      '0/23')
+
+    expect(address).to.be.equal('2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi')
     expect(redeemScript).to.be.an('Uint8Array')
   })
 })
