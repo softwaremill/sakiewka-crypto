@@ -5,7 +5,8 @@ import {
   createWallet as createWalletBackend,
   getWallet as getWalletBackend,
   listWallets as listWaletsBackend,
-  getWalletBalance as getWalletBalanceBackend
+  getWalletBalance as getWalletBalanceBackend,
+  getUnspents as getUnspentsBackend
 } from './backend-api'
 import { deriveKeyPair, generateNewKeyPair, encryptKeyPair } from './key'
 import { CreateWalletBackendParams } from '../types/backend-api'
@@ -36,18 +37,18 @@ export const createWallet = async (userToken: string, params: WalletParams): Pro
   )
 }
 
-export const getWallet = (userToken: string, walletId: string) => {
-  return getWalletBackend(userToken, walletId)
-}
+export const getWallet = (
+  userToken: string, walletId: string
+) => getWalletBackend(userToken, walletId)
 
 export const listWallets = (
   userToken: string, limit: number, nextPageToken?: string
-) => {
-  return listWaletsBackend(userToken, limit, nextPageToken)
-}
+) => listWaletsBackend(userToken, limit, nextPageToken)
 
 export const getWalletBalance = (
   userToken: string, walletId: string
-) => {
-  return getWalletBalanceBackend(userToken, walletId)
-}
+) => getWalletBalanceBackend(userToken, walletId)
+
+export const getUnspents = (
+  token: string, walletId: string, amount: number, feeRate?: number
+) => getUnspentsBackend(token, walletId, amount, feeRate)

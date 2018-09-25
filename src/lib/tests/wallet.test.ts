@@ -128,3 +128,25 @@ describe('getWalletBalance', () => {
     expect(res).to.eq('backend response')
   })
 })
+
+describe('getUnspents', () => {
+  it('should exist', () => {
+    expect(wallet.getUnspents).to.be.a('function')
+  })
+
+  it('should pass proper arguments to backend-api method and return result of its call', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    backendApi.getUnspents = mockImplementation
+
+    const res = await wallet.getUnspents('testToken', 'walletId', 123, 2)
+
+    const [token, walletId, amount, fee] = mockImplementation.mock.calls[0]
+    expect(token).to.eq('testToken')
+    expect(walletId).to.eq('walletId')
+    expect(amount).to.eq(123)
+    expect(fee).to.eq(2)
+    expect(res).to.eq('backend response')
+  })
+})
