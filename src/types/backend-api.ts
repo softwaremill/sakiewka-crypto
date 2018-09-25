@@ -1,3 +1,5 @@
+import { UTXO } from './domain'
+
 export interface LoginBackendResponse {
   token: string
 }
@@ -53,7 +55,11 @@ export interface ListWalletsBackendResponse {}
 
 export interface GetWalletBalanceBackendResponse {}
 
-export interface ListUnspentsBackendResponse {}
+export interface ListUnspentsBackendResponse {
+  data: {
+    unspents: UTXO[]
+  }
+}
 
 export interface GetKeyBackendResponse {}
 

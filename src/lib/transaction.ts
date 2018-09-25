@@ -37,7 +37,8 @@ export const sumOutputAmounts = (outputs: Recipent[]): number => {
 export const sendCoins = async (
   params: SendCoinsParams
 ): Promise<any> => {
-  const unspents = await listUnspents(params.userToken, params.walletId, 10000)
+  const unspentsResponse = await listUnspents(params.userToken, params.walletId, 10000)
+  const unspents = unspentsResponse.data.unspents
   const wallet = await getWallet(params.userToken, params.walletId)
   const txb = initializeTxBuilder()
 
