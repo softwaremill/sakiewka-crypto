@@ -222,13 +222,13 @@ describe('listAddresses', () => {
   })
 })
 
-describe('getUnspents', () => {
+describe('listUnspents', () => {
   it('should exist', () => {
-    expect(api.getUnspents).to.be.a('function')
+    expect(api.listUnspents).to.be.a('function')
   })
 
   it('should send proper request', async () => {
-    await api.getUnspents('testToken', 'testWalletId', 888, 22)
+    await api.listUnspents('testToken', 'testWalletId', 888, 22)
 
     const [url, params] = mockImplementation.mock.calls[0]
 

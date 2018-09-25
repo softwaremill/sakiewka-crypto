@@ -6,7 +6,7 @@ import {
   getWallet as getWalletBackend,
   listWallets as listWaletsBackend,
   getWalletBalance as getWalletBalanceBackend,
-  getUnspents as getUnspentsBackend
+  listUnspents as listUnspentsBackend
 } from './backend-api'
 import { deriveKeyPair, generateNewKeyPair, encryptKeyPair } from './key'
 import { CreateWalletBackendParams } from '../types/backend-api'
@@ -49,6 +49,6 @@ export const getWalletBalance = (
   userToken: string, walletId: string
 ) => getWalletBalanceBackend(userToken, walletId)
 
-export const getUnspents = (
+export const listUnspents = (
   token: string, walletId: string, amount: number, feeRate?: number
-) => getUnspentsBackend(token, walletId, amount, feeRate)
+) => listUnspentsBackend(token, walletId, amount, feeRate)

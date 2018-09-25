@@ -1,5 +1,5 @@
 import { SendCoinsParams, UTXO, Recipent } from '../types/domain'
-import { getUnspents, getWallet, sendTransaction, createNewAddress } from './backend-api'
+import { listUnspents, getWallet, sendTransaction, createNewAddress } from './backend-api'
 import { getRecommendedFee } from './utils/fees'
 import {
   createMultisigRedeemScript,
@@ -37,7 +37,7 @@ export const sumOutputAmounts = (outputs: Recipent[]): number => {
 export const sendCoins = async (
   params: SendCoinsParams
 ): Promise<any> => {
-  const unspents = await getUnspents(params.userToken, params.walletId, 10000)
+  const unspents = await listUnspents(params.userToken, params.walletId, 10000)
   const wallet = await getWallet(params.userToken, params.walletId)
   const txb = initializeTxBuilder()
 

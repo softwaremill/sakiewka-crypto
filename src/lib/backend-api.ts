@@ -13,7 +13,7 @@ import {
   CreateNewAddressBackendResponse,
   GetAddressBackendResponse,
   ListAddressesBackendResponse,
-  GetUnspentsBackendResponse,
+  ListUnspentsBackendResponse,
   EthGetTransactionParamsResponse,
   EthSendTransactionResponse,
   GetKeyBackendResponse
@@ -179,9 +179,9 @@ export const listAddresses = async (
   return response.data
 }
 
-export const getUnspents = async (
+export const listUnspents = async (
   token: string, walletId: string, amount: number, feeRate?: number
-): Promise<GetUnspentsBackendResponse> => {
+): Promise<ListUnspentsBackendResponse> => {
   const options = {
     method: 'GET',
     headers: {

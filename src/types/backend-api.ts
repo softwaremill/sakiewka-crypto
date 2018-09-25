@@ -53,7 +53,7 @@ export interface ListWalletsBackendResponse {}
 
 export interface GetWalletBalanceBackendResponse {}
 
-export interface GetUnspentsBackendResponse {}
+export interface ListUnspentsBackendResponse {}
 
 export interface GetKeyBackendResponse {}
 
