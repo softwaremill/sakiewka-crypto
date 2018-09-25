@@ -41,9 +41,6 @@ describe('generateNewKeyPair', () => {
     expect(result.pubKey).to.have.lengthOf(111)
     expect(result.prvKey).to.have.lengthOf(111)
     expect(result.pubKey.slice(0, 4)).to.eq('tpub')
-    console.log(result.pubKey)
-    console.log(result.pubKey)
-    console.log(result.pubKey)
   })
 })
 

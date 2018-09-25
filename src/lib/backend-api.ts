@@ -13,6 +13,7 @@ import {
   CreateNewAddressBackendResponse,
   GetAddressBackendResponse,
   ListAddressesBackendResponse,
+  GetUnspentsBackendResponse,
   EthGetTransactionParamsResponse,
   EthSendTransactionResponse,
   GetKeyBackendResponse
@@ -24,6 +25,7 @@ import { removeUndefinedFromObject } from './utils/helpers'
 // TODO: handle api errors
 
 const getUrlBase = () => `${process.env.BACKEND_API_URL}/${BACKEND_API_PREFIX}`
+
 // BTC
 // user
 export const login = async (login: string, password: string): Promise<LoginBackendResponse>  => {
@@ -177,8 +179,18 @@ export const listAddresses = async (
   return response.data
 }
 
-export const getWalletUnspents = (token: string, id: string, amount: number): Promise<UTXO[]> => {
-  return Promise.resolve([])
+export const getUnspents = async (
+  token: string, walletId: string, amount: number, feeRate?: number
+): Promise<GetUnspentsBackendResponse> => {
+  const options = {
+    method: 'GET',
+    headers: {
+      Authorization: token
+    }
+  }
+
+  const response = await request(`${getUrlBase()}/btc/wallet/${walletId}/utxo?amountBtc=${amount}&feeRateSatoshi=${feeRate}`, options)
+  return response.data
 }
 
 // transaction

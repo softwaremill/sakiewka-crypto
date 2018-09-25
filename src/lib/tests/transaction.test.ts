@@ -48,7 +48,7 @@ describe('sendCoins', () => {
     ], '0/0')
 
     // @ts-ignore
-    backendApi.getWalletUnspents = jest.fn(() => {
+    backendApi.getUnspents = jest.fn(() => {
       return Promise.resolve([
         {
           address,
@@ -131,7 +131,7 @@ describe('sendCoins', () => {
     ], '0/0')
 
     // @ts-ignore
-    backendApi.getWalletUnspents = jest.fn(() => {
+    backendApi.getUnspents = jest.fn(() => {
       return Promise.resolve([
         {
           address,
@@ -208,9 +208,9 @@ describe('sendCoins to multiple outputs', () => {
       serverKeyPair.pubKey
     ], '')
 
-    // mocks getWalletUnspents
+    // mocks getUnspents
     // @ts-ignore
-    backendApi.getWalletUnspents = jest.fn(() => {
+    backendApi.getUnspents = jest.fn(() => {
       return Promise.resolve([
         {
           address,
@@ -346,7 +346,7 @@ describe('sumOutputAmounts', () => {
 //     )
 
 //     // @ts-ignore
-//     backendApi.getWalletUnspents = jest.fn(() => {
+//     backendApi.getUnspents = jest.fn(() => {
 //       return Promise.resolve([
 //         {
 //           txId,

@@ -222,9 +222,19 @@ describe('listAddresses', () => {
   })
 })
 
-describe('getWalletUnspents', () => {
+describe('getUnspents', () => {
   it('should exist', () => {
-    expect(api.getWalletUnspents).to.be.a('function')
+    expect(api.getUnspents).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    await api.getUnspents('testToken', 'testWalletId', 888, 22)
+
+    const [url, params] = mockImplementation.mock.calls[0]
+
+    expect(url).to.eq('backurl/api/v1/btc/wallet/testWalletId/utxo?amountBtc=888&feeRateSatoshi=22')
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
   })
 })
 
