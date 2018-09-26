@@ -49,15 +49,19 @@ describe('sendCoins', () => {
 
     // @ts-ignore
     backendApi.listUnspents = jest.fn(() => {
-      return Promise.resolve([
-        {
-          address,
-          txId: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
-          index: 0,
-          path: '0/0',
-          amount: 700000000
+      return Promise.resolve({
+        data: {
+          unspents: [
+            {
+              address,
+              txId: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+              index: 0,
+              path: '0/0',
+              amount: 700000000
+            }
+          ]
         }
-      ])
+      })
     })
 
     // @ts-ignore
@@ -132,15 +136,19 @@ describe('sendCoins', () => {
 
     // @ts-ignore
     backendApi.listUnspents = jest.fn(() => {
-      return Promise.resolve([
-        {
-          address,
-          txId: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
-          index: 0,
-          path: '0/0',
-          amount: 700000000
+      return Promise.resolve({
+        data: {
+          unspents: [
+            {
+              address,
+              txId: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+              index: 0,
+              path: '0/0',
+              amount: 700000000
+            }
+          ]
         }
-      ])
+      })
     })
 
     // @ts-ignore
@@ -211,15 +219,19 @@ describe('sendCoins to multiple outputs', () => {
     // mocks listUnspents
     // @ts-ignore
     backendApi.listUnspents = jest.fn(() => {
-      return Promise.resolve([
-        {
-          address,
-          txId: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
-          index: 0,
-          path: '0/0',
-          amount: 700000000
+      return Promise.resolve({
+        data: {
+          unspents: [
+            {
+              address,
+              txId: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+              index: 0,
+              path: '0/0',
+              amount: 700000000
+            }
+          ]
         }
-      ])
+      })
     })
 
     // mocks getWallet
