@@ -1,6 +1,7 @@
 export interface ApiError {
-  code: number,
-  message: string
+  error: {
+    message: string
+  }
 }
 
 export interface RequestModel {
