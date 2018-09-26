@@ -1,6 +1,5 @@
 import nodeFetch, { Response } from 'node-fetch'
 import { ApiError } from '../../types/api'
-import { BackendApiError } from '../error'
 
 const parseJSON = (response: Response): null | Promise<ApiError> => {
   if (response.status === 204 || response.status === 205) {
@@ -16,7 +15,7 @@ const checkStatus = async (response: Response): Promise<Response> => {
   }
 
   const responseBody = await parseJSON(response)
-  throw new BackendApiError(responseBody.error.message)
+  throw new Error(responseBody.error.message)
 }
 
 export default function request(url: string, options: object): Promise<any> {
