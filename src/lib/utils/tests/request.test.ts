@@ -2,6 +2,7 @@ import { expect } from 'chai'
 import * as nodeFetch from 'node-fetch'
 
 import request from '../request'
+import { BackendApiError } from '../../error'
 
 describe('request', () => {
   it('should exist', () => {
@@ -32,6 +33,7 @@ describe('request', () => {
       await request(`http://localhost:8081/api/v1/btc/wallet/6416e7ee4d184f7d44c96a337ce74824eab444a656a3df53d6a55477304dd14f/utxo?amountBtc=333&feeRateSatoshi=22`, options)
     } catch (err) {
       expect(err.message).to.eq('test error')
+      expect(err).to.be.instanceof(BackendApiError)
     }
   })
 })

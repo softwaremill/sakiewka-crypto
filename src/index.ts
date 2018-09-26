@@ -6,6 +6,7 @@ import * as transactionEth from './lib/transaction-eth'
 import * as wallet from './lib/wallet'
 import * as key from './lib/key'
 import * as user from './lib/user'
+import * as error from './lib/error'
 
 export default {
   constants,
@@ -15,5 +16,6 @@ export default {
   transactionEth,
   wallet,
   key,
-  user
+  user,
+  error
 }
