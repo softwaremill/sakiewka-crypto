@@ -405,3 +405,36 @@ describe('sumOutputAmounts', () => {
 //     console.log(address)
 //   })
 // })
+
+describe('decodeTransaction', () => {
+  it('shoud exist', () => {
+    expect(transaction.decodeTransaction).to.be.a('function')
+  })
+
+  it('shoud decode transaction', () => {
+    const txHex = '0100000001145bb243544451ead3b8694a9597dc5e93583c0172ca16a2f2c74c8fd698be1102000000b40047304402205d30d1796f373290e554284fd333e3ea287709063b0461dae4577b2180787e980220121677e33785cc82b26b6a2146a34a759d15e5194dcf84c93db24e9ebcc6e374014c6952210214d16a77e4ddaa07d6dbef0ea757ea5d56f26b9bfc85534227004005c4ce102b2103e7cd55f382bcf7269dd813edd445d67de5c729b543bb20e31073ed835f661e322102c292a1d33bb482d6ab53a7328c0d0211808a785cc8769a9ac01cb3550144f37b53aeffffffff020065cd1d000000001976a914ff1cb7a5b23491534c66e7638f56d852ad47542288acf6bceb0b0000000017a91480cff499983050ec4268d749a1f898bec53e9fc28700000000'
+    const changeAddress = '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM'
+    const changeAmount = 199998710
+    const recipientAddress = '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN'
+    const sentAmount = 500000000
+    const utxoTxHash = '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14'
+    const utxoTxId = 2
+
+    const result = transaction.decodeTransaction(txHex)
+
+    expect(result).to.haveOwnProperty('outputs')
+    expect(result).to.haveOwnProperty('inputs')
+    expect(result.outputs[0]).to.haveOwnProperty('value')
+    expect(result.outputs[0]).to.haveOwnProperty('address')
+    expect(result.inputs[0]).to.haveOwnProperty('txHash')
+    expect(result.inputs[0]).to.haveOwnProperty('index')
+    expect(result.inputs).to.have.lengthOf(1)
+    expect(result.outputs).to.have.lengthOf(2)
+    expect(result.outputs[0].value).to.eq(sentAmount)
+    expect(result.outputs[0].address).to.eq(recipientAddress)
+    expect(result.outputs[1].value).to.eq(changeAmount)
+    expect(result.outputs[1].address).to.eq(changeAddress)
+    expect(result.inputs[0].txHash).to.eq(utxoTxHash)
+    expect(result.inputs[0].index).to.eq(utxoTxId)
+  })
+})

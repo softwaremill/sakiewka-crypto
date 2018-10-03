@@ -4,9 +4,17 @@ import { getRecommendedFee } from './utils/fees'
 import {
   createMultisigRedeemScript,
   initializeTxBuilder,
-  addressToOutputScript
+  addressToOutputScript,
+  txFromHex,
+  redeemScriptToAddress,
+  createP2SHMultisigRedeemScript,
+  outputScriptToAddress
 } from './bitcoin'
 import { deriveKey } from './key'
+import bitcoinjsLib, {
+  In,
+  Out
+} from 'bitcoinjs-lib'
 
 export const calculateChange = (unspents: UTXO[], transactionAmount: number): number => {
   const unspentsSum = unspents.reduce(
@@ -63,16 +71,12 @@ export const sendCoins = async (
   unspents.forEach((uns: UTXO, idx: number) => {
     const signingKey = deriveKey(params.xprv, uns.path).keyPair
 
+    // TODO: set proper order of signing keys. User key should be first
     const derivedPubKeys = wallet.pubKeys.map((key: string) => deriveKey(key, uns.path).neutered().toBase58())
     const redeemScript = createMultisigRedeemScript(derivedPubKeys)
 
     txb.sign(idx, signingKey, redeemScript)
   })
-
-  // TODO: amount when collecting unspent should be increased by fee
-  // TODO: check if change amount is not to small to create output
-
-  // TODO: retrieve userXprv from backend
 
   const transactionHex = txb.build().toHex()
   const status = await sendTransaction(params.userToken, transactionHex)
@@ -81,4 +85,24 @@ export const sendCoins = async (
     transactionHex,
     status
   }
+}
+
+export const decodeTransaction = (txHex: string) => {
+  const tx = txFromHex(txHex)
+
+  const outputs = tx.outs.map((output: Out) => {
+    return {
+      value: output.value,
+      address: outputScriptToAddress(output.script)
+    }
+  })
+
+  const inputs = tx.ins.map((input: In, idx: number) => {
+    return {
+      txHash: (input.hash.reverse() as Buffer).toString('hex'),
+      index: input.index
+    }
+  })
+
+  return { outputs, inputs }
 }

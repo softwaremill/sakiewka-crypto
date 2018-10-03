@@ -22,20 +22,30 @@ export const createMultisigRedeemScript = (
   base58Keys: string[]
 ): Buffer => {
   const keyBuffers = base58Keys.map((key: string) => base58ToKeyBuffer(key))
-
   return bitcoinjsLib.script.multisig.output.encode(2, keyBuffers)
+}
+
+export const multisigRedeemScriptToScriptPubKey = (
+  redeemScript: Buffer
+): Buffer => {
+  return bitcoinjsLib.script.scriptHash.output.encode(
+    bitcoinjsLib.crypto.hash160(redeemScript)
+  )
 }
 
 export const redeemScriptToAddress = (
   redeemScript: Buffer
 ): string => {
   const network = getNetwork(networkName)
-
-  const scriptPubKey = bitcoinjsLib.script.scriptHash.output.encode(
-    bitcoinjsLib.crypto.hash160(redeemScript)
-  )
-
+  const scriptPubKey = multisigRedeemScriptToScriptPubKey(redeemScript)
   return bitcoinjsLib.address.fromOutputScript(scriptPubKey, network)
+}
+
+export const outputScriptToAddress = (
+  outputScript: Buffer
+): string => {
+  const network = getNetwork(networkName)
+  return bitcoinjsLib.address.fromOutputScript(outputScript, network)
 }
 
 export const base58ToECPair = (
