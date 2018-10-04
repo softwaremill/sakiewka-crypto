@@ -3,7 +3,9 @@ import bitcoinjsLib, {
   HDNode,
   Network,
   ECPair,
-  TransactionBuilder
+  TransactionBuilder,
+  Out,
+  In
 } from 'bitcoinjs-lib'
 import { network as networkName } from './config'
 
@@ -99,3 +101,13 @@ export const addressToOutputScript = (
   const network = getNetwork(networkName)
   return bitcoinjsLib.address.toOutputScript(address, network)
 }
+
+export const decodeTxOutput = (output: Out) => ({
+  value: output.value,
+  address: outputScriptToAddress(output.script)
+})
+
+export const decodeTxInput = (input: In) => ({
+  txHash: (input.hash.reverse() as Buffer).toString('hex'),
+  index: input.index
+})

@@ -6,15 +6,10 @@ import {
   initializeTxBuilder,
   addressToOutputScript,
   txFromHex,
-  redeemScriptToAddress,
-  createP2SHMultisigRedeemScript,
-  outputScriptToAddress
+  decodeTxOutput,
+  decodeTxInput
 } from './bitcoin'
 import { deriveKey } from './key'
-import bitcoinjsLib, {
-  In,
-  Out
-} from 'bitcoinjs-lib'
 
 export const calculateChange = (unspents: UTXO[], transactionAmount: number): number => {
   const unspentsSum = unspents.reduce(
@@ -89,20 +84,8 @@ export const sendCoins = async (
 
 export const decodeTransaction = (txHex: string) => {
   const tx = txFromHex(txHex)
-
-  const outputs = tx.outs.map((output: Out) => {
-    return {
-      value: output.value,
-      address: outputScriptToAddress(output.script)
-    }
-  })
-
-  const inputs = tx.ins.map((input: In, idx: number) => {
-    return {
-      txHash: (input.hash.reverse() as Buffer).toString('hex'),
-      index: input.index
-    }
-  })
+  const outputs = tx.outs.map(decodeTxOutput)
+  const inputs = tx.ins.map(decodeTxInput)
 
   return { outputs, inputs }
 }
