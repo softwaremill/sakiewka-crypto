@@ -1,7 +1,6 @@
 export const ROOT_DERIVATION_PATH = 'm/45\''
 
 export const BASE_API_PATH = 'api'
-export const BACKEND_API_PREFIX = 'api/v1'
 
 export const BITCOIN_NETWORK = 'bitcoin'
 export const TESTNET_NETWORK = 'testnet'

@@ -14,17 +14,12 @@ import {
   GetAddressBackendResponse,
   ListAddressesBackendResponse,
   ListUnspentsBackendResponse,
-  EthGetTransactionParamsResponse,
-  EthSendTransactionResponse,
   GetKeyBackendResponse
-} from 'backend-api'
+} from 'response'
 import request from './utils/request'
-import { BACKEND_API_PREFIX } from './constants'
 import { removeUndefinedFromObject } from './utils/helpers'
 
-// TODO: handle api errors
-
-const getUrlBase = () => `${process.env.BACKEND_API_URL}/${BACKEND_API_PREFIX}`
+const getBackendApiUrl = () => process.env.BACKEND_API_URL
 
 // BTC
 // user
@@ -37,7 +32,7 @@ export const login = async (login: string, password: string): Promise<LoginBacke
     })
   }
 
-  const response = await request(`${getUrlBase()}/user/login`, options)
+  const response = await request(`${getBackendApiUrl()}/user/login`, options)
   return response.data
 }
 
@@ -50,7 +45,7 @@ export const register = async (login: string, password: string): Promise<Registe
     })
   }
 
-  const response = await request(`${getUrlBase()}/user/register`, options)
+  const response = await request(`${getBackendApiUrl()}/user/register`, options)
   return response.data
 }
 
@@ -62,7 +57,7 @@ export const info = async (token: string): Promise<InfoBackendResponse> => {
     }
   }
 
-  const response = await request(`${getUrlBase()}/user/info`, options)
+  const response = await request(`${getBackendApiUrl()}/user/info`, options)
   return response.data
 }
 
@@ -81,7 +76,7 @@ export const createWallet = async (
     })
   }
 
-  const response = await request(`${getUrlBase()}/btc/wallet`, options)
+  const response = await request(`${getBackendApiUrl()}/btc/wallet`, options)
   return response.data
 }
 
@@ -96,7 +91,7 @@ export const getWallet = async (
     }
   }
 
-  const response = await request(`${getUrlBase()}/btc/wallet/${walletId}`, options)
+  const response = await request(`${getBackendApiUrl()}/btc/wallet/${walletId}`, options)
   return response.data
 }
 
@@ -114,7 +109,7 @@ export const listWallets = async (
 
   const queryString = `limit=${limit}${nextPageToken ? `&nextPageToken=${nextPageToken}` : ''}`
 
-  const response = await request(`${getUrlBase()}/btc/wallet?${queryString}`, options)
+  const response = await request(`${getBackendApiUrl()}/btc/wallet?${queryString}`, options)
   return response.data
 }
 
@@ -129,7 +124,7 @@ export const getWalletBalance = async (
     }
   }
 
-  const response = await request(`${getUrlBase()}/btc/wallet/${walletId}/balance`, options)
+  const response = await request(`${getBackendApiUrl()}/btc/wallet/${walletId}/balance`, options)
   return response.data
 }
 
@@ -144,7 +139,7 @@ export const createNewAddress = async (token: string, walletId: string, name?: s
     }))
   }
 
-  const response = await request(`${getUrlBase()}/btc/wallet/${walletId}/address`, options)
+  const response = await request(`${getBackendApiUrl()}/btc/wallet/${walletId}/address`, options)
   return response.data
 }
 
@@ -156,7 +151,7 @@ export const getAddress = async (token: string, walletId: string, address: strin
     }
   }
 
-  const response = await request(`${getUrlBase()}/btc/wallet/${walletId}/address/${address}`, options)
+  const response = await request(`${getBackendApiUrl()}/btc/wallet/${walletId}/address/${address}`, options)
   return response.data
 }
 
@@ -175,7 +170,7 @@ export const listAddresses = async (
 
   const queryString = `limit=${limit}${nextPageToken ? `&nextPageToken=${nextPageToken}` : ''}`
 
-  const response = await request(`${getUrlBase()}/btc/wallet/${walletId}/address?${queryString}`, options)
+  const response = await request(`${getBackendApiUrl()}/btc/wallet/${walletId}/address?${queryString}`, options)
   return response.data
 }
 
@@ -189,7 +184,7 @@ export const listUnspents = async (
     }
   }
 
-  const response = await request(`${getUrlBase()}/btc/wallet/${walletId}/utxo?amountBtc=${amount}&feeRateSatoshi=${feeRate}`, options)
+  const response = await request(`${getBackendApiUrl()}/btc/wallet/${walletId}/utxo?amountBtc=${amount}&feeRateSatoshi=${feeRate}`, options)
   return response.data
 }
 
@@ -210,25 +205,6 @@ export const getKey = async (
     }
   }
 
-  const response = await request(`${getUrlBase()}/btc/key/${keyId}${includePrivate ? `?includePrivate=${includePrivate}` : ''}`, options)
+  const response = await request(`${getBackendApiUrl()}/btc/key/${keyId}${includePrivate ? `?includePrivate=${includePrivate}` : ''}`, options)
   return response.data
-}
-
-// ETH
-// transaction
-export const ethGetTransactionParams = (
-  userToken: string
-): Promise<EthGetTransactionParamsResponse> => {
-  return Promise.resolve({
-    gasLimit: '123',
-    gasPrice: '123',
-    nonce: 10,
-    contractNonce: 2
-  })
-}
-
-export const ethSendTransaction = (
-  userToken: string, signature: string, operationHash: string
-): Promise<EthSendTransactionResponse> => {
-  return Promise.resolve({})
 }

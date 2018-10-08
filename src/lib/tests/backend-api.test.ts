@@ -13,7 +13,7 @@ beforeEach(() => {
   mockImplementation.mockClear()
 })
 
-process.env.BACKEND_API_URL = 'backurl'
+process.env.BACKEND_API_URL = 'backurl/api/v1'
 
 describe('login', () => {
   it('should exist', () => {
@@ -267,17 +267,5 @@ describe('getKey', () => {
     expect(url).to.eq('backurl/api/v1/btc/key/testKeyId?includePrivate=true')
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
-  })
-})
-
-describe('ethGetTransactionParams', () => {
-  it('should exist', () => {
-    expect(api.ethGetTransactionParams).to.be.a('function')
-  })
-})
-
-describe('ethSendTransaction', () => {
-  it('should exist', () => {
-    expect(api.ethSendTransaction).to.be.a('function')
   })
 })

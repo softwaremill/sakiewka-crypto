@@ -4,7 +4,7 @@ import ethUtil from 'ethereumjs-util'
 import { base58ToHDNode } from './bitcoin'
 
 export const createETHOperationHash = (
-  address: string, amount: number, data: string, expireTime: number, contractNonce: number
+  address: string, value: number, data: string, expireTime: number, contractNonce: number
 ) => {
   return ethUtil.bufferToHex(
     ethAbi.soliditySHA3(
@@ -12,7 +12,7 @@ export const createETHOperationHash = (
       [
         'ETHER',
         new ethUtil.BN(address, 16),
-        amount,
+        value,
         data,
         expireTime,
         contractNonce
@@ -22,7 +22,7 @@ export const createETHOperationHash = (
 }
 
 export const createTokenOperationHash = (
-  address: string, amount: number, contractAddress: string, expireTime: number, contractNonce: number
+  address: string, value: number, contractAddress: string, expireTime: number, contractNonce: number
 ) => {
   return ethUtil.bufferToHex(
     ethAbi.soliditySHA3(
@@ -30,7 +30,7 @@ export const createTokenOperationHash = (
       [
         'ERC20',
         new ethUtil.BN(address, 16),
-        amount,
+        value,
         new ethUtil.BN(contractAddress, 16),
         expireTime,
         contractNonce

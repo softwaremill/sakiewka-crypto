@@ -9,7 +9,7 @@ import {
   listUnspents as listUnspentsBackend
 } from './backend-api'
 import { deriveKeyPair, generateNewKeyPair, encryptKeyPair } from './key'
-import { CreateWalletBackendParams } from '../types/backend-api'
+import { CreateWalletBackendParams } from 'response'
 
 export const createWallet = async (userToken: string, params: WalletParams): Promise<any> => {
   const userKeyPair = params.userPubKey ?

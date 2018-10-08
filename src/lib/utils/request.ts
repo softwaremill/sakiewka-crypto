@@ -15,7 +15,8 @@ const checkStatus = async (response: Response): Promise<Response> => {
   }
 
   const responseBody = await parseJSON(response)
-  throw new Error(responseBody.error.message)
+  const message = responseBody.error ? responseBody.error.message : responseBody
+  throw new Error(String(message))
 }
 
 export default function request(url: string, options: object): Promise<any> {

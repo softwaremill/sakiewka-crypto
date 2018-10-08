@@ -63,11 +63,15 @@ export interface ListUnspentsBackendResponse {
 
 export interface GetKeyBackendResponse {}
 
+// eth
 export interface EthGetTransactionParamsResponse {
-  gasLimit: string,
-  gasPrice: string,
-  nonce: number,
-  contractNonce: number
+  contractNonce: string
 }
 
-export interface EthSendTransactionResponse {}
+export interface SendETHResponse {
+  tx: string
+}
+
+export interface SendTokensResponse {
+  tx: string
+}

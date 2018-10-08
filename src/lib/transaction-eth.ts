@@ -1,4 +1,8 @@
-import { ethGetTransactionParams, ethSendTransaction } from './backend-api'
+import {
+  getNextNonce,
+  sendETH as sendETHApi,
+  sendTokens as sendTokensApi
+} from './zlevator'
 import { Signature } from '../types/domain'
 import { hourFromNow } from './utils/helpers'
 import {
@@ -9,30 +13,32 @@ import {
 } from './ethereum'
 
 export const sendETH = async (
-  userToken: string, prvKey: string, toAddress: string, amount: number, data: string
+  prvKey: string, toAddress: string, value: number, data: string
 ) => {
-  const { contractNonce } = await ethGetTransactionParams(userToken)
+  const { contractNonce } = await getNextNonce()
   const ethPrvKey = xprvToEthPrivateKey(prvKey)
-  const signature = signETHTransaction(toAddress, amount, data, hourFromNow(), contractNonce, ethPrvKey)
+  const expireTime = hourFromNow()
+  const signature = signETHTransaction(toAddress, value, data, expireTime, parseInt(contractNonce, 10), ethPrvKey)
 
-  await ethSendTransaction(userToken, signature.signature, signature.operationHash)
+  return await sendETHApi(toAddress, value, expireTime, contractNonce, data, signature.signature)
 }
 
 export const sendToken = async (
-  userToken: string, prvKey: string, toAddress: string, contractAddress: string, amount: number
+  prvKey: string, toAddress: string, contractAddress: string, value: number
 ) => {
-  const { contractNonce } = await ethGetTransactionParams(userToken)
+  const { contractNonce } = await getNextNonce()
   const ethPrvKey = xprvToEthPrivateKey(prvKey)
-  const signature = signTokenTransaction(toAddress, amount, contractAddress, hourFromNow(), contractNonce, ethPrvKey)
+  const expireTime = hourFromNow()
+  const signature = signTokenTransaction(toAddress, value, contractAddress, hourFromNow(), parseInt(contractNonce, 10), ethPrvKey)
 
-  await ethSendTransaction(userToken, signature.signature, signature.operationHash)
+  await sendTokensApi(toAddress, value, expireTime, contractNonce, signature.signature, contractAddress)
 }
 
 export const signTokenTransaction = (
-  toAddress: string, amount: number, contractAddress: string, expiryDate: number,
+  toAddress: string, value: number, contractAddress: string, expiryDate: number,
   contractNonce: number, ethPrvKey: string
 ): Signature => {
-  const operationHash = createTokenOperationHash(toAddress, amount, contractAddress, expiryDate, contractNonce)
+  const operationHash = createTokenOperationHash(toAddress, value, contractAddress, expiryDate, contractNonce)
 
   return {
     operationHash,
@@ -42,10 +48,10 @@ export const signTokenTransaction = (
 }
 
 export const signETHTransaction = (
-  toAddress: string, amount: number, data: string, expiryDate: number,
+  toAddress: string, value: number, data: string, expiryDate: number,
   contractNonce: number, ethPrvKey: string
 ): Signature => {
-  const operationHash = createETHOperationHash(toAddress, amount, data, expiryDate, contractNonce)
+  const operationHash = createETHOperationHash(toAddress, value, data, expiryDate, contractNonce)
 
   return {
     operationHash,
