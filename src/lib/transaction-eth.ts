@@ -8,17 +8,15 @@ import { hourFromNow } from './utils/helpers'
 import {
   createETHOperationHash,
   createTokenOperationHash,
-  createSignature,
-  xprvToEthPrivateKey
+  createSignature
 } from './ethereum'
 
 export const sendETH = async (
   prvKey: string, toAddress: string, value: number, data: string
 ) => {
   const { contractNonce } = await getNextNonce()
-  const ethPrvKey = xprvToEthPrivateKey(prvKey)
   const expireTime = hourFromNow()
-  const signature = signETHTransaction(toAddress, value, data, expireTime, parseInt(contractNonce, 10), ethPrvKey)
+  const signature = signETHTransaction(toAddress, value, data, expireTime, parseInt(contractNonce, 10), prvKey)
 
   return await sendETHApi(toAddress, value, expireTime, contractNonce, data, signature.signature)
 }
@@ -27,9 +25,8 @@ export const sendTokens = async (
   prvKey: string, toAddress: string, contractAddress: string, value: number
 ) => {
   const { contractNonce } = await getNextNonce()
-  const ethPrvKey = xprvToEthPrivateKey(prvKey)
   const expireTime = hourFromNow()
-  const signature = signTokenTransaction(toAddress, value, contractAddress, hourFromNow(), parseInt(contractNonce, 10), ethPrvKey)
+  const signature = signTokenTransaction(toAddress, value, contractAddress, hourFromNow(), parseInt(contractNonce, 10), prvKey)
 
   return await sendTokensApi(toAddress, value, expireTime, contractNonce, signature.signature, contractAddress)
 }

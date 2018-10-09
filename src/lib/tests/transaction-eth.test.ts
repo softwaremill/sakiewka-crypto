@@ -26,11 +26,10 @@ backendApi.sendTokens = jest.fn(() => {
   return Promise.resolve({ tx: '311' })
 })
 
-const rootKey = 'xprv9s21ZrQH143K3ruqyf88aDddpJyL5b4kKopPN3ueB1T1ErSdDb5zpVYzqrDMET49gYivEoPatEgVdii6Jic5fLxycUEuuJeRTikkkmjovqa'
-const hdNode = base58ToHDNode(rootKey)
-const derivedKey = hdNode.derivePath('m/44\'/60\'/0\'/0/1')
-const derivedXprv = derivedKey.toBase58()
-const signerAddress = ethUtil.privateToAddress(new Buffer('2E63835168223C0D81C152B86C6AE6FFE8EDC63327691953251DCFC6895C96DA', 'hex')).toString('hex')
+const prvKey = '2E63835168223C0D81C152B86C6AE6FFE8EDC63327691953251DCFC6895C96DA'
+const signerAddress = ethUtil.privateToAddress(new Buffer(prvKey, 'hex')).toString('hex')
+
+const a = new Buffer('2E63835168223C0D81C152B86C6AE6FFE8EDC63327691953251DCFC6895C96DA', 'hex')
 
 describe('send ETH', () => {
   it('should exist', () => {
@@ -42,7 +41,7 @@ describe('send ETH', () => {
     const amount = 1000000000
     const data = ''
 
-    await transaction.sendETH(derivedXprv, address, amount, data)
+    await transaction.sendETH(prvKey, address, amount, data)
 
     // @ts-ignore
     const [, value, expireTime, contractNonce, , signature] = backendApi.sendETH.mock.calls[0]
@@ -71,7 +70,7 @@ describe('send Tokens', () => {
     const tokenAddress = '0x208556478db204a13ff96b3ae2e808c70eabab7e'
     const amount = 200
 
-    await transaction.sendTokens(derivedXprv, address, tokenAddress, amount)
+    await transaction.sendTokens(prvKey, address, tokenAddress, amount)
 
     // @ts-ignore
     const [, value, expireTime, contractNonce, signature] = backendApi.sendTokens.mock.calls[0]
