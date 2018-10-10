@@ -1,4 +1,4 @@
-import { SendCoinsParams, UTXO, Recipent } from '../types/domain'
+import { UTXO, Recipent } from '../types/domain'
 import { listUnspents, getWallet, sendTransaction, createNewAddress } from './backend-api'
 import { getRecommendedFee } from './utils/fees'
 import {
@@ -38,33 +38,33 @@ export const sumOutputAmounts = (outputs: Recipent[]): number => {
 }
 
 export const sendCoins = async (
-  params: SendCoinsParams
+  userToken: string, xprv: string, walletId: string, recipents: Recipent[]
 ): Promise<any> => {
-  const unspentsResponse = await listUnspents(params.userToken, params.walletId, 10000)
+  const unspentsResponse = await listUnspents(userToken, walletId, 10000)
   const unspents = unspentsResponse.data.unspents
-  const wallet = await getWallet(params.userToken, params.walletId)
+  const wallet = await getWallet(userToken, walletId)
   const txb = initializeTxBuilder()
 
   const recommendedFee = await getRecommendedFee()
-  const fee = calculateFee(recommendedFee, unspents.length, params.recipents.length + 1)
+  const fee = calculateFee(recommendedFee, unspents.length, recipents.length + 1)
 
-  const outputsAmount = sumOutputAmounts(params.recipents)
+  const outputsAmount = sumOutputAmounts(recipents)
 
   const changeAmount = calculateChange(unspents, outputsAmount + fee)
-  const changeAddres = await createNewAddress(params.userToken, params.walletId)
+  const changeAddres = await createNewAddress(userToken, walletId)
 
   unspents.forEach((uns: UTXO) => {
     txb.addInput(uns.txId, uns.index)
   })
 
-  params.recipents.forEach((out: Recipent) => {
+  recipents.forEach((out: Recipent) => {
     txb.addOutput(addressToOutputScript(out.address), out.amount)
   })
 
   txb.addOutput(addressToOutputScript(changeAddres.address), changeAmount)
 
   unspents.forEach((uns: UTXO, idx: number) => {
-    const signingKey = deriveKey(params.xprv, uns.path).keyPair
+    const signingKey = deriveKey(xprv, uns.path).keyPair
 
     // TODO: set proper order of signing keys. User key should be first
     const derivedPubKeys = wallet.pubKeys.map((key: string) => deriveKey(key, uns.path).neutered().toBase58())
@@ -74,7 +74,7 @@ export const sendCoins = async (
   })
 
   const transactionHex = txb.build().toHex()
-  const status = await sendTransaction(params.userToken, transactionHex)
+  const status = await sendTransaction(userToken, transactionHex)
 
   return {
     transactionHex,
@@ -89,3 +89,5 @@ export const decodeTransaction = (txHex: string) => {
 
   return { outputs, inputs }
 }
+
+// export const signTransaction = ()
