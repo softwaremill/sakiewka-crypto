@@ -1,4 +1,4 @@
-import { UTXO, Recipent } from '../types/domain'
+import { UTXO, Recipent, DecodedTx } from '../types/domain'
 import { listUnspents, getWallet, sendTransaction, createNewAddress } from './backend-api'
 import { getRecommendedFee } from './utils/fees'
 import {
@@ -83,7 +83,7 @@ export const sendCoins = async (
   }
 }
 
-export const decodeTransaction = (txHex: string) => {
+export const decodeTransaction = (txHex: string): DecodedTx => {
   const tx = txFromHex(txHex)
   const outputs = tx.outs.map(decodeTxOutput)
 

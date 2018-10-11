@@ -14,8 +14,7 @@ export interface UTXO {
   txHash: string,
   index: number,
   value?: number,
-  path?: string,
-  redeemScript?: string | Buffer
+  path?: string
 }
 
 export interface Recipent {
@@ -23,12 +22,9 @@ export interface Recipent {
   value: number
 }
 
-export interface SendCoinsParams {
-  walletId: string,
-  walletPassphrase: string,
-  userToken: string,
-  recipents: Recipent[],
-  xprv?: string
+export interface DecodedTx {
+  outputs: Recipent[],
+  inputs: UTXO[]
 }
 
 export interface Signature {

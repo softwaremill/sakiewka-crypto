@@ -10,6 +10,7 @@ import bitcoinjsLib, {
 import { network as networkName } from './config'
 
 import { BITCOIN_NETWORK } from './constants'
+import { UTXO, Recipent } from '../types/domain'
 
 const getNetwork = (networkName: string = BITCOIN_NETWORK): Network => {
   return bitcoinjsLib.networks[networkName]
@@ -102,12 +103,12 @@ export const addressToOutputScript = (
   return bitcoinjsLib.address.toOutputScript(address, network)
 }
 
-export const decodeTxOutput = (output: Out) => ({
+export const decodeTxOutput = (output: Out): Recipent => ({
   value: output.value,
   address: outputScriptToAddress(output.script)
 })
 
-export const decodeTxInput = (input: In) => ({
+export const decodeTxInput = (input: In): UTXO => ({
   txHash: (input.hash.reverse() as Buffer).toString('hex'),
   index: input.index
 })
