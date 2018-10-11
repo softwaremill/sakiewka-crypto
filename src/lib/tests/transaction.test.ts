@@ -387,15 +387,15 @@ describe('signTransaction', () => {
       }
     ]
 
-    const result = transaction.signTransaction(encrypt(process.env.SERVICE_PASSPHRASE, xprv), txHex, pubKeys, unspents)
+    const result = transaction.signTransaction(encrypt(process.env.SERVICE_PASSPHRASE, xprv), txHex, unspents)
     expect(result.txHex).to.not.eq(txHex)
 
     expect(() => {
-      transaction.signTransaction(encrypt(process.env.SERVICE_PASSPHRASE, wrongXprv), txHex, pubKeys, unspents)
+      transaction.signTransaction(encrypt(process.env.SERVICE_PASSPHRASE, wrongXprv), txHex, unspents)
     }).to.throw('Key pair cannot sign for this input')
 
     expect(() => {
-      transaction.signTransaction(encrypt(process.env.SERVICE_PASSPHRASE, xprv), result.txHex, pubKeys, unspents)
+      transaction.signTransaction(encrypt(process.env.SERVICE_PASSPHRASE, xprv), result.txHex, unspents)
     }).to.throw('Signature already exists')
   })
 })

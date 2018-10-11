@@ -93,7 +93,7 @@ export const decodeTransaction = (txHex: string): DecodedTx => {
 }
 
 export const signTransaction = (
-  encryptedXprv: string, txHex: string, pubKeys: string[], unspents: UTXO[]
+  encryptedXprv: string, txHex: string, unspents: UTXO[]
 ) => {
   const tx = txFromHex(txHex)
   const txb = txBuilderFromTx(tx)
