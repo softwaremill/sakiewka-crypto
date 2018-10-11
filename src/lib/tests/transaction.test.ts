@@ -368,22 +368,16 @@ describe('signTransaction', () => {
 
   it('should sign transaction', () => {
     process.env.SERVICE_PASSPHRASE = 'abcd'
-    const pubKeys = [
-      'xpub661MyMwAqRbcGzCFyNT83fG4psVQeHv5LC9VF25s7hAJzuaYpACce7GGEKMTxGTqCkBfFSTh8nq8rdMLMJBkvucpXhH6eGvkR82uKWcTR26',
-      'xpub661MyMwAqRbcFoQm72BdK59Lg3ZSgUQs1ktVL7tYC7HeRQ3oVkpigbvaahfGKy4GRgKszxrUDYhWCXCHzHq6q8Jrjs91HHDhBt7Yfv4xkC9',
-      'xpub661MyMwAqRbcGT4JQ1vkDgt6C96vLXb19NAoTyVZi9vmLiz7Acr7HFDnLc8nPAGUXepSg4s5PB37aD7xMEULvdxPfsjAaWAJHqWbQwXfko9'
-    ]
-    const { address } = generateNewMultisigAddress(pubKeys, '0/0')
     const xprv = 'xprv9s21ZrQH143K3KLHzzecwwCc81ixH1h1eXxtXjUvdmkfYbiexDWU8oc6jRwe6j3CUs78FzeXbZdxZVQwzQ6GnhAPV6JX1gv5EpRG8DnwJjU'
     const wrongXprv = 'xprv9s21ZrQH143K42jAsj3CsRB16Eh9MeN8SfKuiY23Aa33f2LEcVbDzBTn5QjtT83mr4wJ5LxHTMoU2DcqGVQwxrvorJJnDUL5YgQG7x2yP5c'
     const txHex = '0100000001145bb243544451ead3b8694a9597dc5e93583c0172ca16a2f2c74c8fd698be1100000000b40047304402200d84392644bf0754528d5ea9af4ec450646fd2e37afc2a1024550e84729e6ed20220133b336b034b316869bfb7aac691d11171107a4dceed4b8fc7e09f33a1978008014c695221039f00f0d74d4cc9237fefa63f7c3548e173c17b54928aaca4351d5010614efc812103fb6e4d3144af2f90afe2bdda5d59394dadd2a648c39154d5a2d6da1334911e522102bf1f0bc00d3f001cb67a5581511cc498ece4de346fdae0b0e5c96de77509596f53aeffffffff020065cd1d000000001976a914ff1cb7a5b23491534c66e7638f56d852ad47542288acf6bceb0b0000000017a91480cff499983050ec4268d749a1f898bec53e9fc28700000000'
     const unspents = [
       {
-        address,
         txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
         index: 0,
         path: '0/0',
-        value: 700000000
+        value: 700000000,
+        address: '39qBvnnAEv42EEYQEC6hqvTU42b24Mj9wX'
       }
     ]
 
