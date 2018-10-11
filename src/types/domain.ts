@@ -11,15 +11,16 @@ export interface KeyPair {
 }
 
 export interface UTXO {
-  txId: string,
+  txHash: string,
   index: number,
-  amount: number,
-  path: string
+  value?: number,
+  path?: string,
+  redeemScript?: string | Buffer
 }
 
 export interface Recipent {
   address: string,
-  amount: number
+  value: number
 }
 
 export interface SendCoinsParams {

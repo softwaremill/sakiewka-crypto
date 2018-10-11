@@ -7,14 +7,16 @@ import {
   addressToOutputScript,
   txFromHex,
   decodeTxOutput,
-  decodeTxInput
+  decodeTxInput,
+  txBuilderFromTx
 } from './bitcoin'
 import { deriveKey } from './key'
+import { decrypt } from './crypto'
 
 export const calculateChange = (unspents: UTXO[], transactionAmount: number): number => {
   const unspentsSum = unspents.reduce(
     (acc: number, uns: UTXO) => {
-      return acc + uns.amount
+      return acc + uns.value
     },
     0
   )
@@ -31,7 +33,7 @@ export const calculateFee = (
 export const sumOutputAmounts = (outputs: Recipent[]): number => {
   return outputs.reduce(
     (acc: number, out: Recipent) => {
-      return acc + out.amount
+      return acc + out.value
     },
     0
   )
@@ -54,11 +56,11 @@ export const sendCoins = async (
   const changeAddres = await createNewAddress(userToken, walletId)
 
   unspents.forEach((uns: UTXO) => {
-    txb.addInput(uns.txId, uns.index)
+    txb.addInput(uns.txHash, uns.index)
   })
 
   recipents.forEach((out: Recipent) => {
-    txb.addOutput(addressToOutputScript(out.address), out.amount)
+    txb.addOutput(addressToOutputScript(out.address), out.value)
   })
 
   txb.addOutput(addressToOutputScript(changeAddres.address), changeAmount)
@@ -66,7 +68,6 @@ export const sendCoins = async (
   unspents.forEach((uns: UTXO, idx: number) => {
     const signingKey = deriveKey(xprv, uns.path).keyPair
 
-    // TODO: set proper order of signing keys. User key should be first
     const derivedPubKeys = wallet.pubKeys.map((key: string) => deriveKey(key, uns.path).neutered().toBase58())
     const redeemScript = createMultisigRedeemScript(derivedPubKeys)
 
@@ -85,9 +86,30 @@ export const sendCoins = async (
 export const decodeTransaction = (txHex: string) => {
   const tx = txFromHex(txHex)
   const outputs = tx.outs.map(decodeTxOutput)
+
   const inputs = tx.ins.map(decodeTxInput)
 
   return { outputs, inputs }
 }
 
-// export const signTransaction = ()
+export const signTransaction = (
+  encryptedXprv: string, txHex: string, pubKeys: string[], unspents: UTXO[]
+) => {
+  const tx = txFromHex(txHex)
+  const txb = txBuilderFromTx(tx)
+  const xprv = decrypt(getServicePassphrase(), encryptedXprv)
+
+  unspents.forEach((uns: UTXO, idx: number) => {
+    const signingKey = deriveKey(xprv, uns.path).keyPair
+    txb.sign(idx, signingKey)
+  })
+
+  const builtTx = txb.build()
+
+  return {
+    txHex: builtTx.toHex(),
+    txHash: builtTx.getId()
+  }
+}
+
+const getServicePassphrase = () => process.env.SERVICE_PASSPHRASE
