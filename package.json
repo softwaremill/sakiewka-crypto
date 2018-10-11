@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "postinstall": "postinstall-build dist",
-    "test": "jest --forceExit --coverage --verbose=false",
+    "test": "jest --forceExit --verbose=false",
     "watch-test": "npm run test -- --watchAll",
     "build": "tsc",
     "watch": "tsc -w",
