@@ -1,7 +1,13 @@
 import nodeFetch, { Response } from 'node-fetch'
 import { ApiError } from '../../types/api'
 
-const parseJSON = (response: Response): null | Promise<ApiError> => {
+const parseJSON = async (response: Response): null | Promise<ApiError> => {
+  const contentType = response.headers.get('content-type')
+
+  if (!contentType.includes('json')) {
+    throw new Error(`Response from ${response.url} was not a JSON. Resonse text: "${await response.text()}"`)
+  }
+
   if (response.status === 204 || response.status === 205) {
     return null
   }
