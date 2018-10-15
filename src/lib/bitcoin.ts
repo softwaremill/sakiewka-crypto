@@ -110,5 +110,5 @@ export const decodeTxOutput = (output: Out): Recipent => ({
 
 export const decodeTxInput = (input: In): UTXO => ({
   txHash: (input.hash.reverse() as Buffer).toString('hex'),
-  index: input.index
+  n: input.index
 })

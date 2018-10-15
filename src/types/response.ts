@@ -1,4 +1,4 @@
-import { UTXO } from './domain'
+import { UTXO, Key, Path } from './domain'
 
 export interface LoginBackendResponse {
   token: string
@@ -16,17 +16,23 @@ export interface CreateWalletBackendParams {
   backupPrvKey?: string
 }
 
-export interface CreateWalletBackendResponse {
+interface WalletBackendResponse {
   id: string,
+  keys: Key[]
+}
+
+export interface CreateWalletBackendResponse extends WalletBackendResponse {
   servicePubKey: string,
   initialAddress: {
     address: string,
-    path: {}
+    path: Path
   }
 }
 
-export interface GetWalletBackendResponse {
-  pubKeys: any
+export interface GetWalletBackendResponse extends WalletBackendResponse {
+  name: string,
+  currency: string,
+  created: string
 }
 
 export interface CreateNewAddressBackendResponse {
@@ -56,9 +62,11 @@ export interface ListWalletsBackendResponse {}
 export interface GetWalletBalanceBackendResponse {}
 
 export interface ListUnspentsBackendResponse {
-  data: {
-    unspents: UTXO[]
-  }
+  outputs: UTXO[],
+  amount: string,
+  change: string,
+  fee: string,
+  serviceFee: string
 }
 
 export interface GetKeyBackendResponse {}

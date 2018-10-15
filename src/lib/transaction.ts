@@ -1,5 +1,11 @@
-import { UTXO, Recipent, DecodedTx } from '../types/domain'
-import { listUnspents, getWallet, sendTransaction, createNewAddress } from './backend-api'
+import { UTXO, Recipent, DecodedTx, Path, Key } from '../types/domain'
+import {
+  listUnspents,
+  getWallet,
+  createNewAddress,
+  sendTransaction,
+  getServiceAddress
+} from './backend-api'
 import { getRecommendedFee } from './utils/fees'
 import {
   createMultisigRedeemScript,
@@ -13,74 +19,60 @@ import {
 import { deriveKey } from './key'
 import { decrypt } from './crypto'
 
-export const calculateChange = (unspents: UTXO[], transactionAmount: number): number => {
-  const unspentsSum = unspents.reduce(
-    (acc: number, uns: UTXO) => {
-      return acc + uns.value
-    },
-    0
-  )
-
-  return unspentsSum - transactionAmount
-}
-
-export const calculateFee = (
-  satoshiPerByte: number, numOfInputs: number, numOfOutputs: number
-): number => {
-  return (numOfInputs * 180 + numOfOutputs * 34 + 10) * satoshiPerByte
-}
+const getServicePassphrase = () => process.env.SERVICE_PASSPHRASE
 
 export const sumOutputAmounts = (outputs: Recipent[]): number => {
   return outputs.reduce(
     (acc: number, out: Recipent) => {
-      return acc + out.value
+      return acc + out.amount
     },
     0
   )
 }
 
+const joinPath = (path: Path): string =>
+  `${path.cosignerIndex}/${path.change}/${path.addressIndex}`
+
+const btcToSatoshi = (amount: number | string) => Number(amount) * 100000000
+const satoshiToBtc = (amount: number | string) => Number(amount) * 0.00000001
+
 export const sendCoins = async (
   userToken: string, xprv: string, walletId: string, recipents: Recipent[]
-): Promise<any> => {
-  const unspentsResponse = await listUnspents(userToken, walletId, 10000)
-  const unspents = unspentsResponse.data.unspents
-  const wallet = await getWallet(userToken, walletId)
-  const txb = initializeTxBuilder()
-
-  const recommendedFee = await getRecommendedFee()
-  const fee = calculateFee(recommendedFee, unspents.length, recipents.length + 1)
-
+): Promise<void> => {
   const outputsAmount = sumOutputAmounts(recipents)
-
-  const changeAmount = calculateChange(unspents, outputsAmount + fee)
-  const changeAddres = await createNewAddress(userToken, walletId)
+  const txb = initializeTxBuilder()
+  const recommendedFee = await getRecommendedFee()
+  const unspentsResponse = await listUnspents(userToken, walletId, satoshiToBtc(outputsAmount), recommendedFee)
+  const {
+    outputs: unspents, change, serviceFee
+  } = unspentsResponse
+  const wallet = await getWallet(userToken, walletId)
+  const pubKeys = wallet.keys.map((key: Key) => key.pubKey)
+  const changeAddres = await createNewAddress(userToken, walletId, true)
+  const serviceAddress = await getServiceAddress()
 
   unspents.forEach((uns: UTXO) => {
-    txb.addInput(uns.txHash, uns.index)
+    txb.addInput(uns.txHash, uns.n)
   })
 
   recipents.forEach((out: Recipent) => {
-    txb.addOutput(addressToOutputScript(out.address), out.value)
+    txb.addOutput(addressToOutputScript(out.address), out.amount)
   })
 
-  txb.addOutput(addressToOutputScript(changeAddres.address), changeAmount)
+  txb.addOutput(addressToOutputScript(changeAddres.address), btcToSatoshi(change))
+  txb.addOutput(addressToOutputScript(serviceAddress), btcToSatoshi(serviceFee))
 
   unspents.forEach((uns: UTXO, idx: number) => {
-    const signingKey = deriveKey(xprv, uns.path).keyPair
+    const signingKey = deriveKey(xprv, joinPath(uns.path)).keyPair
 
-    const derivedPubKeys = wallet.pubKeys.map((key: string) => deriveKey(key, uns.path).neutered().toBase58())
+    const derivedPubKeys = pubKeys.map((key: string) => deriveKey(key, joinPath(uns.path)).neutered().toBase58())
     const redeemScript = createMultisigRedeemScript(derivedPubKeys)
 
     txb.sign(idx, signingKey, redeemScript)
   })
 
-  const transactionHex = txb.build().toHex()
-  const status = await sendTransaction(userToken, transactionHex)
-
-  return {
-    transactionHex,
-    status
-  }
+  const txHex = txb.build().toHex()
+  await sendTransaction(userToken, walletId, txHex)
 }
 
 export const decodeTransaction = (txHex: string): DecodedTx => {
@@ -100,7 +92,7 @@ export const signTransaction = (
   const xprv = decrypt(getServicePassphrase(), encryptedXprv)
 
   unspents.forEach((uns: UTXO, idx: number) => {
-    const signingKey = deriveKey(xprv, uns.path).keyPair
+    const signingKey = deriveKey(xprv, joinPath(uns.path)).keyPair
     txb.sign(idx, signingKey)
   })
 
@@ -111,5 +103,3 @@ export const signTransaction = (
     txHash: builtTx.getId()
   }
 }
-
-const getServicePassphrase = () => process.env.SERVICE_PASSPHRASE

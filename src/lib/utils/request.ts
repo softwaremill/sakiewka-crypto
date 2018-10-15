@@ -4,7 +4,7 @@ import { ApiError } from '../../types/api'
 const parseJSON = async (response: Response): null | Promise<ApiError> => {
   const contentType = response.headers.get('content-type')
 
-  if (!contentType.includes('json')) {
+  if (contentType && !contentType.includes('json')) {
     throw new Error(`Response from ${response.url} was not a JSON. Resonse text: "${await response.text()}"`)
   }
 

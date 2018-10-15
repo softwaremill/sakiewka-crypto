@@ -161,19 +161,31 @@ describe('createNewAddress', () => {
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
-    expect(url).to.eq('backurl/api/v1/btc/wallet/walletId/address')
+    expect(url).to.eq('backurl/api/v1/btc/wallet/walletId/address?change=false')
+    expect(params.method).to.eq('POST')
+    expect(params.headers.Authorization).to.eq('testToken')
+    expect(reqBody.name).to.eq(undefined)
+  })
+
+  it('should send proper request for change address', async () => {
+    await api.createNewAddress('testToken', 'walletId', true)
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    const reqBody = JSON.parse(params.body)
+
+    expect(url).to.eq('backurl/api/v1/btc/wallet/walletId/address?change=true')
     expect(params.method).to.eq('POST')
     expect(params.headers.Authorization).to.eq('testToken')
     expect(reqBody.name).to.eq(undefined)
   })
 
   it('should send proper request with name param', async () => {
-    await api.createNewAddress('testToken', 'walletId', 'testName')
+    await api.createNewAddress('testToken', 'walletId', false, 'testName')
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
-    expect(url).to.eq('backurl/api/v1/btc/wallet/walletId/address')
+    expect(url).to.eq('backurl/api/v1/btc/wallet/walletId/address?change=false')
     expect(params.method).to.eq('POST')
     expect(params.headers.Authorization).to.eq('testToken')
     expect(reqBody.name).to.eq('testName')

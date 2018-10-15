@@ -10,21 +10,41 @@ export interface KeyPair {
   prvKey?: string
 }
 
+export interface Key {
+  id: string,
+  pubKey: string,
+  type: KeyType
+}
+
+export interface KeyType {
+  User?: object,
+  Service?: object,
+  Backup?: object
+}
+
 export interface UTXO {
   txHash: string,
-  index: number,
+  n: number,
   value?: number,
-  path?: string
+  amount? : number,
+  path?: Path
 }
 
 export interface Recipent {
   address: string,
-  value: number
+  value?: number,
+  amount?: number
 }
 
 export interface DecodedTx {
   outputs: Recipent[],
   inputs: UTXO[]
+}
+
+export interface Path {
+  cosignerIndex: number,
+  change: number,
+  addressIndex: number
 }
 
 export interface Signature {

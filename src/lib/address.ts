@@ -23,7 +23,7 @@ export const createNewAddress = (
   userToken: string,
   walletId: string,
   name?: string
-) => createNewAddressBackend(userToken, walletId, name)
+) => createNewAddressBackend(userToken, walletId, false, name)
 
 export const getAddress = (
   userToken: string,

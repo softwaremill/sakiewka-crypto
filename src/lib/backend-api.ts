@@ -128,7 +128,9 @@ export const getWalletBalance = async (
   return response.data
 }
 
-export const createNewAddress = async (token: string, walletId: string, name?: string): Promise<CreateNewAddressBackendResponse> => {
+export const createNewAddress = async (
+  token: string, walletId: string, change: boolean = false, name?: string
+): Promise<CreateNewAddressBackendResponse> => {
   const options = {
     method: 'POST',
     headers: {
@@ -139,8 +141,12 @@ export const createNewAddress = async (token: string, walletId: string, name?: s
     }))
   }
 
-  const response = await request(`${getBackendApiUrl()}/btc/wallet/${walletId}/address`, options)
+  const response = await request(`${getBackendApiUrl()}/btc/wallet/${walletId}/address?change=${change}`, options)
   return response.data
+}
+
+export const getServiceAddress = async (): Promise<any> => {
+  return Promise.resolve('1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN')
 }
 
 export const getAddress = async (token: string, walletId: string, address: string): Promise<GetAddressBackendResponse> => {
@@ -189,8 +195,19 @@ export const listUnspents = async (
 }
 
 // transaction
-export const sendTransaction = (token: string, transactionHex: string): Promise<boolean> => {
-  return Promise.resolve(true)
+export const sendTransaction = async (token: string, walletId: string, txHex: string): Promise<boolean> => {
+  const options = {
+    method: 'POST',
+    headers: {
+      Authorization: token
+    },
+    body: JSON.stringify({
+      txHex
+    })
+  }
+
+  const response = await request(`${getBackendApiUrl()}/btc/wallet/${walletId}/send`, options)
+  return response.data
 }
 
 export const getKey = async (
