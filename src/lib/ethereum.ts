@@ -39,6 +39,21 @@ export const createTokenOperationHash = (
   )
 }
 
+export const createGenericOperationHash = (
+  types: string[], values: any[]
+) => {
+return ethUtil.bufferToHex(
+      ethAbi.soliditySHA3(
+          types,
+          values.map((elem: any, index: number) => {
+            if (types[index] === 'address') {
+              return new ethUtil.BN(elem.toString(), 16)
+            } else return elem
+          })
+      )
+  )
+}
+
 export const createSignature = (operationHash: string, prvKey: string) => {
   const signatureInParts = ethUtil.ecsign(
     new Buffer(ethUtil.stripHexPrefix(operationHash), 'hex'),

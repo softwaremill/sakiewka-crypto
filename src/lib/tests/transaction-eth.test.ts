@@ -4,7 +4,7 @@ import { base58ToHDNode } from '../bitcoin'
 
 import * as transaction from '../transaction-eth'
 import * as backendApi from '../zlevator'
-import { createETHOperationHash, createTokenOperationHash } from '../ethereum'
+import { createETHOperationHash, createTokenOperationHash, createGenericOperationHash, createSignature } from '../ethereum'
 
 // process.env.ZLEVATOR_URL = 'http://localhost:9400/api/v1.0'
 process.env.ZLEVATOR_URL = 'backurl/api/v1'
@@ -76,6 +76,28 @@ describe('send Tokens', () => {
     const [, value, expireTime, contractNonce, signature] = backendApi.sendTokens.mock.calls[0]
 
     const operationHash = createTokenOperationHash(address, parseInt(value, 10), tokenAddress, expireTime, contractNonce)
+
+    const sigParams = ethUtil.fromRpcSig(signature)
+    const pub = ethUtil.ecrecover(
+      new Buffer(ethUtil.stripHexPrefix(operationHash), 'hex'),
+      sigParams.v, sigParams.r, sigParams.s
+    )
+    const recoveredAddressBuff = ethUtil.pubToAddress(pub)
+    const recoveredAddress = ethUtil.bufferToHex(recoveredAddressBuff)
+
+    expect(ethUtil.stripHexPrefix(recoveredAddress)).to.eq(signerAddress)
+  })
+})
+
+describe('sign generic message', () => {
+
+  it('should sign generic transaction', async () => {
+    const txType = "MY_TX"
+    const address = '0xa378869a5009b131Ef9c0b300f4049F7bB7091e6'
+
+    const operationHash = createGenericOperationHash(['string', 'address'], [txType, address]);
+
+    const signature = createSignature(operationHash, prvKey)
 
     const sigParams = ethUtil.fromRpcSig(signature)
     const pub = ethUtil.ecrecover(
