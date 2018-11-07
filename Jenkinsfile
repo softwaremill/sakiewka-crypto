@@ -14,9 +14,9 @@ spec:
   containers:
   - name: node8
     image: node:8
-    securityContext: 
-        privileged: true
-        runAsUser: 0
+    command:
+        - cat
+    tty: true
 """
 ) {
     node(label) {
