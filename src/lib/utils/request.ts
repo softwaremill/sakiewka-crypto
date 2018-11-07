@@ -22,7 +22,7 @@ const checkStatus = async (response: Response): Promise<Response> => {
 
   const responseBody = await parseJSON(response)
   const message = responseBody.error ? responseBody.error.message : responseBody
-  throw new Error(String(message))
+  throw new Error(JSON.stringify(message))
 }
 
 export default function request(url: string, options: object): Promise<any> {
