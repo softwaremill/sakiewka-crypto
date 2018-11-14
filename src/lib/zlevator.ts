@@ -18,13 +18,13 @@ export const getNextNonce = async (): Promise<EthGetTransactionParamsResponse> =
 }
 
 export const sendETH = async (
-  address: string, value: number, expireTime: number, contractNonce: string, data: string, signature: string
+  address: string, value: number, expireBlock: number, contractNonce: string, data: string, signature: string
 ): Promise<SendETHResponse> => {
   const options = {
     method: 'POST',
     body: JSON.stringify({
       address,
-      expireTime,
+      expireBlock,
       contractNonce,
       signature,
       data,
@@ -36,13 +36,13 @@ export const sendETH = async (
 }
 
 export const sendTokens = async (
-  address: string, value: number, expireTime: number, contractNonce: string, signature: string, contractAddress: string
+  address: string, value: number, expireBlock: number, contractNonce: string, signature: string, contractAddress: string
 ): Promise<SendTokensResponse> => {
   const options = {
     method: 'POST',
     body: JSON.stringify({
       address,
-      expireTime,
+      expireBlock,
       contractNonce,
       signature,
       contractAddress,

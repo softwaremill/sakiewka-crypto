@@ -73,7 +73,8 @@ export interface GetKeyBackendResponse {}
 
 // eth
 export interface EthGetTransactionParamsResponse {
-  contractNonce: string
+  contractNonce: string,
+  currentBlock: string
 }
 
 export interface SendETHResponse {

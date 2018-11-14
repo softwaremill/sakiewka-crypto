@@ -50,12 +50,11 @@ describe('hourFromNow', () => {
     expect(helpers.hourFromNow).to.be.a('function')
   })
 
-  it('should return an hour later timestamp', () => {
-    const hourMiliseconds = 3600000
-    const currentTimestamp = new Date().getTime()
-    const res = helpers.hourFromNow()
+  it('should return around hour later treating one block as 15 seconds', () => {
+    const blockPerHour = 4 * 15 * 60
+    const currentBlock = 1234
+    const res = helpers.hourFromNow(currentBlock)
 
-    expect(res).to.be.above(currentTimestamp)
-    expect(res).to.be.below(currentTimestamp + hourMiliseconds + 2000)
+    expect(res).to.be.eq(currentBlock + blockPerHour)
   })
 })

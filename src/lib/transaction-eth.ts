@@ -14,21 +14,21 @@ import {
 export const sendETH = async (
   prvKey: string, toAddress: string, value: number, data: string
 ) => {
-  const { contractNonce } = await getNextNonce()
-  const expireTime = hourFromNow()
-  const signature = signETHTransaction(toAddress, value, data, expireTime, parseInt(contractNonce, 10), prvKey)
+  const { contractNonce, currentBlock } = await getNextNonce()
+  const expireBlock = hourFromNow(currentBlock)
+  const signature = signETHTransaction(toAddress, value, data, expireBlock, parseInt(contractNonce, 10), prvKey)
 
-  return await sendETHApi(toAddress, value, expireTime, contractNonce, data, signature.signature)
+  return await sendETHApi(toAddress, value, expireBlock, contractNonce, data, signature.signature)
 }
 
 export const sendTokens = async (
   prvKey: string, toAddress: string, contractAddress: string, value: number
 ) => {
-  const { contractNonce } = await getNextNonce()
-  const expireTime = hourFromNow()
-  const signature = signTokenTransaction(toAddress, value, contractAddress, hourFromNow(), parseInt(contractNonce, 10), prvKey)
+  const { contractNonce, currentBlock } = await getNextNonce()
+  const expireBlock = hourFromNow(currentBlock)
+  const signature = signTokenTransaction(toAddress, value, contractAddress, expireBlock, parseInt(contractNonce, 10), prvKey)
 
-  return await sendTokensApi(toAddress, value, expireTime, contractNonce, signature.signature, contractAddress)
+  return await sendTokensApi(toAddress, value, expireBlock, contractNonce, signature.signature, contractAddress)
 }
 
 export const signTokenTransaction = (

@@ -44,9 +44,9 @@ describe('send ETH', () => {
     await transaction.sendETH(prvKey, address, amount, data)
 
     // @ts-ignore
-    const [, value, expireTime, contractNonce, , signature] = backendApi.sendETH.mock.calls[0]
+    const [, value, expireBlock, contractNonce, , signature] = backendApi.sendETH.mock.calls[0]
 
-    const operationHash = createETHOperationHash(address, parseInt(value, 10), data, expireTime, contractNonce)
+    const operationHash = createETHOperationHash(address, parseInt(value, 10), data, expireBlock, contractNonce)
 
     const sigParams = ethUtil.fromRpcSig(signature)
     const pub = ethUtil.ecrecover(
@@ -73,9 +73,9 @@ describe('send Tokens', () => {
     await transaction.sendTokens(prvKey, address, tokenAddress, amount)
 
     // @ts-ignore
-    const [, value, expireTime, contractNonce, signature] = backendApi.sendTokens.mock.calls[0]
+    const [, value, expireBlock, contractNonce, signature] = backendApi.sendTokens.mock.calls[0]
 
-    const operationHash = createTokenOperationHash(address, parseInt(value, 10), tokenAddress, expireTime, contractNonce)
+    const operationHash = createTokenOperationHash(address, parseInt(value, 10), tokenAddress, expireBlock, contractNonce)
 
     const sigParams = ethUtil.fromRpcSig(signature)
     const pub = ethUtil.ecrecover(
