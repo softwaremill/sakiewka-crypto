@@ -6,6 +6,8 @@ import * as transaction from '../transaction-eth'
 import * as backendApi from '../zlevator'
 import { createETHOperationHash, createTokenOperationHash, createGenericOperationHash, createSignature } from '../ethereum'
 
+import { v4 as uuid } from 'uuid';
+
 // process.env.ZLEVATOR_URL = 'http://localhost:9400/api/v1.0'
 process.env.ZLEVATOR_URL = 'backurl/api/v1'
 
@@ -41,7 +43,7 @@ describe('send ETH', () => {
     const amount = 1000000000
     const data = ''
 
-    await transaction.sendETH(prvKey, address, amount, data)
+    await transaction.sendETH(prvKey, address, amount, data, uuid())
 
     // @ts-ignore
     const [, value, expireBlock, contractNonce, , signature] = backendApi.sendETH.mock.calls[0]
@@ -70,7 +72,7 @@ describe('send Tokens', () => {
     const tokenAddress = '0x208556478db204a13ff96b3ae2e808c70eabab7e'
     const amount = 200
 
-    await transaction.sendTokens(prvKey, address, tokenAddress, amount)
+    await transaction.sendTokens(prvKey, address, tokenAddress, amount, uuid())
 
     // @ts-ignore
     const [, value, expireBlock, contractNonce, signature] = backendApi.sendTokens.mock.calls[0]

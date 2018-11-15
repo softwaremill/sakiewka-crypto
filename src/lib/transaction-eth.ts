@@ -12,23 +12,23 @@ import {
 } from './ethereum'
 
 export const sendETH = async (
-  prvKey: string, toAddress: string, value: number, data: string
+  prvKey: string, toAddress: string, value: number, data: string, withdrawalId: string
 ) => {
   const { contractNonce, currentBlock } = await getNextNonce()
   const expireBlock = hourFromNow(currentBlock)
   const signature = signETHTransaction(toAddress, value, data, expireBlock, parseInt(contractNonce, 10), prvKey)
 
-  return await sendETHApi(toAddress, value, expireBlock, contractNonce, data, signature.signature)
+  return await sendETHApi(toAddress, value, expireBlock, contractNonce, data, signature.signature, withdrawalId)
 }
 
 export const sendTokens = async (
-  prvKey: string, toAddress: string, contractAddress: string, value: number
+  prvKey: string, toAddress: string, contractAddress: string, value: number, withdrawalId: string
 ) => {
   const { contractNonce, currentBlock } = await getNextNonce()
   const expireBlock = hourFromNow(currentBlock)
   const signature = signTokenTransaction(toAddress, value, contractAddress, expireBlock, parseInt(contractNonce, 10), prvKey)
 
-  return await sendTokensApi(toAddress, value, expireBlock, contractNonce, signature.signature, contractAddress)
+  return await sendTokensApi(toAddress, value, expireBlock, contractNonce, signature.signature, contractAddress, withdrawalId)
 }
 
 export const signTokenTransaction = (
