@@ -146,7 +146,7 @@ export const createNewAddress = async (
 }
 
 export const getServiceAddress = async (): Promise<any> => {
-  return Promise.resolve('1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN')
+  return Promise.resolve(process.env.SERVICE_ADDRESS)
 }
 
 export const getAddress = async (token: string, walletId: string, address: string): Promise<GetAddressBackendResponse> => {
