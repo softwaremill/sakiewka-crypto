@@ -41,6 +41,7 @@ describe('sendCoins', () => {
     const backupKeyPair = generateNewKeyPair()
     const serverKeyPair = generateNewKeyPair()
     const anotherKeyPair = generateNewKeyPair()
+    process.env.SERVICE_ADDRESS='1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN';
 
     const { address, redeemScript } = generateNewMultisigAddress([
       userKeyPair.pubKey,
