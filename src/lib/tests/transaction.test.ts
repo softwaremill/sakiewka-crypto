@@ -15,6 +15,8 @@ import { ROOT_DERIVATION_PATH } from '../constants'
 beforeEach(() => {
   // @ts-ignore
   config.network = 'bitcoin'
+  process.env.SERVICE_ADDRESS='1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN';
+  process.env.SERVICE_PASSPHRASE = 'abcd'
 
   // mocks
   // @ts-ignore
@@ -41,7 +43,6 @@ describe('sendCoins', () => {
     const backupKeyPair = generateNewKeyPair()
     const serverKeyPair = generateNewKeyPair()
     const anotherKeyPair = generateNewKeyPair()
-    process.env.SERVICE_ADDRESS='1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN';
 
     const { address, redeemScript } = generateNewMultisigAddress([
       userKeyPair.pubKey,
@@ -371,7 +372,6 @@ describe('signTransaction', () => {
   })
 
   it('should sign transaction', () => {
-    process.env.SERVICE_PASSPHRASE = 'abcd'
     const xprv = 'xprv9s21ZrQH143K4UVYCa2N59SDjavhZSqV2vjQYUJzV5tq4rpJNo2BjKvin1vcwFzfENabiU5eiPiXVKCsBxjNSZyQBjT36EEN4spgL1uvrTs'
     const wrongXprv = 'xprv9s21ZrQH143K42jAsj3CsRB16Eh9MeN8SfKuiY23Aa33f2LEcVbDzBTn5QjtT83mr4wJ5LxHTMoU2DcqGVQwxrvorJJnDUL5YgQG7x2yP5c'
     const txHex = '0100000001145bb243544451ead3b8694a9597dc5e93583c0172ca16a2f2c74c8fd698be1100000000b5004830450221009f71f64142b1381e0ccdf2b868310b1b62bb57b3de4aca0554c03c881927be0a0220236412b2c299a1fd34d1a5b1b134b5fe5f3b479bb0fb29221447adb68effb48f014c6952210317b3b652ead4367b83303c377e4b2000b707f43694a17122bd65484f9f9e76ad2102251b99fde4b9d855d6afd1782c769988f9c39fa748a90b5e8b126fb208d834302103f16c3c588e2c29d8987842823e6cf326178e60650ebc613c3fab28afc16ffc4a53aeffffffff030065cd1d000000001976a914ff1cb7a5b23491534c66e7638f56d852ad47542288ac802b530b0000000017a91480cff499983050ec4268d749a1f898bec53e9fc28740548900000000001976a914ff1cb7a5b23491534c66e7638f56d852ad47542288ac00000000'
