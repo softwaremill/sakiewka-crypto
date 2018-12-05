@@ -401,3 +401,92 @@ describe('signTransaction', () => {
     }).to.throw('Signature already exists')
   })
 })
+
+describe('sendCoins and signTransaction', ()=> {
+  it('should send coins to testnet and signTransaction', async () => {
+    // @ts-ignore
+    config.network = 'testnet'
+    const servicePassphrase = 'abc'
+    process.env.SERVICE_PASSPHRASE = servicePassphrase
+    // @ts-ignore
+    backendApi.createNewAddress = jest.fn(() => {
+      return Promise.resolve({
+        address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi'
+      })
+    })
+
+    // generates keyPairs and address
+    const userKeyPair = generateNewKeyPair() //TODO probably also deriveKeyPair
+    const backupKeyPair = generateNewKeyPair() //TODO probably also deriveKeyPair
+    const serverKeyPair = deriveKeyPair(generateNewKeyPair(), ROOT_DERIVATION_PATH, false)
+
+    const { address } = generateNewMultisigAddress([
+      userKeyPair.pubKey,
+      backupKeyPair.pubKey,
+      serverKeyPair.pubKey
+    ], '2/0/1')
+
+    const unspents = [
+      {
+        address,
+        txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+        n: 0,
+        path: {
+          cosignerIndex: 2,
+          change: 0,
+          addressIndex: 1
+        },
+        amount: 700000000
+      }
+    ];
+    // @ts-ignore
+    backendApi.listUnspents = jest.fn(() => {
+      return Promise.resolve({
+        change: 1.9,
+        serviceFee: 0.09,
+        outputs: unspents
+      })
+    })
+
+    // @ts-ignore
+    backendApi.getWallet = jest.fn(() => {
+      return Promise.resolve({
+        keys: [
+          { pubKey: userKeyPair.pubKey },
+          { pubKey: backupKeyPair.pubKey },
+          { pubKey: serverKeyPair.pubKey }
+        ]
+      })
+    })
+
+    // @ts-ignore
+    backendApi.getServiceAddress = jest.fn(() => {
+      return Promise.resolve('2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi')
+    })
+
+    // @ts-ignore
+    const sendTxMock = jest.fn(() => {
+      return Promise.resolve(true)
+    })
+
+    // @ts-ignore
+    backendApi.sendTransaction = sendTxMock
+
+    await transaction.sendCoins(
+      '1234',
+      userKeyPair.prvKey,
+      '13',
+      [{
+        address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi',
+        amount: 500000000
+      }]
+    )
+
+    const [, , transactionHex] = sendTxMock.mock.calls[0]
+
+    const exncryptedXprivServer = encrypt(servicePassphrase, serverKeyPair.prvKey)
+    const {txHex, txHash} = transaction.signTransaction(exncryptedXprivServer, transactionHex, unspents);
+    expect(txHash).to.not.eq('')
+    expect(txHex).to.not.eq('')
+  })
+})
