@@ -25,7 +25,6 @@ export interface KeyType {
 export interface UTXO {
   txHash: string,
   n: number,
-  value?: number,
   amount? : number,
   path?: Path
 }
