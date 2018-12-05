@@ -104,7 +104,7 @@ export const addressToOutputScript = (
 }
 
 export const decodeTxOutput = (output: Out): Recipent => ({
-  value: output.value,
+  amount: output.value,
   address: outputScriptToAddress(output.script)
 })
 

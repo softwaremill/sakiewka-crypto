@@ -32,7 +32,6 @@ export interface UTXO {
 
 export interface Recipent {
   address: string,
-  value?: number,
   amount?: number
 }
 
