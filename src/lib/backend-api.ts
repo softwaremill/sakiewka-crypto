@@ -61,8 +61,8 @@ export const info = async (token: string): Promise<InfoBackendResponse> => {
 
 // wallet
 export const createWallet = async (
-    token: string,
-    params: CreateWalletBackendParams
+  token: string,
+  params: CreateWalletBackendParams
 ): Promise<CreateWalletBackendResponse> => {
   const options = {
     method: 'POST',
@@ -79,8 +79,8 @@ export const createWallet = async (
 }
 
 export const getWallet = async (
-    token: string,
-    walletId: string
+  token: string,
+  walletId: string
 ): Promise<GetWalletBackendResponse> => {
   const options = {
     method: 'GET',
@@ -94,9 +94,9 @@ export const getWallet = async (
 }
 
 export const listWallets = async (
-    token: string,
-    limit: number,
-    nextPageToken?: string
+  token: string,
+  limit: number,
+  nextPageToken?: string
 ): Promise<ListWalletsBackendResponse> => {
   const options = {
     method: 'GET',
@@ -112,8 +112,8 @@ export const listWallets = async (
 }
 
 export const getWalletBalance = async (
-    token: string,
-    walletId: string
+  token: string,
+  walletId: string
 ): Promise<GetWalletBalanceBackendResponse> => {
   const options = {
     method: 'GET',
@@ -127,7 +127,7 @@ export const getWalletBalance = async (
 }
 
 export const createNewAddress = async (
-    token: string, walletId: string, change: boolean = false, name?: string
+  token: string, walletId: string, change: boolean = false, name?: string
 ): Promise<CreateNewAddressBackendResponse> => {
   const options = {
     method: 'POST',
@@ -160,10 +160,10 @@ export const getAddress = async (token: string, walletId: string, address: strin
 }
 
 export const listAddresses = async (
-    token: string,
-    walletId: string,
-    limit: number,
-    nextPageToken?: string
+  token: string,
+  walletId: string,
+  limit: number,
+  nextPageToken?: string
 ): Promise<ListAddressesBackendResponse> => {
   const options = {
     method: 'GET',
@@ -179,7 +179,7 @@ export const listAddresses = async (
 }
 
 export const listUnspents = async (
-    token: string, walletId: string, amount: number, feeRate?: number
+  token: string, walletId: string, amount: number, feeRate?: number
 ): Promise<ListUnspentsBackendResponse> => {
   const options = {
     method: 'GET',
@@ -209,9 +209,9 @@ export const sendTransaction = async (token: string, walletId: string, txHex: st
 }
 
 export const getKey = async (
-    token: string,
-    keyId: string,
-    includePrivate?: boolean
+  token: string,
+  keyId: string,
+  includePrivate?: boolean
 ): Promise<GetKeyBackendResponse> => {
   const options = {
     method: 'GET',
