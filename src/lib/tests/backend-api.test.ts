@@ -2,6 +2,7 @@ import { expect } from 'chai'
 
 import * as api from '../backend-api'
 import * as request from '../utils/request'
+import { hashPassword } from '../crypto';
 
 // @ts-ignore
 const mockImplementation = jest.fn(() => ({ data: 'testToken' }))
@@ -23,13 +24,14 @@ describe('login', () => {
   it('should send proper request', async () => {
     await api.login('a', 'b')
 
+    const hashedPassword = hashPassword('b')
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
     expect(url).to.eq('backurl/api/v1/user/login')
     expect(params.method).to.eq('POST')
     expect(reqBody.email).to.eq('a')
-    expect(reqBody.password).to.eq('b')
+    expect(reqBody.password).to.eq(hashedPassword)
   })
 })
 
@@ -41,13 +43,15 @@ describe('register', () => {
   it('should send proper request', async () => {
     await api.register('a', 'b')
 
+    const hashedPassword = hashPassword('b')
+
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
     expect(url).to.eq('backurl/api/v1/user/register')
     expect(params.method).to.eq('POST')
     expect(reqBody.email).to.eq('a')
-    expect(reqBody.password).to.eq('b')
+    expect(reqBody.password).to.eq(hashedPassword)
   })
 })
 
