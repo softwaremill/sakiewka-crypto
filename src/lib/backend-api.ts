@@ -15,7 +15,6 @@ import {
 } from 'response'
 import request from './utils/request'
 import { removeUndefinedFromObject } from './utils/helpers'
-import { hashPassword } from './crypto';
 
 const getBackendApiUrl = () => process.env.BACKEND_API_URL
 
@@ -25,7 +24,7 @@ export const login = async (login: string, password: string): Promise<LoginBacke
   const options = {
     method: 'POST',
     body: JSON.stringify({
-      password: hashPassword(password),
+      password,
       email: login
     })
   }
@@ -38,7 +37,7 @@ export const register = async (login: string, password: string): Promise<Registe
   const options = {
     method: 'POST',
     body: JSON.stringify({
-      password: hashPassword(password),
+      password,
       email: login
     })
   }
