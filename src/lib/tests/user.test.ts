@@ -2,6 +2,7 @@ import { expect } from 'chai'
 
 import * as user from '../user'
 import * as api from '../backend-api'
+import { hashPassword } from '../crypto';
 
 describe('login', () => {
   it('should exist', () => {
@@ -14,11 +15,12 @@ describe('login', () => {
     // @ts-ignore
     api.login = mockImplementation
 
-    const res = await user.login('a', 'b')
+    const password = 'b'
+    const res = await user.login('a', password)
 
-    const [login, password] = mockImplementation.mock.calls[0]
-    expect(login).to.eq('a')
-    expect(password).to.eq('b')
+    const [loginArg, passwordArg] = mockImplementation.mock.calls[0]
+    expect(loginArg).to.eq('a')
+    expect(passwordArg).to.eq(hashPassword(password))
     expect(res).to.eq('backend response')
   })
 })
@@ -34,11 +36,12 @@ describe('register', () => {
     // @ts-ignore
     api.register = mockImplementation
 
-    const res = await user.register('a', 'b')
+    const password = 'b'
+    const res = await user.register('a', password)
 
-    const [login, password] = mockImplementation.mock.calls[0]
-    expect(login).to.eq('a')
-    expect(password).to.eq('b')
+    const [loginArg, passwordArg] = mockImplementation.mock.calls[0]
+    expect(loginArg).to.eq('a')
+    expect(passwordArg).to.eq(hashPassword(password))
     expect(res).to.eq('backend response')
   })
 })

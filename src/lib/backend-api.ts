@@ -1,20 +1,17 @@
 import {
-  UTXO
-} from '../types/domain'
-import {
-  LoginBackendResponse,
-  RegisterBackendResponse,
-  InfoBackendResponse,
-  CreateWalletBackendResponse,
-  CreateWalletBackendParams,
-  GetWalletBackendResponse,
-  ListWalletsBackendResponse,
-  GetWalletBalanceBackendResponse,
   CreateNewAddressBackendResponse,
+  CreateWalletBackendParams,
+  CreateWalletBackendResponse,
   GetAddressBackendResponse,
+  GetKeyBackendResponse,
+  GetWalletBackendResponse,
+  GetWalletBalanceBackendResponse,
+  InfoBackendResponse,
   ListAddressesBackendResponse,
   ListUnspentsBackendResponse,
-  GetKeyBackendResponse
+  ListWalletsBackendResponse,
+  LoginBackendResponse,
+  RegisterBackendResponse
 } from 'response'
 import request from './utils/request'
 import { removeUndefinedFromObject } from './utils/helpers'
@@ -23,7 +20,7 @@ const getBackendApiUrl = () => process.env.BACKEND_API_URL
 
 // BTC
 // user
-export const login = async (login: string, password: string): Promise<LoginBackendResponse>  => {
+export const login = async (login: string, password: string): Promise<LoginBackendResponse> => {
   const options = {
     method: 'POST',
     body: JSON.stringify({

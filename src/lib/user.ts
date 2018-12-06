@@ -3,13 +3,14 @@ import {
   register as registerBackend,
   info as infoBackend
 } from './backend-api'
+import { hashPassword } from './crypto';
 
 export const login = (login: string, password: string) => {
-  return loginBackend(login, password)
+  return loginBackend(login, hashPassword(password))
 }
 
 export const register = (login: string, password: string) => {
-  return registerBackend(login, password)
+  return registerBackend(login, hashPassword(password))
 }
 
 export const info = (token: string) => {
