@@ -134,16 +134,6 @@ describe('deriveKeyPair', () => {
 
     const derivedKeyPair = keyModule.deriveKeyPair(rootKeyPair, path)
 
-    expect(rootKeyPair.prvKey).to.eq(derivedKeyPair.prvKey)
-    expect(rootKeyPair.pubKey).to.not.eq(derivedKeyPair.pubKey)
-  })
-
-  it('should create new keyPair with derived bothKeys', () => {
-    const path = `0'`
-    const rootKeyPair = keyModule.generateNewKeyPair()
-
-    const derivedKeyPair = keyModule.deriveKeyPair(rootKeyPair, path, false)
-
     expect(rootKeyPair.prvKey).to.not.eq(derivedKeyPair.prvKey)
     expect(rootKeyPair.pubKey).to.not.eq(derivedKeyPair.pubKey)
   })

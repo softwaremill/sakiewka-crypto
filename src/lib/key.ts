@@ -30,13 +30,12 @@ export const encryptKeyPair = (keyPair: KeyPair, passphrase: string): KeyPair =>
 }
 
 export const deriveKeyPair = (
-  keyPair: KeyPair, path: string, onlyPub: boolean = true
+  keyPair: KeyPair, path: string
 ): KeyPair => {
   const rootExtendedKey = base58ToHDNode(keyPair.prvKey)
   const derivedExtendedKey = rootExtendedKey.derivePath(path)
   const pubKey = hdNodeToBase58Pub(derivedExtendedKey)
-  const prvKey = onlyPub ?
-    hdNodeToBase58Prv(rootExtendedKey) : hdNodeToBase58Prv(derivedExtendedKey)
+  const prvKey = hdNodeToBase58Prv(derivedExtendedKey)
 
   return { pubKey, prvKey }
 }

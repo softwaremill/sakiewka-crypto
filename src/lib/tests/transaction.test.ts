@@ -415,9 +415,9 @@ describe('sendCoins and signTransaction', () => {
     })
 
     // generates keyPairs and address
-    const userKeyPair = generateNewKeyPair() //TODO probably also deriveKeyPair
-    const backupKeyPair = generateNewKeyPair() //TODO probably also deriveKeyPair
-    const serverKeyPair = deriveKeyPair(generateNewKeyPair(), ROOT_DERIVATION_PATH, false)
+    const userKeyPair = deriveKeyPair(generateNewKeyPair(), ROOT_DERIVATION_PATH)
+    const backupKeyPair = deriveKeyPair(generateNewKeyPair(), ROOT_DERIVATION_PATH)
+    const serverKeyPair = deriveKeyPair(generateNewKeyPair(), ROOT_DERIVATION_PATH)
 
     const { address } = generateNewMultisigAddress([
       userKeyPair.pubKey,
