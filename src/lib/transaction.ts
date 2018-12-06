@@ -1,4 +1,4 @@
-import { UTXO, Recipent, DecodedTx, Path, Key } from '../types/domain'
+import { UTXO, Recipent, DecodedTx, Path, Key, TxOut } from '../types/domain'
 import {
   listUnspents,
   getWallet,
@@ -14,9 +14,14 @@ import {
   txFromHex,
   decodeTxOutput,
   decodeTxInput,
-  txBuilderFromTx
+  txBuilderFromTx,
+  sortUnspents,
+  recipentToTxOut,
+  sortTxOuts
 } from './bitcoin'
 import { deriveKey } from './key'
+import { TransactionBuilder } from 'bitcoinjs-lib';
+import { ListUnspentsBackendResponse } from 'response';
 
 export const sumOutputAmounts = (outputs: Recipent[]): number => {
   return outputs.reduce(
@@ -40,25 +45,36 @@ export const sendCoins = async (
   const txb = initializeTxBuilder()
   const recommendedFee = await getRecommendedFee()
   const unspentsResponse = await listUnspents(userToken, walletId, satoshiToBtc(outputsAmount), recommendedFee)
-  const {
-    outputs: unspents, change, serviceFee
-  } = unspentsResponse
   const wallet = await getWallet(userToken, walletId)
   const pubKeys = wallet.keys.map((key: Key) => key.pubKey)
-  const changeAddres = await createNewAddress(userToken, walletId, true)
+  const changeAddresResponse = await createNewAddress(userToken, walletId, true)
   const serviceAddress = await getServiceAddress()
 
-  unspents.forEach((uns: UTXO) => {
+  const inputs = sortUnspents(unspentsResponse.outputs)
+  inputs.forEach((uns: UTXO) => {
     txb.addInput(uns.txHash, uns.n)
   })
 
-  recipents.forEach((out: Recipent) => {
-    txb.addOutput(addressToOutputScript(out.address), out.amount)
+  const outputs = createOutputs(unspentsResponse, recipents, changeAddresResponse.address, serviceAddress)
+  outputs.forEach((out: TxOut) => {
+    txb.addOutput(out.script, out.value)
   })
 
-  txb.addOutput(addressToOutputScript(changeAddres.address), btcToSatoshi(change))
-  txb.addOutput(addressToOutputScript(serviceAddress), btcToSatoshi(serviceFee))
+  signInputs(inputs, xprv, pubKeys, txb)
 
+  const txHex = txb.build().toHex()
+  await sendTransaction(userToken, walletId, txHex)
+}
+
+const createOutputs = (unspentsResponse: ListUnspentsBackendResponse, recipents: Recipent[], changeAddres: string, serviceAddress: string): TxOut[] => {
+  const { change, serviceFee } = unspentsResponse
+  const changeRecipent: Recipent = { address: changeAddres, amount: btcToSatoshi(change) }
+  const serviceRecipent: Recipent = { address: serviceAddress, amount: btcToSatoshi(serviceFee) }
+  const txOuts = recipents.concat(changeRecipent, serviceRecipent).map(recipentToTxOut)
+  return sortTxOuts(txOuts)
+}
+
+const signInputs = (unspents: UTXO[], xprv: string, pubKeys: string[], txb: TransactionBuilder) => {
   unspents.forEach((uns: UTXO, idx: number) => {
     const signingKey = deriveKey(xprv, joinPath(uns.path)).keyPair
 
@@ -67,9 +83,6 @@ export const sendCoins = async (
 
     txb.sign(idx, signingKey, redeemScript)
   })
-
-  const txHex = txb.build().toHex()
-  await sendTransaction(userToken, walletId, txHex)
 }
 
 export const decodeTransaction = (txHex: string): DecodedTx => {
