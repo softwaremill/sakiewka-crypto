@@ -7,3 +7,4 @@ src/sjcl/
 dist/
 docs/
 .env
+.idea
