@@ -85,11 +85,10 @@ export const decodeTransaction = (txHex: string): DecodedTx => {
 }
 
 export const signTransaction = (
-  encryptedXprv: string, txHex: string, unspents: UTXO[]
+  xprv: string, txHex: string, unspents: UTXO[]
 ) => {
   const tx = txFromHex(txHex)
   const txb = txBuilderFromTx(tx)
-  const xprv = decrypt(getServicePassphrase(), encryptedXprv)
 
   unspents.forEach((uns: UTXO, idx: number) => {
     const signingKey = deriveKey(xprv, joinPath(uns.path)).keyPair

@@ -9,13 +9,12 @@ import {
   txFromHex, txBuilderFromTx
 } from '../bitcoin'
 import * as config from '../config'
-import { encrypt } from '../crypto'
 import { ROOT_DERIVATION_PATH } from '../constants'
 
 beforeEach(() => {
   // @ts-ignore
   config.network = 'bitcoin'
-  process.env.SERVICE_ADDRESS='1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN';
+  process.env.SERVICE_ADDRESS = '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN';
   process.env.SERVICE_PASSPHRASE = 'abcd'
 
   // mocks
@@ -389,20 +388,20 @@ describe('signTransaction', () => {
       }
     ]
 
-    const result = transaction.signTransaction(encrypt(process.env.SERVICE_PASSPHRASE, xprv), txHex, unspents)
+    const result = transaction.signTransaction(xprv, txHex, unspents)
     expect(result.txHex).to.not.eq(txHex)
 
     expect(() => {
-      transaction.signTransaction(encrypt(process.env.SERVICE_PASSPHRASE, wrongXprv), txHex, unspents)
+      transaction.signTransaction(wrongXprv, txHex, unspents)
     }).to.throw('Key pair cannot sign for this input')
 
     expect(() => {
-      transaction.signTransaction(encrypt(process.env.SERVICE_PASSPHRASE, xprv), result.txHex, unspents)
+      transaction.signTransaction(xprv, result.txHex, unspents)
     }).to.throw('Signature already exists')
   })
 })
 
-describe('sendCoins and signTransaction', ()=> {
+describe('sendCoins and signTransaction', () => {
   it('should send coins to testnet and signTransaction', async () => {
     // @ts-ignore
     config.network = 'testnet'
@@ -424,7 +423,7 @@ describe('sendCoins and signTransaction', ()=> {
       userKeyPair.pubKey,
       backupKeyPair.pubKey,
       serverKeyPair.pubKey
-    ], '2/0/1')
+    ], '2/1/0')
 
     const unspents = [
       {
@@ -484,8 +483,7 @@ describe('sendCoins and signTransaction', ()=> {
 
     const [, , transactionHex] = sendTxMock.mock.calls[0]
 
-    const exncryptedXprivServer = encrypt(servicePassphrase, serverKeyPair.prvKey)
-    const {txHex, txHash} = transaction.signTransaction(exncryptedXprivServer, transactionHex, unspents);
+    const { txHex, txHash } = transaction.signTransaction(serverKeyPair.prvKey, transactionHex, unspents);
     expect(txHash).to.not.eq('')
     expect(txHex).to.not.eq('')
   })
