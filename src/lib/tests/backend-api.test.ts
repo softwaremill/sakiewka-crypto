@@ -2,7 +2,6 @@ import { expect } from 'chai'
 
 import * as api from '../backend-api'
 import * as request from '../utils/request'
-import { hashPassword } from '../crypto';
 
 // @ts-ignore
 const mockImplementation = jest.fn(() => ({ data: 'testToken' }))
