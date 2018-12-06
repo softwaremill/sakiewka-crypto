@@ -22,16 +22,16 @@ describe('login', () => {
   })
 
   it('should send proper request', async () => {
-    await api.login('a', 'b')
+    const password = 'b'
+    await api.login('a', password)
 
-    const hashedPassword = hashPassword('b')
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
     expect(url).to.eq('backurl/api/v1/user/login')
     expect(params.method).to.eq('POST')
     expect(reqBody.email).to.eq('a')
-    expect(reqBody.password).to.eq(hashedPassword)
+    expect(reqBody.password).to.eq(hashPassword(password))
   })
 })
 
@@ -41,9 +41,8 @@ describe('register', () => {
   })
 
   it('should send proper request', async () => {
-    await api.register('a', 'b')
-
-    const hashedPassword = hashPassword('b')
+    const password = 'b'
+    await api.register('a', password)
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
@@ -51,7 +50,7 @@ describe('register', () => {
     expect(url).to.eq('backurl/api/v1/user/register')
     expect(params.method).to.eq('POST')
     expect(reqBody.email).to.eq('a')
-    expect(reqBody.password).to.eq(hashedPassword)
+    expect(reqBody.password).to.eq(hashPassword(password))
   })
 })
 
