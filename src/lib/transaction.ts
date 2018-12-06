@@ -17,9 +17,6 @@ import {
   txBuilderFromTx
 } from './bitcoin'
 import { deriveKey } from './key'
-import { decrypt } from './crypto'
-
-const getServicePassphrase = () => process.env.SERVICE_PASSPHRASE
 
 export const sumOutputAmounts = (outputs: Recipent[]): number => {
   return outputs.reduce(
