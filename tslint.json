@@ -28,6 +28,9 @@
       "property-declaration",
       "member-variable-declaration"
     ],
-    "semicolon": false
+    "semicolon": [
+      true,
+      "never"
+    ]
   }
 }
