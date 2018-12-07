@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Client-side Sakiewka app",
   "main": "dist/index.js",
+  "engines": {
+    "node": ">=10.0.0 <11.0.0",
+    "npm": ">=6.0.0 <7.0.0 "
+  },
   "scripts": {
     "postinstall": "postinstall-build dist",
     "test": "jest --forceExit --verbose=false",
@@ -22,32 +26,32 @@
   },
   "homepage": "https://github.com/softwaremill/sakiewka-client#readme",
   "devDependencies": {
-    "@types/chai": "^4.1.4",
-    "@types/mocha": "^5.2.4",
-    "@types/node": "^10.5.2",
-    "@types/node-fetch": "^2.1.1",
     "@types/bitcoinjs-lib": "^3.4.0",
+    "@types/chai": "^4.1.7",
     "@types/ethereumjs-abi": "^0.6.1",
+    "@types/mocha": "^5.2.4",
+    "@types/node": "^10.12.12",
+    "@types/node-fetch": "^2.1.4",
     "@types/sjcl": "^1.0.28",
     "@types/uuid": "^3.4.4",
-    "chai": "^4.1.2",
+    "chai": "^4.2.0",
     "concurrently": "^3.6.0",
-    "jest": "^23.4.0",
-    "ts-jest": "^23.0.0",
-    "ts-node": "^7.0.0",
+    "jest": "^23.6.0",
+    "ts-jest": "^23.10.5",
+    "ts-node": "^7.0.1",
     "tslint": "^5.10.0",
-    "tslint-config-airbnb": "^5.9.2",
+    "tslint-config-airbnb": "^5.11.1",
     "typedoc": "^0.11.1",
     "typescript": "^2.9.2",
     "uuid": "^3.3.2"
   },
   "dependencies": {
     "bitcoinjs-lib": "^3.3.2",
-    "dotenv": "^6.0.0",
+    "dotenv": "^6.2.0",
     "ethereumjs-abi": "^0.6.5",
     "ethereumjs-util": "^5.2.0",
-    "node-fetch": "^2.1.2",
-    "postinstall-build": "^5.0.1",
+    "node-fetch": "^2.3.0",
+    "postinstall-build": "^5.0.3",
     "sjcl-complete": "^1.0.0"
   }
 }
