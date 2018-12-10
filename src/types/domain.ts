@@ -50,3 +50,8 @@ export interface Signature {
   signature: string
   contractNonce: number
 }
+
+export interface TxOut {
+  script: Buffer,
+  value : number
+}

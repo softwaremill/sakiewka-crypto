@@ -7,10 +7,11 @@ import bitcoinjsLib, {
   Out,
   In
 } from 'bitcoinjs-lib'
+import bip69 from 'bip69'
 import { network as networkName } from './config'
 
 import { BITCOIN_NETWORK } from './constants'
-import { UTXO, Recipent } from '../types/domain'
+import { UTXO, Recipent, Path, TxOut } from '../types/domain'
 
 const getNetwork = (networkName: string = BITCOIN_NETWORK): Network => {
   return bitcoinjsLib.networks[networkName]
@@ -112,3 +113,44 @@ export const decodeTxInput = (input: In): UTXO => ({
   txHash: (input.hash.reverse() as Buffer).toString('hex'),
   n: input.index
 })
+
+export const sortUnspents = (inputs: UTXO[]): UTXO[] => {
+  return bip69.sortInputs(inputs.map(utxoToBtcJS))
+    .map(btcjsToUtxo)
+}
+
+export const recipentToTxOut = (recipent: Recipent) : TxOut => {
+  return {
+    script: addressToOutputScript(recipent.address),
+    value : recipent.amount
+  }
+}
+
+export const sortTxOuts = (outputs: TxOut[]) :TxOut[] => {
+  return bip69.sortOutputs(outputs)
+}
+
+const btcjsToUtxo = (input: UTXO_btcjs): UTXO => {
+  return {
+    txHash: input.txId,
+    n: input.vout,
+    amount: input.amount,
+    path: input.path
+  }
+}
+
+const utxoToBtcJS = (input: UTXO): UTXO_btcjs => {
+  return {
+    txId: input.txHash,
+    vout: input.n,
+    amount: input.amount,
+    path: input.path
+  }
+}
+
+interface UTXO_btcjs {
+  txId: string,
+  vout: number,
+  amount?: number,
+  path?: Path
+}

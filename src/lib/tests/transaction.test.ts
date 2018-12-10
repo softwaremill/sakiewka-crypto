@@ -6,7 +6,7 @@ import * as fees from '../utils/fees'
 import { generateNewKeyPair, deriveKey, deriveKeyPair } from '../key'
 import { generateNewMultisigAddress } from '../address'
 import {
-  txFromHex, txBuilderFromTx
+  txFromHex, txBuilderFromTx, outputScriptToAddress
 } from '../bitcoin'
 import * as config from '../config'
 import { ROOT_DERIVATION_PATH } from '../constants'
@@ -227,6 +227,101 @@ describe('sendCoins', () => {
 
     expect(tx.outs.length).to.be.eq(3)
     expect(tx.ins.length).to.be.eq(1)
+  })
+
+  it('should sort inputs and outputs lexicographically', async () => {
+    // generates keyPairs and address
+    const userKeyPair = generateNewKeyPair()
+    const backupKeyPair = generateNewKeyPair()
+    const serverKeyPair = generateNewKeyPair()
+
+    const { address } = generateNewMultisigAddress([
+      userKeyPair.pubKey,
+      backupKeyPair.pubKey,
+      serverKeyPair.pubKey
+    ], '2/0/0')
+
+    // @ts-ignore
+    backendApi.listUnspents = jest.fn(() => {
+      return Promise.resolve({
+        change: 1.9,
+        serviceFee: 0.09,
+        outputs: [
+          {
+            address,
+            txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+            n: 1,
+            path: {
+              cosignerIndex: 2,
+              change: 0,
+              addressIndex: 0
+            },
+            amount: 650000000
+          },
+          {
+            address,
+            txHash: '10be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+            n: 0,
+            path: {
+              cosignerIndex: 2,
+              change: 0,
+              addressIndex: 0
+            },
+            amount: 50000000
+          }
+        ]
+      })
+    })
+
+    // mocks getWallet
+    // @ts-ignore
+    backendApi.getWallet = jest.fn(() => {
+      return Promise.resolve({
+        keys: [
+          { pubKey: userKeyPair.pubKey },
+          { pubKey: backupKeyPair.pubKey },
+          { pubKey: serverKeyPair.pubKey }
+        ]
+      })
+    })
+
+    // @ts-ignore
+    const sendTxMock = jest.fn(() => {
+      return Promise.resolve(true)
+    })
+
+    // @ts-ignore
+    backendApi.sendTransaction = sendTxMock
+
+    // @ts-ignore
+    backendApi.getServiceAddress = jest.fn(() => {
+      return Promise.resolve('1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN')
+    })
+
+    await transaction.sendCoins(
+      '1234',
+      userKeyPair.prvKey,
+      '13',
+      [
+        {
+          address: '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM',
+          amount: 500000000
+        },
+        {
+          address: '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM',
+          amount: 1500
+        }
+      ]
+    )
+
+    const [, , transactionHex] = sendTxMock.mock.calls[0]
+    const tx = transaction.decodeTransaction(transactionHex)
+
+    expect(tx.outputs.length).to.be.eq(4)
+    expect(tx.inputs.length).to.be.eq(2)
+    expect(tx.inputs[0].txHash < tx.inputs[1].txHash).to.be.eq(true)
+    expect(tx.outputs[0].amount).to.be.lessThan(tx.outputs[1].amount)
+    expect(tx.outputs[1].amount).to.be.lessThan(tx.outputs[2].amount)
   })
 })
 
