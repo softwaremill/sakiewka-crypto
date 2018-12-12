@@ -2,7 +2,6 @@ import { expect } from 'chai'
 
 import * as transaction from '../transaction'
 import * as backendApi from '../backend-api'
-import * as fees from '../utils/fees'
 import { generateNewKeyPair, deriveKey, deriveKeyPair } from '../key'
 import { generateNewMultisigAddress } from '../address'
 import {
@@ -28,9 +27,9 @@ beforeEach(() => {
 
 describe('sendCoins', () => {
   // @ts-ignore
-  fees.getRecommendedFee = jest.fn(() => {
-    return Promise.resolve(5)
-  })
+    backendApi.getRecommendedFee = jest.fn(() => {
+        return Promise.resolve({recommended:5})
+    })
 
   it('should exist', () => {
     expect(transaction.sendCoins).to.be.a('function')

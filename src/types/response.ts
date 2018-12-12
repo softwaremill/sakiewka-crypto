@@ -84,3 +84,7 @@ export interface SendETHResponse {
 export interface SendTokensResponse {
   tx: string
 }
+
+export interface GetFeeRate {
+  recommended: number
+}

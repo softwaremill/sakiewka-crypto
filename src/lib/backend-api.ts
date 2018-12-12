@@ -1,17 +1,17 @@
 import {
-  CreateNewAddressBackendResponse,
-  CreateWalletBackendParams,
-  CreateWalletBackendResponse,
-  GetAddressBackendResponse,
-  GetKeyBackendResponse,
-  GetWalletBackendResponse,
-  GetWalletBalanceBackendResponse,
-  InfoBackendResponse,
-  ListAddressesBackendResponse,
-  ListUnspentsBackendResponse,
-  ListWalletsBackendResponse,
-  LoginBackendResponse,
-  RegisterBackendResponse
+    CreateNewAddressBackendResponse,
+    CreateWalletBackendParams,
+    CreateWalletBackendResponse,
+    GetAddressBackendResponse, GetFeeRate,
+    GetKeyBackendResponse,
+    GetWalletBackendResponse,
+    GetWalletBalanceBackendResponse,
+    InfoBackendResponse,
+    ListAddressesBackendResponse,
+    ListUnspentsBackendResponse,
+    ListWalletsBackendResponse,
+    LoginBackendResponse,
+    RegisterBackendResponse
 } from 'response'
 import request from './utils/request'
 import { removeUndefinedFromObject } from './utils/helpers'
@@ -221,4 +221,9 @@ export const getKey = async (
 
   const response = await request(`${getBackendApiUrl()}/btc/key/${keyId}${includePrivate ? `?includePrivate=${includePrivate}` : ''}`, options)
   return response.data
+}
+
+export const getRecommendedFee = async () : Promise<GetFeeRate> => {
+    const response = await request(`${getBackendApiUrl()}/fees`, { method: 'GET' })
+    return response;
 }
