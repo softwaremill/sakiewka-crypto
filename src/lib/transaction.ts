@@ -4,9 +4,9 @@ import {
   getWallet,
   createNewAddress,
   sendTransaction,
-  getServiceAddress
+  getServiceAddress,
+  getFeesRates
 } from './backend-api'
-import { getRecommendedFee } from './utils/fees'
 import {
   createMultisigRedeemScript,
   initializeTxBuilder,
@@ -43,8 +43,8 @@ export const sendCoins = async (
 ): Promise<void> => {
   const outputsAmount = sumOutputAmounts(recipents)
   const txb = initializeTxBuilder()
-  const recommendedFee = await getRecommendedFee()
-  const unspentsResponse = await listUnspents(userToken, walletId, satoshiToBtc(outputsAmount), recommendedFee)
+  const { recommended } = await getFeesRates()
+  const unspentsResponse = await listUnspents(userToken, walletId, satoshiToBtc(outputsAmount), recommended)
   const wallet = await getWallet(userToken, walletId)
   const pubKeys = wallet.keys.map((key: Key) => key.pubKey)
   const changeAddresResponse = await createNewAddress(userToken, walletId, true)

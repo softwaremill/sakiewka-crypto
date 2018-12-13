@@ -5,8 +5,6 @@ export const BASE_API_PATH = 'api'
 export const BITCOIN_NETWORK = 'bitcoin'
 export const TESTNET_NETWORK = 'testnet'
 
-export const BTC_RECOMMENDED_FEE_URL = 'https://bitcoinfees.earn.com/api/v1/fees/recommended'
-
 export const API_ERROR = {
   NOT_FOUND: {
     message: 'Not found',

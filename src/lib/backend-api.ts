@@ -3,6 +3,7 @@ import {
   CreateWalletBackendParams,
   CreateWalletBackendResponse,
   GetAddressBackendResponse,
+  GetFeesRates,
   GetKeyBackendResponse,
   GetWalletBackendResponse,
   GetWalletBalanceBackendResponse,
@@ -221,4 +222,9 @@ export const getKey = async (
 
   const response = await request(`${getBackendApiUrl()}/btc/key/${keyId}${includePrivate ? `?includePrivate=${includePrivate}` : ''}`, options)
   return response.data
+}
+
+export const getFeesRates = async (): Promise<GetFeesRates> => {
+  const response = await request(`${getBackendApiUrl()}/fees`, { method: 'GET' })
+  return response
 }
