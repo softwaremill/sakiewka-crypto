@@ -27,7 +27,7 @@ beforeEach(() => {
 
 describe('sendCoins', () => {
   // @ts-ignore
-    backendApi.getRecommendedFee = jest.fn(() => {
+    backendApi.getFeesRates = jest.fn(() => {
         return Promise.resolve({recommended:5})
     })
 

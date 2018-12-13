@@ -85,6 +85,6 @@ export interface SendTokensResponse {
   tx: string
 }
 
-export interface GetFeeRate {
+export interface GetFeesRates {
   recommended: number
 }
