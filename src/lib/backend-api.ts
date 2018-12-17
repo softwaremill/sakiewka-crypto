@@ -143,10 +143,6 @@ export const createNewAddress = async (
   return response.data
 }
 
-export const getServiceAddress = async (): Promise<any> => {
-  return Promise.resolve(process.env.SERVICE_ADDRESS)
-}
-
 export const getAddress = async (token: string, walletId: string, address: string): Promise<GetAddressBackendResponse> => {
   const options = {
     method: 'GET',

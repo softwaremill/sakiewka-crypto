@@ -4,13 +4,11 @@ import {
   getWallet,
   createNewAddress,
   sendTransaction,
-  getServiceAddress,
   getFeesRates
 } from './backend-api'
 import {
   createMultisigRedeemScript,
   initializeTxBuilder,
-  addressToOutputScript,
   txFromHex,
   decodeTxOutput,
   decodeTxInput,
@@ -48,14 +46,13 @@ export const sendCoins = async (
   const wallet = await getWallet(userToken, walletId)
   const pubKeys = wallet.keys.map((key: Key) => key.pubKey)
   const changeAddresResponse = await createNewAddress(userToken, walletId, true)
-  const serviceAddress = await getServiceAddress()
 
   const inputs = sortUnspents(unspentsResponse.outputs)
   inputs.forEach((uns: UTXO) => {
     txb.addInput(uns.txHash, uns.n)
   })
 
-  const outputs = createOutputs(unspentsResponse, recipents, changeAddresResponse.address, serviceAddress)
+  const outputs = createOutputs(unspentsResponse, recipents, changeAddresResponse.address)
   outputs.forEach((out: TxOut) => {
     txb.addOutput(out.script, out.value)
   })
@@ -66,8 +63,8 @@ export const sendCoins = async (
   await sendTransaction(userToken, walletId, txHex)
 }
 
-const createOutputs = (unspentsResponse: ListUnspentsBackendResponse, recipents: Recipent[], changeAddres: string, serviceAddress: string): TxOut[] => {
-  const { change, serviceFee } = unspentsResponse
+const createOutputs = (unspentsResponse: ListUnspentsBackendResponse, recipents: Recipent[], changeAddres: string): TxOut[] => {
+  const { change, serviceFee, serviceAddress } = unspentsResponse
   const changeRecipent: Recipent = { address: changeAddres, amount: btcToSatoshi(change) }
   const serviceRecipent: Recipent = { address: serviceAddress, amount: btcToSatoshi(serviceFee) }
   const txOuts = recipents.concat(changeRecipent, serviceRecipent).map(recipentToTxOut)

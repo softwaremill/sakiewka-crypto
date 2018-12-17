@@ -13,7 +13,6 @@ import { ROOT_DERIVATION_PATH } from '../constants'
 beforeEach(() => {
   // @ts-ignore
   config.network = 'bitcoin'
-  process.env.SERVICE_ADDRESS = '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN';
   process.env.SERVICE_PASSPHRASE = 'abcd'
 
   // mocks
@@ -53,6 +52,7 @@ describe('sendCoins', () => {
       return Promise.resolve({
         change: 1.9,
         serviceFee: 0.09,
+        serviceAddress: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
         outputs: [
           {
             address,
@@ -152,6 +152,7 @@ describe('sendCoins', () => {
       return Promise.resolve({
         change: 1.9,
         serviceFee: 0.09,
+        serviceAddress: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi',
         outputs: [
           {
             address,
@@ -177,11 +178,6 @@ describe('sendCoins', () => {
           { pubKey: serverKeyPair.pubKey }
         ]
       })
-    })
-
-    // @ts-ignore
-    backendApi.getServiceAddress = jest.fn(() => {
-      return Promise.resolve('2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi')
     })
 
     // @ts-ignore
@@ -245,6 +241,7 @@ describe('sendCoins', () => {
       return Promise.resolve({
         change: 1.9,
         serviceFee: 0.09,
+        serviceAddress: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
         outputs: [
           {
             address,
@@ -291,11 +288,6 @@ describe('sendCoins', () => {
 
     // @ts-ignore
     backendApi.sendTransaction = sendTxMock
-
-    // @ts-ignore
-    backendApi.getServiceAddress = jest.fn(() => {
-      return Promise.resolve('1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN')
-    })
 
     await transaction.sendCoins(
       '1234',
@@ -346,6 +338,7 @@ describe('sendCoins to multiple outputs', () => {
       return Promise.resolve({
         change: 1.9,
         serviceFee: 0.09,
+        serviceAddress: '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM',
         outputs: [
           {
             address,
@@ -381,11 +374,6 @@ describe('sendCoins to multiple outputs', () => {
 
     // @ts-ignore
     backendApi.sendTransaction = sendTxMock
-
-    // @ts-ignore
-    backendApi.getServiceAddress = jest.fn(() => {
-      return Promise.resolve('3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM')
-    })
 
     await transaction.sendCoins(
       '1234',
@@ -537,6 +525,7 @@ describe('sendCoins and signTransaction', () => {
       return Promise.resolve({
         change: 1.9,
         serviceFee: 0.09,
+        serviceAddress: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi',
         outputs: unspents
       })
     })
@@ -550,11 +539,6 @@ describe('sendCoins and signTransaction', () => {
           { pubKey: serverKeyPair.pubKey }
         ]
       })
-    })
-
-    // @ts-ignore
-    backendApi.getServiceAddress = jest.fn(() => {
-      return Promise.resolve('2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi')
     })
 
     // @ts-ignore
