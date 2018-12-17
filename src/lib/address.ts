@@ -11,7 +11,7 @@ export const generateNewMultisigAddress = (
 ): any => {
   const derivedKeys = rootKeys.map((rootKey: string) => {
     return deriveKey(rootKey, path).neutered().toBase58()
-  }).sort()
+  })
 
   const redeemScript = createMultisigRedeemScript(derivedKeys)
   const address = redeemScriptToAddress(redeemScript)
