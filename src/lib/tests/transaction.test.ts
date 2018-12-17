@@ -27,7 +27,7 @@ beforeEach(() => {
 describe('sendCoins', () => {
   // @ts-ignore
   backendApi.getFeesRates = jest.fn(() => {
-    return Promise.resolve({recommended:5})
+    return Promise.resolve({ recommended: 5 })
   })
 
   it('should exist', () => {
@@ -51,8 +51,10 @@ describe('sendCoins', () => {
     backendApi.listUnspents = jest.fn(() => {
       return Promise.resolve({
         change: 1.9,
-        serviceFee: 0.09,
-        serviceAddress: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
+        serviceFee: {
+          amount: 0.09,
+          address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN'
+        },
         outputs: [
           {
             address,
@@ -151,8 +153,10 @@ describe('sendCoins', () => {
     backendApi.listUnspents = jest.fn(() => {
       return Promise.resolve({
         change: 1.9,
-        serviceFee: 0.09,
-        serviceAddress: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi',
+        serviceFee: {
+          amount: 0.09,
+          address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi'
+        },
         outputs: [
           {
             address,
@@ -240,8 +244,10 @@ describe('sendCoins', () => {
     backendApi.listUnspents = jest.fn(() => {
       return Promise.resolve({
         change: 1.9,
-        serviceFee: 0.09,
-        serviceAddress: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
+        serviceFee: {
+          amount: 0.09,
+          address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN'
+        },
         outputs: [
           {
             address,
@@ -314,6 +320,104 @@ describe('sendCoins', () => {
     expect(tx.outputs[0].amount).to.be.lessThan(tx.outputs[1].amount)
     expect(tx.outputs[1].amount).to.be.lessThan(tx.outputs[2].amount)
   })
+
+  it('should have only two outputs when api does not return serviceFee details', async () => {
+    // @ts-ignore
+    config.network = 'testnet'
+
+    // @ts-ignore
+    backendApi.createNewAddress = jest.fn(() => {
+      return Promise.resolve({
+        address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi'
+      })
+    })
+
+    // generates keyPairs and address
+    const userKeyPair = generateNewKeyPair()
+    const backupKeyPair = generateNewKeyPair()
+    const serverKeyPair = generateNewKeyPair()
+    const anotherKeyPair = generateNewKeyPair()
+
+    const { address, redeemScript } = generateNewMultisigAddress([
+      userKeyPair.pubKey,
+      backupKeyPair.pubKey,
+      serverKeyPair.pubKey
+    ], '2/0/0')
+
+    // @ts-ignore
+    backendApi.listUnspents = jest.fn(() => {
+      return Promise.resolve({
+        change: 1.9,
+        outputs: [
+          {
+            address,
+            txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+            n: 0,
+            path: {
+              cosignerIndex: 2,
+              change: 0,
+              addressIndex: 0
+            },
+            amount: 700000000
+          }
+        ]
+      })
+    })
+
+    // @ts-ignore
+    backendApi.getWallet = jest.fn(() => {
+      return Promise.resolve({
+        keys: [
+          { pubKey: userKeyPair.pubKey },
+          { pubKey: backupKeyPair.pubKey },
+          { pubKey: serverKeyPair.pubKey }
+        ]
+      })
+    })
+
+    // @ts-ignore
+    const sendTxMock = jest.fn(() => {
+      return Promise.resolve(true)
+    })
+
+    // @ts-ignore
+    backendApi.sendTransaction = sendTxMock
+
+    await transaction.sendCoins(
+      '1234',
+      userKeyPair.prvKey,
+      '13',
+      [{
+        address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi',
+        amount: 500000000
+      }]
+    )
+
+    const [, , transactionHex] = sendTxMock.mock.calls[0]
+
+    const serverECPair = deriveKey(serverKeyPair.prvKey, '2/0/0').keyPair
+    const userECPair = deriveKey(userKeyPair.prvKey, '2/0/0').keyPair
+    const anotherECPair = deriveKey(anotherKeyPair.prvKey, '2/0/0').keyPair
+
+    // recreates transaction builder
+    const tx = txFromHex(transactionHex)
+    const txb = txBuilderFromTx(tx)
+
+    // should be able to sign with other keys without errors
+    txb.sign(0, serverECPair, redeemScript)
+
+    // signing again or using wrong key should throw errors
+    expect(() => {
+      txb.sign(0, userECPair, redeemScript)
+    }).to.throw('Signature already exists')
+
+    expect(() => {
+      txb.sign(0, anotherECPair, redeemScript)
+    }).to.throw('Key pair cannot sign for this input')
+
+    expect(tx.outs.length).to.be.eq(2)
+    expect(tx.ins.length).to.be.eq(1)
+  })
 })
 
 describe('sendCoins to multiple outputs', () => {
@@ -337,8 +441,10 @@ describe('sendCoins to multiple outputs', () => {
     backendApi.listUnspents = jest.fn(() => {
       return Promise.resolve({
         change: 1.9,
-        serviceFee: 0.09,
-        serviceAddress: '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM',
+        serviceFee: {
+          amount: 0.09,
+          address: '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM'
+        },
         outputs: [
           {
             address,
@@ -524,8 +630,10 @@ describe('sendCoins and signTransaction', () => {
     backendApi.listUnspents = jest.fn(() => {
       return Promise.resolve({
         change: 1.9,
-        serviceFee: 0.09,
-        serviceAddress: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi',
+        serviceFee: {
+          amount: 0.09,
+          address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi'
+        },
         outputs: unspents
       })
     })

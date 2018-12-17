@@ -66,8 +66,12 @@ export interface ListUnspentsBackendResponse {
   amount: string,
   change: string,
   fee: string,
-  serviceFee: string,
-  serviceAddress: string
+  serviceFee?: ServiceFee
+}
+
+export interface ServiceFee {
+  amount: string,
+  address, string
 }
 
 export interface GetKeyBackendResponse {}
