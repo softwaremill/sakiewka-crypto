@@ -222,5 +222,5 @@ export const getKey = async (
 
 export const getFeesRates = async (): Promise<GetFeesRates> => {
   const response = await request(`${getBackendApiUrl()}/fees`, { method: 'GET' })
-  return response
+  return response.data
 }
