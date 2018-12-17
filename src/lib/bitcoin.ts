@@ -25,7 +25,7 @@ const base58ToKeyBuffer = (key: string): Buffer => {
 export const createMultisigRedeemScript = (
   base58Keys: string[]
 ): Buffer => {
-  const keyBuffers = base58Keys.map((key: string) => base58ToKeyBuffer(key))
+  const keyBuffers = base58Keys.sort().map((key: string) => base58ToKeyBuffer(key))
   return bitcoinjsLib.script.multisig.output.encode(2, keyBuffers)
 }
 
