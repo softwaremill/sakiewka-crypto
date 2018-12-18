@@ -24,7 +24,7 @@ describe('generateNewMultisigAddress', () => {
       pubKeys,
       '0/23')
 
-    expect(address).to.be.equal('32ora6gx1fLjdgbstMs4SdJhkC8QsMjcat')
+    expect(address).to.be.equal('37eVs6zAEe5R74LhT8QoKa3hdnrB8yRqY9')
     expect(redeemScript).to.be.an('Uint8Array')
   })
 
