@@ -64,10 +64,12 @@ export const sendCoins = async (
 }
 
 const createOutputs = (unspentsResponse: ListUnspentsBackendResponse, recipents: Recipent[], changeAddres: string): TxOut[] => {
-  const { change, serviceFee, serviceAddress } = unspentsResponse
+  const { change, serviceFee } = unspentsResponse
   const changeRecipent: Recipent = { address: changeAddres, amount: btcToSatoshi(change) }
-  const serviceRecipent: Recipent = { address: serviceAddress, amount: btcToSatoshi(serviceFee) }
-  const txOuts = recipents.concat(changeRecipent, serviceRecipent).map(recipentToTxOut)
+  const serviceRecipent = serviceFee ? [{ address: serviceFee.address, amount: btcToSatoshi(serviceFee.amount) }] : []
+  const txOuts = recipents.concat(changeRecipent)
+    .concat(serviceRecipent)
+    .map(recipentToTxOut)
   return sortTxOuts(txOuts)
 }
 
