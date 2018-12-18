@@ -1,5 +1,7 @@
 #!/usr/bin/env groovy
 
+@Library('sml-common')
+
 String getGitCommitHash() {
     return sh(script: 'git rev-parse HEAD', returnStdout: true)?.trim()
 }
@@ -24,14 +26,25 @@ spec:
             checkout scm
             gitCommitHash = getGitCommitHash()
         }
-        container('node10') {
-            stage('Execute test') {
-                sh """
-                set -e
-                npm install
-                npm test
-                """
+        try{
+            container('node10') {
+                stage('Execute test') {
+                    sh """
+                    set -e
+                    npm install
+                    npm test
+                    """
+                }
             }
+        } catch(e) {
+            currentBuild.result = 'FAILED'
+            throw e
+        } finally  {
+            slackNotify(
+                buildStatus: currentBuild.currentResult,
+                slackChannel: "#sakiewka",
+                slackTeam: "softwaremill",
+                slackTokenCredentialId: 'sml-slack-token')
         }
     }
 }
