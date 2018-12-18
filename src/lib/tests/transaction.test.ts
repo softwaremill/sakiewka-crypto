@@ -4,16 +4,13 @@ import * as transaction from '../transaction'
 import * as backendApi from '../backend-api'
 import { generateNewKeyPair, deriveKey, deriveKeyPair } from '../key'
 import { generateNewMultisigAddress } from '../address'
-import {
-  txFromHex, txBuilderFromTx, outputScriptToAddress
-} from '../bitcoin'
+import { txFromHex, txBuilderFromTx } from '../bitcoin'
 import * as config from '../config'
 import { ROOT_DERIVATION_PATH } from '../constants'
 
 beforeEach(() => {
   // @ts-ignore
   config.network = 'bitcoin'
-  process.env.SERVICE_PASSPHRASE = 'abcd'
 
   // mocks
   // @ts-ignore
@@ -593,8 +590,6 @@ describe('sendCoins and signTransaction', () => {
   it('should send coins to testnet and signTransaction', async () => {
     // @ts-ignore
     config.network = 'testnet'
-    const servicePassphrase = 'abc'
-    process.env.SERVICE_PASSPHRASE = servicePassphrase
     // @ts-ignore
     backendApi.createNewAddress = jest.fn(() => {
       return Promise.resolve({
