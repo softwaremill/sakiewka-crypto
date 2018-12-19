@@ -7,7 +7,6 @@ import { generateNewMultisigAddress } from '../address'
 import { txFromHex, txBuilderFromTx } from '../bitcoin'
 import * as config from '../config'
 import { ROOT_DERIVATION_PATH , SUPPORTED_NETWORKS } from '../constants'
-import bitcoinjslib from 'bitcoinjs-lib'
 
 beforeEach(() => {
   // @ts-ignore
