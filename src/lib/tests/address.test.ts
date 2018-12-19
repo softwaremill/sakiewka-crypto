@@ -2,11 +2,11 @@ import { expect } from 'chai'
 
 import * as addressModule from '../address'
 import * as config from '../config'
-import bitcoinjslib from 'bitcoinjs-lib'
+import { SUPPORTED_NETWORKS } from "../constants";
 
 beforeEach(() => {
   // @ts-ignore
-  config.network = bitcoinjslib.networks.bitcoin
+  config.network = SUPPORTED_NETWORKS.bitcoin
 })
 
 describe('generateNewMultisigAddress', () => {
@@ -31,7 +31,7 @@ describe('generateNewMultisigAddress', () => {
 
   it('should return proper testnet address', () => {
     // @ts-ignore
-    config.network = bitcoinjslib.networks.testnet
+    config.network = SUPPORTED_NETWORKS.testnet
     const pubKeys = [
       'tpubD6NzVbkrYhZ4YLQpJAWwxCiNVAH13QSiFHWWTRmocy5zCMN6Nr8fbLVN38Y5nu7KwZ24ux74qotyyNkeF9KN52Gawcjr4ujHkQUDTBmw8Bu',
       'tpubD6NzVbkrYhZ4YWW2LBu48ZLMDtU6YZNug3dArpmhCZVCeRduVLF9FRNaLbwkND5Twf4DS1aXuFqvYd1S4BBTFGwjDM7iy1CK8vuwJHYqpdd',

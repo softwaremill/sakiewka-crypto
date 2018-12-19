@@ -1,4 +1,3 @@
-import { BITCOIN_NETWORK, TESTNET_NETWORK } from './constants'
-import { networks } from 'bitcoinjs-lib'
+import { SUPPORTED_NETWORKS } from './constants'
 
-export const network = networks[process.env.BTC_NETWORK] || networks.bitcoin
+export const network = SUPPORTED_NETWORKS[process.env.BTC_NETWORK] || SUPPORTED_NETWORKS.bitcoin

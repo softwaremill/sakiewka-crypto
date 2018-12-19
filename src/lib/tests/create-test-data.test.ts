@@ -6,7 +6,7 @@ import bitcoinjslib from 'bitcoinjs-lib'
 
 beforeEach(() => {
   // @ts-ignore
-  config.network = bitcoinjslib.networks.testnet
+  config.network = constants.SUPPORTED_NETWORKS.testnet
 })
 
 describe('test data', () => {
