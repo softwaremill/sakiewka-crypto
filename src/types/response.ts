@@ -8,6 +8,14 @@ export interface RegisterBackendResponse {}
 
 export interface InfoBackendResponse {}
 
+export interface Init2faBackendResponse {
+  qrCodeUrl: string
+}
+
+export interface Confirm2faBackendResponse {}
+
+export interface Disable2faBackendResponse {}
+
 export interface CreateWalletBackendParams {
   name: string,
   userPubKey: string,

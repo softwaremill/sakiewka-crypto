@@ -1,13 +1,15 @@
 import {
+  Confirm2faBackendResponse,
   CreateNewAddressBackendResponse,
   CreateWalletBackendParams,
-  CreateWalletBackendResponse,
+  CreateWalletBackendResponse, Disable2faBackendResponse,
   GetAddressBackendResponse,
   GetFeesRates,
   GetKeyBackendResponse,
   GetWalletBackendResponse,
   GetWalletBalanceBackendResponse,
   InfoBackendResponse,
+  Init2faBackendResponse,
   ListAddressesBackendResponse,
   ListUnspentsBackendResponse,
   ListWalletsBackendResponse,
@@ -31,6 +33,33 @@ export const login = async (login: string, password: string, codeIn?: number): P
     })
   }
   const response = await request(`${getBackendApiUrl()}/user/login`, options)
+  return response.data
+}
+
+export const init2fa = async (password: string): Promise<Init2faBackendResponse> => {
+  const options = {
+    method: 'POST',
+    body: JSON.stringify({ password })
+  }
+  const response = await request(`${getBackendApiUrl()}/user/2fa/init`, options)
+  return response.data
+}
+
+export const confirm2fa = async (password: string, code: number): Promise<Confirm2faBackendResponse> => {
+  const options = {
+    method: 'POST',
+    body: JSON.stringify({ password, code })
+  }
+  const response = await request(`${getBackendApiUrl()}/user/2fa/confirm`, options)
+  return response.data
+}
+
+export const disable2fa = async (password: string, code: number): Promise<Disable2faBackendResponse> => {
+  const options = {
+    method: 'POST',
+    body: JSON.stringify({ password, code })
+  }
+  const response = await request(`${getBackendApiUrl()}/user/2fa/disable`, options)
   return response.data
 }
 
