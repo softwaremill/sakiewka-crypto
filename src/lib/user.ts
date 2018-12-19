@@ -21,13 +21,13 @@ export const info = (token: string) => {
 }
 
 export const init2fa = (password: string) => {
-  return init2faBackend(password)
+  return init2faBackend(hashPassword(password))
 }
 
 export const confirm2fa = (password: string, code: number) => {
-  return confirm2faBackend(password, code)
+  return confirm2faBackend(hashPassword(password), code)
 }
 
 export const disable2fa = (password: string, code: number) => {
-  return disable2faBackend(password, code)
+  return disable2faBackend(hashPassword(password), code)
 }
