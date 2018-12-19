@@ -4,7 +4,7 @@ This is a library intended to be used as a dependency to other packages. It hand
 
 ### Usage:
 
-First run  `npm install`
+First run  `npm ci`
 
 To use Testnet set `BTC_NETWORK` env variable to `testnet`.
 

@@ -31,7 +31,7 @@ spec:
                 stage('Execute test') {
                     sh """
                     set -e
-                    npm install
+                    npm ci
                     npm test
                     """
                 }
