@@ -27,7 +27,7 @@ export const login = async (login: string, password: string, codeIn?: number): P
     body: JSON.stringify({
       password,
       email: login,
-      code: codeIn ? codeIn : undefined
+      ...(codeIn ? { code: codeIn } : {})
     })
   }
   const response = await request(`${getBackendApiUrl()}/user/login`, options)
