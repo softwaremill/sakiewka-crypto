@@ -30,6 +30,20 @@ describe('login', () => {
     expect(params.method).to.eq('POST')
     expect(reqBody.email).to.eq('a')
     expect(reqBody.password).to.eq('b')
+    expect(reqBody.code).to.eq(undefined)
+  })
+
+  it('should send request with 2fa code', async () => {
+    await api.login('a', 'b', 123456)
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    const reqBody = JSON.parse(params.body)
+
+    expect(url).to.eq('backurl/api/v1/user/login')
+    expect(params.method).to.eq('POST')
+    expect(reqBody.email).to.eq('a')
+    expect(reqBody.password).to.eq('b')
+    expect(reqBody.code).to.eq(123456)
   })
 })
 

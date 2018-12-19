@@ -21,15 +21,15 @@ const getBackendApiUrl = () => process.env.BACKEND_API_URL
 
 // BTC
 // user
-export const login = async (login: string, password: string): Promise<LoginBackendResponse> => {
+export const login = async (login: string, password: string, codeIn?: number): Promise<LoginBackendResponse> => {
   const options = {
     method: 'POST',
     body: JSON.stringify({
       password,
-      email: login
+      email: login,
+      code: codeIn ? codeIn : undefined
     })
   }
-
   const response = await request(`${getBackendApiUrl()}/user/login`, options)
   return response.data
 }
