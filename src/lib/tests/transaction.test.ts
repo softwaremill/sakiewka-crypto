@@ -7,10 +7,11 @@ import { generateNewMultisigAddress } from '../address'
 import { txFromHex, txBuilderFromTx } from '../bitcoin'
 import * as config from '../config'
 import { ROOT_DERIVATION_PATH } from '../constants'
+import bitcoinjslib from 'bitcoinjs-lib'
 
 beforeEach(() => {
   // @ts-ignore
-  config.network = 'bitcoin'
+  config.network = bitcoinjslib.networks.bitcoin
 
   // mocks
   // @ts-ignore
@@ -125,7 +126,7 @@ describe('sendCoins', () => {
 
   it('should send coins to testnet', async () => {
     // @ts-ignore
-    config.network = 'testnet'
+    config.network = bitcoinjslib.networks.testnet
 
     // @ts-ignore
     backendApi.createNewAddress = jest.fn(() => {
@@ -320,7 +321,7 @@ describe('sendCoins', () => {
 
   it('should have only two outputs when api does not return serviceFee details', async () => {
     // @ts-ignore
-    config.network = 'testnet'
+    config.network = bitcoinjslib.networks.testnet
 
     // @ts-ignore
     backendApi.createNewAddress = jest.fn(() => {
@@ -589,7 +590,7 @@ describe('signTransaction', () => {
 describe('sendCoins and signTransaction', () => {
   it('should send coins to testnet and signTransaction', async () => {
     // @ts-ignore
-    config.network = 'testnet'
+    config.network = bitcoinjslib.networks.testnet
     // @ts-ignore
     backendApi.createNewAddress = jest.fn(() => {
       return Promise.resolve({

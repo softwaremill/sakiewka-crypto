@@ -2,10 +2,11 @@ import * as key from '../key'
 import * as addressModule from '../address'
 import * as config from '../config'
 import * as constants from '../constants'
+import bitcoinjslib from 'bitcoinjs-lib'
 
 beforeEach(() => {
   // @ts-ignore
-  config.network = 'testnet'
+  config.network = bitcoinjslib.networks.testnet
 })
 
 describe('test data', () => {
