@@ -1,3 +1,3 @@
-import { BITCOIN_NETWORK, TESTNET_NETWORK } from './constants'
+import { SUPPORTED_NETWORKS } from './constants'
 
-export const network = process.env.BTC_NETWORK === TESTNET_NETWORK ? TESTNET_NETWORK : BITCOIN_NETWORK
+export const network = SUPPORTED_NETWORKS[process.env.BTC_NETWORK] || SUPPORTED_NETWORKS.bitcoin

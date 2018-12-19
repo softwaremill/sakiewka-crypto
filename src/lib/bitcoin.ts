@@ -8,17 +8,10 @@ import bitcoinjsLib, {
   In
 } from 'bitcoinjs-lib'
 import bip69 from 'bip69'
-import { network as networkName } from './config'
-
-import { BITCOIN_NETWORK } from './constants'
+import { network } from './config'
 import { UTXO, Recipent, Path, TxOut } from '../types/domain'
 
-const getNetwork = (networkName: string = BITCOIN_NETWORK): Network => {
-  return bitcoinjsLib.networks[networkName]
-}
-
 const base58ToKeyBuffer = (key: string): Buffer => {
-  const network = getNetwork(networkName)
   return bitcoinjsLib.HDNode.fromBase58(key, network).getPublicKeyBuffer()
 }
 
@@ -40,7 +33,6 @@ export const multisigRedeemScriptToScriptPubKey = (
 export const redeemScriptToAddress = (
   redeemScript: Buffer
 ): string => {
-  const network = getNetwork(networkName)
   const scriptPubKey = multisigRedeemScriptToScriptPubKey(redeemScript)
   return bitcoinjsLib.address.fromOutputScript(scriptPubKey, network)
 }
@@ -48,21 +40,18 @@ export const redeemScriptToAddress = (
 export const outputScriptToAddress = (
   outputScript: Buffer
 ): string => {
-  const network = getNetwork(networkName)
   return bitcoinjsLib.address.fromOutputScript(outputScript, network)
 }
 
 export const base58ToECPair = (
   base58Key: string
 ): ECPair => {
-  const network = getNetwork(networkName)
   return bitcoinjsLib.HDNode.fromBase58(base58Key, network).keyPair
 }
 
 export const base58ToHDNode = (
   base58Key: string
 ): HDNode => {
-  const network = getNetwork(networkName)
   return bitcoinjsLib.HDNode.fromBase58(base58Key, network)
 }
 
@@ -77,7 +66,6 @@ export const hdNodeToBase58Prv = (node: HDNode): string => {
 export const seedBufferToHDNode = (
   seedBuffer: Buffer
 ): HDNode => {
-  const network = getNetwork(networkName)
   return bitcoinjsLib.HDNode.fromSeedBuffer(seedBuffer, network)
 }
 
@@ -86,21 +74,18 @@ export const txFromHex = (transactionHex: string): Transaction => {
 }
 
 export const initializeTxBuilder = (): TransactionBuilder => {
-  const network = getNetwork(networkName)
   return new bitcoinjsLib.TransactionBuilder(network)
 }
 
 export const txBuilderFromTx = (
   tx: Transaction
 ): TransactionBuilder => {
-  const network = getNetwork(networkName)
   return bitcoinjsLib.TransactionBuilder.fromTransaction(tx, network)
 }
 
 export const addressToOutputScript = (
   address: string
 ): Buffer => {
-  const network = getNetwork(networkName)
   return bitcoinjsLib.address.toOutputScript(address, network)
 }
 

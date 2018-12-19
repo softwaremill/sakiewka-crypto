@@ -1,3 +1,5 @@
+import { Network } from "bitcoinjs-lib";
+
 export interface WalletParams {
   passphrase: string,
   name: string,
@@ -54,4 +56,10 @@ export interface Signature {
 export interface TxOut {
   script: Buffer,
   value : number
+}
+
+export interface SupportedNetworks {
+  bitcoin: Network,
+  testnet: Network,
+  regtest: Network
 }

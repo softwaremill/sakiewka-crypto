@@ -6,11 +6,11 @@ import { generateNewKeyPair, deriveKey, deriveKeyPair } from '../key'
 import { generateNewMultisigAddress } from '../address'
 import { txFromHex, txBuilderFromTx } from '../bitcoin'
 import * as config from '../config'
-import { ROOT_DERIVATION_PATH } from '../constants'
+import { ROOT_DERIVATION_PATH , SUPPORTED_NETWORKS } from '../constants'
 
 beforeEach(() => {
   // @ts-ignore
-  config.network = 'bitcoin'
+  config.network = SUPPORTED_NETWORKS.bitcoin
 
   // mocks
   // @ts-ignore
@@ -125,7 +125,7 @@ describe('sendCoins', () => {
 
   it('should send coins to testnet', async () => {
     // @ts-ignore
-    config.network = 'testnet'
+    config.network = SUPPORTED_NETWORKS.testnet
 
     // @ts-ignore
     backendApi.createNewAddress = jest.fn(() => {
@@ -320,7 +320,7 @@ describe('sendCoins', () => {
 
   it('should have only two outputs when api does not return serviceFee details', async () => {
     // @ts-ignore
-    config.network = 'testnet'
+    config.network = SUPPORTED_NETWORKS.testnet
 
     // @ts-ignore
     backendApi.createNewAddress = jest.fn(() => {
@@ -589,7 +589,7 @@ describe('signTransaction', () => {
 describe('sendCoins and signTransaction', () => {
   it('should send coins to testnet and signTransaction', async () => {
     // @ts-ignore
-    config.network = 'testnet'
+    config.network = SUPPORTED_NETWORKS.testnet
     // @ts-ignore
     backendApi.createNewAddress = jest.fn(() => {
       return Promise.resolve({

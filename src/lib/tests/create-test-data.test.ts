@@ -5,7 +5,7 @@ import * as constants from '../constants'
 
 beforeEach(() => {
   // @ts-ignore
-  config.network = 'testnet'
+  config.network = constants.SUPPORTED_NETWORKS.testnet
 })
 
 describe('test data', () => {

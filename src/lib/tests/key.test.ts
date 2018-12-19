@@ -3,6 +3,7 @@ import { expect } from 'chai'
 import * as keyModule from '../key'
 import * as backendApi from '../backend-api'
 import * as config from '../config'
+import { SUPPORTED_NETWORKS } from '../constants'
 
 // @ts-ignore
 backendApi.createWallet = jest.fn(() => {
@@ -13,7 +14,7 @@ backendApi.createWallet = jest.fn(() => {
 
 beforeEach(() => {
   // @ts-ignore
-  config.network = 'bitcoin'
+  config.network = SUPPORTED_NETWORKS.bitcoin
 })
 
 describe('generateNewKeyPair', () => {
@@ -33,7 +34,7 @@ describe('generateNewKeyPair', () => {
 
   it('should return new testnet keyPair', () => {
     // @ts-ignore
-    config.network = 'testnet'
+    config.network = SUPPORTED_NETWORKS.testnet
     const result = keyModule.generateNewKeyPair()
 
     expect(result).to.haveOwnProperty('pubKey')
@@ -112,7 +113,7 @@ describe('deriveKey', () => {
 
   it('should create testnet key', () => {
     // @ts-ignore
-    config.network = 'testnet'
+    config.network = SUPPORTED_NETWORKS.testnet
     const path = `11/20/15`
     const keyPair = keyModule.generateNewKeyPair()
 
