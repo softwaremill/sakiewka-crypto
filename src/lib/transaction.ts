@@ -20,6 +20,7 @@ import {
 import { deriveKey } from './key'
 import { TransactionBuilder } from 'bitcoinjs-lib';
 import { ListUnspentsBackendResponse } from 'response';
+import BigNumber from "bignumber.js";
 
 export const sumOutputAmounts = (outputs: Recipent[]): number => {
   return outputs.reduce(
@@ -33,8 +34,8 @@ export const sumOutputAmounts = (outputs: Recipent[]): number => {
 const joinPath = (path: Path): string =>
   `${path.cosignerIndex}/${path.change}/${path.addressIndex}`
 
-const btcToSatoshi = (amount: number | string) => Number(amount) * 100000000
-const satoshiToBtc = (amount: number | string) => Number(amount) * 0.00000001
+const btcToSatoshi = (amount: number | string) : number => (new BigNumber(amount).shiftedBy(8)).toNumber()
+const satoshiToBtc = (amount: number | string) : number => (new BigNumber(amount).shiftedBy(-8)).toNumber()
 
 export const sendCoins = async (
   userToken: string, xprv: string, walletId: string, recipents: Recipent[]
