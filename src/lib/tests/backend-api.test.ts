@@ -30,6 +30,73 @@ describe('login', () => {
     expect(params.method).to.eq('POST')
     expect(reqBody.email).to.eq('a')
     expect(reqBody.password).to.eq('b')
+    expect(reqBody).to.not.haveOwnProperty('code')
+  })
+
+  it('should send request with 2fa code', async () => {
+    await api.login('a', 'b', 123456)
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    const reqBody = JSON.parse(params.body)
+
+    expect(url).to.eq('backurl/api/v1/user/login')
+    expect(params.method).to.eq('POST')
+    expect(reqBody.email).to.eq('a')
+    expect(reqBody.password).to.eq('b')
+    expect(reqBody.code).to.eq(123456)
+  })
+})
+
+describe('init2fa', () => {
+  it('should exist', () => {
+    expect(api.init2fa).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    await api.init2fa('password')
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    const reqBody = JSON.parse(params.body)
+
+    expect(url).to.eq('backurl/api/v1/user/2fa/init')
+    expect(params.method).to.eq('POST')
+    expect(reqBody.password).to.eq('password')
+  })
+})
+
+describe('confirm2fa', () => {
+  it('should exist', () => {
+    expect(api.confirm2fa).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    await api.confirm2fa('password', 101202)
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    const reqBody = JSON.parse(params.body)
+
+    expect(url).to.eq('backurl/api/v1/user/2fa/confirm')
+    expect(params.method).to.eq('POST')
+    expect(reqBody.password).to.eq('password')
+    expect(reqBody.code).to.eq(101202)
+  })
+})
+
+describe('disable2fa', () => {
+  it('should exist', () => {
+    expect(api.disable2fa).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    await api.disable2fa('password', 112233)
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    const reqBody = JSON.parse(params.body)
+
+    expect(url).to.eq('backurl/api/v1/user/2fa/disable')
+    expect(params.method).to.eq('POST')
+    expect(reqBody.password).to.eq('password')
+    expect(reqBody.code).to.eq(112233)
   })
 })
 
