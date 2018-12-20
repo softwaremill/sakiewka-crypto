@@ -30,7 +30,7 @@ describe('login', () => {
     expect(params.method).to.eq('POST')
     expect(reqBody.email).to.eq('a')
     expect(reqBody.password).to.eq('b')
-    expect(reqBody.code).to.eq(undefined)
+    expect(reqBody).to.not.haveOwnProperty('code')
   })
 
   it('should send request with 2fa code', async () => {

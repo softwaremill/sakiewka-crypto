@@ -2,7 +2,8 @@ import {
   Confirm2faBackendResponse,
   CreateNewAddressBackendResponse,
   CreateWalletBackendParams,
-  CreateWalletBackendResponse, Disable2faBackendResponse,
+  CreateWalletBackendResponse,
+  Disable2faBackendResponse,
   GetAddressBackendResponse,
   GetFeesRates,
   GetKeyBackendResponse,
@@ -29,7 +30,7 @@ export const login = async (login: string, password: string, codeIn?: number): P
     body: JSON.stringify({
       password,
       email: login,
-      ...(codeIn ? { code: codeIn } : {})
+      code: codeIn
     })
   }
   const response = await request(`${getBackendApiUrl()}/user/login`, options)
