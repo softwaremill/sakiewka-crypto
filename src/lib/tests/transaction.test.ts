@@ -669,3 +669,19 @@ describe('sendCoins and signTransaction', () => {
     expect(txHex).to.not.eq('')
   })
 })
+
+describe('convert btc to satoshi and satoshi to btc',() => {
+  it('should convert btc to satoshi',() => {
+    expect(transaction.btcToSatoshi(0.00000001)).to.eq(1)
+    expect(transaction.btcToSatoshi(100000)).to.eq(10000000000000)
+    expect(transaction.btcToSatoshi(1.2)).to.eq(120000000)
+    expect(transaction.btcToSatoshi(0.29985356)).to.eq(29985356)
+  })
+
+  it('should convert satoshi to btc',() => {
+    expect(transaction.satoshiToBtc(1)).to.eq(0.00000001)
+    expect(transaction.satoshiToBtc(10000000000000)).to.eq(100000)
+    expect(transaction.satoshiToBtc(120000000)).to.eq(1.2)
+    expect(transaction.satoshiToBtc(29985356)).to.eq(0.29985356)
+  })
+})
