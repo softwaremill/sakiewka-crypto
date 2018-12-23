@@ -10,6 +10,7 @@ import {
 } from './backend-api'
 import { deriveKeyPair, generateNewKeyPair, encryptKeyPair } from './key'
 import { CreateWalletBackendParams } from 'response'
+import BigNumber from "bignumber.js";
 
 export const createWallet = async (userToken: string, params: WalletParams): Promise<any> => {
   const userKeyPair = params.userPubKey ?
@@ -50,5 +51,5 @@ export const getWalletBalance = (
 ) => getWalletBalanceBackend(userToken, walletId)
 
 export const listUnspents = (
-  token: string, walletId: string, amount: number, feeRate?: number
+  token: string, walletId: string, amount: BigNumber, feeRate?: string
 ) => listUnspentsBackend(token, walletId, amount, feeRate)

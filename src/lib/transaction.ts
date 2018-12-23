@@ -22,20 +22,20 @@ import { TransactionBuilder } from 'bitcoinjs-lib';
 import { ListUnspentsBackendResponse } from 'response';
 import BigNumber from "bignumber.js";
 
-export const sumOutputAmounts = (outputs: Recipent[]): number => {
+export const sumOutputAmounts = (outputs: Recipent[]): BigNumber => {
   return outputs.reduce(
-    (acc: number, out: Recipent) => {
-      return acc + out.amount
+    (acc: BigNumber, out: Recipent) => {
+      return acc.plus(out.amount)
     },
-    0
+    new BigNumber(0)
   )
 }
 
 const joinPath = (path: Path): string =>
   `${path.cosignerIndex}/${path.change}/${path.addressIndex}`
 
-export const btcToSatoshi = (amount: number | string) : number => (new BigNumber(amount).shiftedBy(8)).toNumber()
-export const satoshiToBtc = (amount: number | string) : number => (new BigNumber(amount).shiftedBy(-8)).toNumber()
+export const btcToSatoshi = (amount: BigNumber) : BigNumber => amount.shiftedBy(8)
+export const satoshiToBtc = (amount: BigNumber) : BigNumber => amount.shiftedBy(-8)
 
 export const sendCoins = async (
   userToken: string, xprv: string, walletId: string, recipents: Recipent[]
@@ -55,7 +55,7 @@ export const sendCoins = async (
 
   const outputs = createOutputs(unspentsResponse, recipents, changeAddresResponse.address)
   outputs.forEach((out: TxOut) => {
-    txb.addOutput(out.script, out.value)
+    txb.addOutput(out.script, out.value.toNumber())
   })
 
   signInputs(inputs, xprv, pubKeys, txb)
@@ -66,8 +66,8 @@ export const sendCoins = async (
 
 const createOutputs = (unspentsResponse: ListUnspentsBackendResponse, recipents: Recipent[], changeAddres: string): TxOut[] => {
   const { change, serviceFee } = unspentsResponse
-  const changeRecipent: Recipent = { address: changeAddres, amount: btcToSatoshi(change) }
-  const serviceRecipent = serviceFee ? [{ address: serviceFee.address, amount: btcToSatoshi(serviceFee.amount) }] : []
+  const changeRecipent: Recipent = { address: changeAddres, amount: btcToSatoshi(new BigNumber(change)) }
+  const serviceRecipent = serviceFee ? [{ address: serviceFee.address, amount: btcToSatoshi(new BigNumber(serviceFee.amount)) }] : []
   const txOuts = recipents.concat(changeRecipent)
     .concat(serviceRecipent)
     .map(recipentToTxOut)

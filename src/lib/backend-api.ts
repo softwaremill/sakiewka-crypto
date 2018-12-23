@@ -19,6 +19,7 @@ import {
 } from 'response'
 import request from './utils/request'
 import { removeUndefinedFromObject } from './utils/helpers'
+import BigNumber from "bignumber.js";
 
 const getBackendApiUrl = () => process.env.BACKEND_API_URL
 
@@ -205,7 +206,7 @@ export const listAddresses = async (
 }
 
 export const listUnspents = async (
-  token: string, walletId: string, amount: number, feeRate?: number
+  token: string, walletId: string, amount: BigNumber, feeRate?: string
 ): Promise<ListUnspentsBackendResponse> => {
   const options = {
     method: 'GET',
@@ -214,7 +215,7 @@ export const listUnspents = async (
     }
   }
 
-  const response = await request(`${getBackendApiUrl()}/btc/wallet/${walletId}/utxo?amountBtc=${amount}&feeRateSatoshi=${feeRate}`, options)
+  const response = await request(`${getBackendApiUrl()}/btc/wallet/${walletId}/utxo?amountBtc=${amount.toNumber()}&feeRateSatoshi=${feeRate}`, options)
   return response.data
 }
 

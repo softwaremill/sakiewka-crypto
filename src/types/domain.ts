@@ -1,4 +1,5 @@
 import { Network } from "bitcoinjs-lib";
+import { BigNumber } from "bignumber.js";
 
 export interface WalletParams {
   passphrase: string,
@@ -27,13 +28,13 @@ export interface KeyType {
 export interface UTXO {
   txHash: string,
   n: number,
-  amount? : number,
+  amount? : BigNumber,
   path?: Path
 }
 
 export interface Recipent {
   address: string,
-  amount?: number
+  amount?: BigNumber
 }
 
 export interface DecodedTx {
@@ -55,7 +56,7 @@ export interface Signature {
 
 export interface TxOut {
   script: Buffer,
-  value : number
+  value : BigNumber
 }
 
 export interface SupportedNetworks {
