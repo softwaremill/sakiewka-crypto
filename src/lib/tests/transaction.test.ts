@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { expect, use } from 'chai'
 
 import * as transaction from '../transaction'
 import * as backendApi from '../backend-api'
@@ -7,11 +7,13 @@ import { generateNewMultisigAddress } from '../address'
 import { txFromHex, txBuilderFromTx } from '../bitcoin'
 import * as config from '../config'
 import { ROOT_DERIVATION_PATH , SUPPORTED_NETWORKS } from '../constants'
+import BigNumber from "bignumber.js";
+import chaiBigNumber from 'chai-bignumber'
 
 beforeEach(() => {
   // @ts-ignore
   config.network = SUPPORTED_NETWORKS.bitcoin
-
+  use(chaiBigNumber(BigNumber))
   // mocks
   // @ts-ignore
   backendApi.createNewAddress = jest.fn(() => {
@@ -49,7 +51,7 @@ describe('sendCoins', () => {
       return Promise.resolve({
         change: 1.9,
         serviceFee: {
-          amount: 0.09,
+          amount: '0.09',
           address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN'
         },
         outputs: [
@@ -62,7 +64,7 @@ describe('sendCoins', () => {
               change: 0,
               addressIndex: 0
             },
-            amount: 700000000
+            amount: new BigNumber('700000000')
           }
         ]
       })
@@ -93,7 +95,7 @@ describe('sendCoins', () => {
       '13',
       [{
         address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
-        amount: 500000000
+        amount: new BigNumber('500000000')
       }]
     )
 
@@ -164,7 +166,7 @@ describe('sendCoins', () => {
               change: 0,
               addressIndex: 0
             },
-            amount: 700000000
+            amount: '700000000'
           }
         ]
       })
@@ -195,7 +197,7 @@ describe('sendCoins', () => {
       '13',
       [{
         address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi',
-        amount: 500000000
+        amount: new BigNumber('500000000')
       }]
     )
 
@@ -255,7 +257,7 @@ describe('sendCoins', () => {
               change: 0,
               addressIndex: 0
             },
-            amount: 650000000
+            amount: '650000000'
           },
           {
             address,
@@ -266,7 +268,7 @@ describe('sendCoins', () => {
               change: 0,
               addressIndex: 0
             },
-            amount: 50000000
+            amount: '50000000'
           }
         ]
       })
@@ -299,11 +301,11 @@ describe('sendCoins', () => {
       [
         {
           address: '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM',
-          amount: 500000000
+          amount: new BigNumber('500000000')
         },
         {
           address: '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM',
-          amount: 1500
+          amount: new BigNumber('1500')
         }
       ]
     )
@@ -314,8 +316,8 @@ describe('sendCoins', () => {
     expect(tx.outputs.length).to.be.eq(4)
     expect(tx.inputs.length).to.be.eq(2)
     expect(tx.inputs[0].txHash < tx.inputs[1].txHash).to.be.eq(true)
-    expect(tx.outputs[0].amount).to.be.lessThan(tx.outputs[1].amount)
-    expect(tx.outputs[1].amount).to.be.lessThan(tx.outputs[2].amount)
+    expect(tx.outputs[0].amount.isLessThan(tx.outputs[1].amount)).to.be.true
+    expect(tx.outputs[1].amount.isLessThan(tx.outputs[2].amount)).to.be.true
   })
 
   it('should have only two outputs when api does not return serviceFee details', async () => {
@@ -386,7 +388,7 @@ describe('sendCoins', () => {
       '13',
       [{
         address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi',
-        amount: 500000000
+        amount: new BigNumber('500000000')
       }]
     )
 
@@ -485,11 +487,11 @@ describe('sendCoins to multiple outputs', () => {
       [
         {
           address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
-          amount: 500000000
+          amount: new BigNumber('500000000')
         },
         {
           address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
-          amount: 1500
+          amount: new BigNumber('1500')
         }
       ]
     )
@@ -509,11 +511,12 @@ describe('sumOutputAmounts', () => {
 
   it('should properly sum output amounts', () => {
     const result = transaction.sumOutputAmounts([
-      { address: '', amount: 13211 },
-      { address: '', amount: 98 },
-      { address: '', amount: 989 }
+      { address: '', amount: new BigNumber('13211') },
+      { address: '', amount: new BigNumber('98') },
+      { address: '', amount: new BigNumber('989') }
     ])
-    expect(result).to.eq(14298)
+    // @ts-ignore
+    expect(result).to.be.bignumber.eq(new BigNumber('14298'))
   })
 })
 
@@ -525,9 +528,9 @@ describe('decodeTransaction', () => {
   it('shoud decode transaction', () => {
     const txHex = '0100000001145bb243544451ead3b8694a9597dc5e93583c0172ca16a2f2c74c8fd698be1102000000b40047304402205d30d1796f373290e554284fd333e3ea287709063b0461dae4577b2180787e980220121677e33785cc82b26b6a2146a34a759d15e5194dcf84c93db24e9ebcc6e374014c6952210214d16a77e4ddaa07d6dbef0ea757ea5d56f26b9bfc85534227004005c4ce102b2103e7cd55f382bcf7269dd813edd445d67de5c729b543bb20e31073ed835f661e322102c292a1d33bb482d6ab53a7328c0d0211808a785cc8769a9ac01cb3550144f37b53aeffffffff020065cd1d000000001976a914ff1cb7a5b23491534c66e7638f56d852ad47542288acf6bceb0b0000000017a91480cff499983050ec4268d749a1f898bec53e9fc28700000000'
     const changeAddress = '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM'
-    const changeAmount = 199998710
+    const changeAmount = new BigNumber('199998710')
     const recipientAddress = '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN'
-    const sentAmount = 500000000
+    const sentAmount = new BigNumber('500000000')
     const utxoTxHash = '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14'
     const utxoTxId = 2
 
@@ -541,9 +544,11 @@ describe('decodeTransaction', () => {
     expect(result.inputs[0]).to.haveOwnProperty('n')
     expect(result.inputs).to.have.lengthOf(1)
     expect(result.outputs).to.have.lengthOf(2)
-    expect(result.outputs[0].amount).to.eq(sentAmount)
+    // @ts-ignore
+    expect(result.outputs[0].amount).to.be.bignumber.eq(sentAmount)
     expect(result.outputs[0].address).to.eq(recipientAddress)
-    expect(result.outputs[1].amount).to.eq(changeAmount)
+    // @ts-ignore
+    expect(result.outputs[1].amount).to.be.bignumber.eq(changeAmount)
     expect(result.outputs[1].address).to.eq(changeAddress)
     expect(result.inputs[0].txHash).to.eq(utxoTxHash)
     expect(result.inputs[0].n).to.eq(utxoTxId)
@@ -568,7 +573,7 @@ describe('signTransaction', () => {
           change: 0,
           addressIndex: 0
         },
-        value: 700000000,
+        value: new BigNumber('700000000'),
         address: '32kvV8MVm7JFocWg4YL6e97YeaxKxiD5F9'
       }
     ]
@@ -618,7 +623,7 @@ describe('sendCoins and signTransaction', () => {
           change: 0,
           addressIndex: 1
         },
-        amount: 700000000
+        amount: new BigNumber('700000000')
       }
     ];
     // @ts-ignore
@@ -658,7 +663,7 @@ describe('sendCoins and signTransaction', () => {
       '13',
       [{
         address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi',
-        amount: 500000000
+        amount: new BigNumber('500000000')
       }]
     )
 
@@ -667,5 +672,29 @@ describe('sendCoins and signTransaction', () => {
     const { txHex, txHash } = transaction.signTransaction(serverKeyPair.prvKey, transactionHex, unspents);
     expect(txHash).to.not.eq('')
     expect(txHex).to.not.eq('')
+  })
+})
+
+describe('convert btc to satoshi and satoshi to btc',() => {
+  it('should convert btc to satoshi',() => {
+    // @ts-ignore
+    expect(transaction.btcToSatoshi(new BigNumber('0.00000001'))).to.be.bignumber.eq(new BigNumber('1'))
+    // @ts-ignore
+    expect(transaction.btcToSatoshi(new BigNumber('100000'))).to.be.bignumber.eq(new BigNumber('10000000000000'))
+    // @ts-ignore
+    expect(transaction.btcToSatoshi(new BigNumber('1.2'))).to.be.bignumber.eq(new BigNumber('120000000'))
+    // @ts-ignore
+    expect(transaction.btcToSatoshi(new BigNumber('0.29985356'))).to.be.bignumber.eq(new BigNumber('29985356'))
+  })
+
+  it('should convert satoshi to btc',() => {
+    // @ts-ignore
+    expect(transaction.satoshiToBtc(new BigNumber('1'))).to.be.bignumber.eq(new BigNumber('0.00000001'))
+    // @ts-ignore
+    expect(transaction.satoshiToBtc(new BigNumber('10000000000000'))).to.be.bignumber.eq(new BigNumber('100000'))
+    // @ts-ignore
+    expect(transaction.satoshiToBtc(new BigNumber('120000000'))).to.be.bignumber.eq(new BigNumber('1.2'))
+    // @ts-ignore
+    expect(transaction.satoshiToBtc(new BigNumber('29985356'))).to.be.bignumber.eq(new BigNumber('0.29985356'))
   })
 })

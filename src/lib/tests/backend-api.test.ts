@@ -2,6 +2,7 @@ import { expect } from 'chai'
 
 import * as api from '../backend-api'
 import * as request from '../utils/request'
+import BigNumber from "bignumber.js";
 
 // @ts-ignore
 const mockImplementation = jest.fn(() => ({ data: 'testToken' }))
@@ -307,7 +308,7 @@ describe('listUnspents', () => {
   })
 
   it('should send proper request', async () => {
-    await api.listUnspents('testToken', 'testWalletId', 888, 22)
+    await api.listUnspents('testToken', 'testWalletId', new BigNumber('888'), '22')
 
     const [url, params] = mockImplementation.mock.calls[0]
 

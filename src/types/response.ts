@@ -99,5 +99,5 @@ export interface SendTokensResponse {
 }
 
 export interface GetFeesRates {
-  recommended: number
+  recommended: string
 }

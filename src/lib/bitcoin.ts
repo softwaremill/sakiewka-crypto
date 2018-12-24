@@ -1,7 +1,6 @@
 import bitcoinjsLib, {
   Transaction,
   HDNode,
-  Network,
   ECPair,
   TransactionBuilder,
   Out,
@@ -10,6 +9,7 @@ import bitcoinjsLib, {
 import bip69 from 'bip69'
 import { network } from './config'
 import { UTXO, Recipent, Path, TxOut } from '../types/domain'
+import { BigNumber } from "bignumber.js";
 
 const base58ToKeyBuffer = (key: string): Buffer => {
   return bitcoinjsLib.HDNode.fromBase58(key, network).getPublicKeyBuffer()
@@ -90,7 +90,7 @@ export const addressToOutputScript = (
 }
 
 export const decodeTxOutput = (output: Out): Recipent => ({
-  amount: output.value,
+  amount: new BigNumber(output.value),
   address: outputScriptToAddress(output.script)
 })
 
@@ -104,15 +104,16 @@ export const sortUnspents = (inputs: UTXO[]): UTXO[] => {
     .map(btcjsToUtxo)
 }
 
-export const recipentToTxOut = (recipent: Recipent) : TxOut => {
+export const recipentToTxOut = (recipent: Recipent): TxOut => {
   return {
     script: addressToOutputScript(recipent.address),
-    value : recipent.amount
+    value: recipent.amount
   }
 }
 
-export const sortTxOuts = (outputs: TxOut[]) :TxOut[] => {
-  return bip69.sortOutputs(outputs)
+export const sortTxOuts = (outputs: TxOut[]): TxOut[] => {
+  return bip69.sortOutputs(outputs.map(tx => ({ script: tx.script, value: tx.value.toNumber() })))
+    .map(tx => ({ script: tx.script, value: new BigNumber(tx.value) }))
 }
 
 const btcjsToUtxo = (input: UTXO_btcjs): UTXO => {
@@ -136,6 +137,6 @@ const utxoToBtcJS = (input: UTXO): UTXO_btcjs => {
 interface UTXO_btcjs {
   txId: string,
   vout: number,
-  amount?: number,
+  amount?: BigNumber,
   path?: Path
 }
