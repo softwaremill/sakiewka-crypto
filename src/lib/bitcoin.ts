@@ -1,7 +1,6 @@
 import bitcoinjsLib, {
   Transaction,
   HDNode,
-  Network,
   ECPair,
   TransactionBuilder,
   Out,
@@ -105,15 +104,16 @@ export const sortUnspents = (inputs: UTXO[]): UTXO[] => {
     .map(btcjsToUtxo)
 }
 
-export const recipentToTxOut = (recipent: Recipent) : TxOut => {
+export const recipentToTxOut = (recipent: Recipent): TxOut => {
   return {
     script: addressToOutputScript(recipent.address),
-    value : recipent.amount
+    value: recipent.amount
   }
 }
 
-export const sortTxOuts = (outputs: TxOut[]) :TxOut[] => {
-  return bip69.sortOutputs(outputs.map(tx => ({script:tx.script,value:tx.value.toNumber()})))
+export const sortTxOuts = (outputs: TxOut[]): TxOut[] => {
+  return bip69.sortOutputs(outputs.map(tx => ({ script: tx.script, value: tx.value.toNumber() })))
+    .map(tx => ({ script: tx.script, value: new BigNumber(tx.value) }))
 }
 
 const btcjsToUtxo = (input: UTXO_btcjs): UTXO => {
