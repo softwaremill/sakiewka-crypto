@@ -1,8 +1,13 @@
-import { expect } from 'chai'
+import { expect, use } from 'chai'
 
 import * as wallet from '../wallet'
 import * as backendApi from '../backend-api'
 import BigNumber from "bignumber.js";
+import chaiBigNumber from 'chai-bignumber'
+
+beforeEach(()=>{
+  use(chaiBigNumber(BigNumber))
+})
 
 describe('createWallet', () => {
   it('should exist', () => {
@@ -146,8 +151,9 @@ describe('listUnspents', () => {
     const [token, walletId, amount, fee] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
     expect(walletId).to.eq('walletId')
-    expect(amount).to.eq(123)
-    expect(fee).to.eq(2)
+    // @ts-ignore
+    expect(amount).to.be.bignumber.eq(123)
+    expect(fee).to.eq('2')
     expect(res).to.eq('backend response')
   })
 })

@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { expect, use } from 'chai'
 
 import * as transaction from '../transaction'
 import * as backendApi from '../backend-api'
@@ -8,11 +8,12 @@ import { txFromHex, txBuilderFromTx } from '../bitcoin'
 import * as config from '../config'
 import { ROOT_DERIVATION_PATH , SUPPORTED_NETWORKS } from '../constants'
 import BigNumber from "bignumber.js";
+import chaiBigNumber from 'chai-bignumber'
 
 beforeEach(() => {
   // @ts-ignore
   config.network = SUPPORTED_NETWORKS.bitcoin
-
+  use(chaiBigNumber(BigNumber))
   // mocks
   // @ts-ignore
   backendApi.createNewAddress = jest.fn(() => {
@@ -514,7 +515,8 @@ describe('sumOutputAmounts', () => {
       { address: '', amount: new BigNumber('98') },
       { address: '', amount: new BigNumber('989') }
     ])
-    expect(result).to.eq(new BigNumber('14298'))
+    // @ts-ignore
+    expect(result).to.be.bignumber.eq(new BigNumber('14298'))
   })
 })
 
@@ -542,9 +544,11 @@ describe('decodeTransaction', () => {
     expect(result.inputs[0]).to.haveOwnProperty('n')
     expect(result.inputs).to.have.lengthOf(1)
     expect(result.outputs).to.have.lengthOf(2)
-    expect(result.outputs[0].amount).to.eq(sentAmount)
+    // @ts-ignore
+    expect(result.outputs[0].amount).to.be.bignumber.eq(sentAmount)
     expect(result.outputs[0].address).to.eq(recipientAddress)
-    expect(result.outputs[1].amount).to.eq(changeAmount)
+    // @ts-ignore
+    expect(result.outputs[1].amount).to.be.bignumber.eq(changeAmount)
     expect(result.outputs[1].address).to.eq(changeAddress)
     expect(result.inputs[0].txHash).to.eq(utxoTxHash)
     expect(result.inputs[0].n).to.eq(utxoTxId)
@@ -673,16 +677,24 @@ describe('sendCoins and signTransaction', () => {
 
 describe('convert btc to satoshi and satoshi to btc',() => {
   it('should convert btc to satoshi',() => {
-    expect(transaction.btcToSatoshi(new BigNumber('0.00000001'))).to.eq(new BigNumber('1'))
-    expect(transaction.btcToSatoshi(new BigNumber('100000'))).to.eq(new BigNumber('10000000000000'))
-    expect(transaction.btcToSatoshi(new BigNumber('1.2'))).to.eq(new BigNumber('120000000'))
-    expect(transaction.btcToSatoshi(new BigNumber('0.29985356'))).to.eq(new BigNumber('29985356'))
+    // @ts-ignore
+    expect(transaction.btcToSatoshi(new BigNumber('0.00000001'))).to.be.bignumber.eq(new BigNumber('1'))
+    // @ts-ignore
+    expect(transaction.btcToSatoshi(new BigNumber('100000'))).to.be.bignumber.eq(new BigNumber('10000000000000'))
+    // @ts-ignore
+    expect(transaction.btcToSatoshi(new BigNumber('1.2'))).to.be.bignumber.eq(new BigNumber('120000000'))
+    // @ts-ignore
+    expect(transaction.btcToSatoshi(new BigNumber('0.29985356'))).to.be.bignumber.eq(new BigNumber('29985356'))
   })
 
   it('should convert satoshi to btc',() => {
-    expect(transaction.satoshiToBtc(new BigNumber('1'))).to.eq(new BigNumber('0.00000001'))
-    expect(transaction.satoshiToBtc(new BigNumber('10000000000000'))).to.eq(new BigNumber('100000'))
-    expect(transaction.satoshiToBtc(new BigNumber('120000000'))).to.eq(new BigNumber('1.2'))
-    expect(transaction.satoshiToBtc(new BigNumber('29985356'))).to.eq(new BigNumber('0.29985356'))
+    // @ts-ignore
+    expect(transaction.satoshiToBtc(new BigNumber('1'))).to.be.bignumber.eq(new BigNumber('0.00000001'))
+    // @ts-ignore
+    expect(transaction.satoshiToBtc(new BigNumber('10000000000000'))).to.be.bignumber.eq(new BigNumber('100000'))
+    // @ts-ignore
+    expect(transaction.satoshiToBtc(new BigNumber('120000000'))).to.be.bignumber.eq(new BigNumber('1.2'))
+    // @ts-ignore
+    expect(transaction.satoshiToBtc(new BigNumber('29985356'))).to.be.bignumber.eq(new BigNumber('0.29985356'))
   })
 })

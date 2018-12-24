@@ -35,6 +35,7 @@
     "@types/sjcl": "1.0.28",
     "@types/uuid": "3.4.4",
     "chai": "4.2.0",
+    "chai-bignumber": "^3.0.0",
     "concurrently": "3.6.0",
     "jest": "23.6.0",
     "ts-jest": "23.10.5",
