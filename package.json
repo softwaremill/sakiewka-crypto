@@ -9,7 +9,7 @@
   },
   "scripts": {
     "postinstall": "postinstall-build dist",
-    "test": "jest --forceExit --verbose=false",
+    "test": "jest --forceExit --verbose=false --detectOpenHandles",
     "watch-test": "npm run test -- --watchAll",
     "build": "tsc",
     "watch": "tsc -w",
