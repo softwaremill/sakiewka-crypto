@@ -89,7 +89,6 @@ describe('deriveKey', () => {
     const relativePath = '0/0'
 
     const rootPrvKey = 'xprv9s21ZrQH143K27LPi9gM65jmXFuBfiY7S5HReQarD7dTX9svAXQmQYsqxVqMcbtRWxDwBkdRxSxhfPBX4Vt7Juc9CqY4i3AaPNwCeM1w1Ym'
-    const pubKey = 'xpub661MyMwAqRbcEbQrpBDMTDgW5Hjg5BFxoJD2SnzTmTASPxD4i4j1xMCKojYwgaRXXBRAHB7WPECxA2aQVfL61G4mWjnHMj6BJtAQKMVAiYs'
 
     const partialResult = keyModule.deriveKey(rootPrvKey, basePath)
     const partialPrvKey = partialResult.toBase58()

@@ -1,6 +1,5 @@
 import { expect } from 'chai'
 import ethUtil from 'ethereumjs-util'
-import { base58ToHDNode } from '../bitcoin'
 
 import * as transaction from '../transaction-eth'
 import * as backendApi from '../zlevator'
@@ -30,8 +29,6 @@ backendApi.sendTokens = jest.fn(() => {
 
 const prvKey = '2E63835168223C0D81C152B86C6AE6FFE8EDC63327691953251DCFC6895C96DA'
 const signerAddress = ethUtil.privateToAddress(new Buffer(prvKey, 'hex')).toString('hex')
-
-const a = new Buffer('2E63835168223C0D81C152B86C6AE6FFE8EDC63327691953251DCFC6895C96DA', 'hex')
 
 describe('send ETH', () => {
   it('should exist', () => {
