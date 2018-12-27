@@ -18,7 +18,9 @@
       "forceConsistentCasingInFileNames": true,
       "noImplicitReturns": true,
       "noUnusedLocals": true,
-      "strictNullChecks": true
+      "strictNullChecks": true,
+      "noImplicitThis": true,
+      "alwaysStrict": true
   },
   "include": [
       "src/**/*"
