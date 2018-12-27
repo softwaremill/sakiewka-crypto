@@ -56,7 +56,7 @@ describe('encryptKeyPair', () => {
     expect(result).to.haveOwnProperty('pubKey')
     expect(result).to.haveOwnProperty('prvKey')
     expect(result.pubKey).to.have.lengthOf(3)
-    expect(JSON.parse(result.prvKey)).to.haveOwnProperty('cipher')
+    expect(JSON.parse(result.prvKey!)).to.haveOwnProperty('cipher')
   })
 })
 
@@ -69,7 +69,7 @@ describe('deriveKey', () => {
     const path = `0'`
     const keyPair = keyModule.generateNewKeyPair()
 
-    const result = keyModule.deriveKey(keyPair.prvKey, path)
+    const result = keyModule.deriveKey(keyPair.prvKey!, path)
 
     expect(result).to.have.property('keyPair')
   })
