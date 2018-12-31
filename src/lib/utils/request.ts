@@ -30,7 +30,7 @@ const checkStatus = async (response: Response): Promise<Response> => {
   }
 
   const message = await parseError(response)
-  throw new Error(JSON.stringify(<ErrorResponse>{message: message, code: response.status}))
+  throw JSON.stringify(<ErrorResponse>{message: message, code: response.status})
 }
 
 export default function request(url: string, options: object): Promise<any> {
