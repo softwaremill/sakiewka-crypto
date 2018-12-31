@@ -54,7 +54,7 @@ describe('init2fa', () => {
   })
 
   it('should send proper request', async () => {
-    await api.init2fa('password')
+    await api.init2fa('testToken', 'password')
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
@@ -71,7 +71,7 @@ describe('confirm2fa', () => {
   })
 
   it('should send proper request', async () => {
-    await api.confirm2fa('password', 101202)
+    await api.confirm2fa('testToken', 'password', 101202)
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
@@ -89,7 +89,7 @@ describe('disable2fa', () => {
   })
 
   it('should send proper request', async () => {
-    await api.disable2fa('password', 112233)
+    await api.disable2fa('testToken', 'password', 112233)
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)

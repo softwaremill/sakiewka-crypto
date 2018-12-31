@@ -54,9 +54,10 @@ describe('init2fa', () => {
     api.init2fa = mockImplementation
 
     const password = 'b'
-    const res = await user.init2fa(password)
+    const res = await user.init2fa('testToken', password)
 
-    const [passwordArg] = mockImplementation.mock.calls[0]
+    const [tokenArg, passwordArg] = mockImplementation.mock.calls[0]
+    expect(tokenArg).to.eq('testToken')
     expect(passwordArg).to.eq(hashPassword(password))
     expect(res).to.eq('backend response')
   })
@@ -75,9 +76,10 @@ describe('confirm2fa', () => {
 
     const code = 123456
     const password = 'b'
-    const res = await user.confirm2fa(password, code)
+    const res = await user.confirm2fa('testToken', password, code)
 
-    const [passwordArg, codeArg] = mockImplementation.mock.calls[0]
+    const [tokenArg, passwordArg, codeArg] = mockImplementation.mock.calls[0]
+    expect(tokenArg).to.eq('testToken')
     expect(passwordArg).to.eq(hashPassword(password))
     expect(codeArg).to.eq(code)
     expect(res).to.eq('backend response')
@@ -97,9 +99,10 @@ describe('disable2fa', () => {
 
     const code = 123456
     const password = 'b'
-    const res = await user.disable2fa(password, code)
+    const res = await user.disable2fa('testToken', password, code)
 
-    const [passwordArg, codeArg] = mockImplementation.mock.calls[0]
+    const [tokenArg, passwordArg, codeArg] = mockImplementation.mock.calls[0]
+    expect(tokenArg).to.eq('testToken')
     expect(passwordArg).to.eq(hashPassword(password))
     expect(codeArg).to.eq(code)
     expect(res).to.eq('backend response')
