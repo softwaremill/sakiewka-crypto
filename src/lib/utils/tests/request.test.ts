@@ -1,14 +1,14 @@
-import { expect } from 'chai'
 import * as nodeFetch from 'node-fetch'
 
 import request from '../request'
+import { fail } from 'assert';
 
 describe('request', () => {
   it('should exist', () => {
-    expect(request).to.be.a('function')
+    expect(request).toBeDefined()
   })
 
-  it('should return proper error message', async () => {
+  it('should return proper error message when server returns internal error', async () => {
     // @ts-ignore
     nodeFetch.default = jest.fn(() => {
       return Promise.resolve(new nodeFetch.Response(
@@ -17,21 +17,66 @@ describe('request', () => {
             message: 'test error'
           }
         }),
-        { status : 400 , statusText : '' }
+        { status: 500, statusText: '', headers: new nodeFetch.Headers({ "Content-type": "json" }) }
       ))
     })
 
     const options = {
       method: 'GET',
       headers: {
-        Authorization: 'Bearer 69c464263aa0551861b442a08ddc37b21742908fbba37d9bc53df745ae95b0fa'
+        Authorization: 'Bearer 123'
       }
     }
-
+    //@ts-ignore
     try {
-      await request(`http://localhost:8081/api/v1/btc/wallet/6416e7ee4d184f7d44c96a337ce74824eab444a656a3df53d6a55477304dd14f/utxo?amountBtc=333&feeRateSatoshi=22`, options)
+      await request(`http://localhost:8081/api/v1/x`, options)
+      fail("Error was not thrown")
     } catch (err) {
-      expect(err.message).to.eq('"test error"')
+      expect(err.message).toEqual('"test error"')
+    }
+  })
+
+  it('should return proper error message when server returns error without body', async () => {
+    // @ts-ignore
+    nodeFetch.default = jest.fn(() => {
+      return Promise.resolve(new nodeFetch.Response('',
+        { status: 400, statusText: 'BadRequest'}
+      ))
+    })
+
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer 123'
+      }
+    }
+    try {
+      await request(`http://localhost:8081/api/v1/x`, options)
+      fail("Error was not thrown")
+    } catch (err) {
+      expect(err.message).toEqual('"BadRequest"')
+    }
+  })
+
+  it('should return proper error message when server returns error with text-plain body', async () => {
+    // @ts-ignore
+    nodeFetch.default = jest.fn(() => {
+      return Promise.resolve(new nodeFetch.Response("Something went wrong",
+        { status: 400, statusText: 'BadRequest',headers: new nodeFetch.Headers({ "Content-type": "text" })  }
+      ))
+    })
+
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer 123'
+      }
+    }
+    try {
+      await request(`http://localhost:8081/api/v1/x`, options)
+      fail("Error was not thrown")
+    } catch (err) {
+      expect(err.message).toEqual('"Something went wrong"')
     }
   })
 })
