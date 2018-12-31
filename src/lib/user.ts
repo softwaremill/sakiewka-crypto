@@ -20,14 +20,14 @@ export const info = (token: string) => {
   return infoBackend(token)
 }
 
-export const init2fa = (password: string) => {
-  return init2faBackend(hashPassword(password))
+export const init2fa = (token: string, password: string) => {
+  return init2faBackend(token, hashPassword(password))
 }
 
-export const confirm2fa = (password: string, code: number) => {
-  return confirm2faBackend(hashPassword(password), code)
+export const confirm2fa = (token: string, password: string, code: number) => {
+  return confirm2faBackend(token, hashPassword(password), code)
 }
 
-export const disable2fa = (password: string, code: number) => {
-  return disable2faBackend(hashPassword(password), code)
+export const disable2fa = (token: string, password: string, code: number) => {
+  return disable2faBackend(token, hashPassword(password), code)
 }

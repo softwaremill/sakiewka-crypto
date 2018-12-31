@@ -38,27 +38,36 @@ export const login = async (login: string, password: string, codeIn?: number): P
   return response.data
 }
 
-export const init2fa = async (password: string): Promise<Init2faBackendResponse> => {
+export const init2fa = async (token: string, password: string): Promise<Init2faBackendResponse> => {
   const options = {
     method: 'POST',
+    headers: {
+      Authorization: token
+    },
     body: JSON.stringify({ password })
   }
   const response = await request(`${getBackendApiUrl()}/user/2fa/init`, options)
   return response.data
 }
 
-export const confirm2fa = async (password: string, code: number): Promise<Confirm2faBackendResponse> => {
+export const confirm2fa = async (token: string, password: string, code: number): Promise<Confirm2faBackendResponse> => {
   const options = {
     method: 'POST',
+    headers: {
+      Authorization: token
+    },
     body: JSON.stringify({ password, code })
   }
   const response = await request(`${getBackendApiUrl()}/user/2fa/confirm`, options)
   return response.data
 }
 
-export const disable2fa = async (password: string, code: number): Promise<Disable2faBackendResponse> => {
+export const disable2fa = async (token: string, password: string, code: number): Promise<Disable2faBackendResponse> => {
   const options = {
     method: 'POST',
+    headers: {
+      Authorization: token
+    },
     body: JSON.stringify({ password, code })
   }
   const response = await request(`${getBackendApiUrl()}/user/2fa/disable`, options)
