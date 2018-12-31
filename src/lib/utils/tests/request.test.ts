@@ -33,7 +33,7 @@ describe('request', () => {
       await request(`http://localhost:8081/api/v1/x`, options)
       fail("Error was not thrown")
     } catch (err) {
-      expect(err.message).to.eq('"test error"')
+      expect(err.message).to.eq('test error')
     }
   })
 
@@ -55,7 +55,7 @@ describe('request', () => {
       await request(`http://localhost:8081/api/v1/x`, options)
       fail("Error was not thrown")
     } catch (err) {
-      expect(err.message).to.eq('"BadRequest"')
+      expect(err.message).to.eq('BadRequest')
     }
   })
 
@@ -77,7 +77,7 @@ describe('request', () => {
       await request(`http://localhost:8081/api/v1/x`, options)
       fail("Error was not thrown")
     } catch (err) {
-      expect(err.message).to.eq('"Something went wrong"')
+      expect(err.message).to.eq('Something went wrong')
     }
   })
 })

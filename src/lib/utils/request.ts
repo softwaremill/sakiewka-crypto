@@ -18,7 +18,7 @@ const parseError = async (response: Response): Promise<any> => {
       return responseBody.error ? responseBody.error.message : responseBody
     })
   }
-  if(contentType && contentType.includes('text')){
+  if (contentType && contentType.includes('text')) {
     return response.text()
   }
   return response.statusText
@@ -30,7 +30,7 @@ const checkStatus = async (response: Response): Promise<Response> => {
   }
 
   const message = await parseError(response)
-  throw JSON.stringify(<ErrorResponse>{message: message, code: response.status})
+  throw <ErrorResponse>{ message: message, code: response.status }
 }
 
 export default function request(url: string, options: object): Promise<any> {
