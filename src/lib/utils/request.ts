@@ -1,8 +1,8 @@
 import nodeFetch, { Response } from 'node-fetch'
 import { ApiError } from '../../types/api'
+import { ErrorResponse } from 'response';
 
 const parseResponse = async (response: Response): Promise<any> => {
-  console.log("kasper")
   const contentType = response.headers.get('content-type')
   if (contentType && contentType.includes('json')) {
     return response.json()
@@ -30,7 +30,7 @@ const checkStatus = async (response: Response): Promise<Response> => {
   }
 
   const message = await parseError(response)
-  throw new Error(JSON.stringify(message))
+  throw new Error(JSON.stringify(<ErrorResponse>{message: message, code: response.status}))
 }
 
 export default function request(url: string, options: object): Promise<any> {

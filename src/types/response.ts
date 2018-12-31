@@ -101,3 +101,8 @@ export interface SendTokensResponse {
 export interface GetFeesRates {
   recommended: string
 }
+
+export interface ErrorResponse {
+  message: String,
+  code: number
+}
