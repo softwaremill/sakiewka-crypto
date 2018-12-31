@@ -1,11 +1,12 @@
 import * as nodeFetch from 'node-fetch'
+import { expect } from 'chai'
 
 import request from '../request'
 import { fail } from 'assert';
 
 describe('request', () => {
   it('should exist', () => {
-    expect(request).toBeDefined()
+    expect(request).to.be.a('function')
   })
 
   it('should return proper error message when server returns internal error', async () => {
@@ -32,7 +33,7 @@ describe('request', () => {
       await request(`http://localhost:8081/api/v1/x`, options)
       fail("Error was not thrown")
     } catch (err) {
-      expect(err.message).toEqual('"test error"')
+      expect(err.message).to.eq('"test error"')
     }
   })
 
@@ -54,7 +55,7 @@ describe('request', () => {
       await request(`http://localhost:8081/api/v1/x`, options)
       fail("Error was not thrown")
     } catch (err) {
-      expect(err.message).toEqual('"BadRequest"')
+      expect(err.message).to.eq('"BadRequest"')
     }
   })
 
@@ -76,7 +77,7 @@ describe('request', () => {
       await request(`http://localhost:8081/api/v1/x`, options)
       fail("Error was not thrown")
     } catch (err) {
-      expect(err.message).toEqual('"Something went wrong"')
+      expect(err.message).to.eq('"Something went wrong"')
     }
   })
 })
