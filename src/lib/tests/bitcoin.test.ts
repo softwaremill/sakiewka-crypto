@@ -1,8 +1,6 @@
 import {expect} from 'chai'
 
 import * as bitcoin from '../bitcoin'
-import {generateNewKeyPair} from '../key'
-
 
 describe('redeem script', () => {
   it('should create same script regardless of public keys order', () => {

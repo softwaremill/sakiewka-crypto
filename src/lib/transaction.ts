@@ -76,9 +76,9 @@ const createOutputs = (unspentsResponse: ListUnspentsBackendResponse, recipents:
 
 const signInputs = (unspents: UTXO[], xprv: string, pubKeys: string[], txb: TransactionBuilder) => {
   unspents.forEach((uns: UTXO, idx: number) => {
-    const signingKey = deriveKey(xprv, joinPath(uns.path)).keyPair
+    const signingKey = deriveKey(xprv, joinPath(uns.path!)).keyPair
 
-    const derivedPubKeys = pubKeys.map((key: string) => deriveKey(key, joinPath(uns.path)).neutered().toBase58())
+    const derivedPubKeys = pubKeys.map((key: string) => deriveKey(key, joinPath(uns.path!)).neutered().toBase58())
     const redeemScript = createMultisigRedeemScript(derivedPubKeys)
 
     txb.sign(idx, signingKey, redeemScript)
@@ -101,7 +101,7 @@ export const signTransaction = (
   const txb = txBuilderFromTx(tx)
 
   unspents.forEach((uns: UTXO, idx: number) => {
-    const signingKey = deriveKey(xprv, joinPath(uns.path)).keyPair
+    const signingKey = deriveKey(xprv, joinPath(uns.path!)).keyPair
     txb.sign(idx, signingKey)
   })
 

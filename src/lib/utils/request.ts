@@ -1,7 +1,7 @@
 import nodeFetch, { Response } from 'node-fetch'
 import { ApiError } from '../../types/api'
 
-const parseJSON = async (response: Response): null | Promise<ApiError> => {
+const parseJSON = async (response: Response): Promise<ApiError> => {
   const contentType = response.headers.get('content-type')
 
   if (contentType && !contentType.includes('json')) {
@@ -9,7 +9,7 @@ const parseJSON = async (response: Response): null | Promise<ApiError> => {
   }
 
   if (response.status === 204 || response.status === 205) {
-    return null
+    return new Promise<any>((resolve)=>(resolve(null)));
   }
 
   return response.json()

@@ -91,7 +91,7 @@ describe('sendCoins', () => {
 
     await transaction.sendCoins(
       '1234',
-      userKeyPair.prvKey,
+      userKeyPair.prvKey!,
       '13',
       [{
         address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
@@ -101,9 +101,9 @@ describe('sendCoins', () => {
 
     const [, , transactionHex] = sendTxMock.mock.calls[0]
 
-    const serverECPair = deriveKey(serverKeyPair.prvKey, '2/0/0').keyPair
-    const userECPair = deriveKey(userKeyPair.prvKey, '2/0/0').keyPair
-    const anotherECPair = deriveKey(anotherKeyPair.prvKey, '2/0/0').keyPair
+    const serverECPair = deriveKey(serverKeyPair.prvKey!, '2/0/0').keyPair
+    const userECPair = deriveKey(userKeyPair.prvKey!, '2/0/0').keyPair
+    const anotherECPair = deriveKey(anotherKeyPair.prvKey!, '2/0/0').keyPair
 
     // recreates transaction builder
     const tx = txFromHex(transactionHex)
@@ -193,7 +193,7 @@ describe('sendCoins', () => {
 
     await transaction.sendCoins(
       '1234',
-      userKeyPair.prvKey,
+      userKeyPair.prvKey!,
       '13',
       [{
         address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi',
@@ -203,9 +203,9 @@ describe('sendCoins', () => {
 
     const [, , transactionHex] = sendTxMock.mock.calls[0]
 
-    const serverECPair = deriveKey(serverKeyPair.prvKey, '2/0/0').keyPair
-    const userECPair = deriveKey(userKeyPair.prvKey, '2/0/0').keyPair
-    const anotherECPair = deriveKey(anotherKeyPair.prvKey, '2/0/0').keyPair
+    const serverECPair = deriveKey(serverKeyPair.prvKey!, '2/0/0').keyPair
+    const userECPair = deriveKey(userKeyPair.prvKey!, '2/0/0').keyPair
+    const anotherECPair = deriveKey(anotherKeyPair.prvKey!, '2/0/0').keyPair
 
     // recreates transaction builder
     const tx = txFromHex(transactionHex)
@@ -296,7 +296,7 @@ describe('sendCoins', () => {
 
     await transaction.sendCoins(
       '1234',
-      userKeyPair.prvKey,
+      userKeyPair.prvKey!,
       '13',
       [
         {
@@ -384,7 +384,7 @@ describe('sendCoins', () => {
 
     await transaction.sendCoins(
       '1234',
-      userKeyPair.prvKey,
+      userKeyPair.prvKey!,
       '13',
       [{
         address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi',
@@ -394,9 +394,9 @@ describe('sendCoins', () => {
 
     const [, , transactionHex] = sendTxMock.mock.calls[0]
 
-    const serverECPair = deriveKey(serverKeyPair.prvKey, '2/0/0').keyPair
-    const userECPair = deriveKey(userKeyPair.prvKey, '2/0/0').keyPair
-    const anotherECPair = deriveKey(anotherKeyPair.prvKey, '2/0/0').keyPair
+    const serverECPair = deriveKey(serverKeyPair.prvKey!, '2/0/0').keyPair
+    const userECPair = deriveKey(userKeyPair.prvKey!, '2/0/0').keyPair
+    const anotherECPair = deriveKey(anotherKeyPair.prvKey!, '2/0/0').keyPair
 
     // recreates transaction builder
     const tx = txFromHex(transactionHex)
@@ -482,7 +482,7 @@ describe('sendCoins to multiple outputs', () => {
 
     await transaction.sendCoins(
       '1234',
-      userKeyPair.prvKey,
+      userKeyPair.prvKey!,
       '13',
       [
         {
@@ -659,7 +659,7 @@ describe('sendCoins and signTransaction', () => {
 
     await transaction.sendCoins(
       '1234',
-      userKeyPair.prvKey,
+      userKeyPair.prvKey!,
       '13',
       [{
         address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi',
@@ -669,7 +669,7 @@ describe('sendCoins and signTransaction', () => {
 
     const [, , transactionHex] = sendTxMock.mock.calls[0]
 
-    const { txHex, txHash } = transaction.signTransaction(serverKeyPair.prvKey, transactionHex, unspents);
+    const { txHex, txHash } = transaction.signTransaction(serverKeyPair.prvKey!, transactionHex, unspents);
     expect(txHash).to.not.eq('')
     expect(txHex).to.not.eq('')
   })

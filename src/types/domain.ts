@@ -34,7 +34,7 @@ export interface UTXO {
 
 export interface Recipent {
   address: string,
-  amount?: BigNumber
+  amount: BigNumber
 }
 
 export interface DecodedTx {
