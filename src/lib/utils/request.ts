@@ -1,18 +1,27 @@
 import nodeFetch, { Response } from 'node-fetch'
 import { ApiError } from '../../types/api'
+import { ErrorResponse } from 'response';
 
-const parseJSON = async (response: Response): Promise<ApiError> => {
+const parseResponse = async (response: Response): Promise<any> => {
   const contentType = response.headers.get('content-type')
-
-  if (contentType && !contentType.includes('json')) {
-    throw new Error(`Response from ${response.url} was not a JSON. Resonse text: "${await response.text()}"`)
+  if (contentType && contentType.includes('json')) {
+    return response.json()
   }
+  return new Promise<any>((resolve)=>(resolve(null)));
+}
 
-  if (response.status === 204 || response.status === 205) {
-    return new Promise<any>((resolve)=>(resolve(null)));
+const parseError = async (response: Response): Promise<any> => {
+  const contentType = response.headers.get('content-type')
+  if (contentType && contentType.includes('json')) {
+    return response.json().then(res => {
+      const responseBody = (<ApiError>res)
+      return responseBody.error ? responseBody.error.message : responseBody
+    })
   }
-
-  return response.json()
+  if (contentType && contentType.includes('text')) {
+    return response.text()
+  }
+  return response.statusText
 }
 
 const checkStatus = async (response: Response): Promise<Response> => {
@@ -20,13 +29,12 @@ const checkStatus = async (response: Response): Promise<Response> => {
     return response
   }
 
-  const responseBody = await parseJSON(response)
-  const message = responseBody.error ? responseBody.error.message : responseBody
-  throw new Error(JSON.stringify(message))
+  const message = await parseError(response)
+  throw <ErrorResponse>{ message: message, code: response.status }
 }
 
 export default function request(url: string, options: object): Promise<any> {
   return nodeFetch(url, options)
     .then(checkStatus)
-    .then(parseJSON)
+    .then(parseResponse)
 }
