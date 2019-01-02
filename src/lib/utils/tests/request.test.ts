@@ -28,7 +28,6 @@ describe('request', () => {
         Authorization: 'Bearer 123'
       }
     }
-    //@ts-ignore
     try {
       await request(`http://localhost:8081/api/v1/x`, options)
       fail("Error was not thrown")
