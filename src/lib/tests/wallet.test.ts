@@ -14,7 +14,7 @@ describe('createWallet', () => {
     expect(wallet.createWallet).to.be.a('function')
   })
 
-  it('should pass proper arguments (when no pub keys provided) to backend-api method and return result of its call', async () => {
+  it('should pass proper arguments to backend-api method and return result of its call', async () => {
     // @ts-ignore
     const mockImplementation = jest.fn(() => 'backend response')
     // @ts-ignore
@@ -43,34 +43,6 @@ describe('createWallet', () => {
     // check if really sending xpubs
     expect(backendRequestParams.userPubKey.slice(0, 4)).to.be.eq('xpub')
     expect(backendRequestParams.backupPubKey.slice(0, 4)).to.be.eq('xpub')
-  })
-
-  it('should pass proper arguments (when pub keys provided) to backend-api method and return result of its call', async () => {
-    // @ts-ignore
-    const mockImplementation = jest.fn(() => 'backend response')
-    // @ts-ignore
-    backendApi.createWallet = mockImplementation
-
-    const params = {
-      passphrase: 'abcd',
-      name: 'testLabel',
-      userPubKey: '123',
-      backupPubKey: '321'
-    }
-
-    const result = await wallet.createWallet('abcd', params)
-    const [token, backendRequestParams] = mockImplementation.mock.calls[0]
-
-    expect(token).to.eq('abcd')
-    expect(backendRequestParams).to.not.haveOwnProperty('userPrvKey')
-    expect(backendRequestParams).to.not.haveOwnProperty('backupPrvKey')
-    expect(backendRequestParams).to.haveOwnProperty('name')
-    expect(backendRequestParams).to.haveOwnProperty('userPubKey')
-    expect(backendRequestParams).to.haveOwnProperty('backupPubKey')
-    expect(result).to.eq('backend response')
-
-    expect(backendRequestParams.userPubKey).to.be.eq('123')
-    expect(backendRequestParams.backupPubKey).to.be.eq('321')
   })
 })
 
@@ -148,7 +120,7 @@ describe('listUnspents', () => {
 
     const res = await wallet.listUnspents('testToken', 'walletId', '2', [{ address: '0x1', amount: new BigNumber(123) }])
 
-    const [token, walletId, {feeRate, recipients}] = mockImplementation.mock.calls[0]
+    const [token, walletId, { feeRate, recipients }] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
     expect(walletId).to.eq('walletId')
     expect(feeRate).to.eq('2')

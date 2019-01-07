@@ -1,6 +1,5 @@
 import { WalletParams, Recipient } from '../types/domain'
 import { ROOT_DERIVATION_PATH } from './constants'
-import { removeUndefinedFromObject } from './utils/helpers'
 import {
   createWallet as createWalletBackend,
   getWallet as getWalletBackend,
@@ -24,13 +23,13 @@ export const createWallet = async (userToken: string, params: WalletParams): Pro
   const encryptedUserKeyPair = encryptKeyPair(userKeyPair, params.passphrase)
   const encryptedBackupKeyPair = encryptKeyPair(backupKeyPair, params.passphrase)
 
-  const backendRequestParams = removeUndefinedFromObject({
+  const backendRequestParams = {
     name: params.name,
     userPubKey: encryptedUserKeyPair.pubKey,
     userPrvKey: encryptedUserKeyPair.prvKey,
     backupPubKey: encryptedBackupKeyPair.pubKey,
     backupPrvKey: encryptedBackupKeyPair.prvKey
-  })
+  }
 
   return createWalletBackend(
     userToken,

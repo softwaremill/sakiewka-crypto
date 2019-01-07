@@ -19,7 +19,6 @@ import {
   GetUtxosBackendParams
 } from 'response'
 import request from './utils/request'
-import { removeUndefinedFromObject } from './utils/helpers'
 
 const getBackendApiUrl = () => process.env.BACKEND_API_URL
 
@@ -174,9 +173,9 @@ export const createNewAddress = async (
     headers: {
       Authorization: token
     },
-    body: JSON.stringify(removeUndefinedFromObject({
+    body: JSON.stringify({
       name
-    }))
+    })
   }
 
   const response = await request(`${getBackendApiUrl()}/btc/wallet/${walletId}/address?change=${change}`, options)

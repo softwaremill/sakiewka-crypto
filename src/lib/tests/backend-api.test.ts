@@ -139,7 +139,7 @@ describe('createWallet', () => {
     expect(api.createWallet).to.be.a('function')
   })
 
-  it('should send proper request', async () => {
+  it('should send proper request when pub keys provided', async () => {
     const data = {
       name: 'testName',
       userPubKey: '123',
@@ -158,7 +158,6 @@ describe('createWallet', () => {
     expect(reqBody.backupPubKey).to.eq('456')
   })
 })
-
 describe('getWallet', () => {
   it('should exist', () => {
     expect(api.getWallet).to.be.a('function')
@@ -307,9 +306,9 @@ describe('listUnspents', () => {
   })
 
   it('should send proper request', async () => {
-    const data ={
-      feeRate:'22', 
-      recipients:[{ address: '0x0', amount: '888' }]
+    const data = {
+      feeRate: '22',
+      recipients: [{ address: '0x0', amount: '888' }]
     }
     await api.listUnspents('testToken', 'testWalletId', data)
 
