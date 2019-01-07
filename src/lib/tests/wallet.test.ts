@@ -5,7 +5,7 @@ import * as backendApi from '../backend-api'
 import BigNumber from "bignumber.js";
 import chaiBigNumber from 'chai-bignumber'
 
-beforeEach(()=>{
+beforeEach(() => {
   use(chaiBigNumber(BigNumber))
 })
 
@@ -146,14 +146,15 @@ describe('listUnspents', () => {
     // @ts-ignore
     backendApi.listUnspents = mockImplementation
 
-    const res = await wallet.listUnspents('testToken', 'walletId', new BigNumber('123'), '2')
+    const res = await wallet.listUnspents('testToken', 'walletId', '2', [{ address: '0x1', amount: new BigNumber(123) }])
 
-    const [token, walletId, amount, fee] = mockImplementation.mock.calls[0]
+    const [token, walletId, {feeRate, recipients}] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
     expect(walletId).to.eq('walletId')
-    // @ts-ignore
-    expect(amount).to.be.bignumber.eq(123)
-    expect(fee).to.eq('2')
+    expect(feeRate).to.eq('2')
     expect(res).to.eq('backend response')
+    // @ts-ignore
+    expect(recipients[0].amount).to.be.bignumber.eq(0.00000123)
+    expect(recipients[0].address).to.be.eq('0x1')
   })
 })

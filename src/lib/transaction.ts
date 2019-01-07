@@ -1,6 +1,5 @@
 import { UTXO, Recipient, DecodedTx, Path, Key, TxOut } from '../types/domain'
 import {
-  listUnspents,
   getWallet,
   createNewAddress,
   sendTransaction,
@@ -18,32 +17,21 @@ import {
   sortTxOuts
 } from './bitcoin'
 import { deriveKey } from './key'
+import { listUnspents } from './wallet'
 import { TransactionBuilder } from 'bitcoinjs-lib';
 import { ListUnspentsBackendResponse } from 'response';
 import BigNumber from "bignumber.js";
-
-export const sumOutputAmounts = (outputs: Recipient[]): BigNumber => {
-  return outputs.reduce(
-    (acc: BigNumber, out: Recipient) => {
-      return acc.plus(out.amount)
-    },
-    new BigNumber(0)
-  )
-}
+import { btcToSatoshi } from './utils/helpers'
 
 const joinPath = (path: Path): string =>
   `${path.cosignerIndex}/${path.change}/${path.addressIndex}`
 
-export const btcToSatoshi = (amount: BigNumber) : BigNumber => amount.shiftedBy(8)
-export const satoshiToBtc = (amount: BigNumber) : BigNumber => amount.shiftedBy(-8)
-
 export const sendCoins = async (
   userToken: string, xprv: string, walletId: string, recipients: Recipient[]
 ): Promise<void> => {
-  const outputsAmount = sumOutputAmounts(recipients)
   const txb = initializeTxBuilder()
   const { recommended } = await getFeesRates()
-  const unspentsResponse = await listUnspents(userToken, walletId, satoshiToBtc(outputsAmount), recommended)
+  const unspentsResponse = await listUnspents(userToken, walletId, recommended, recipients)
   const wallet = await getWallet(userToken, walletId)
   const pubKeys = wallet.keys.map((key: Key) => key.pubKey)
   const changeAddresResponse = await createNewAddress(userToken, walletId, true)

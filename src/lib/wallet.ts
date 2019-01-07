@@ -1,4 +1,4 @@
-import { WalletParams } from '../types/domain'
+import { WalletParams, Recipient } from '../types/domain'
 import { ROOT_DERIVATION_PATH } from './constants'
 import { removeUndefinedFromObject } from './utils/helpers'
 import {
@@ -9,8 +9,8 @@ import {
   listUnspents as listUnspentsBackend
 } from './backend-api'
 import { deriveKeyPair, generateNewKeyPair, encryptKeyPair } from './key'
-import { CreateWalletBackendParams } from 'response'
-import BigNumber from "bignumber.js";
+import { CreateWalletBackendParams, GetUtxosBackendParams, ReceipientsBackend } from 'response'
+import { satoshiToBtc } from './utils/helpers'
 
 export const createWallet = async (userToken: string, params: WalletParams): Promise<any> => {
   const userKeyPair = params.userPubKey ?
@@ -34,7 +34,7 @@ export const createWallet = async (userToken: string, params: WalletParams): Pro
 
   return createWalletBackend(
     userToken,
-    <CreateWalletBackendParams> backendRequestParams
+    <CreateWalletBackendParams>backendRequestParams
   )
 }
 
@@ -51,5 +51,11 @@ export const getWalletBalance = (
 ) => getWalletBalanceBackend(userToken, walletId)
 
 export const listUnspents = (
-  token: string, walletId: string, amount: BigNumber, feeRate?: string
-) => listUnspentsBackend(token, walletId, amount, feeRate)
+  token: string, walletId: string, feeRate: string, recipients: Recipient[]
+) => {
+  const params = {
+    feeRate,
+    recipients: recipients.map(r => <ReceipientsBackend>({ address: r.address, amount: satoshiToBtc(r.amount).toString() }))
+  }
+  return listUnspentsBackend(token, walletId, <GetUtxosBackendParams>params)
+}
