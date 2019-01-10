@@ -8,7 +8,7 @@ import bitcoinjsLib, {
 } from 'bitcoinjs-lib'
 import bip69 from 'bip69'
 import { network } from './config'
-import { UTXO, Recipent, Path, TxOut } from '../types/domain'
+import { UTXO, Recipient, Path, TxOut } from '../types/domain'
 import { BigNumber } from "bignumber.js";
 
 const base58ToKeyBuffer = (key: string): Buffer => {
@@ -89,7 +89,7 @@ export const addressToOutputScript = (
   return bitcoinjsLib.address.toOutputScript(address, network)
 }
 
-export const decodeTxOutput = (output: Out): Recipent => ({
+export const decodeTxOutput = (output: Out): Recipient => ({
   amount: new BigNumber(output.value),
   address: outputScriptToAddress(output.script)
 })
@@ -104,10 +104,10 @@ export const sortUnspents = (inputs: UTXO[]): UTXO[] => {
     .map(btcjsToUtxo)
 }
 
-export const recipentToTxOut = (recipent: Recipent): TxOut => {
+export const recipientToTxOut = (recipient: Recipient): TxOut => {
   return {
-    script: addressToOutputScript(recipent.address),
-    value: recipent.amount
+    script: addressToOutputScript(recipient.address),
+    value: recipient.amount
   }
 }
 

@@ -1,6 +1,5 @@
-import { UTXO, Recipent, DecodedTx, Path, Key, TxOut } from '../types/domain'
+import { UTXO, Recipient, DecodedTx, Path, Key, TxOut } from '../types/domain'
 import {
-  listUnspents,
   getWallet,
   createNewAddress,
   sendTransaction,
@@ -14,36 +13,25 @@ import {
   decodeTxInput,
   txBuilderFromTx,
   sortUnspents,
-  recipentToTxOut,
+  recipientToTxOut,
   sortTxOuts
 } from './bitcoin'
 import { deriveKey } from './key'
+import { listUnspents } from './wallet'
 import { TransactionBuilder } from 'bitcoinjs-lib';
 import { ListUnspentsBackendResponse } from 'response';
 import BigNumber from "bignumber.js";
-
-export const sumOutputAmounts = (outputs: Recipent[]): BigNumber => {
-  return outputs.reduce(
-    (acc: BigNumber, out: Recipent) => {
-      return acc.plus(out.amount)
-    },
-    new BigNumber(0)
-  )
-}
+import { btcToSatoshi } from './utils/helpers'
 
 const joinPath = (path: Path): string =>
   `${path.cosignerIndex}/${path.change}/${path.addressIndex}`
 
-export const btcToSatoshi = (amount: BigNumber) : BigNumber => amount.shiftedBy(8)
-export const satoshiToBtc = (amount: BigNumber) : BigNumber => amount.shiftedBy(-8)
-
 export const sendCoins = async (
-  userToken: string, xprv: string, walletId: string, recipents: Recipent[]
+  userToken: string, xprv: string, walletId: string, recipients: Recipient[]
 ): Promise<void> => {
-  const outputsAmount = sumOutputAmounts(recipents)
   const txb = initializeTxBuilder()
   const { recommended } = await getFeesRates()
-  const unspentsResponse = await listUnspents(userToken, walletId, satoshiToBtc(outputsAmount), recommended)
+  const unspentsResponse = await listUnspents(userToken, walletId, recommended, recipients)
   const wallet = await getWallet(userToken, walletId)
   const pubKeys = wallet.keys.map((key: Key) => key.pubKey)
   const changeAddresResponse = await createNewAddress(userToken, walletId, true)
@@ -53,7 +41,7 @@ export const sendCoins = async (
     txb.addInput(uns.txHash, uns.n)
   })
 
-  const outputs = createOutputs(unspentsResponse, recipents, changeAddresResponse.address)
+  const outputs = createOutputs(unspentsResponse, recipients, changeAddresResponse.address)
   outputs.forEach((out: TxOut) => {
     txb.addOutput(out.script, out.value.toNumber())
   })
@@ -64,13 +52,13 @@ export const sendCoins = async (
   await sendTransaction(userToken, walletId, txHex)
 }
 
-const createOutputs = (unspentsResponse: ListUnspentsBackendResponse, recipents: Recipent[], changeAddres: string): TxOut[] => {
+const createOutputs = (unspentsResponse: ListUnspentsBackendResponse, recipients: Recipient[], changeAddres: string): TxOut[] => {
   const { change, serviceFee } = unspentsResponse
-  const changeRecipent: Recipent = { address: changeAddres, amount: btcToSatoshi(new BigNumber(change)) }
-  const serviceRecipent = serviceFee ? [{ address: serviceFee.address, amount: btcToSatoshi(new BigNumber(serviceFee.amount)) }] : []
-  const txOuts = recipents.concat(changeRecipent)
-    .concat(serviceRecipent)
-    .map(recipentToTxOut)
+  const changeRecipient: Recipient = { address: changeAddres, amount: btcToSatoshi(new BigNumber(change)) }
+  const serviceRecipient = serviceFee ? [{ address: serviceFee.address, amount: btcToSatoshi(new BigNumber(serviceFee.amount)) }] : []
+  const txOuts = recipients.concat(changeRecipient)
+    .concat(serviceRecipient)
+    .map(recipientToTxOut)
   return sortTxOuts(txOuts)
 }
 

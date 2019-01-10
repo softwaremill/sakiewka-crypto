@@ -15,11 +15,10 @@ import {
   ListUnspentsBackendResponse,
   ListWalletsBackendResponse,
   LoginBackendResponse,
-  RegisterBackendResponse
+  RegisterBackendResponse,
+  GetUtxosBackendParams
 } from 'response'
 import request from './utils/request'
-import { removeUndefinedFromObject } from './utils/helpers'
-import BigNumber from "bignumber.js";
 
 const getBackendApiUrl = () => process.env.BACKEND_API_URL
 
@@ -174,9 +173,9 @@ export const createNewAddress = async (
     headers: {
       Authorization: token
     },
-    body: JSON.stringify(removeUndefinedFromObject({
+    body: JSON.stringify({
       name
-    }))
+    })
   }
 
   const response = await request(`${getBackendApiUrl()}/btc/wallet/${walletId}/address?change=${change}`, options)
@@ -215,16 +214,19 @@ export const listAddresses = async (
 }
 
 export const listUnspents = async (
-  token: string, walletId: string, amount: BigNumber, feeRate?: string
+  token: string, walletId: string, params: GetUtxosBackendParams
 ): Promise<ListUnspentsBackendResponse> => {
   const options = {
-    method: 'GET',
+    method: 'POST',
     headers: {
       Authorization: token
-    }
+    },
+    body: JSON.stringify({
+      ...params
+    })
   }
 
-  const response = await request(`${getBackendApiUrl()}/btc/wallet/${walletId}/utxo?amountBtc=${amount.toNumber()}&feeRateSatoshi=${feeRate}`, options)
+  const response = await request(`${getBackendApiUrl()}/btc/wallet/${walletId}/utxo`, options)
   return response.data
 }
 

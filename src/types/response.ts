@@ -24,6 +24,16 @@ export interface CreateWalletBackendParams {
   backupPrvKey?: string
 }
 
+export interface GetUtxosBackendParams {
+  feeRate: string,
+  recipients: ReceipientsBackend[]
+}
+
+export interface ReceipientsBackend {
+  address: string,
+  amount : string
+}
+
 interface WalletBackendResponse {
   id: string,
   keys: Key[]

@@ -2,7 +2,6 @@ import { expect } from 'chai'
 
 import * as api from '../backend-api'
 import * as request from '../utils/request'
-import BigNumber from "bignumber.js";
 
 // @ts-ignore
 const mockImplementation = jest.fn(() => ({ data: 'testToken' }))
@@ -140,7 +139,7 @@ describe('createWallet', () => {
     expect(api.createWallet).to.be.a('function')
   })
 
-  it('should send proper request', async () => {
+  it('should send proper request when pub keys provided', async () => {
     const data = {
       name: 'testName',
       userPubKey: '123',
@@ -159,7 +158,6 @@ describe('createWallet', () => {
     expect(reqBody.backupPubKey).to.eq('456')
   })
 })
-
 describe('getWallet', () => {
   it('should exist', () => {
     expect(api.getWallet).to.be.a('function')
@@ -308,13 +306,20 @@ describe('listUnspents', () => {
   })
 
   it('should send proper request', async () => {
-    await api.listUnspents('testToken', 'testWalletId', new BigNumber('888'), '22')
+    const data = {
+      feeRate: '22',
+      recipients: [{ address: '0x0', amount: '888' }]
+    }
+    await api.listUnspents('testToken', 'testWalletId', data)
 
     const [url, params] = mockImplementation.mock.calls[0]
-
-    expect(url).to.eq('backurl/api/v1/btc/wallet/testWalletId/utxo?amountBtc=888&feeRateSatoshi=22')
-    expect(params.method).to.eq('GET')
+    const reqBody = JSON.parse(params.body)
+    expect(url).to.eq('backurl/api/v1/btc/wallet/testWalletId/utxo')
+    expect(params.method).to.eq('POST')
     expect(params.headers.Authorization).to.eq('testToken')
+    expect(reqBody.feeRate).to.eq('22')
+    expect(reqBody.recipients[0].address).to.eq('0x0')
+    expect(reqBody.recipients[0].amount).to.eq('888')
   })
 })
 

@@ -32,13 +32,13 @@ export interface UTXO {
   path?: Path
 }
 
-export interface Recipent {
+export interface Recipient {
   address: string,
   amount: BigNumber
 }
 
 export interface DecodedTx {
-  outputs: Recipent[],
+  outputs: Recipient[],
   inputs: UTXO[]
 }
 
