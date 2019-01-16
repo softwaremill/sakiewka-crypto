@@ -27,7 +27,7 @@ import { decrypt } from './crypto';
 const joinPath = (path: Path): string =>
   `${path.cosignerIndex}/${path.change}/${path.addressIndex}`
 
-export const sendCoins = async (
+export const send = async (
   userToken: string, walletId: string, recipients: Recipient[], xprv?: string, password?: string
 ): Promise<void> => {
   const { recommended } = await getFeesRates()

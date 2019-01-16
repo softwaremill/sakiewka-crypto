@@ -26,7 +26,7 @@ beforeEach(() => {
 describe('sendCoins', () => {
   stubFeesRates(5)
   it('should exist', () => {
-    expect(transaction.sendCoins).to.be.a('function')
+    expect(transaction.send).to.be.a('function')
   })
 
   it('should send coins', async () => {
@@ -62,7 +62,7 @@ describe('sendCoins', () => {
     stubGetWallet(userKeyPair, backupKeyPair, serverKeyPair)
     const sendTxMock = stubSendTx()
 
-    await transaction.sendCoins(
+    await transaction.send(
       '1234',
       '13',
       [{
@@ -127,7 +127,7 @@ describe('sendCoins', () => {
 
     stubGetWallet(userKeyPair, backupKeyPair, serverKeyPair)
 
-    await assert.isRejected(transaction.sendCoins(
+    await assert.isRejected(transaction.send(
       '1234',
       '13',
       [{
@@ -170,7 +170,7 @@ describe('sendCoins', () => {
     stubGetKey({ id: '1', pubKey: 'pubKey', keyType: KeyType.USER, created: 'date' })
     stubGetWallet(userKeyPair, backupKeyPair, serverKeyPair)
 
-    await assert.isRejected(transaction.sendCoins(
+    await assert.isRejected(transaction.send(
       '1234',
       '13',
       [{
@@ -216,7 +216,7 @@ describe('sendCoins', () => {
     stubGetWallet(userKeyPair, backupKeyPair, serverKeyPair)
     stubSendTx()
 
-    await transaction.sendCoins(
+    await transaction.send(
       '1234',
       '13',
       [{
@@ -265,7 +265,7 @@ describe('sendCoins', () => {
     stubGetWallet(userKeyPair, backupKeyPair, serverKeyPair)
     const sendTxMock = stubSendTx()
 
-    await transaction.sendCoins(
+    await transaction.send(
       '1234',
       '13',
       [{
@@ -339,7 +339,7 @@ describe('sendCoins', () => {
     stubGetWallet(userKeyPair, backupKeyPair, serverKeyPair)
     const sendTxMock = stubSendTx()
 
-    await transaction.sendCoins(
+    await transaction.send(
       '1234',
       '13',
       [
@@ -398,7 +398,7 @@ describe('sendCoins', () => {
     stubGetWallet(userKeyPair, backupKeyPair, serverKeyPair)
     const sendTxMock = stubSendTx()
 
-    await transaction.sendCoins(
+    await transaction.send(
       '1234',
       '13',
       [{
@@ -437,7 +437,7 @@ describe('sendCoins', () => {
 
 describe('sendCoins to multiple outputs', () => {
   it('should exist', () => {
-    expect(transaction.sendCoins).to.be.a('function')
+    expect(transaction.send).to.be.a('function')
   })
 
   it('should send coins', async () => {
@@ -471,7 +471,7 @@ describe('sendCoins to multiple outputs', () => {
     stubGetWallet(userKeyPair, backupKeyPair, serverKeyPair)
     const sendTxMock = stubSendTx()
 
-    await transaction.sendCoins(
+    await transaction.send(
       '1234',
       '13',
       [
@@ -599,7 +599,7 @@ describe('sendCoins and signTransaction', () => {
     stubGetWallet(userKeyPair, backupKeyPair, serverKeyPair)
     const sendTxMock = stubSendTx()
 
-    await transaction.sendCoins(
+    await transaction.send(
       '1234',
       '13',
       [{
