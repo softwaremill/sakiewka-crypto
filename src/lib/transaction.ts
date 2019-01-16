@@ -67,7 +67,7 @@ const xprivOrGetFromServer = async (userToken: string, wallet: GetWalletBackendR
 }
 
 const getUserXprvFromServer = async (wallet: GetWalletBackendResponse, userToken: string, password: string): Promise<string> => {
-  const keyId: string = wallet.keys.find(key => key.type === KeyType.user)!.id
+  const keyId: string = wallet.keys.find(key => key.type === KeyType.USER)!.id
   const key: GetKeyBackendResponse = await getKey(userToken, keyId, true)
   const prvKey = key.prvKey
   if (prvKey) {

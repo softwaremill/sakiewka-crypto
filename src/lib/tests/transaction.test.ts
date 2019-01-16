@@ -167,7 +167,7 @@ describe('sendCoins', () => {
       ]
     })
 
-    stubGetKey({ id: '1', pubKey: 'pubKey', keyType: KeyType.user, created: 'date' })
+    stubGetKey({ id: '1', pubKey: 'pubKey', keyType: KeyType.USER, created: 'date' })
     stubGetWallet(userKeyPair, backupKeyPair, serverKeyPair)
 
     await assert.isRejected(transaction.sendCoins(
@@ -212,7 +212,7 @@ describe('sendCoins', () => {
     })
     const encryptedXprv = encrypt("secretPassword", userKeyPair.prvKey!)
 
-    stubGetKey({ id: '1', pubKey: 'pubKey', keyType: KeyType.user, prvKey: encryptedXprv, created: 'date' })
+    stubGetKey({ id: '1', pubKey: 'pubKey', keyType: KeyType.USER, prvKey: encryptedXprv, created: 'date' })
     stubGetWallet(userKeyPair, backupKeyPair, serverKeyPair)
     stubSendTx()
 

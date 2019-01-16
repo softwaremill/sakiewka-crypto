@@ -8,9 +8,9 @@ export const stubGetWallet = (userKeyPair: KeyPair, backupKeyPair: KeyPair, serv
     backendApi.getWallet = jest.fn(() => {
         return Promise.resolve({
             keys: [
-                { pubKey: userKeyPair.pubKey, type: KeyType.user },
-                { pubKey: backupKeyPair.pubKey, type: KeyType.backup },
-                { pubKey: serviceKeyPair.pubKey, type: KeyType.service }
+                { pubKey: userKeyPair.pubKey, type: KeyType.USER },
+                { pubKey: backupKeyPair.pubKey, type: KeyType.BACKUP },
+                { pubKey: serviceKeyPair.pubKey, type: KeyType.SERVICE }
             ]
         })
     })
