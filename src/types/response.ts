@@ -1,4 +1,4 @@
-import { UTXO, Key, Path } from './domain'
+import { UTXO, Key, Path, KeyType } from './domain'
 
 export interface LoginBackendResponse {
   token: string
@@ -89,10 +89,16 @@ export interface ListUnspentsBackendResponse {
 
 export interface ServiceFee {
   amount: string,
-  address, string
+  address: string
 }
 
-export interface GetKeyBackendResponse {}
+export interface GetKeyBackendResponse {
+  id: string
+  pubKey: string
+  prvKey? : string
+  keyType: KeyType
+  created: string
+}
 
 // eth
 export interface EthGetTransactionParamsResponse {

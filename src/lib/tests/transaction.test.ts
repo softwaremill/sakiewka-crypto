@@ -1,4 +1,4 @@
-import { expect, use } from 'chai'
+import { expect, use, assert } from 'chai'
 
 import * as transaction from '../transaction'
 import * as backendApi from '../backend-api'
@@ -6,14 +6,20 @@ import { generateNewKeyPair, deriveKey, deriveKeyPair } from '../key'
 import { generateNewMultisigAddress } from '../address'
 import { txFromHex, txBuilderFromTx } from '../bitcoin'
 import * as config from '../config'
-import { ROOT_DERIVATION_PATH , SUPPORTED_NETWORKS } from '../constants'
+import { ROOT_DERIVATION_PATH, SUPPORTED_NETWORKS } from '../constants'
 import BigNumber from "bignumber.js";
 import chaiBigNumber from 'chai-bignumber'
+import chaiAsPromised from 'chai-as-promised'
+import * as keyModule from '../key'
+import { GetKeyBackendResponse } from '../../types/response'
+import { encrypt } from '../crypto';
+import { KeyType } from '../../types/domain';
 
 beforeEach(() => {
   // @ts-ignore
   config.network = SUPPORTED_NETWORKS.bitcoin
   use(chaiBigNumber(BigNumber))
+  use(chaiAsPromised)
   // mocks
   // @ts-ignore
   backendApi.createNewAddress = jest.fn(() => {
@@ -74,9 +80,9 @@ describe('sendCoins', () => {
     backendApi.getWallet = jest.fn(() => {
       return Promise.resolve({
         keys: [
-          { pubKey: userKeyPair.pubKey },
-          { pubKey: backupKeyPair.pubKey },
-          { pubKey: serverKeyPair.pubKey }
+          { pubKey: userKeyPair.pubKey, type: KeyType.user },
+          { pubKey: backupKeyPair.pubKey, type: KeyType.backup },
+          { pubKey: serverKeyPair.pubKey, type: KeyType.service }
         ]
       })
     })
@@ -91,12 +97,12 @@ describe('sendCoins', () => {
 
     await transaction.sendCoins(
       '1234',
-      userKeyPair.prvKey!,
       '13',
       [{
         address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
         amount: new BigNumber('500000000')
-      }]
+      }],
+      userKeyPair.prvKey!,
     )
 
     const [, , transactionHex] = sendTxMock.mock.calls[0]
@@ -123,6 +129,199 @@ describe('sendCoins', () => {
 
     expect(tx.outs.length).to.be.eq(3)
     expect(tx.ins.length).to.be.eq(1)
+  })
+
+  it('should throw error when neither password nor xprv are specified', async () => {
+    // generates keyPairs and address
+    const userKeyPair = generateNewKeyPair()
+    const backupKeyPair = generateNewKeyPair()
+    const serverKeyPair = generateNewKeyPair()
+
+    const { address } = generateNewMultisigAddress([
+      userKeyPair.pubKey,
+      backupKeyPair.pubKey,
+      serverKeyPair.pubKey
+    ], '2/0/0')
+
+    // @ts-ignore
+    backendApi.listUnspents = jest.fn(() => {
+      return Promise.resolve({
+        change: 1.9,
+        serviceFee: {
+          amount: '0.09',
+          address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN'
+        },
+        outputs: [
+          {
+            address,
+            txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+            n: 0,
+            path: {
+              cosignerIndex: 2,
+              change: 0,
+              addressIndex: 0
+            },
+            amount: new BigNumber('700000000')
+          }
+        ]
+      })
+    })
+
+    // @ts-ignore
+    backendApi.getWallet = jest.fn(() => {
+      return Promise.resolve({
+        keys: [
+          { pubKey: userKeyPair.pubKey, type: KeyType.user },
+          { pubKey: backupKeyPair.pubKey, type: KeyType.backup },
+          { pubKey: serverKeyPair.pubKey, type: KeyType.service }
+        ]
+      })
+    })
+
+    await assert.isRejected(transaction.sendCoins(
+      '1234',
+      '13',
+      [{
+        address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
+        amount: new BigNumber('500000000')
+      }],
+    ), "Password or xprv has to be specified!")
+  })
+
+  it('should throw error when there is no private key on server', async () => {
+    // generates keyPairs and address
+    const userKeyPair = generateNewKeyPair()
+    const backupKeyPair = generateNewKeyPair()
+    const serverKeyPair = generateNewKeyPair()
+
+    const { address } = generateNewMultisigAddress([
+      userKeyPair.pubKey,
+      backupKeyPair.pubKey,
+      serverKeyPair.pubKey
+    ], '2/0/0')
+
+    // @ts-ignore
+    backendApi.listUnspents = jest.fn(() => {
+      return Promise.resolve({
+        change: 1.9,
+        serviceFee: {
+          amount: '0.09',
+          address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN'
+        },
+        outputs: [
+          {
+            address,
+            txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+            n: 0,
+            path: {
+              cosignerIndex: 2,
+              change: 0,
+              addressIndex: 0
+            },
+            amount: new BigNumber('700000000')
+          }
+        ]
+      })
+    })
+
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => <GetKeyBackendResponse>{ id: '1', pubKey: 'pubKey', keyType: 'user', created: 'date' })
+    // @ts-ignore
+    keyModule.getKey = mockImplementation
+
+    // @ts-ignore
+    backendApi.getWallet = jest.fn(() => {
+      return Promise.resolve({
+        keys: [
+          { pubKey: userKeyPair.pubKey, type: KeyType.user },
+          { pubKey: backupKeyPair.pubKey, type: KeyType.backup },
+          { pubKey: serverKeyPair.pubKey, type: KeyType.service }
+        ]
+      })
+    })
+
+    await assert.isRejected(transaction.sendCoins(
+      '1234',
+      '13',
+      [{
+        address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
+        amount: new BigNumber('500000000')
+      }],
+      undefined,
+      "secretPassword"
+    ), "There is no private key on server!")
+  })
+
+  it('should get private key from server and decode it when password provided', async () => {
+    // generates keyPairs and address
+    const userKeyPair = generateNewKeyPair()
+    const backupKeyPair = generateNewKeyPair()
+    const serverKeyPair = generateNewKeyPair()
+
+    const { address } = generateNewMultisigAddress([
+      userKeyPair.pubKey,
+      backupKeyPair.pubKey,
+      serverKeyPair.pubKey
+    ], '2/0/0')
+
+    // @ts-ignore
+    backendApi.listUnspents = jest.fn(() => {
+      return Promise.resolve({
+        change: 1.9,
+        serviceFee: {
+          amount: '0.09',
+          address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN'
+        },
+        outputs: [
+          {
+            address,
+            txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+            n: 0,
+            path: {
+              cosignerIndex: 2,
+              change: 0,
+              addressIndex: 0
+            },
+            amount: new BigNumber('700000000')
+          }
+        ]
+      })
+    })
+    const encryptedXprv = encrypt("secretPassword", userKeyPair.prvKey!)
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => <GetKeyBackendResponse>{ id: '1', pubKey: 'pubKey', keyType: 'user', prvKey: encryptedXprv, created: 'date' })
+    // @ts-ignore
+    keyModule.getKey = mockImplementation
+
+    // @ts-ignore
+    backendApi.getWallet = jest.fn(() => {
+      return Promise.resolve({
+        keys: [
+          { pubKey: userKeyPair.pubKey, type: KeyType.user },
+          { pubKey: backupKeyPair.pubKey, type: KeyType.backup },
+          { pubKey: serverKeyPair.pubKey, type: KeyType.service }
+        ]
+      })
+    })
+
+    // @ts-ignore
+    const sendTxMock = jest.fn(() => {
+      return Promise.resolve(true)
+    })
+
+    // @ts-ignore
+    backendApi.sendTransaction = sendTxMock
+
+    await transaction.sendCoins(
+      '1234',
+      '13',
+      [{
+        address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
+        amount: new BigNumber('500000000')
+      }],
+      undefined,
+      "secretPassword"
+    )
   })
 
   it('should send coins to testnet', async () => {
@@ -193,12 +392,12 @@ describe('sendCoins', () => {
 
     await transaction.sendCoins(
       '1234',
-      userKeyPair.prvKey!,
       '13',
       [{
         address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi',
         amount: new BigNumber('500000000')
-      }]
+      }],
+      userKeyPair.prvKey!,
     )
 
     const [, , transactionHex] = sendTxMock.mock.calls[0]
@@ -296,7 +495,6 @@ describe('sendCoins', () => {
 
     await transaction.sendCoins(
       '1234',
-      userKeyPair.prvKey!,
       '13',
       [
         {
@@ -307,7 +505,8 @@ describe('sendCoins', () => {
           address: '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM',
           amount: new BigNumber('1500')
         }
-      ]
+      ],
+      userKeyPair.prvKey!,
     )
 
     const [, , transactionHex] = sendTxMock.mock.calls[0]
@@ -384,12 +583,12 @@ describe('sendCoins', () => {
 
     await transaction.sendCoins(
       '1234',
-      userKeyPair.prvKey!,
       '13',
       [{
         address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi',
         amount: new BigNumber('500000000')
-      }]
+      }],
+      userKeyPair.prvKey!,
     )
 
     const [, , transactionHex] = sendTxMock.mock.calls[0]
@@ -482,7 +681,6 @@ describe('sendCoins to multiple outputs', () => {
 
     await transaction.sendCoins(
       '1234',
-      userKeyPair.prvKey!,
       '13',
       [
         {
@@ -493,7 +691,8 @@ describe('sendCoins to multiple outputs', () => {
           address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
           amount: new BigNumber('1500')
         }
-      ]
+      ],
+      userKeyPair.prvKey!,
     )
 
     const [, , transactionHex] = sendTxMock.mock.calls[0]
@@ -643,12 +842,12 @@ describe('sendCoins and signTransaction', () => {
 
     await transaction.sendCoins(
       '1234',
-      userKeyPair.prvKey!,
       '13',
       [{
         address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi',
         amount: new BigNumber('500000000')
-      }]
+      }],
+      userKeyPair.prvKey!,
     )
 
     const [, , transactionHex] = sendTxMock.mock.calls[0]

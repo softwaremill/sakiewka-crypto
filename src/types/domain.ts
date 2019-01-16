@@ -19,10 +19,10 @@ export interface Key {
   type: KeyType
 }
 
-export interface KeyType {
-  User?: object,
-  Service?: object,
-  Backup?: object
+export enum KeyType {
+  user,
+  service,
+  backup
 }
 
 export interface UTXO {
