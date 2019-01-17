@@ -1,4 +1,4 @@
-import { UTXO, Recipient, DecodedTx, Path, Key, TxOut } from '../types/domain'
+import { UTXO, Recipient, DecodedTx, Path, Key, TxOut, KeyType } from '../types/domain'
 import {
   getWallet,
   createNewAddress,
@@ -16,40 +16,70 @@ import {
   recipientToTxOut,
   sortTxOuts
 } from './bitcoin'
-import { deriveKey } from './key'
+import { deriveKey, getKey } from './key'
 import { listUnspents } from './wallet'
 import { TransactionBuilder } from 'bitcoinjs-lib';
-import { ListUnspentsBackendResponse } from 'response';
+import { ListUnspentsBackendResponse, GetWalletBackendResponse, GetKeyBackendResponse } from 'response';
 import BigNumber from "bignumber.js";
 import { btcToSatoshi } from './utils/helpers'
+import { decrypt } from './crypto';
+import { ErrorResponse } from '../types/response'
 
 const joinPath = (path: Path): string =>
   `${path.cosignerIndex}/${path.change}/${path.addressIndex}`
 
-export const sendCoins = async (
-  userToken: string, xprv: string, walletId: string, recipients: Recipient[]
+export const send = async (
+  userToken: string, walletId: string, recipients: Recipient[], xprv?: string, passphrase?: string
 ): Promise<void> => {
-  const txb = initializeTxBuilder()
   const { recommended } = await getFeesRates()
   const unspentsResponse = await listUnspents(userToken, walletId, recommended, recipients)
   const wallet = await getWallet(userToken, walletId)
   const pubKeys = wallet.keys.map((key: Key) => key.pubKey)
   const changeAddresResponse = await createNewAddress(userToken, walletId, true)
+  const userXprv = await xprivOrGetFromServer(userToken, wallet, xprv, passphrase)
+  const txHex = buildTxHex(unspentsResponse, recipients, userXprv, changeAddresResponse.address, pubKeys)
+  await sendTransaction(userToken, walletId, txHex)
+}
 
+const buildTxHex = (unspentsResponse: ListUnspentsBackendResponse, recipients: Recipient[], xprv: string, changeAddres: string, pubKeys: string[]): string => {
+  const txb = initializeTxBuilder()
   const inputs = sortUnspents(unspentsResponse.outputs)
   inputs.forEach((uns: UTXO) => {
     txb.addInput(uns.txHash, uns.n)
   })
 
-  const outputs = createOutputs(unspentsResponse, recipients, changeAddresResponse.address)
+  const outputs = createOutputs(unspentsResponse, recipients, changeAddres)
   outputs.forEach((out: TxOut) => {
     txb.addOutput(out.script, out.value.toNumber())
   })
 
   signInputs(inputs, xprv, pubKeys, txb)
+  return txb.build().toHex()
+}
 
-  const txHex = txb.build().toHex()
-  await sendTransaction(userToken, walletId, txHex)
+const xprivOrGetFromServer = async (userToken: string, wallet: GetWalletBackendResponse, xprv?: string, passphrase?: string): Promise<string> => {
+  if (xprv) {
+    return xprv
+  } else if (passphrase) {
+    return await getUserXprvFromServer(wallet, userToken, passphrase)
+  } else {
+    throw <ErrorResponse>({ message: "Password or xprv has to be specified!", code: 400 })
+  }
+}
+
+const getUserXprvFromServer = async (wallet: GetWalletBackendResponse, userToken: string, password: string): Promise<string> => {
+  const keyId: string = wallet.keys.find(key => key.type === KeyType.USER)!.id
+  const key: GetKeyBackendResponse = await getKey(userToken, keyId, true)
+  const prvKey = key.prvKey
+  if (prvKey) {
+    try {
+      return decrypt(password, prvKey)
+    } catch {
+      throw <ErrorResponse>({ message: "Incorrect passphrase", code: 400 })
+    }
+  } else {
+    throw <ErrorResponse>({ message: "There is no private key on server!", code: 400 })
+  }
 }
 
 const createOutputs = (unspentsResponse: ListUnspentsBackendResponse, recipients: Recipient[], changeAddres: string): TxOut[] => {
