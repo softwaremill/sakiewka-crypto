@@ -29,14 +29,14 @@ const joinPath = (path: Path): string =>
   `${path.cosignerIndex}/${path.change}/${path.addressIndex}`
 
 export const send = async (
-  userToken: string, walletId: string, recipients: Recipient[], xprv?: string, password?: string
+  userToken: string, walletId: string, recipients: Recipient[], xprv?: string, passphrase?: string
 ): Promise<void> => {
   const { recommended } = await getFeesRates()
   const unspentsResponse = await listUnspents(userToken, walletId, recommended, recipients)
   const wallet = await getWallet(userToken, walletId)
   const pubKeys = wallet.keys.map((key: Key) => key.pubKey)
   const changeAddresResponse = await createNewAddress(userToken, walletId, true)
-  const userXprv = await xprivOrGetFromServer(userToken, wallet, xprv, password)
+  const userXprv = await xprivOrGetFromServer(userToken, wallet, xprv, passphrase)
   const txHex = buildTxHex(unspentsResponse, recipients, userXprv, changeAddresResponse.address, pubKeys)
   await sendTransaction(userToken, walletId, txHex)
 }
@@ -57,11 +57,11 @@ const buildTxHex = (unspentsResponse: ListUnspentsBackendResponse, recipients: R
   return txb.build().toHex()
 }
 
-const xprivOrGetFromServer = async (userToken: string, wallet: GetWalletBackendResponse, xprv?: string, password?: string): Promise<string> => {
+const xprivOrGetFromServer = async (userToken: string, wallet: GetWalletBackendResponse, xprv?: string, passphrase?: string): Promise<string> => {
   if (xprv) {
     return xprv
-  } else if (password) {
-    return await getUserXprvFromServer(wallet, userToken, password)
+  } else if (passphrase) {
+    return await getUserXprvFromServer(wallet, userToken, passphrase)
   } else {
     throw <ErrorResponse>({ message: "Password or xprv has to be specified!", code: 400 })
   }
