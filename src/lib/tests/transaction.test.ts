@@ -228,6 +228,52 @@ describe('sendCoins', () => {
     )
   })
 
+  it('should return error when passphrase does not match', async () => {
+    // generates keyPairs and address
+    const userKeyPair = generateNewKeyPair()
+    const backupKeyPair = generateNewKeyPair()
+    const serverKeyPair = generateNewKeyPair()
+
+    const { address } = generateNewMultisigAddress([
+      userKeyPair.pubKey,
+      backupKeyPair.pubKey,
+      serverKeyPair.pubKey
+    ], '2/0/0')
+
+    stubUnspents({
+      change: 1.9,
+      serviceFee: {
+        amount: '0.09',
+        address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN'
+      },
+      outputs: [
+        {
+          address,
+          txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+          n: 0,
+          path: createPath(2, 0, 0),
+          amount: new BigNumber('700000000')
+        }
+      ]
+    })
+    const encryptedXprv = encrypt("secretPassword", userKeyPair.prvKey!)
+
+    stubGetKey({ id: '1', pubKey: 'pubKey', keyType: KeyType.USER, prvKey: encryptedXprv, created: 'date' })
+    stubGetWallet(userKeyPair, backupKeyPair, serverKeyPair)
+    stubSendTx()
+
+    await assert.isRejected(transaction.send(
+      '1234',
+      '13',
+      [{
+        address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
+        amount: new BigNumber('500000000')
+      }],
+      undefined,
+      "otherPassword"
+    ), "Incorrect passphrase")
+  })
+
   it('should send coins to testnet', async () => {
     // @ts-ignore
     config.network = SUPPORTED_NETWORKS.testnet

@@ -72,7 +72,11 @@ const getUserXprvFromServer = async (wallet: GetWalletBackendResponse, userToken
   const key: GetKeyBackendResponse = await getKey(userToken, keyId, true)
   const prvKey = key.prvKey
   if (prvKey) {
-    return decrypt(password, prvKey)
+    try {
+      return decrypt(password, prvKey)
+    } catch {
+      throw <ErrorResponse>({ message: "Incorrect passphrase", code: 400 })
+    }
   } else {
     throw <ErrorResponse>({ message: "There is no private key on server!", code: 400 })
   }
