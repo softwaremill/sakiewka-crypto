@@ -5,10 +5,16 @@ import {
   getWallet as getWalletBackend,
   listWallets as listWaletsBackend,
   getWalletBalance as getWalletBalanceBackend,
-  listUnspents as listUnspentsBackend
+  listUnspents as listUnspentsBackend,
+  maxTransferAmount as maxTransferAmountBackend
 } from './backend-api'
 import { deriveKeyPair, generateNewKeyPair, encryptKeyPair } from './key'
-import { CreateWalletBackendParams, GetUtxosBackendParams, ReceipientsBackend } from 'response'
+import {
+  CreateWalletBackendParams,
+  GetUtxosBackendParams,
+  ReceipientsBackend,
+  MaxTransferAmountParams
+} from 'response'
 import { satoshiToBtc } from './utils/helpers'
 
 export const createWallet = async (userToken: string, params: WalletParams): Promise<any> => {
@@ -57,4 +63,12 @@ export const listUnspents = (
     recipients: recipients.map(r => <ReceipientsBackend>({ address: r.address, amount: satoshiToBtc(r.amount).toString() }))
   }
   return listUnspentsBackend(token, walletId, <GetUtxosBackendParams>params)
+}
+
+export const maxTransferAmount = (token, walletId: string, feeRate: string, recipient: string) => {
+  const params: MaxTransferAmountParams = {
+    recipient,
+    feeRate
+  }
+  return maxTransferAmountBackend(token, walletId, params)
 }

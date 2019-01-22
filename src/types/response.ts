@@ -122,3 +122,12 @@ export interface ErrorResponse {
   message: String,
   code: number
 }
+
+export interface MaxTransferAmountParams {
+  recipient: string,
+  feeRate: string
+}
+
+export interface MaxTransferAmountResponse {
+  amount: string
+}

@@ -130,3 +130,25 @@ describe('listUnspents', () => {
     expect(recipients[0].address).to.be.eq('0x1')
   })
 })
+
+describe('getMaxTransferAmount', () => {
+  it('should exist', () => {
+    expect(wallet.maxTransferAmount).to.be.a('function')
+  })
+
+  it('should pass proper arguments to backend-api method and return result of its call', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    backendApi.maxTransferAmount = mockImplementation
+
+    const res = await wallet.maxTransferAmount('testToken', 'walletId', '2', '0x1')
+
+    const [token, walletId, { recipient, feeRate }] = mockImplementation.mock.calls[0]
+    expect(token).to.eq('testToken')
+    expect(walletId).to.eq('walletId')
+    expect(feeRate).to.eq('2')
+    expect(res).to.eq('backend response')
+    expect(recipient).to.be.eq('0x1')
+  })
+})
