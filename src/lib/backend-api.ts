@@ -16,7 +16,9 @@ import {
   ListWalletsBackendResponse,
   LoginBackendResponse,
   RegisterBackendResponse,
-  GetUtxosBackendParams
+  GetUtxosBackendParams,
+  MaxTransferAmountParams,
+  MaxTransferAmountResponse
 } from 'response'
 import request from './utils/request'
 
@@ -264,5 +266,17 @@ export const getKey = async (
 
 export const getFeesRates = async (): Promise<GetFeesRates> => {
   const response = await request(`${getBackendApiUrl()}/fees`, { method: 'GET' })
+  return response.data
+}
+
+export const maxTransferAmount = async(token: string, walletId: string, params: MaxTransferAmountParams) : Promise<MaxTransferAmountResponse>=> {
+  const options = {
+    method: 'GET',
+    headers: {
+      Authorization: token
+    }
+  }
+
+  const response = await request(`${getBackendApiUrl()}/btc/wallet/${walletId}/max-transfer-amount?recipient=${params.recipient}&feeRate=${params.feeRate}`, options)
   return response.data
 }
