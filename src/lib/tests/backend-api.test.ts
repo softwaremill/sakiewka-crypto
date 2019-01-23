@@ -2,6 +2,7 @@ import { expect } from 'chai'
 
 import * as api from '../backend-api'
 import * as request from '../utils/request'
+import { MaxTransferAmountParams } from 'response';
 
 // @ts-ignore
 const mockImplementation = jest.fn(() => ({ data: 'testToken' }))
@@ -350,6 +351,25 @@ describe('getKey', () => {
     const [url, params] = mockImplementation.mock.calls[0]
 
     expect(url).to.eq('backurl/api/v1/btc/key/testKeyId?includePrivate=true')
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
+  })
+})
+
+describe('maxTransferAmount', () => {
+  it('should exist', () => {
+    expect(api.maxTransferAmount).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    const data: MaxTransferAmountParams = {
+      recipient: '0x0',
+      feeRate: '22'
+    }
+    await api.maxTransferAmount('testToken', 'testWalletId', data)
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    expect(url).to.eq('backurl/api/v1/btc/wallet/testWalletId/max-transfer-amount?recipient=0x0&feeRate=22')
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })

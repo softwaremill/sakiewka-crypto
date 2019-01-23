@@ -277,6 +277,6 @@ export const maxTransferAmount = async(token: string, walletId: string, params: 
     }
   }
 
-  const response = await request(`${getBackendApiUrl()}/btc/wallet/${walletId}/maxTransferAmount?recipient=${params.recipient}&feeRate=${params.feeRate}`, options)
+  const response = await request(`${getBackendApiUrl()}/btc/wallet/${walletId}/max-transfer-amount?recipient=${params.recipient}&feeRate=${params.feeRate}`, options)
   return response.data
 }
