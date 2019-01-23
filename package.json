@@ -33,6 +33,7 @@
     "@types/mocha": "5.2.4",
     "@types/node": "10.12.12",
     "@types/node-fetch": "2.1.4",
+    "@types/pdfkit": "^0.7.36",
     "@types/sjcl": "1.0.28",
     "@types/uuid": "3.4.4",
     "chai": "4.2.0",
@@ -49,14 +50,15 @@
     "uuid": "3.3.2"
   },
   "dependencies": {
-    "bitcoinjs-lib": "3.3.2",
+    "bignumber.js": "8.0.1",
     "bip69": "2.1.4",
+    "bitcoinjs-lib": "3.3.2",
     "dotenv": "6.2.0",
     "ethereumjs-abi": "0.6.5",
     "ethereumjs-util": "5.2.0",
     "node-fetch": "2.3.0",
+    "pdfkit": "^0.8.3",
     "postinstall-build": "5.0.3",
-    "sjcl-complete": "1.0.0",
-    "bignumber.js": "8.0.1"
+    "sjcl-complete": "1.0.0"
   }
 }
