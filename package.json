@@ -50,6 +50,7 @@
     "uuid": "3.3.2"
   },
   "dependencies": {
+    "base64-stream": "^1.0.0",
     "bignumber.js": "8.0.1",
     "bip69": "2.1.4",
     "bitcoinjs-lib": "3.3.2",
