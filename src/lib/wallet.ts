@@ -16,6 +16,7 @@ import {
   MaxTransferAmountParams
 } from 'response'
 import { satoshiToBtc } from './utils/helpers'
+import {generateBackupPdfBase64} from './pdfgen'
 
 export const createWallet = async (userToken: string, params: WalletParams): Promise<any> => {
   const userKeyPair = params.userPubKey ?
@@ -37,10 +38,12 @@ export const createWallet = async (userToken: string, params: WalletParams): Pro
     backupPrvKey: encryptedBackupKeyPair.prvKey
   }
 
-  return createWalletBackend(
-    userToken,
-    <CreateWalletBackendParams>backendRequestParams
-  )
+  const pdfPromise = generateBackupPdfBase64("", "", "", "")
+  const backendPromise = createWalletBackend(userToken, <CreateWalletBackendParams> backendRequestParams)
+
+  const [pdf, response] = await Promise.all([pdfPromise, backendPromise])
+
+  return {...response, pdf: pdf}
 }
 
 export const getWallet = (
