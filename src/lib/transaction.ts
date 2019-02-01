@@ -112,10 +112,7 @@ export const decodeTransaction = (txHex: string): DecodedTx => {
     .map(decodeTxOutput)
     .map(o => ({ ...o, amount: satoshiToBtc(o.amount) }));
 
-
-  const inputs: UTXO[] = tx.ins
-    .map(decodeTxInput)
-    .map(i => ({ ...i, amount: satoshiToBtc(i.amount) }));
+  const inputs: UTXO[] = tx.ins.map(decodeTxInput)
 
   return { outputs, inputs }
 }
