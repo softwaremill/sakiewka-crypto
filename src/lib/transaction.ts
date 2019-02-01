@@ -21,7 +21,7 @@ import { listUnspents } from './wallet'
 import { TransactionBuilder } from 'bitcoinjs-lib';
 import { ListUnspentsBackendResponse, GetWalletBackendResponse, GetKeyBackendResponse } from 'response';
 import BigNumber from "bignumber.js";
-import { btcToSatoshi } from './utils/helpers'
+import { btcToSatoshi, satoshiToBtc } from './utils/helpers'
 import { decrypt } from './crypto';
 import { ErrorResponse } from '../types/response'
 
@@ -85,7 +85,10 @@ const getUserXprvFromServer = async (wallet: GetWalletBackendResponse, userToken
 const createOutputs = (unspentsResponse: ListUnspentsBackendResponse, recipients: Recipient[], changeAddres: string): TxOut[] => {
   const { change, serviceFee } = unspentsResponse
   const changeRecipient: Recipient = { address: changeAddres, amount: btcToSatoshi(new BigNumber(change)) }
-  const serviceRecipient = serviceFee ? [{ address: serviceFee.address, amount: btcToSatoshi(new BigNumber(serviceFee.amount)) }] : []
+  const serviceRecipient = serviceFee ? [{
+    address: serviceFee.address,
+    amount: btcToSatoshi(new BigNumber(serviceFee.amount))
+  }] : []
   const txOuts = recipients.concat(changeRecipient)
     .concat(serviceRecipient)
     .map(recipientToTxOut)
@@ -105,9 +108,11 @@ const signInputs = (unspents: UTXO[], xprv: string, pubKeys: string[], txb: Tran
 
 export const decodeTransaction = (txHex: string): DecodedTx => {
   const tx = txFromHex(txHex)
-  const outputs = tx.outs.map(decodeTxOutput)
+  const outputs: Recipient[] = tx.outs
+    .map(decodeTxOutput)
+    .map(o => ({ ...o, amount: satoshiToBtc(o.amount) }));
 
-  const inputs = tx.ins.map(decodeTxInput)
+  const inputs: UTXO[] = tx.ins.map(decodeTxInput)
 
   return { outputs, inputs }
 }
