@@ -269,7 +269,7 @@ export const getFeesRates = async (): Promise<GetFeesRates> => {
   return response.data
 }
 
-export const maxTransferAmount = async(token: string, walletId: string, params: MaxTransferAmountParams) : Promise<MaxTransferAmountResponse>=> {
+export const maxTransferAmount = async (token: string, walletId: string, params: MaxTransferAmountParams): Promise<MaxTransferAmountResponse> => {
   const options = {
     method: 'GET',
     headers: {
@@ -278,5 +278,22 @@ export const maxTransferAmount = async(token: string, walletId: string, params: 
   }
 
   const response = await request(`${getBackendApiUrl()}/btc/wallet/${walletId}/max-transfer-amount?recipient=${params.recipient}&feeRate=${params.feeRate}`, options)
+  return response.data
+}
+
+export const verifyEmail = async (code: string, email: String): Promise<void> => {
+  const options = {
+    method: 'GET'
+  }
+  const response = await request(`${getBackendApiUrl()}/user/verify?code=${code}&email=${email}`, options)
+  return response.data
+}
+
+export const resendVerificationEmail = async (email: String): Promise<void> => {
+  const options = {
+    method: 'POST',
+    body: JSON.stringify({email: email})
+  }
+  const response = await request(`${getBackendApiUrl()}/user/resend-verification`, options)
   return response.data
 }

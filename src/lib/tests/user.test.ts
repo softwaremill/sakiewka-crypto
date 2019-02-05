@@ -148,3 +148,42 @@ describe('info', () => {
     expect(res).to.eq('backend response')
   })
 })
+
+describe('verifyEmail', () => {
+  it('should exist', () => {
+    expect(user.verifyEmail).to.be.a('function')
+  })
+
+  it('should pass proper arguments to backend-api method and return result of its call', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    api.verifyEmail = mockImplementation
+
+    const res = await user.verifyEmail('testCode', 'testEmail')
+
+    const [code, email] = mockImplementation.mock.calls[0]
+    expect(code).to.eq('testCode')
+    expect(email).to.eq('testEmail')
+    expect(res).to.eq('backend response')
+  })
+})
+
+describe('resendVerificationEmail', () => {
+  it('should exist', () => {
+    expect(user.resendVerificationEmail).to.be.a('function')
+  })
+
+  it('should pass proper arguments to backend-api method and return result of its call', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    api.resendVerificationEmail = mockImplementation
+
+    const res = await user.resendVerificationEmail('testEmail')
+
+    const [email] = mockImplementation.mock.calls[0]
+    expect(email).to.eq('testEmail')
+    expect(res).to.eq('backend response')
+  })
+})

@@ -4,7 +4,9 @@ import {
   info as infoBackend,
   init2fa as init2faBackend,
   login as loginBackend,
-  register as registerBackend
+  register as registerBackend,
+  verifyEmail as verifyEmailBackend,
+  resendVerificationEmail as resendVerificationEmailBackend
 } from './backend-api'
 import { hashPassword } from './crypto';
 
@@ -30,4 +32,12 @@ export const confirm2fa = (token: string, password: string, code: number) => {
 
 export const disable2fa = (token: string, password: string, code: number) => {
   return disable2faBackend(token, hashPassword(password), code)
+}
+
+export const verifyEmail = (code: string, email: string) => {
+  return verifyEmailBackend(code, email)
+}
+
+export const resendVerificationEmail = (email: string) => {
+  return resendVerificationEmailBackend(email)
 }
