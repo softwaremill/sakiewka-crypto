@@ -18,7 +18,8 @@ import {
   RegisterBackendResponse,
   GetUtxosBackendParams,
   MaxTransferAmountParams,
-  MaxTransferAmountResponse
+  MaxTransferAmountResponse,
+  MontlySummaryBackendResponse
 } from 'response'
 import request from './utils/request'
 
@@ -97,6 +98,18 @@ export const info = async (token: string): Promise<InfoBackendResponse> => {
   }
 
   const response = await request(`${getBackendApiUrl()}/user/info`, options)
+  return response.data
+}
+
+export const monthlySummary = async (token: string, month: number, year: number, fiatCurrency: number): Promise<MontlySummaryBackendResponse> => {
+  const options = {
+    method: 'GET',
+    headers: {
+      Authorization: token
+    }
+  }
+
+  const response = await request(`${getBackendApiUrl()}/user/monthly-summary/${month}/${year}/${fiatCurrency}`, options)
   return response.data
 }
 

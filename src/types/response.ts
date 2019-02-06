@@ -8,6 +8,13 @@ export interface RegisterBackendResponse {}
 
 export interface InfoBackendResponse {}
 
+export interface MontlySummaryBackendResponse {
+  spentBTC: string,
+  spentFiat: string,
+  serviceFeeBTC: string,
+  serviceFeeFiat: string
+}
+
 export interface Init2faBackendResponse {
   qrCodeUrl: string
 }
