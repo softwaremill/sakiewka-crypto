@@ -2,7 +2,7 @@ import ethAbi from 'ethereumjs-abi'
 import ethUtil from 'ethereumjs-util'
 
 import { base58ToHDNode } from './bitcoin'
-const OnlyDigits = /^\d+$/
+const OnlyDigits = /^[1-9]+\d*$/
 
 export const createETHOperationHash = (
   address: string, value: string, data: string, expireBlock: number, contractNonce: number
