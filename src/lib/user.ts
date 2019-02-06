@@ -5,7 +5,7 @@ import {
   init2fa as init2faBackend,
   login as loginBackend,
   register as registerBackend,
-  monthlySummary as monthlySummaryBackend
+  monthlySummary as monthlySummaryBackend,
   verifyEmail as verifyEmailBackend,
   resendVerificationEmail as resendVerificationEmailBackend
 } from './backend-api'
