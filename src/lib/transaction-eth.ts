@@ -12,7 +12,7 @@ import {
 } from './ethereum'
 
 export const sendETH = async (
-  prvKey: string, toAddress: string, value: number, data: string, withdrawalId: string
+  prvKey: string, toAddress: string, value: string, data: string, withdrawalId: string
 ) => {
   const { contractNonce, currentBlock } = await getNextNonce()
   const expireBlock = hourFromNow(currentBlock)
@@ -22,7 +22,7 @@ export const sendETH = async (
 }
 
 export const sendTokens = async (
-  prvKey: string, toAddress: string, contractAddress: string, value: number, withdrawalId: string
+  prvKey: string, toAddress: string, contractAddress: string, value: string, withdrawalId: string
 ) => {
   const { contractNonce, currentBlock } = await getNextNonce()
   const expireBlock = hourFromNow(currentBlock)
@@ -32,7 +32,7 @@ export const sendTokens = async (
 }
 
 export const signTokenTransaction = (
-  toAddress: string, value: number, contractAddress: string, expiryDate: number,
+  toAddress: string, value: string, contractAddress: string, expiryDate: number,
   contractNonce: number, ethPrvKey: string
 ): Signature => {
   const operationHash = createTokenOperationHash(toAddress, value, contractAddress, expiryDate, contractNonce)
@@ -45,7 +45,7 @@ export const signTokenTransaction = (
 }
 
 export const signETHTransaction = (
-  toAddress: string, value: number, data: string, expiryDate: number,
+  toAddress: string, value: string, data: string, expiryDate: number,
   contractNonce: number, ethPrvKey: string
 ): Signature => {
   const operationHash = createETHOperationHash(toAddress, value, data, expiryDate, contractNonce)

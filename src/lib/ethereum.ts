@@ -2,11 +2,12 @@ import ethAbi from 'ethereumjs-abi'
 import ethUtil from 'ethereumjs-util'
 
 import { base58ToHDNode } from './bitcoin'
+const OnlyDigits = /^\d+$/
 
 export const createETHOperationHash = (
-  address: string, value: number, data: string, expireBlock: number, contractNonce: number
+  address: string, value: string, data: string, expireBlock: number, contractNonce: number
 ) => {
-  if (!Number.isInteger(value)) {
+  if (!OnlyDigits.test(value)) {
     throw new Error("Value was not an integer!")
   }
   return ethUtil.bufferToHex(
@@ -25,9 +26,9 @@ export const createETHOperationHash = (
 }
 
 export const createTokenOperationHash = (
-  address: string, value: number, contractAddress: string, expireBlock: number, contractNonce: number
+  address: string, value: string, contractAddress: string, expireBlock: number, contractNonce: number
 ) => {
-  if (!Number.isInteger(value)) {
+  if (!OnlyDigits.test(value)) {
     throw new Error("Value was not an integer!")
   }
   return ethUtil.bufferToHex(
