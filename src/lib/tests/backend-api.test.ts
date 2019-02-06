@@ -374,3 +374,33 @@ describe('maxTransferAmount', () => {
     expect(params.headers.Authorization).to.eq('testToken')
   })
 })
+
+describe('verifyEmail', () => {
+  it('should exist', () => {
+    expect(api.verifyEmail).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    await api.verifyEmail('testCode', 'testEmail')
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    expect(url).to.eq('backurl/api/v1/user/verify?code=testCode&email=testEmail')
+    expect(params.method).to.eq('GET')
+  })
+})
+
+describe('resendVerificationEmail', () => {
+  it('should exist', () => {
+    expect(api.resendVerificationEmail).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    await api.resendVerificationEmail('testEmail')
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    expect(url).to.eq('backurl/api/v1/user/resend-verification')
+    expect(params.method).to.eq('POST')
+    const reqBody = JSON.parse(params.body)
+    expect(reqBody.email).to.eq('testEmail')    
+  })
+})
