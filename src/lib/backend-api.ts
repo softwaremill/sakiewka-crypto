@@ -109,7 +109,7 @@ export const monthlySummary = async (token: string, month: number, year: number,
     }
   }
 
-  const response = await request(`${getBackendApiUrl()}/user/summary/${month}/${year}/${fiatCurrency}`, options)
+  const response = await request(`${getBackendApiUrl()}/user/monthly-summary/${month}/${year}/${fiatCurrency}`, options)
   return response.data
 }
 
