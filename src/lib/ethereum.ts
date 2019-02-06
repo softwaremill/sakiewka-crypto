@@ -6,6 +6,9 @@ import { base58ToHDNode } from './bitcoin'
 export const createETHOperationHash = (
   address: string, value: number, data: string, expireBlock: number, contractNonce: number
 ) => {
+  if (!Number.isInteger(value)) {
+    throw new Error("Value was not an integer!")
+  }
   return ethUtil.bufferToHex(
     ethAbi.soliditySHA3(
       ['string', 'address', 'uint', 'string', 'uint', 'uint'],
@@ -24,6 +27,9 @@ export const createETHOperationHash = (
 export const createTokenOperationHash = (
   address: string, value: number, contractAddress: string, expireBlock: number, contractNonce: number
 ) => {
+  if (!Number.isInteger(value)) {
+    throw new Error("Value was not an integer!")
+  }
   return ethUtil.bufferToHex(
     ethAbi.soliditySHA3(
       ['string', 'address', 'uint', 'address', 'uint', 'uint'],
@@ -42,15 +48,15 @@ export const createTokenOperationHash = (
 export const createGenericOperationHash = (
   types: string[], values: any[]
 ) => {
-return ethUtil.bufferToHex(
-      ethAbi.soliditySHA3(
-          types,
-          values.map((elem: any, index: number) => {
-            if (types[index] === 'address') {
-              return new ethUtil.BN(elem.toString(), 16)
-            } else return elem
-          })
-      )
+  return ethUtil.bufferToHex(
+    ethAbi.soliditySHA3(
+      types,
+      values.map((elem: any, index: number) => {
+        if (types[index] === 'address') {
+          return new ethUtil.BN(elem.toString(), 16)
+        } else return elem
+      })
+    )
   )
 }
 
