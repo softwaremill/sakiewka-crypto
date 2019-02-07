@@ -119,9 +119,9 @@ describe('sign Tokens', () => {
     const address = '0xa378869a5009b131Ef9c0b300f4049F7bB7091e6'
     const tokenAddress = '0x208556478db204a13ff96b3ae2e808c70eabab7e'
 
-    const resposne = await transaction.signTokenTransaction(address, "200", tokenAddress, 123, 5556, prvKey)
+    const response = await transaction.signTokenTransaction(address, "200", tokenAddress, 123, 5556, prvKey)
 
-    expect(resposne.signature).to.be.eq("0xf6c58e9c7a715b9a86f91582dc6926df52539bdd9943c82a2f34bd4a1801ac4519e85bf1350b8afff849a193b1517544792fbc4f5916cab7563669d918b3758e1b")
+    expect(response.signature).to.be.eq("0xf6c58e9c7a715b9a86f91582dc6926df52539bdd9943c82a2f34bd4a1801ac4519e85bf1350b8afff849a193b1517544792fbc4f5916cab7563669d918b3758e1b")
   })
 
   it('should not accept value with trailing zeros passed as a string', async () => {
@@ -146,9 +146,9 @@ describe('sign eth transaction', () => {
   it('should sign tokens transaction', async () => {
     const address = '0xa378869a5009b131Ef9c0b300f4049F7bB7091e6'
 
-    const resposne = await transaction.signETHTransaction(address, "200", "0x1", 123, 5556, prvKey)
+    const response = await transaction.signETHTransaction(address, "200", "0x1", 123, 5556, prvKey)
 
-    expect(resposne.signature).to.be.eq("0xf189aa0ff881a8f27c00ab8a9ee355b4e137e5941b3a0645bd35de94cb39ed6935ebc557fa14fc681d24b4651678ac4fac83d6c94ca7e2d4cce141baadbadad21c")
+    expect(response.signature).to.be.eq("0xf189aa0ff881a8f27c00ab8a9ee355b4e137e5941b3a0645bd35de94cb39ed6935ebc557fa14fc681d24b4651678ac4fac83d6c94ca7e2d4cce141baadbadad21c")
   })
 
   it('should not accept value with trailing zeros passed as a string', async () => {
