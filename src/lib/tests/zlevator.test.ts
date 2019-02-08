@@ -39,7 +39,7 @@ describe('sendETH', () => {
 
   it('should send proper request', async () => {
     const withdrawId = uuid()
-    await api.sendETH('addr', 111, 2451, '098', 'data', 'signature', withdrawId)
+    await api.sendETH('addr', "111", 2451, '098', 'data', 'signature', withdrawId)
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
@@ -62,7 +62,7 @@ describe('sendTokens', () => {
 
   it('should send proper request', async () => {
     const withdrawId = uuid()
-    await api.sendTokens('addr', 111, 2451, '098', 'signature', 'contract', withdrawId)
+    await api.sendTokens('addr', "111", 2451, '098', 'signature', 'contract', withdrawId)
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
