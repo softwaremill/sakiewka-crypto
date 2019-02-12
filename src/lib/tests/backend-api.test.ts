@@ -107,7 +107,7 @@ describe('register', () => {
   })
 
   it('should send proper request', async () => {
-    await api.register('a', 'b')
+    await api.register('a')
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
@@ -115,7 +115,6 @@ describe('register', () => {
     expect(url).to.eq('backurl/api/v1/user/register')
     expect(params.method).to.eq('POST')
     expect(reqBody.email).to.eq('a')
-    expect(reqBody.password).to.eq('b')
   })
 })
 
@@ -375,32 +374,19 @@ describe('maxTransferAmount', () => {
   })
 })
 
-describe('verifyEmail', () => {
+describe('setupPassword', () => {
   it('should exist', () => {
-    expect(api.verifyEmail).to.be.a('function')
+    expect(api.setupPassword).to.be.a('function')
   })
 
   it('should send proper request', async () => {
-    await api.verifyEmail('testCode', 'testEmail')
+    await api.setupPassword('testToken', 'secret')
 
     const [url, params] = mockImplementation.mock.calls[0]
-    expect(url).to.eq('backurl/api/v1/user/verify?code=testCode&email=testEmail')
-    expect(params.method).to.eq('GET')
-  })
-})
-
-describe('resendVerificationEmail', () => {
-  it('should exist', () => {
-    expect(api.resendVerificationEmail).to.be.a('function')
-  })
-
-  it('should send proper request', async () => {
-    await api.resendVerificationEmail('testEmail')
-
-    const [url, params] = mockImplementation.mock.calls[0]
-    expect(url).to.eq('backurl/api/v1/user/resend-verification')
-    expect(params.method).to.eq('POST')
     const reqBody = JSON.parse(params.body)
-    expect(reqBody.email).to.eq('testEmail')    
+    expect(url).to.eq('backurl/api/v1/user/setup-password')
+    expect(params.method).to.eq('POST')
+    expect(params.headers.Authorization).to.eq('testToken')
+    expect(reqBody.password).to.eq("secret")
   })
 })
