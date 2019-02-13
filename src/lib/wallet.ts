@@ -16,7 +16,7 @@ import {
   MaxTransferAmountParams
 } from 'response'
 import { satoshiToBtc } from './utils/helpers'
-import {generateBackupPdfBase64} from './pdfgen'
+import { generateBackupPdfBase64 } from './pdfgen'
 
 export const createWallet = async (userToken: string, params: WalletParams): Promise<any> => {
   const userKeyPair = params.userPubKey ?
@@ -38,12 +38,24 @@ export const createWallet = async (userToken: string, params: WalletParams): Pro
     backupPrvKey: encryptedBackupKeyPair.prvKey
   }
 
-  const pdfPromise = generateBackupPdfBase64("", "", "", "")
-  const backendPromise = createWalletBackend(userToken, <CreateWalletBackendParams> backendRequestParams)
+  // TODO-Darek fix this shit
+  const pdfPromise = generateBackupPdfBase64(
+    backendRequestParams.userPrvKey || '',
+    backendRequestParams.backupPrvKey || '',
+    'service public key',
+    'encrypted password'
+  )
+  const backendPromise = createWalletBackend(userToken, <CreateWalletBackendParams>backendRequestParams)
+
+  backendPromise.then((value) => {
+    value.servicePubKey
+  }, (reject) => {
+
+  })
 
   const [pdf, response] = await Promise.all([pdfPromise, backendPromise])
 
-  return {...response, pdf: pdf}
+  return { ...response, pdf }
 }
 
 export const getWallet = (
@@ -63,12 +75,15 @@ export const listUnspents = (
 ) => {
   const params = {
     feeRate,
-    recipients: recipients.map(r => <ReceipientsBackend>({ address: r.address, amount: satoshiToBtc(r.amount).toString() }))
+    recipients: recipients.map((r: Recipient) => <ReceipientsBackend>({
+      address: r.address,
+      amount: satoshiToBtc(r.amount).toString()
+    }))
   }
   return listUnspentsBackend(token, walletId, <GetUtxosBackendParams>params)
 }
 
-export const maxTransferAmount = (token, walletId: string, feeRate: string, recipient: string) => {
+export const maxTransferAmount = (token: string, walletId: string, feeRate: string, recipient: string) => {
   const params: MaxTransferAmountParams = {
     recipient,
     feeRate
