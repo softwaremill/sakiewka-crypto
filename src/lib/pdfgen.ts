@@ -18,16 +18,34 @@ export const generateBackupPdfBase64 = async (userPrivateKey: string, backupPriv
 
 const generateBackupPdf = async (userPrivateKey: string, backupPrivateKey: string, servicePublicKey: string, encryptedPassword: string): Promise<PDFKit.PDFDocument> => {
   const doc = new PDFDocument()
-  const start = 130
+  const date = new Date()
+  const start = 140
+  const imageHeight = 50
+  const qrOffset = 40
 
-  printFlash(doc, 'Print this page or keep it securely offline!', 0, 0)
+  doc.image(
+    '/Users/darek/bitbay/sakiewka-crypto/src/lib/resources/bitbay-rgb.png',
+    doc.page.margins.left,
+    (doc.page.margins.top + imageHeight) / 2,
+    { height: imageHeight }
+  )
+    .fontSize(24)
+    .text('Key Card', doc.page.width / 2, doc.page.margins.top, { align: 'right' })
+
+  doc.fontSize(10).fill('#7a7a7a')
+    .text(`Generated at ${date.toDateString()} for Wallet named: `, doc.page.margins.left, doc.page.margins.top + 40, { lineBreak: false })
+    .font('Helvetica-Bold')
+    .text('My Wallet 123')
+    .font('Helvetica')
+
+  printFlash(doc, 'Print this page or keep it securely offline. See second page for FAQ', 0, 65)
 
   await drawDataBox(doc, {
     header: 'A: User Key',
     description: 'This is your password-encrypted private key',
     data: userPrivateKey,
     x: doc.page.margins.left,
-    y: start
+    y: start + qrOffset
   })
 
   await drawDataBox(doc, {
@@ -35,7 +53,7 @@ const generateBackupPdf = async (userPrivateKey: string, backupPrivateKey: strin
     description: 'This is your password-encrypted backup private key',
     data: backupPrivateKey,
     x: doc.page.margins.left,
-    y: start * 2 + 20
+    y: start * 2 + 20 + qrOffset
   })
 
   await drawDataBox(doc, {
@@ -43,7 +61,7 @@ const generateBackupPdf = async (userPrivateKey: string, backupPrivateKey: strin
     description: 'This is the public part of the key the service will use to co-sign transactions with you on Your wallet',
     data: servicePublicKey,
     x: doc.page.margins.left,
-    y: start * 3 + 40
+    y: start * 3 + 40 + qrOffset
   })
 
   // await drawDataBox(doc, {
@@ -54,9 +72,7 @@ const generateBackupPdf = async (userPrivateKey: string, backupPrivateKey: strin
   //   y: start * 4 + 60
   // })
 
-  doc.addPage({
-    margin: 25
-  })
+  doc.addPage()
   addTitle(doc, 'KeyCard FAQ')
   addParagraph(
     doc,
@@ -123,15 +139,15 @@ const generateBackupPdf = async (userPrivateKey: string, backupPrivateKey: strin
 }
 
 const addTitle = (doc: PDFKit.PDFDocument, title: string) => {
-  doc.fontSize(22).text(title)
+  doc.fontSize(20).text(title)
 }
 
 const addParagraph = (doc: PDFKit.PDFDocument, title: string, ...contents: string[]) => {
-  doc.fontSize(16)
+  doc.fontSize(12)
     .moveDown()
     .fill('#000')
     .text(title)
-    .fontSize(12)
+    .fontSize(10)
     .fill('#3a3a3a')
 
   contents.forEach((content: string) => {
@@ -141,11 +157,13 @@ const addParagraph = (doc: PDFKit.PDFDocument, title: string, ...contents: strin
 
 const printFlash = (doc: PDFKit.PDFDocument, message: string, x: number, y: number) => {
   doc.save()
-  doc.rect(doc.page.margins.left, doc.page.margins.top, doc.page.width - doc.page.margins.right - doc.page.margins.left, 20)
+  doc.rect(doc.page.margins.left + x, doc.page.margins.top + y, doc.page.width - doc.page.margins.right - doc.page.margins.left, 25)
 
-  doc.fillAndStroke('#faa', '#f55')
+  // doc.fillAndStroke('#faa', '#f55')
+  doc.fill('#ffe4dd')
   doc.restore()
-  doc.fontSize(10).fill('#000').text(message, doc.page.margins.left, doc.page.margins.top + 6, { align: 'center' }) // x has to be specified, otherwise align option is not used
+  doc.fontSize(10).fill('#ff1c23').text(message, doc.page.margins.left + x, doc.page.margins.top + 8 + y, { align: 'center' }) // x has to be specified, otherwise align option is not used
+    .fill('#000')
 }
 
 const drawDataBox = async (doc: PDFKit.PDFDocument, data: DataBoxConfig): Promise<PDFKit.PDFDocument> => {
