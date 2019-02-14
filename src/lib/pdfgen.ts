@@ -48,7 +48,7 @@ const generateBackupPdf = async (walletName: string, userPrivateKey: string, bac
   const imageHeight = 50
   const qrOffset = 50
 
-  addLogo(doc, '/Users/darek/bitbay/sakiewka-crypto/src/lib/resources/bitbay-rgb.png', imageHeight)
+  addLogo(doc, './resources/bitbay-rgb.png', imageHeight)
   addGeneratedAt(doc, walletName)
   printFlash(doc, 'Print this page or keep it securely offline. See second page for FAQ', 0, 70)
 
@@ -151,7 +151,8 @@ const generateBackupPdf = async (walletName: string, userPrivateKey: string, bac
 }
 
 const addLogo = (doc: PDFKit.PDFDocument, src: string, imageHeight: number) => {
-  doc.image(src, doc.page.margins.left, (doc.page.margins.top + imageHeight) / 2, { height: imageHeight })
+  const path = `${__dirname}/${src}`
+  doc.image(path, doc.page.margins.left, (doc.page.margins.top + imageHeight) / 2, { height: imageHeight })
     .fontSize(fontSizes.DOCUMENT_TITLE)
     .text('Key Card', { align: 'right' })
 }
