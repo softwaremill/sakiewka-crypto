@@ -11,9 +11,7 @@ import {
 import { deriveKeyPair, encryptKeyPair, generateNewKeyPair } from './key'
 import { CreateWalletBackendParams, GetUtxosBackendParams, MaxTransferAmountParams, ReceipientsBackend } from 'response'
 import { satoshiToBtc } from './utils/helpers'
-import { KeyCardPdf } from './keycard-pdf'
-
-const cardPdf = new KeyCardPdf('./resources/sml-logo.png')
+import { generatePdf } from './keycard-pdf'
 
 export const createWallet = async (userToken: string, params: WalletParams): Promise<any> => {
   const userKeyPair = params.userPubKey ?
@@ -34,15 +32,16 @@ export const createWallet = async (userToken: string, params: WalletParams): Pro
     backupPubKey: encryptedBackupKeyPair.pubKey,
     backupPrvKey: encryptedBackupKeyPair.prvKey
   }
-  const backendResponse = await createWalletBackend(userToken, <CreateWalletBackendParams>backendRequestParams)
-  const pdfCard = cardPdf.generate(
+  const response = await createWalletBackend(userToken, <CreateWalletBackendParams>backendRequestParams)
+  const pdf = await generatePdf(
     params.name,
     backendRequestParams.userPrvKey || '',
     backendRequestParams.backupPrvKey || '',
-    backendResponse.servicePubKey
+    response.servicePubKey,
+    './resources/sml-logo.png'
   )
 
-  return { ...backendResponse, pdfCard }
+  return { ...response, pdf }
 }
 
 export const getWallet = (
