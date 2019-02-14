@@ -4,7 +4,7 @@ import * as wallet from '../wallet'
 import * as backendApi from '../backend-api'
 import BigNumber from "bignumber.js";
 import chaiBigNumber from 'chai-bignumber'
-import * as pdfGen from '../pdfgen'
+import * as pdfGen from '../keycard-pdf'
 
 beforeEach(() => {
   use(chaiBigNumber(BigNumber))

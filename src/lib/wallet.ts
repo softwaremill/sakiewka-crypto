@@ -1,22 +1,19 @@
-import { WalletParams, Recipient } from '../types/domain'
+import { Recipient, WalletParams } from '../types/domain'
 import { ROOT_DERIVATION_PATH } from './constants'
 import {
   createWallet as createWalletBackend,
   getWallet as getWalletBackend,
-  listWallets as listWaletsBackend,
   getWalletBalance as getWalletBalanceBackend,
   listUnspents as listUnspentsBackend,
+  listWallets as listWaletsBackend,
   maxTransferAmount as maxTransferAmountBackend
 } from './backend-api'
-import { deriveKeyPair, generateNewKeyPair, encryptKeyPair } from './key'
-import {
-  CreateWalletBackendParams,
-  GetUtxosBackendParams,
-  ReceipientsBackend,
-  MaxTransferAmountParams
-} from 'response'
+import { deriveKeyPair, encryptKeyPair, generateNewKeyPair } from './key'
+import { CreateWalletBackendParams, GetUtxosBackendParams, MaxTransferAmountParams, ReceipientsBackend } from 'response'
 import { satoshiToBtc } from './utils/helpers'
-import { generateBackupPdfBase64 } from './pdfgen'
+import { KeyCardPdf } from './keycard-pdf'
+
+const cardPdf = new KeyCardPdf('./resource/bitbay.png')
 
 export const createWallet = async (userToken: string, params: WalletParams): Promise<any> => {
   const userKeyPair = params.userPubKey ?
@@ -37,25 +34,15 @@ export const createWallet = async (userToken: string, params: WalletParams): Pro
     backupPubKey: encryptedBackupKeyPair.pubKey,
     backupPrvKey: encryptedBackupKeyPair.prvKey
   }
-
-  const pdfPromise = generateBackupPdfBase64(
+  const backendResponse = await createWalletBackend(userToken, <CreateWalletBackendParams>backendRequestParams)
+  const pdfCard = cardPdf.generate(
     params.name,
     backendRequestParams.userPrvKey || '',
     backendRequestParams.backupPrvKey || '',
-    'service public key',
-    'encrypted password'
+    backendResponse.servicePubKey
   )
-  const backendPromise = createWalletBackend(userToken, <CreateWalletBackendParams>backendRequestParams)
 
-  backendPromise.then((value) => {
-    value.servicePubKey
-  }, (reject) => {
-
-  })
-
-  const [pdf, response] = await Promise.all([pdfPromise, backendPromise])
-
-  return { ...response, pdf }
+  return { ...backendResponse, pdfCard }
 }
 
 export const getWallet = (
