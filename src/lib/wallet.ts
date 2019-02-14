@@ -13,7 +13,7 @@ import { CreateWalletBackendParams, GetUtxosBackendParams, MaxTransferAmountPara
 import { satoshiToBtc } from './utils/helpers'
 import { KeyCardPdf } from './keycard-pdf'
 
-const cardPdf = new KeyCardPdf('./resource/bitbay.png')
+const cardPdf = new KeyCardPdf('./resources/sml-logo.png')
 
 export const createWallet = async (userToken: string, params: WalletParams): Promise<any> => {
   const userKeyPair = params.userPubKey ?

@@ -32,7 +32,7 @@ export class KeyCardPdf {
   private logoPath: string
 
   constructor(logoPath?: string) {
-    this.logoPath = logoPath || './resources/bitbay.png'
+    this.logoPath = logoPath || './resources/sml-logo.png'
   }
 
   generate = async (walletName: string, userPrivateKey: string, backupPrivateKey: string, servicePublicKey: string): Promise<string> => {
@@ -52,7 +52,7 @@ export class KeyCardPdf {
     doc.registerFont(fonts.REGULAR_FONT, 'Helvetica')
     doc.registerFont(fonts.STRONG_FONT, 'Helvetica-Bold')
     const start = 140
-    const imageHeight = 50
+    const imageHeight = 15
     const qrOffset = 50
 
     this.addLogo(doc, this.logoPath, imageHeight)
@@ -97,7 +97,7 @@ export class KeyCardPdf {
       doc,
       'What is the Key Card?',
       'The KeyCard contains important information which can be used to recover the Bitcoin ' +
-      'from your Wallet in several situations. Each BitBay Wallet has its own, unique KeyCard. ' +
+      'from your Wallet in several situations. Each SoftwareMill Wallet has its own, unique KeyCard. ' +
       'If you have created multiple Wallets, you should retain the KeyCard for each of them.'
     )
 
@@ -116,7 +116,7 @@ export class KeyCardPdf {
       doc,
       'What should I do if I lose it?',
       'If you have lost or damaged all copies of your KeyCard, your Bitcoin is still safe, but this Wallet ' +
-      'should be considered at risk for loss. As soon as is convenient, you should use BitBay to empty the ' +
+      'should be considered at risk for loss. As soon as is convenient, you should use SoftwareMill to empty the ' +
       'Wallet into a new Wallet, and discontinue use of the old Wallet.'
     )
 
@@ -124,7 +124,7 @@ export class KeyCardPdf {
       doc,
       'What if someone sees my KeyCard?',
       'Don\'t panic! All sensitive information on the KeyCard is encrypted with your passcode, or with a key ' +
-      'which only BitBay has. But, in general, you should make best efforts to keep your KeyCard private. ' +
+      'which only SoftwareMill has. But, in general, you should make best efforts to keep your KeyCard private. ' +
       'If your KeyCard does get exposed or copied in a way that makes you uncomfortable, the best course of action ' +
       'is to empty the corresponding Wallet into another Wallet and discontinue use of the old Wallet.'
     )
@@ -132,22 +132,22 @@ export class KeyCardPdf {
     this.addParagraph(
       doc,
       'What if I forget or lose my Wallet password?',
-      'BitBay can use the information in QR Code D to help you recover access to your Wallet. Without the KeyCard, ' +
-      'BitBay is not able to recover funds from a Wallet with a lost password.'
+      'SoftwareMill can use the information in QR Code D to help you recover access to your Wallet. Without the KeyCard, ' +
+      'SoftwareMill is not able to recover funds from a Wallet with a lost password.'
     )
 
     this.addParagraph(
       doc,
-      'What if BitBay becomes inaccessible for an extended period?',
-      'Your KeyCard and Wallet passcode can be used together with BitBay’s published open source tools at ' +
-      'https://github.com/bitbay to recover your Bitcoin. Note: You should never enter information from your ' +
-      'KeyCard into tools other than the tools BitBay has published, or your funds may be at risk for theft.'
+      'What if SoftwareMill becomes inaccessible for an extended period?',
+      'Your KeyCard and Wallet passcode can be used together with SoftwareMill’s published open source tools at ' +
+      'https://github.com/softwaremill to recover your Bitcoin. Note: You should never enter information from your ' +
+      'KeyCard into tools other than the tools SoftwareMill has published, or your funds may be at risk for theft.'
     )
 
     this.addParagraph(
       doc,
       'Should I write my Wallet password on my KeyCard?',
-      'No! BitBay’s multi-signature approach to security depends on there not being a single point ' +
+      'No! SoftwareMill’s multi-signature approach to security depends on there not being a single point ' +
       'of attack. But if your Wallet password is on your KeyCard, then anyone who gains access to your ' +
       'KeyCard will be able to steal your Bitcoin. We recommend keeping your Wallet password safe ' +
       'in a secure password manager such as LastPass, 1Password or KeePass.'
@@ -159,7 +159,7 @@ export class KeyCardPdf {
 
   private addLogo = (doc: PDFKit.PDFDocument, src: string, imageHeight: number) => {
     const path = `${__dirname}/${src}`
-    doc.image(path, doc.page.margins.left, (doc.page.margins.top + imageHeight) / 2, { height: imageHeight })
+    doc.image(path, doc.page.margins.left, doc.page.margins.top + imageHeight / 2, { height: imageHeight })
       .fontSize(fontSizes.DOCUMENT_TITLE)
       .text('Key Card', { align: 'right' })
   }
