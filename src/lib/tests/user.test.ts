@@ -120,11 +120,31 @@ describe('register', () => {
     // @ts-ignore
     api.register = mockImplementation
 
-    const password = 'b'
-    const res = await user.register('a', password)
+    const res = await user.register('a')
 
-    const [loginArg, passwordArg] = mockImplementation.mock.calls[0]
+    const [loginArg] = mockImplementation.mock.calls[0]
     expect(loginArg).to.eq('a')
+    expect(res).to.eq('backend response')
+  })
+})
+
+
+describe('setupPassword', () => {
+  it('should exist', () => {
+    expect(user.register).to.be.a('function')
+  })
+
+  it('should pass proper arguments to backend-api method and return result of its call', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    api.setupPassword = mockImplementation
+
+    const password = 'b'
+    const res = await user.setupPassword('testToken', password)
+
+    const [tokenArg, passwordArg] = mockImplementation.mock.calls[0]
+    expect(tokenArg).to.eq('testToken')
     expect(passwordArg).to.eq(hashPassword(password))
     expect(res).to.eq('backend response')
   })
@@ -145,45 +165,6 @@ describe('info', () => {
 
     const [token] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
-    expect(res).to.eq('backend response')
-  })
-})
-
-describe('verifyEmail', () => {
-  it('should exist', () => {
-    expect(user.verifyEmail).to.be.a('function')
-  })
-
-  it('should pass proper arguments to backend-api method and return result of its call', async () => {
-    // @ts-ignore
-    const mockImplementation = jest.fn(() => 'backend response')
-    // @ts-ignore
-    api.verifyEmail = mockImplementation
-
-    const res = await user.verifyEmail('testCode', 'testEmail')
-
-    const [code, email] = mockImplementation.mock.calls[0]
-    expect(code).to.eq('testCode')
-    expect(email).to.eq('testEmail')
-    expect(res).to.eq('backend response')
-  })
-})
-
-describe('resendVerificationEmail', () => {
-  it('should exist', () => {
-    expect(user.resendVerificationEmail).to.be.a('function')
-  })
-
-  it('should pass proper arguments to backend-api method and return result of its call', async () => {
-    // @ts-ignore
-    const mockImplementation = jest.fn(() => 'backend response')
-    // @ts-ignore
-    api.resendVerificationEmail = mockImplementation
-
-    const res = await user.resendVerificationEmail('testEmail')
-
-    const [email] = mockImplementation.mock.calls[0]
-    expect(email).to.eq('testEmail')
     expect(res).to.eq('backend response')
   })
 })

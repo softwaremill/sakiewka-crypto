@@ -6,6 +6,8 @@ export interface LoginBackendResponse {
 
 export interface RegisterBackendResponse {}
 
+export interface SetupPasswordBackendResponse {}
+
 export interface InfoBackendResponse {}
 
 export interface MontlySummaryBackendResponse {

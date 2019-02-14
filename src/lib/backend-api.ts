@@ -19,7 +19,8 @@ import {
   GetUtxosBackendParams,
   MaxTransferAmountParams,
   MaxTransferAmountResponse,
-  MontlySummaryBackendResponse
+  MontlySummaryBackendResponse,
+  SetupPasswordBackendResponse
 } from 'response'
 import request from './utils/request'
 
@@ -76,16 +77,29 @@ export const disable2fa = async (token: string, password: string, code: number):
   return response.data
 }
 
-export const register = async (login: string, password: string): Promise<RegisterBackendResponse> => {
+export const register = async (login: string): Promise<RegisterBackendResponse> => {
   const options = {
     method: 'POST',
     body: JSON.stringify({
-      password,
       email: login
     })
   }
 
   const response = await request(`${getBackendApiUrl()}/user/register`, options)
+  return response.data
+}
+
+export const setupPassword = async (token: string, password: String): Promise<SetupPasswordBackendResponse> => {
+  const options = {
+    method: 'POST',
+    headers: {
+      Authorization: token
+    },
+    body: JSON.stringify({
+      password
+    })
+  }
+  const response = await request(`${getBackendApiUrl()}/user/setup-password`, options)
   return response.data
 }
 
@@ -291,22 +305,5 @@ export const maxTransferAmount = async (token: string, walletId: string, params:
   }
 
   const response = await request(`${getBackendApiUrl()}/btc/wallet/${walletId}/max-transfer-amount?recipient=${params.recipient}&feeRate=${params.feeRate}`, options)
-  return response.data
-}
-
-export const verifyEmail = async (code: string, email: String): Promise<void> => {
-  const options = {
-    method: 'GET'
-  }
-  const response = await request(`${getBackendApiUrl()}/user/verify?code=${code}&email=${email}`, options)
-  return response.data
-}
-
-export const resendVerificationEmail = async (email: String): Promise<void> => {
-  const options = {
-    method: 'POST',
-    body: JSON.stringify({email: email})
-  }
-  const response = await request(`${getBackendApiUrl()}/user/resend-verification`, options)
   return response.data
 }
