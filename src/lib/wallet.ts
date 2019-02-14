@@ -38,8 +38,8 @@ export const createWallet = async (userToken: string, params: WalletParams): Pro
     backupPrvKey: encryptedBackupKeyPair.prvKey
   }
 
-  // TODO-Darek fix this shit
   const pdfPromise = generateBackupPdfBase64(
+    params.name,
     backendRequestParams.userPrvKey || '',
     backendRequestParams.backupPrvKey || '',
     'service public key',
