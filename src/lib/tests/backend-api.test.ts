@@ -107,7 +107,7 @@ describe('register', () => {
   })
 
   it('should send proper request', async () => {
-    await api.register('a', 'b')
+    await api.register('a')
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
@@ -115,7 +115,6 @@ describe('register', () => {
     expect(url).to.eq('backurl/api/v1/user/register')
     expect(params.method).to.eq('POST')
     expect(reqBody.email).to.eq('a')
-    expect(reqBody.password).to.eq('b')
   })
 })
 
@@ -372,5 +371,22 @@ describe('maxTransferAmount', () => {
     expect(url).to.eq('backurl/api/v1/btc/wallet/testWalletId/max-transfer-amount?recipient=0x0&feeRate=22')
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
+  })
+})
+
+describe('setupPassword', () => {
+  it('should exist', () => {
+    expect(api.setupPassword).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    await api.setupPassword('testToken', 'secret')
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    const reqBody = JSON.parse(params.body)
+    expect(url).to.eq('backurl/api/v1/user/setup-password')
+    expect(params.method).to.eq('POST')
+    expect(params.headers.Authorization).to.eq('testToken')
+    expect(reqBody.password).to.eq("secret")
   })
 })

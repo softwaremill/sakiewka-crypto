@@ -120,11 +120,31 @@ describe('register', () => {
     // @ts-ignore
     api.register = mockImplementation
 
-    const password = 'b'
-    const res = await user.register('a', password)
+    const res = await user.register('a')
 
-    const [loginArg, passwordArg] = mockImplementation.mock.calls[0]
+    const [loginArg] = mockImplementation.mock.calls[0]
     expect(loginArg).to.eq('a')
+    expect(res).to.eq('backend response')
+  })
+})
+
+
+describe('setupPassword', () => {
+  it('should exist', () => {
+    expect(user.register).to.be.a('function')
+  })
+
+  it('should pass proper arguments to backend-api method and return result of its call', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    api.setupPassword = mockImplementation
+
+    const password = 'b'
+    const res = await user.setupPassword('testToken', password)
+
+    const [tokenArg, passwordArg] = mockImplementation.mock.calls[0]
+    expect(tokenArg).to.eq('testToken')
     expect(passwordArg).to.eq(hashPassword(password))
     expect(res).to.eq('backend response')
   })

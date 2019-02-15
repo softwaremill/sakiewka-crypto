@@ -18,7 +18,9 @@ import {
   RegisterBackendResponse,
   GetUtxosBackendParams,
   MaxTransferAmountParams,
-  MaxTransferAmountResponse
+  MaxTransferAmountResponse,
+  MontlySummaryBackendResponse,
+  SetupPasswordBackendResponse
 } from 'response'
 import request from './utils/request'
 
@@ -75,16 +77,29 @@ export const disable2fa = async (token: string, password: string, code: number):
   return response.data
 }
 
-export const register = async (login: string, password: string): Promise<RegisterBackendResponse> => {
+export const register = async (login: string): Promise<RegisterBackendResponse> => {
   const options = {
     method: 'POST',
     body: JSON.stringify({
-      password,
       email: login
     })
   }
 
   const response = await request(`${getBackendApiUrl()}/user/register`, options)
+  return response.data
+}
+
+export const setupPassword = async (token: string, password: String): Promise<SetupPasswordBackendResponse> => {
+  const options = {
+    method: 'POST',
+    headers: {
+      Authorization: token
+    },
+    body: JSON.stringify({
+      password
+    })
+  }
+  const response = await request(`${getBackendApiUrl()}/user/setup-password`, options)
   return response.data
 }
 
@@ -97,6 +112,18 @@ export const info = async (token: string): Promise<InfoBackendResponse> => {
   }
 
   const response = await request(`${getBackendApiUrl()}/user/info`, options)
+  return response.data
+}
+
+export const monthlySummary = async (token: string, month: number, year: number, fiatCurrency: number): Promise<MontlySummaryBackendResponse> => {
+  const options = {
+    method: 'GET',
+    headers: {
+      Authorization: token
+    }
+  }
+
+  const response = await request(`${getBackendApiUrl()}/user/monthly-summary/${month}/${year}/${fiatCurrency}`, options)
   return response.data
 }
 
@@ -269,7 +296,7 @@ export const getFeesRates = async (): Promise<GetFeesRates> => {
   return response.data
 }
 
-export const maxTransferAmount = async(token: string, walletId: string, params: MaxTransferAmountParams) : Promise<MaxTransferAmountResponse>=> {
+export const maxTransferAmount = async (token: string, walletId: string, params: MaxTransferAmountParams): Promise<MaxTransferAmountResponse> => {
   const options = {
     method: 'GET',
     headers: {

@@ -18,7 +18,7 @@ export const getNextNonce = async (): Promise<EthGetTransactionParamsResponse> =
 }
 
 export const sendETH = async (
-  address: string, value: number, expireBlock: number, contractNonce: string, data: string, signature: string,
+  address: string, value: string, expireBlock: number, contractNonce: string, data: string, signature: string,
   withdrawalId: string
 ): Promise<SendETHResponse> => {
   const options = {
@@ -30,7 +30,7 @@ export const sendETH = async (
       contractNonce,
       signature,
       data,
-      value: value.toString()
+      value
     })
   }
 
@@ -38,7 +38,7 @@ export const sendETH = async (
 }
 
 export const sendTokens = async (
-  address: string, value: number, expireBlock: number, contractNonce: string, signature: string, contractAddress: string,
+  address: string, value: string, expireBlock: number, contractNonce: string, signature: string, contractAddress: string,
   withdrawalId: string
 ): Promise<SendTokensResponse> => {
   const options = {
@@ -50,7 +50,7 @@ export const sendTokens = async (
       contractNonce,
       signature,
       contractAddress,
-      value: value.toString()
+      value
     })
   }
   return await request(`${getZlevatorUrl()}/withdraw/tokens`, options)
