@@ -4,7 +4,7 @@ import * as QRCode from 'qrcode'
 
 const QR_DATA_GAP = 15
 const QR_WIDTH = 128
-const DEFAULT_LOGO_PATH = './resources/sml-logo.png'
+const DEFAULT_LOGO_PATH = '../../resources/sml-logo.png'
 
 const colors = {
   REGULAR_COLOR: '#000',

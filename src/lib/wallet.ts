@@ -38,7 +38,7 @@ export const createWallet = async (userToken: string, params: WalletParams): Pro
     backendRequestParams.userPrvKey || '',
     backendRequestParams.backupPrvKey || '',
     response.servicePubKey,
-    './resources/sml-logo.png'
+    '../../resources/sml-logo.png'
   )
 
   return { ...response, pdf }
