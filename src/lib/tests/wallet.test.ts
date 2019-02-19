@@ -2,8 +2,9 @@ import { expect, use } from 'chai'
 
 import * as wallet from '../wallet'
 import * as backendApi from '../backend-api'
-import BigNumber from "bignumber.js";
+import BigNumber from 'bignumber.js'
 import chaiBigNumber from 'chai-bignumber'
+import * as pdfGen from '../keycard-pdf'
 
 beforeEach(() => {
   use(chaiBigNumber(BigNumber))
@@ -16,9 +17,13 @@ describe('createWallet', () => {
 
   it('should pass proper arguments to backend-api method and return result of its call', async () => {
     // @ts-ignore
-    const mockImplementation = jest.fn(() => 'backend response')
+    const mockImplementation = jest.fn(() => ({ servicePubKey: 'pubKey' }))
     // @ts-ignore
     backendApi.createWallet = mockImplementation
+    // @ts-ignore
+    const mockPdfGen = jest.fn(() => 'pdf')
+    // @ts-ignore
+    pdfGen.generatePdf = mockPdfGen
 
     const params = {
       passphrase: 'abcd',
@@ -34,7 +39,8 @@ describe('createWallet', () => {
     expect(backendRequestParams).to.haveOwnProperty('name')
     expect(backendRequestParams).to.haveOwnProperty('userPubKey')
     expect(backendRequestParams).to.haveOwnProperty('backupPubKey')
-    expect(result).to.eq('backend response')
+    expect(result.servicePubKey).to.eq('pubKey')
+    expect(result.pdf).to.eq('pdf')
 
     // check if sending encrypted xprvs
     expect(JSON.parse(backendRequestParams.userPrvKey)).to.haveOwnProperty('ct')
@@ -118,7 +124,10 @@ describe('listUnspents', () => {
     // @ts-ignore
     backendApi.listUnspents = mockImplementation
 
-    const res = await wallet.listUnspents('testToken', 'walletId', '2', [{ address: '0x1', amount: new BigNumber(123) }])
+    const res = await wallet.listUnspents('testToken', 'walletId', '2', [{
+      address: '0x1',
+      amount: new BigNumber(123)
+    }])
 
     const [token, walletId, { feeRate, recipients }] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')

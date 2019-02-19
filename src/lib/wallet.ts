@@ -1,21 +1,17 @@
-import { WalletParams, Recipient } from '../types/domain'
+import { Recipient, WalletParams } from '../types/domain'
 import { ROOT_DERIVATION_PATH } from './constants'
 import {
   createWallet as createWalletBackend,
   getWallet as getWalletBackend,
-  listWallets as listWaletsBackend,
   getWalletBalance as getWalletBalanceBackend,
   listUnspents as listUnspentsBackend,
+  listWallets as listWaletsBackend,
   maxTransferAmount as maxTransferAmountBackend
 } from './backend-api'
-import { deriveKeyPair, generateNewKeyPair, encryptKeyPair } from './key'
-import {
-  CreateWalletBackendParams,
-  GetUtxosBackendParams,
-  ReceipientsBackend,
-  MaxTransferAmountParams
-} from 'response'
+import { deriveKeyPair, encryptKeyPair, generateNewKeyPair } from './key'
+import { CreateWalletBackendParams, GetUtxosBackendParams, MaxTransferAmountParams, ReceipientsBackend } from 'response'
 import { satoshiToBtc } from './utils/helpers'
+import { generatePdf } from './keycard-pdf'
 
 export const createWallet = async (userToken: string, params: WalletParams): Promise<any> => {
   const userKeyPair = params.userPubKey ?
@@ -36,11 +32,16 @@ export const createWallet = async (userToken: string, params: WalletParams): Pro
     backupPubKey: encryptedBackupKeyPair.pubKey,
     backupPrvKey: encryptedBackupKeyPair.prvKey
   }
-
-  return createWalletBackend(
-    userToken,
-    <CreateWalletBackendParams>backendRequestParams
+  const response = await createWalletBackend(userToken, <CreateWalletBackendParams>backendRequestParams)
+  const pdf = await generatePdf(
+    params.name,
+    response.servicePubKey,
+    backendRequestParams.userPrvKey,
+    backendRequestParams.backupPrvKey,
+    '../../resources/sml-logo.png'
   )
+
+  return { ...response, pdf }
 }
 
 export const getWallet = (
@@ -60,12 +61,15 @@ export const listUnspents = (
 ) => {
   const params = {
     feeRate,
-    recipients: recipients.map(r => <ReceipientsBackend>({ address: r.address, amount: satoshiToBtc(r.amount).toString() }))
+    recipients: recipients.map((r: Recipient) => <ReceipientsBackend>({
+      address: r.address,
+      amount: satoshiToBtc(r.amount).toString()
+    }))
   }
   return listUnspentsBackend(token, walletId, <GetUtxosBackendParams>params)
 }
 
-export const maxTransferAmount = (token, walletId: string, feeRate: string, recipient: string) => {
+export const maxTransferAmount = (token: string, walletId: string, feeRate: string, recipient: string) => {
   const params: MaxTransferAmountParams = {
     recipient,
     feeRate

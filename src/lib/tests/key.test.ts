@@ -43,6 +43,18 @@ describe('generateNewKeyPair', () => {
     expect(result.prvKey).to.have.lengthOf(111)
     expect(result.pubKey.slice(0, 4)).to.eq('tpub')
   })
+
+  it('should return new regtest keyPair', () => {
+    // @ts-ignore
+    config.network = SUPPORTED_NETWORKS.regtest
+    const result = keyModule.generateNewKeyPair()
+
+    expect(result).to.haveOwnProperty('pubKey')
+    expect(result).to.haveOwnProperty('prvKey')
+    expect(result.pubKey).to.have.lengthOf(111)
+    expect(result.prvKey).to.have.lengthOf(111)
+    expect(result.pubKey.slice(0, 4)).to.eq('tpub')
+  })
 })
 
 describe('encryptKeyPair', () => {
