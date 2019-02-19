@@ -29,8 +29,8 @@ const fontSizes = {
   SMALL: 8
 }
 
-export const generatePdf = async (walletName: string, userPrivateKey: string, backupPrivateKey: string, servicePublicKey: string, logoPath?: string): Promise<string> => {
-  const doc = await generateBackupPdf(walletName, userPrivateKey, backupPrivateKey, servicePublicKey, logoPath)
+export const generatePdf = async (walletName: string, servicePublicKey: string, userPrivateKey?: string, backupPrivateKey?: string, logoPath?: string): Promise<string> => {
+  const doc = await generateBackupPdf(walletName, servicePublicKey, userPrivateKey, backupPrivateKey, logoPath)
   const stream = doc.pipe(new Base64Encode())
   let base64Pdf: string = ''
   stream.on('data', (data: string) => base64Pdf += data)
@@ -40,41 +40,52 @@ export const generatePdf = async (walletName: string, userPrivateKey: string, ba
   })
 }
 
-const generateBackupPdf = async (walletName: string, userPrivateKey: string, backupPrivateKey: string, servicePublicKey: string, logoPath?: string): Promise<PDFKit.PDFDocument> => {
+function* qrOffsetGenerator(spacing: number, offset: number): IterableIterator<number> {
+  let count: number = 0
+  while (true) {
+    yield spacing * count + offset
+    count = count + 1
+  }
+}
+
+const generateBackupPdf = async (walletName: string, servicePublicKey: string, userPrivateKey?: string, backupPrivateKey?: string, logoPath?: string): Promise<PDFKit.PDFDocument> => {
   const doc = new PDFDocument()
   doc.registerFont(fonts.MONOSPACE_FONT, 'Courier')
   doc.registerFont(fonts.REGULAR_FONT, 'Helvetica')
   doc.registerFont(fonts.STRONG_FONT, 'Helvetica-Bold')
-  const start = 140
   const imageHeight = 15
-  const qrOffset = 50
+  const imageOffset = qrOffsetGenerator(190, 190)
 
   addLogo(doc, logoPath || DEFAULT_LOGO_PATH, imageHeight)
   addGeneratedAt(doc, walletName)
   printFlash(doc, 'Print this page or keep it securely offline. See second page for FAQ', 0, 70)
 
-  await drawDataBox(doc, {
-    header: 'A: User Key',
-    description: 'This is your password-encrypted private key',
-    data: userPrivateKey,
-    x: doc.page.margins.left,
-    y: (start + qrOffset)
-  })
+  if (userPrivateKey) {
+    await drawDataBox(doc, {
+      header: 'A: User Key',
+      description: 'This is your password-encrypted private key',
+      data: userPrivateKey,
+      x: doc.page.margins.left,
+      y: imageOffset.next().value
+    })
+  }
 
-  await drawDataBox(doc, {
-    header: 'B: Backup Key',
-    description: 'This is your password-encrypted backup private key',
-    data: backupPrivateKey,
-    x: doc.page.margins.left,
-    y: 2 * (start + qrOffset)
-  })
+  if (backupPrivateKey) {
+    await drawDataBox(doc, {
+      header: 'B: Backup Key',
+      description: 'This is your password-encrypted backup private key',
+      data: backupPrivateKey,
+      x: doc.page.margins.left,
+      y: imageOffset.next().value
+    })
+  }
 
   await drawDataBox(doc, {
     header: 'C: Service Public Key',
     description: 'This is the public part of the key the service will use to co-sign transactions with you on Your wallet',
     data: servicePublicKey,
     x: doc.page.margins.left,
-    y: 3 * (start + qrOffset)
+    y: imageOffset.next().value
   })
 
   // await drawDataBox(doc, {

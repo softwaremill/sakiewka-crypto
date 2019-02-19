@@ -35,9 +35,9 @@ export const createWallet = async (userToken: string, params: WalletParams): Pro
   const response = await createWalletBackend(userToken, <CreateWalletBackendParams>backendRequestParams)
   const pdf = await generatePdf(
     params.name,
-    backendRequestParams.userPrvKey || '',
-    backendRequestParams.backupPrvKey || '',
     response.servicePubKey,
+    backendRequestParams.userPrvKey,
+    backendRequestParams.backupPrvKey,
     '../../resources/sml-logo.png'
   )
 
