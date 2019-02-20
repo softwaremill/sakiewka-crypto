@@ -7,7 +7,7 @@ String getGitCommitHash() {
 }
 
 def label = "node10-${UUID.randomUUID().toString()}"
-def serviceAccount = "icouhouse-jenkins"
+def serviceAccount = "jenkins"
 podTemplate(label: label, yaml: """
 apiVersion: v1
 kind: Pod
