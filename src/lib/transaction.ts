@@ -24,6 +24,7 @@ import BigNumber from "bignumber.js";
 import { btcToSatoshi, satoshiToBtc } from './utils/helpers'
 import { decrypt } from './crypto';
 import { ErrorResponse } from '../types/response'
+import { Errors } from './constants';
 
 const joinPath = (path: Path): string =>
   `${path.cosignerIndex}/${path.change}/${path.addressIndex}`
@@ -63,7 +64,7 @@ const xprivOrGetFromServer = async (userToken: string, wallet: GetWalletBackendR
   } else if (passphrase) {
     return await getUserXprvFromServer(wallet, userToken, passphrase)
   } else {
-    throw <ErrorResponse>({ message: "Password or xprv has to be specified!", code: 400 })
+    throw <ErrorResponse>({ errors: [Errors.XprivOrPasswordHasToBeSpecified], code: 400 })
   }
 }
 
@@ -75,10 +76,10 @@ const getUserXprvFromServer = async (wallet: GetWalletBackendResponse, userToken
     try {
       return decrypt(password, prvKey)
     } catch {
-      throw <ErrorResponse>({ message: "Incorrect passphrase", code: 400 })
+      throw <ErrorResponse>({ errors: [Errors.IncorrectPassphrase], code: 400 })
     }
   } else {
-    throw <ErrorResponse>({ message: "There is no private key on server!", code: 400 })
+    throw <ErrorResponse>({ errors: [Errors.NoPrivateKeyOnServer], code: 400 })
   }
 }
 

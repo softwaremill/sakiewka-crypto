@@ -1,5 +1,5 @@
 import nodeFetch, { Response } from 'node-fetch'
-import { ApiError } from '../../types/api'
+import { ApiError, ApiErrorDetails } from '../../types/api'
 import { ErrorResponse } from 'response';
 
 const parseResponse = async (response: Response): Promise<any> => {
@@ -7,21 +7,21 @@ const parseResponse = async (response: Response): Promise<any> => {
   if (contentType && contentType.includes('json')) {
     return response.json()
   }
-  return new Promise<any>((resolve)=>(resolve(null)));
+  return new Promise<any>((resolve) => (resolve(null)));
 }
 
-const parseError = async (response: Response): Promise<any> => {
+const parseError = async (response: Response): Promise<ApiErrorDetails[]> => {
   const contentType = response.headers.get('content-type')
   if (contentType && contentType.includes('json')) {
-    return response.json().then(res => {
-      const responseBody = (<ApiError>res)
-      return responseBody.error ? responseBody.error.message : responseBody
-    })
+    const json = await response.json()
+    const responseBody = (<ApiError>json)
+    return responseBody.errors
   }
   if (contentType && contentType.includes('text')) {
-    return response.text()
+    const text = await response.text()
+    return [<ApiErrorDetails>({ message: text, code: "SC-Unknown" })]
   }
-  return response.statusText
+  return [<ApiErrorDetails>({ message: response.statusText, code: "SC-Unknown" })]
 }
 
 const checkStatus = async (response: Response): Promise<Response> => {
@@ -29,8 +29,8 @@ const checkStatus = async (response: Response): Promise<Response> => {
     return response
   }
 
-  const message = await parseError(response)
-  throw <ErrorResponse>{ message: message, code: response.status }
+  const errors = await parseError(response)
+  throw <ErrorResponse>{ errors: errors, code: response.status }
 }
 
 export default function request(url: string, options: object): Promise<any> {

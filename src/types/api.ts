@@ -1,7 +1,10 @@
 export interface ApiError {
-  error: {
-    message: string
-  }
+  errors: ApiErrorDetails[]
+}
+
+export interface ApiErrorDetails {
+  message: string,
+  code: string
 }
 
 export interface RequestModel {

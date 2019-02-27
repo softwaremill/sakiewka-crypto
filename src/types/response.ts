@@ -128,8 +128,13 @@ export interface GetFeesRates {
 }
 
 export interface ErrorResponse {
-  message: String,
+  errors: ErrorDetails[],
   code: number
+}
+
+export interface ErrorDetails {
+  message: string,
+  code: string
 }
 
 export interface MaxTransferAmountParams {
