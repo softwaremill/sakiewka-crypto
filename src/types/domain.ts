@@ -25,6 +25,12 @@ export enum KeyType {
   BACKUP = "backup"
 }
 
+export enum TransferType {
+  INCOMING = "incoming",
+  OUTGOING = "outgoing",
+  OUTGOING_EXTERNAL = "outgoing_external"
+}
+
 export interface UTXO {
   txHash: string,
   n: number,
