@@ -139,7 +139,9 @@ export const listTransfers = async (token: string,
     }
   }
 
-  const queryString = `?walletId=${walletId}&limit=${limit}${nextPageToken ? '&nextPageToken=${nextPageToken}' : ''}`
+  const nextPageParam = nextPageToken ? `&nextPageToken=${nextPageToken}` : ''
+  const walletIdParam = walletId ? `&walletId=${walletId}` : ''
+  const queryString = `?limit=${limit}${nextPageParam}${walletIdParam}`
 
   const response = await request(`${getBackendApiUrl()}/transfers${queryString}`, options)
   return response.data
