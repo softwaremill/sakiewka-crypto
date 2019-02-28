@@ -1,6 +1,7 @@
 import nodeFetch, { Response } from 'node-fetch'
 import { ApiError, ApiErrorDetails } from '../../types/api'
 import { ErrorResponse } from 'response';
+import { INTERNAL_ERROR_CODE } from '../constants';
 
 const parseResponse = async (response: Response): Promise<any> => {
   const contentType = response.headers.get('content-type')
@@ -19,7 +20,7 @@ const parseError = async (response: Response): Promise<ApiErrorDetails[]> => {
   }
   if (contentType && contentType.includes('text')) {
     const text = await response.text()
-    return [<ApiErrorDetails>({ message: text, code: "SC-Unknown" })]
+    return [<ApiErrorDetails>({ message: text, code: INTERNAL_ERROR_CODE })]
   }
   return [<ApiErrorDetails>({ message: response.statusText, code: "SC-Unknown" })]
 }

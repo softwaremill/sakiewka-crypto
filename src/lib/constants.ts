@@ -5,6 +5,8 @@ export const ROOT_DERIVATION_PATH = 'm/45\''
 
 export const BASE_API_PATH = 'api'
 
+export const INTERNAL_ERROR_CODE = 'SKC3'
+
 export const API_ERROR = {
   NOT_FOUND: {
     errors: [{ message: 'Not found', code: 'SKC1' }],
@@ -15,7 +17,7 @@ export const API_ERROR = {
     code: 500
   },
   BAD_REQUEST: {
-    errors: [{ message: 'Malformed request', code: 'SKC3' }],
+    errors: [{ message: 'Malformed request', code: INTERNAL_ERROR_CODE }],
     code: 400
   },
   XPRIV_OR_PASSWORD_REQUIRED:{
