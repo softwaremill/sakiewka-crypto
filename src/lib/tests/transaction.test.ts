@@ -5,7 +5,7 @@ import { generateNewKeyPair, deriveKey, deriveKeyPair } from '../key'
 import { generateNewMultisigAddress } from '../address'
 import { txFromHex, txBuilderFromTx } from '../bitcoin'
 import * as config from '../config'
-import { ROOT_DERIVATION_PATH, SUPPORTED_NETWORKS, Errors } from '../constants'
+import { ROOT_DERIVATION_PATH, SUPPORTED_NETWORKS, API_ERROR } from '../constants'
 import BigNumber from "bignumber.js";
 import chaiBigNumber from 'chai-bignumber'
 import chaiAsPromised from 'chai-as-promised'
@@ -133,7 +133,7 @@ describe('sendCoins', () => {
     }]);
     await expect(promise).to.eventually.be.rejected
       .and.have.property('errors')
-        .that.include(Errors.XprivOrPasswordHasToBeSpecified)
+        .that.include(API_ERROR.XPRIV_OR_PASSWORD_REQUIRED.errors[0])
   })
 
   it('should throw error when there is no private key on server', async () => {
@@ -176,7 +176,7 @@ describe('sendCoins', () => {
 
     await expect(promise).to.eventually.be.rejected
     .and.have.property('errors')
-      .that.include(Errors.NoPrivateKeyOnServer)
+      .that.include(API_ERROR.NO_PRIV_KEY_ON_SERVER.errors[0])
   })
 
   it('should get private key from server and decode it when password provided', async () => {
@@ -266,7 +266,7 @@ describe('sendCoins', () => {
     
     await expect(promise).to.eventually.be.rejected
       .and.have.property('errors')
-        .that.include(Errors.IncorrectPassphrase)
+        .that.include(API_ERROR.INCORRECT_PASSPHRASE.errors[0])
   })
 
     it('should send coins to testnet', async () => {
