@@ -7,27 +7,27 @@ export const BASE_API_PATH = 'api'
 
 export const API_ERROR = {
   NOT_FOUND: {
-    errors: [{ message: 'Not found' }],
+    errors: [{ message: 'Not found', code: 'SKC1' }],
     code: 404
   },
   SERVER_ERROR: {
-    errors: [{ message: 'Server error' }],
+    errors: [{ message: 'Server error', code: 'SKC2' }],
     code: 500
   },
   BAD_REQUEST: {
-    errors: [{ message: 'Malformed request' }],
+    errors: [{ message: 'Malformed request', code: 'SKC3' }],
     code: 400
   },
   XPRIV_OR_PASSWORD_REQUIRED:{
-    errors: [{message: 'Password or xprv has to be specified!', code: 'SKC1'}],
+    errors: [{message: 'Password or xprv has to be specified!', code: 'SKC4'}],
     code: 400
   },
   INCORRECT_PASSPHRASE:{
-    errors: [{message: 'Incorrect passphrase', code: 'SKC2'}],
+    errors: [{message: 'Incorrect passphrase', code: 'SKC5'}],
     code: 400
   },
   NO_PRIV_KEY_ON_SERVER: {
-    errors :[{message : 'There is no private key on server!', code: 'SKC3'}],
+    errors :[{message : 'There is no private key on server!', code: 'SKC6'}],
     code: 400
   }
 }
