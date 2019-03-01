@@ -30,7 +30,7 @@ const joinPath = (path: Path): string =>
 
 export const send = async (
   userToken: string, walletId: string, recipients: Recipient[], xprv?: string, passphrase?: string
-): Promise<void> => {
+): Promise<string> => {
   const { recommended } = await getFeesRates()
   const unspentsResponse = await listUnspents(userToken, walletId, recommended, recipients)
   const wallet = await getWallet(userToken, walletId)
@@ -38,7 +38,7 @@ export const send = async (
   const changeAddresResponse = await createNewAddress(userToken, walletId, true)
   const userXprv = await xprivOrGetFromServer(userToken, wallet, xprv, passphrase)
   const txHex = buildTxHex(unspentsResponse, recipients, userXprv, changeAddresResponse.address, pubKeys)
-  await sendTransaction(userToken, walletId, txHex)
+  return await sendTransaction(userToken, walletId, txHex)
 }
 
 const buildTxHex = (unspentsResponse: ListUnspentsBackendResponse, recipients: Recipient[], xprv: string, changeAddres: string, pubKeys: string[]): string => {

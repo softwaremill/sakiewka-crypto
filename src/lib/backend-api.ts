@@ -280,7 +280,7 @@ export const listUnspents = async (
 }
 
 // transaction
-export const sendTransaction = async (token: string, walletId: string, txHex: string): Promise<boolean> => {
+export const sendTransaction = async (token: string, walletId: string, txHex: string): Promise<string> => {
   const options = {
     method: 'POST',
     headers: {
