@@ -5,7 +5,6 @@ import {
   init2fa as init2faBackend,
   login as loginBackend,
   register as registerBackend,
-  monthlySummary as monthlySummaryBackend,
   setupPassword as setupPasswordBackend
 } from './backend-api'
 import { hashPassword } from './crypto';
@@ -24,10 +23,6 @@ export const setupPassword = (token: string, password: string) => {
 
 export const info = (token: string) => {
   return infoBackend(token)
-}
-
-export const monthlySummary = (token: string, month: number, year: number, fiatCurrency: number) => {
-  return monthlySummaryBackend(token, month, year, fiatCurrency)
 }
 
 export const init2fa = (token: string, password: string) => {

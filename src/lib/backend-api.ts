@@ -20,7 +20,8 @@ import {
   MaxTransferAmountParams,
   MaxTransferAmountResponse,
   MontlySummaryBackendResponse,
-  SetupPasswordBackendResponse
+  SetupPasswordBackendResponse,
+  ListTransfersBackendResponse
 } from 'response'
 import request from './utils/request'
 
@@ -124,6 +125,25 @@ export const monthlySummary = async (token: string, month: number, year: number,
   }
 
   const response = await request(`${getBackendApiUrl()}/transfers/monthly-summary/${month}/${year}/${fiatCurrency}`, options)
+  return response.data
+}
+
+export const listTransfers = async (token: string,
+                                    walletId: string,
+                                    limit: number,
+                                    nextPageToken?: string): Promise<ListTransfersBackendResponse> => {
+  const options = {
+    method: 'GET',
+    headers: {
+      Authorization: token
+    }
+  }
+
+  const nextPageParam = nextPageToken ? `&nextPageToken=${nextPageToken}` : ''
+  const walletIdParam = walletId ? `&walletId=${walletId}` : ''
+  const queryString = `?limit=${limit}${nextPageParam}${walletIdParam}`
+
+  const response = await request(`${getBackendApiUrl()}/transfers${queryString}`, options)
   return response.data
 }
 
@@ -260,7 +280,7 @@ export const listUnspents = async (
 }
 
 // transaction
-export const sendTransaction = async (token: string, walletId: string, txHex: string): Promise<boolean> => {
+export const sendTransaction = async (token: string, walletId: string, txHex: string): Promise<string> => {
   const options = {
     method: 'POST',
     headers: {

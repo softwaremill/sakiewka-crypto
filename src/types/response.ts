@@ -1,4 +1,4 @@
-import { UTXO, Key, Path, KeyType } from './domain'
+import { UTXO, Key, Path, KeyType, TransferType } from './domain'
 
 export interface LoginBackendResponse {
   token: string
@@ -15,6 +15,22 @@ export interface MontlySummaryBackendResponse {
   spentFiat: string,
   serviceFeeBTC: string,
   serviceFeeFiat: string
+}
+
+export interface ListTransfersBackendResponse {
+  transfers: TransferItemBackendResponse[],
+  nextPageToken?: string,
+  serviceFeeBTC: string,
+  serviceFeeFiat: string
+}
+
+export interface TransferItemBackendResponse {
+  walletId: string,
+  txHash: string,
+  spent: string,
+  serviceFee: string,
+  timestamp: number,
+  transferType : TransferType
 }
 
 export interface Init2faBackendResponse {
