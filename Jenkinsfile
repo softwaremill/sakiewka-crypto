@@ -32,6 +32,7 @@ spec:
                     sh """
                     set -e
                     npm ci
+                    npm run-script build
                     npm test
                     """
                 }

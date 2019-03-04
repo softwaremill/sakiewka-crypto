@@ -14,9 +14,7 @@ describe('request', () => {
     nodeFetch.default = jest.fn(() => {
       return Promise.resolve(new nodeFetch.Response(
         JSON.stringify({
-          error: {
-            message: 'test error'
-          }
+            errors: [{ message: 'test error', code: 'test code' }]
         }),
         { status: 500, statusText: '', headers: new nodeFetch.Headers({ "Content-type": "json" }) }
       ))
@@ -32,7 +30,8 @@ describe('request', () => {
       await request(`http://localhost:8081/api/v1/x`, options)
       fail("Error was not thrown")
     } catch (err) {
-      expect(err.message).to.eq('test error')
+      expect(err.errors[0].message).to.eq('test error')
+      expect(err.errors[0].code).to.eq('test code')
     }
   })
 
@@ -40,7 +39,7 @@ describe('request', () => {
     // @ts-ignore
     nodeFetch.default = jest.fn(() => {
       return Promise.resolve(new nodeFetch.Response('',
-        { status: 400, statusText: 'BadRequest'}
+        { status: 400, statusText: 'BadRequest' }
       ))
     })
 
@@ -54,7 +53,7 @@ describe('request', () => {
       await request(`http://localhost:8081/api/v1/x`, options)
       fail("Error was not thrown")
     } catch (err) {
-      expect(err.message).to.eq('BadRequest')
+      expect(err.errors[0].message).to.eq('BadRequest')
     }
   })
 
@@ -62,7 +61,7 @@ describe('request', () => {
     // @ts-ignore
     nodeFetch.default = jest.fn(() => {
       return Promise.resolve(new nodeFetch.Response("Something went wrong",
-        { status: 400, statusText: 'BadRequest',headers: new nodeFetch.Headers({ "Content-type": "text" })  }
+        { status: 400, statusText: 'BadRequest', headers: new nodeFetch.Headers({ "Content-type": "text" }) }
       ))
     })
 
@@ -76,7 +75,7 @@ describe('request', () => {
       await request(`http://localhost:8081/api/v1/x`, options)
       fail("Error was not thrown")
     } catch (err) {
-      expect(err.message).to.eq('Something went wrong')
+      expect(err.errors[0].message).to.eq('Something went wrong')
     }
   })
 })

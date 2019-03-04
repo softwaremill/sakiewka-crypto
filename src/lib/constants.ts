@@ -5,17 +5,31 @@ export const ROOT_DERIVATION_PATH = 'm/45\''
 
 export const BASE_API_PATH = 'api'
 
+export const INTERNAL_ERROR_CODE = 'SKC3'
+
 export const API_ERROR = {
   NOT_FOUND: {
-    message: 'Not found',
+    errors: [{ message: 'Not found', code: 'SKC1' }],
     code: 404
   },
   SERVER_ERROR: {
-    message: 'Server error',
+    errors: [{ message: 'Server error', code: 'SKC2' }],
     code: 500
   },
   BAD_REQUEST: {
-    message: 'Malformed request',
+    errors: [{ message: 'Malformed request', code: INTERNAL_ERROR_CODE }],
+    code: 400
+  },
+  XPRIV_OR_PASSWORD_REQUIRED:{
+    errors: [{message: 'Password or xprv has to be specified!', code: 'SKC4'}],
+    code: 400
+  },
+  INCORRECT_PASSPHRASE:{
+    errors: [{message: 'Incorrect passphrase', code: 'SKC5'}],
+    code: 400
+  },
+  NO_PRIV_KEY_ON_SERVER: {
+    errors :[{message : 'There is no private key on server!', code: 'SKC6'}],
     code: 400
   }
 }
