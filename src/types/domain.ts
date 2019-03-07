@@ -69,4 +69,5 @@ export interface SupportedNetworks {
   bitcoin: Network,
   testnet: Network,
   regtest: Network
+  bitcoingold: Network
 }

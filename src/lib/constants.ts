@@ -37,5 +37,15 @@ export const API_ERROR = {
 export const SUPPORTED_NETWORKS: SupportedNetworks = {
   bitcoin: networks.bitcoin,
   testnet: networks.testnet,
-  regtest: Object.assign({}, networks.testnet, { bech32: 'bcrt' }) //Introduced in in newer versions of bitcoinjs-lib - https://github.com/bitcoinjs/bitcoinjs-lib/blob/489e96ca917bfff11357800344f1510b9ca68ce8/src/networks.js#L16
+  regtest: Object.assign({}, networks.testnet, { bech32: 'bcrt' }), //Introduced in in newer versions of bitcoinjs-lib - https://github.com/bitcoinjs/bitcoinjs-lib/blob/489e96ca917bfff11357800344f1510b9ca68ce8/src/networks.js#L16
+  bitcoingold: { //https://github.com/bitcoinjs/bitcoinjs-lib/pull/932/files
+    messagePrefix: '\x18Bitcoin Gold Signed Message:\n',
+    bip32: {
+      public: 0x0488b21e,
+      private: 0x0488ade4
+    },
+    pubKeyHash: 0x26,
+    scriptHash: 0x17,
+    wif: 0x80
+  }
 }
