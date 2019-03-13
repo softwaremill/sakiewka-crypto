@@ -31,14 +31,19 @@ const joinPath = (path: Path): string =>
 export const send = async (
   userToken: string, walletId: string, recipients: Recipient[], xprv?: string, passphrase?: string
 ): Promise<string> => {
-  const { recommended } = await getFeesRates()
-  const unspentsResponse = await listUnspents(userToken, walletId, recommended, recipients)
-  const wallet = await getWallet(userToken, walletId)
-  const pubKeys = wallet.keys.map((key: Key) => key.pubKey)
-  const changeAddresResponse = await createNewAddress(userToken, walletId, true)
-  const userXprv = await xprivOrGetFromServer(userToken, wallet, xprv, passphrase)
-  const txHex = buildTxHex(unspentsResponse, recipients, userXprv, changeAddresResponse.address, pubKeys)
+  const txHex = await createTransaction(userToken, walletId, recipients, xprv, passphrase);
   return await sendTransaction(userToken, walletId, txHex)
+}
+
+export const createTransaction = async (userToken: string, walletId: string, recipients: Recipient[], xprv?: string, passphrase?: string) => {
+  const { recommended } = await getFeesRates();
+  const unspentsResponse = await listUnspents(userToken, walletId, recommended, recipients);
+  const wallet = await getWallet(userToken, walletId);
+  const pubKeys = wallet.keys.map((key: Key) => key.pubKey);
+  const changeAddresResponse = await createNewAddress(userToken, walletId, true);
+  const userXprv = await xprivOrGetFromServer(userToken, wallet, xprv, passphrase);
+  const txHex = buildTxHex(unspentsResponse, recipients, userXprv, changeAddresResponse.address, pubKeys);
+  return txHex;
 }
 
 const buildTxHex = (unspentsResponse: ListUnspentsBackendResponse, recipients: Recipient[], xprv: string, changeAddres: string, pubKeys: string[]): string => {
