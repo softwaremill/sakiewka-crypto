@@ -9,8 +9,8 @@
   },
   "scripts": {
     "postinstall": "tsc --skipLibCheck",
-    "testBTG": "CURRENCY_UNDER_TEST=BTG BTC_NETWORK=bitcoingold jest --forceExit --verbose=false --detectOpenHandles",
-    "testBTC": "CURRENCY_UNDER_TEST=BTC BTC_NETWORK=bitcoin jest --forceExit --verbose=false --detectOpenHandles",
+    "test-single-currency": "jest --forceExit --verbose false --detectOpenHandles",
+    "test": "CURRENCY_UNDER_TEST=BTC BTC_NETWORK=bitcoin npm run test-single-currency && CURRENCY_UNDER_TEST=BTG BTC_NETWORK=bitcoingold npm run test-single-currency",
     "watch-test": "npm run test -- --watchAll",
     "build": "tsc",
     "watch": "tsc -w",
