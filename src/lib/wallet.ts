@@ -1,78 +1,79 @@
-import { Recipient, WalletParams } from '../types/domain'
+import { Currency, Recipient, WalletParams } from '../types/domain'
 import { ROOT_DERIVATION_PATH } from './constants'
-import {
-  createWallet as createWalletBackend,
-  getWallet as getWalletBackend,
-  getWalletBalance as getWalletBalanceBackend,
-  listUnspents as listUnspentsBackend,
-  listWallets as listWaletsBackend,
-  maxTransferAmount as maxTransferAmountBackend
-} from './backend-api'
-import { deriveKeyPair, encryptKeyPair, generateNewKeyPair } from './key'
 import { CreateWalletBackendParams, GetUtxosBackendParams, MaxTransferAmountParams, ReceipientsBackend } from 'response'
 import { satoshiToBtc } from './utils/helpers'
 import { generatePdf } from './keycard-pdf'
+import keyFactory from './key'
+import * as backendApiFactory from './backend-api'
 
-export const createWallet = async (userToken: string, params: WalletParams): Promise<any> => {
-  const userKeyPair = params.userPubKey ?
-    { pubKey: params.userPubKey } :
-    deriveKeyPair(generateNewKeyPair(), ROOT_DERIVATION_PATH)
+export default (currency: Currency) => {
+  const keyModule = keyFactory(currency)
+  const backendApi = backendApiFactory.withCurrency(currency)
 
-  const backupKeyPair = params.backupPubKey ?
-    { pubKey: params.backupPubKey } :
-    deriveKeyPair(generateNewKeyPair(), ROOT_DERIVATION_PATH)
+  const createWallet = async (userToken: string, params: WalletParams): Promise<any> => {
+    const userKeyPair = params.userPubKey ?
+      { pubKey: params.userPubKey } :
+      keyModule.deriveKeyPair(keyModule.generateNewKeyPair(), ROOT_DERIVATION_PATH)
 
-  const encryptedUserKeyPair = encryptKeyPair(userKeyPair, params.passphrase)
-  const encryptedBackupKeyPair = encryptKeyPair(backupKeyPair, params.passphrase)
+    const backupKeyPair = params.backupPubKey ?
+      { pubKey: params.backupPubKey } :
+      keyModule.deriveKeyPair(keyModule.generateNewKeyPair(), ROOT_DERIVATION_PATH)
 
-  const backendRequestParams = {
-    name: params.name,
-    userPubKey: encryptedUserKeyPair.pubKey,
-    userPrvKey: encryptedUserKeyPair.prvKey,
-    backupPubKey: encryptedBackupKeyPair.pubKey,
-    backupPrvKey: encryptedBackupKeyPair.prvKey
+    const encryptedUserKeyPair = keyModule.encryptKeyPair(userKeyPair, params.passphrase)
+    const encryptedBackupKeyPair = keyModule.encryptKeyPair(backupKeyPair, params.passphrase)
+
+    const backendRequestParams = {
+      name: params.name,
+      userPubKey: encryptedUserKeyPair.pubKey,
+      userPrvKey: encryptedUserKeyPair.prvKey,
+      backupPubKey: encryptedBackupKeyPair.pubKey,
+      backupPrvKey: encryptedBackupKeyPair.prvKey
+    }
+    const response = await backendApi.createWallet(userToken, <CreateWalletBackendParams>backendRequestParams)
+    const pdf = await generatePdf(
+      params.name,
+      response.servicePubKey,
+      backendRequestParams.userPrvKey,
+      backendRequestParams.backupPrvKey,
+      '../../resources/sml-logo.png'
+    )
+
+    return { ...response, pdf }
   }
-  const response = await createWalletBackend(userToken, <CreateWalletBackendParams>backendRequestParams)
-  const pdf = await generatePdf(
-    params.name,
-    response.servicePubKey,
-    backendRequestParams.userPrvKey,
-    backendRequestParams.backupPrvKey,
-    '../../resources/sml-logo.png'
-  )
 
-  return { ...response, pdf }
-}
+  const getWallet = (userToken: string, walletId: string) => backendApi.getWallet(userToken, walletId)
 
-export const getWallet = (
-  userToken: string, walletId: string
-) => getWalletBackend(userToken, walletId)
+  const listWallets = (userToken: string, limit: number, nextPageToken?: string) => backendApi.listWallets(userToken, limit, nextPageToken)
 
-export const listWallets = (
-  userToken: string, limit: number, nextPageToken?: string
-) => listWaletsBackend(userToken, limit, nextPageToken)
+  const getWalletBalance = (userToken: string, walletId: string) => backendApi.getWalletBalance(userToken, walletId)
 
-export const getWalletBalance = (
-  userToken: string, walletId: string
-) => getWalletBalanceBackend(userToken, walletId)
-
-export const listUnspents = (
-  token: string, walletId: string, feeRate: string, recipients: Recipient[]
-) => {
-  const params = {
-    feeRate,
-    recipients: recipients.map((r: Recipient) => <ReceipientsBackend>({
-      address: r.address,
-      amount: satoshiToBtc(r.amount).toString()
-    }))
+  const listUnspents = (
+    token: string, walletId: string, feeRate: string, recipients: Recipient[]
+  ) => {
+    const params = {
+      feeRate,
+      recipients: recipients.map((r: Recipient) => <ReceipientsBackend>({
+        address: r.address,
+        amount: satoshiToBtc(r.amount).toString()
+      }))
+    }
+    return backendApi.listUnspents(token, walletId, <GetUtxosBackendParams>params)
   }
-  return listUnspentsBackend(token, walletId, <GetUtxosBackendParams>params)
-}
 
-export const maxTransferAmount = (token: string, walletId: string, feeRate: string, recipient: string) => {
-  const params: MaxTransferAmountParams = {
-    recipient,
-    feeRate
+  const maxTransferAmount = (token: string, walletId: string, feeRate: string, recipient: string) => {
+    const params: MaxTransferAmountParams = {
+      recipient,
+      feeRate
+    }
+    return backendApi.maxTransferAmount(token, walletId, params)
   }
-  return maxTransferAmountBackend(token, walletId, params)
+
+  return {
+    createWallet,
+    getWallet,
+    getWalletBalance,
+    listUnspents,
+    listWallets,
+    maxTransferAmount
+  }
 }

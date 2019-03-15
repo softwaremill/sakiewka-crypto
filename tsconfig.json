@@ -26,6 +26,6 @@
       "src/**/*"
   ],
   "exclude": [
-      "src/tests/**/*"
+      "src/lib/tests/*"
   ]
 }

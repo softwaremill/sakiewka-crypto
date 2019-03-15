@@ -1,6 +1,8 @@
 import { expect } from 'chai'
 
-import * as api from '../backend-api'
+import { currency } from './helpers'
+import * as apiFactory from '../backend-api'
+const api  = apiFactory.withCurrency(currency)
 import * as request from '../utils/request'
 import { MaxTransferAmountParams } from 'response';
 
@@ -14,7 +16,7 @@ beforeEach(() => {
   mockImplementation.mockClear()
 })
 
-process.env.BACKEND_API_URL = 'backurl/api/v1'
+process.env.BACKEND_API_URL = `backurl/api/v1`
 
 describe('login', () => {
   it('should exist', () => {
@@ -22,28 +24,28 @@ describe('login', () => {
   })
 
   it('should send proper request', async () => {
-    await api.login('a', 'b')
+    await api.login('a', `b`)
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
-    expect(url).to.eq('backurl/api/v1/user/login')
+    expect(url).to.eq(`backurl/api/v1/user/login`)
     expect(params.method).to.eq('POST')
     expect(reqBody.email).to.eq('a')
-    expect(reqBody.password).to.eq('b')
+    expect(reqBody.password).to.eq(`b`)
     expect(reqBody).to.not.haveOwnProperty('code')
   })
 
   it('should send request with 2fa code', async () => {
-    await api.login('a', 'b', 123456)
+    await api.login('a', `b`, 123456)
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
-    expect(url).to.eq('backurl/api/v1/user/login')
+    expect(url).to.eq(`backurl/api/v1/user/login`)
     expect(params.method).to.eq('POST')
     expect(reqBody.email).to.eq('a')
-    expect(reqBody.password).to.eq('b')
+    expect(reqBody.password).to.eq(`b`)
     expect(reqBody.code).to.eq(123456)
   })
 })
@@ -59,7 +61,7 @@ describe('init2fa', () => {
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
-    expect(url).to.eq('backurl/api/v1/user/2fa/init')
+    expect(url).to.eq(`backurl/api/v1/user/2fa/init`)
     expect(params.method).to.eq('POST')
     expect(reqBody.password).to.eq('password')
   })
@@ -76,7 +78,7 @@ describe('confirm2fa', () => {
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
-    expect(url).to.eq('backurl/api/v1/user/2fa/confirm')
+    expect(url).to.eq(`backurl/api/v1/user/2fa/confirm`)
     expect(params.method).to.eq('POST')
     expect(reqBody.password).to.eq('password')
     expect(reqBody.code).to.eq(101202)
@@ -94,7 +96,7 @@ describe('disable2fa', () => {
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
-    expect(url).to.eq('backurl/api/v1/user/2fa/disable')
+    expect(url).to.eq(`backurl/api/v1/user/2fa/disable`)
     expect(params.method).to.eq('POST')
     expect(reqBody.password).to.eq('password')
     expect(reqBody.code).to.eq(112233)
@@ -112,7 +114,7 @@ describe('register', () => {
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
-    expect(url).to.eq('backurl/api/v1/user/register')
+    expect(url).to.eq(`backurl/api/v1/user/register`)
     expect(params.method).to.eq('POST')
     expect(reqBody.email).to.eq('a')
   })
@@ -128,7 +130,7 @@ describe('info', () => {
 
     const [url, params] = mockImplementation.mock.calls[0]
 
-    expect(url).to.eq('backurl/api/v1/user/info')
+    expect(url).to.eq(`backurl/api/v1/user/info`)
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
@@ -150,7 +152,7 @@ describe('createWallet', () => {
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
-    expect(url).to.eq('backurl/api/v1/btc/wallet')
+    expect(url).to.eq(`backurl/api/v1/${currency}/wallet`)
     expect(params.method).to.eq('POST')
     expect(params.headers.Authorization).to.eq('testToken')
     expect(reqBody.name).to.eq('testName')
@@ -168,7 +170,7 @@ describe('getWallet', () => {
 
     const [url, params] = mockImplementation.mock.calls[0]
 
-    expect(url).to.eq('backurl/api/v1/btc/wallet/13')
+    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/13`)
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
@@ -184,7 +186,7 @@ describe('listWallets', () => {
 
     const [url, params] = mockImplementation.mock.calls[0]
 
-    expect(url).to.eq('backurl/api/v1/btc/wallet?limit=10')
+    expect(url).to.eq(`backurl/api/v1/${currency}/wallet?limit=10`)
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
@@ -194,7 +196,7 @@ describe('listWallets', () => {
 
     const [url, params] = mockImplementation.mock.calls[0]
 
-    expect(url).to.eq('backurl/api/v1/btc/wallet?limit=10&nextPageToken=abcd')
+    expect(url).to.eq(`backurl/api/v1/${currency}/wallet?limit=10&nextPageToken=abcd`)
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
@@ -210,7 +212,7 @@ describe('getWalletBalance', () => {
 
     const [url, params] = mockImplementation.mock.calls[0]
 
-    expect(url).to.eq('backurl/api/v1/btc/wallet/13/balance')
+    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/13/balance`)
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
@@ -227,7 +229,7 @@ describe('createNewAddress', () => {
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
-    expect(url).to.eq('backurl/api/v1/btc/wallet/walletId/address?change=false')
+    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/walletId/address?change=false`)
     expect(params.method).to.eq('POST')
     expect(params.headers.Authorization).to.eq('testToken')
     expect(reqBody.name).to.eq(undefined)
@@ -239,7 +241,7 @@ describe('createNewAddress', () => {
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
-    expect(url).to.eq('backurl/api/v1/btc/wallet/walletId/address?change=true')
+    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/walletId/address?change=true`)
     expect(params.method).to.eq('POST')
     expect(params.headers.Authorization).to.eq('testToken')
     expect(reqBody.name).to.eq(undefined)
@@ -251,7 +253,7 @@ describe('createNewAddress', () => {
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
-    expect(url).to.eq('backurl/api/v1/btc/wallet/walletId/address?change=false')
+    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/walletId/address?change=false`)
     expect(params.method).to.eq('POST')
     expect(params.headers.Authorization).to.eq('testToken')
     expect(reqBody.name).to.eq('testName')
@@ -268,7 +270,7 @@ describe('getAddress', () => {
 
     const [url, params] = mockImplementation.mock.calls[0]
 
-    expect(url).to.eq('backurl/api/v1/btc/wallet/testWalletId/address/addressValue')
+    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/address/addressValue`)
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
@@ -284,7 +286,7 @@ describe('listAddresses', () => {
 
     const [url, params] = mockImplementation.mock.calls[0]
 
-    expect(url).to.eq('backurl/api/v1/btc/wallet/testWalletId/address?limit=10')
+    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/address?limit=10`)
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
@@ -294,7 +296,7 @@ describe('listAddresses', () => {
 
     const [url, params] = mockImplementation.mock.calls[0]
 
-    expect(url).to.eq('backurl/api/v1/btc/wallet/testWalletId/address?limit=10&nextPageToken=abcd')
+    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/address?limit=10&nextPageToken=abcd`)
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
@@ -314,7 +316,7 @@ describe('listUnspents', () => {
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
-    expect(url).to.eq('backurl/api/v1/btc/wallet/testWalletId/utxo')
+    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/utxo`)
     expect(params.method).to.eq('POST')
     expect(params.headers.Authorization).to.eq('testToken')
     expect(reqBody.feeRate).to.eq('22')
@@ -339,7 +341,7 @@ describe('getKey', () => {
 
     const [url, params] = mockImplementation.mock.calls[0]
 
-    expect(url).to.eq('backurl/api/v1/btc/key/testKeyId')
+    expect(url).to.eq(`backurl/api/v1/${currency}/key/testKeyId`)
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
@@ -349,7 +351,7 @@ describe('getKey', () => {
 
     const [url, params] = mockImplementation.mock.calls[0]
 
-    expect(url).to.eq('backurl/api/v1/btc/key/testKeyId?includePrivate=true')
+    expect(url).to.eq(`backurl/api/v1/${currency}/key/testKeyId?includePrivate=true`)
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
@@ -368,7 +370,7 @@ describe('maxTransferAmount', () => {
     await api.maxTransferAmount('testToken', 'testWalletId', data)
 
     const [url, params] = mockImplementation.mock.calls[0]
-    expect(url).to.eq('backurl/api/v1/btc/wallet/testWalletId/max-transfer-amount?recipient=0x0&feeRate=22')
+    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/max-transfer-amount?recipient=0x0&feeRate=22`)
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
@@ -384,7 +386,7 @@ describe('setupPassword', () => {
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
-    expect(url).to.eq('backurl/api/v1/user/setup-password')
+    expect(url).to.eq(`backurl/api/v1/user/setup-password`)
     expect(params.method).to.eq('POST')
     expect(params.headers.Authorization).to.eq('testToken')
     expect(reqBody.password).to.eq("secret")

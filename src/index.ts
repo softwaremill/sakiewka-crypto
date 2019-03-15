@@ -1,21 +1,32 @@
 import * as constants from './lib/constants'
-import * as address from './lib/address'
+import address from './lib/address'
 import * as crypto from './lib/crypto'
-import * as transaction from './lib/transaction'
-import * as transactionEth from './lib/transaction-eth'
-import * as wallet from './lib/wallet'
-import * as key from './lib/key'
+import transaction from './lib/transaction'
+import wallet from './lib/wallet'
+import key from './lib/key'
 import * as user from './lib/user'
 import * as transfers from './lib/transfers'
+import * as config from './lib/config'
+import { Currency } from "./types/domain";
 
 export default {
-  constants,
-  address,
-  crypto,
-  transaction,
-  transactionEth,
-  wallet,
-  key,
   user,
-  transfers
+  transfers,
+  config,
+  constants,
+  crypto,
+  [Currency.BTC]: {
+    address: address(Currency.BTC),
+    transaction: transaction(Currency.BTC),
+    wallet: wallet(Currency.BTC),
+    key: key(Currency.BTC)
+  },
+  [Currency.BTG]: {
+    address: address(Currency.BTG),
+    transaction: transaction(Currency.BTG),
+    wallet: wallet(Currency.BTG),
+    key: key(Currency.BTG)
+  },
 }
+
+export { Currency } from './types/domain'

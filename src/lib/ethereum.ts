@@ -1,7 +1,10 @@
 import ethAbi from 'ethereumjs-abi'
 import ethUtil from 'ethereumjs-util'
 
-import { base58ToHDNode } from './bitcoin'
+import bitcoin from './bitcoin'
+import { Currency } from "../types/domain";
+const { base58ToHDNode } = bitcoin(Currency.BTC)
+
 const OnlyDigits = /^[1-9]+\d*$/
 
 export const createETHOperationHash = (

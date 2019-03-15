@@ -1,56 +1,65 @@
-import { KeyPair } from '../types/domain'
+import { Currency, KeyPair } from '../types/domain'
 import { getRandomBytes, encrypt } from './crypto'
-import { base58ToHDNode, seedBufferToHDNode, hdNodeToBase58Pub, hdNodeToBase58Prv } from './bitcoin'
 import { HDNode } from 'bitcoinjs-lib'
-import { getKey as getKeyBackend } from './backend-api'
+import bitcoinFactory from './bitcoin'
+import * as backendApiFactory from './backend-api'
 
-export const generateNewKeyPair = (
-  path?: string
-): KeyPair => {
-  const seed = getRandomBytes(512 / 8)
-  const rootExtendedKey = seedBufferToHDNode(seed)
-  const extendedKey = path ? rootExtendedKey.derivePath(path) : rootExtendedKey
-  const pubKey = extendedKey.neutered().toBase58()
 
-  return {
-    pubKey,
-    prvKey: rootExtendedKey.toBase58()
-  }
-}
+export default (currency: Currency) => {
+  const backendApi = backendApiFactory.withCurrency(currency)
+  const bitcoin = bitcoinFactory(currency)
 
-export const encryptKeyPair = (keyPair: KeyPair, passphrase: string): KeyPair => {
-  if (keyPair.prvKey) {
+  const generateNewKeyPair = (
+    path?: string
+  ): KeyPair => {
+    const seed = getRandomBytes(512 / 8)
+    const rootExtendedKey = bitcoin.seedBufferToHDNode(seed)
+    const extendedKey = path ? rootExtendedKey.derivePath(path) : rootExtendedKey
+    const pubKey = extendedKey.neutered().toBase58()
+
     return {
-      ...keyPair,
-      prvKey: encrypt(passphrase, keyPair.prvKey)
+      pubKey,
+      prvKey: rootExtendedKey.toBase58()
     }
   }
 
-  return { ...keyPair }
+  const encryptKeyPair = (keyPair: KeyPair, passphrase: string): KeyPair => {
+    if (keyPair.prvKey) {
+      return {
+        ...keyPair,
+        prvKey: encrypt(passphrase, keyPair.prvKey)
+      }
+    }
+
+    return { ...keyPair }
+  }
+
+  const deriveKeyPair = (
+    keyPair: KeyPair, path: string
+  ): KeyPair => {
+    const rootExtendedKey = bitcoin.base58ToHDNode(keyPair.prvKey!)
+    const derivedExtendedKey = rootExtendedKey.derivePath(path)
+    const pubKey = bitcoin.hdNodeToBase58Pub(derivedExtendedKey)
+    const prvKey = bitcoin.hdNodeToBase58Prv(derivedExtendedKey)
+
+    return { pubKey, prvKey }
+  }
+
+  const deriveKey = (
+    rootKey: string, path: string
+  ): HDNode => {
+    const node = bitcoin.base58ToHDNode(rootKey)
+
+    if (path === '') return node
+    return node.derivePath(path)
+  }
+
+  const getKey = (
+    userToken: string,
+    keyId: string,
+    includePrivate?: boolean
+  ) => backendApi.getKey(userToken, keyId, includePrivate)
+
+  return { generateNewKeyPair, encryptKeyPair, deriveKeyPair, deriveKey, getKey }
+
 }
-
-export const deriveKeyPair = (
-  keyPair: KeyPair, path: string
-): KeyPair => {
-  const rootExtendedKey = base58ToHDNode(keyPair.prvKey!)
-  const derivedExtendedKey = rootExtendedKey.derivePath(path)
-  const pubKey = hdNodeToBase58Pub(derivedExtendedKey)
-  const prvKey = hdNodeToBase58Prv(derivedExtendedKey)
-
-  return { pubKey, prvKey }
-}
-
-export const deriveKey = (
-  rootKey: string, path: string
-): HDNode => {
-  const node = base58ToHDNode(rootKey)
-
-  if (path === '') return node
-  return node.derivePath(path)
-}
-
-export const getKey = (
-  userToken: string,
-  keyId: string,
-  includePrivate?: boolean
-) => getKeyBackend(userToken, keyId, includePrivate)
