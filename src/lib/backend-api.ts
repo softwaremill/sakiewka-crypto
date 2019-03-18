@@ -25,7 +25,6 @@ import {
 } from 'response'
 import request from './utils/request'
 import { Currency } from "../types/domain";
-import { currency } from "./tests/helpers";
 
 
 const getBackendApiUrl = () => process.env.BACKEND_API_URL
@@ -312,6 +311,18 @@ export const withCurrency = (currency: Currency) => {
     return response.data
   }
 
+  const maxTransferAmount = async (token: string, walletId: string, params: MaxTransferAmountParams): Promise<MaxTransferAmountResponse> => {
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: token
+      }
+    }
+
+    const response = await request(`${getBackendApiUrl()}/${currency}/wallet/${walletId}/max-transfer-amount?recipient=${params.recipient}&feeRate=${params.feeRate}`, options)
+    return response.data
+  }
+
 
   return {
     confirm2fa,
@@ -341,17 +352,5 @@ export const withCurrency = (currency: Currency) => {
 
 export const getFeesRates = async (): Promise<GetFeesRates> => {
   const response = await request(`${getBackendApiUrl()}/fees`, { method: 'GET' })
-  return response.data
-}
-
-export const maxTransferAmount = async (token: string, walletId: string, params: MaxTransferAmountParams): Promise<MaxTransferAmountResponse> => {
-  const options = {
-    method: 'GET',
-    headers: {
-      Authorization: token
-    }
-  }
-
-  const response = await request(`${getBackendApiUrl()}/${currency}/wallet/${walletId}/max-transfer-amount?recipient=${params.recipient}&feeRate=${params.feeRate}`, options)
   return response.data
 }
