@@ -12,7 +12,6 @@ export default class BtgOperations extends BitcoinOperations {
 
   sign = (txb:TransactionBuilder,idx:number,signingKey:ECPair,amount?:BigNumber,redeemScript?:Buffer) : void => {
     const hashType = Transaction.SIGHASH_ALL | Transaction.SIGHASH_FORKID
-    // @ts-ignore
     txb.sign(idx, signingKey, redeemScript, hashType, btcToSatoshi(amount).toNumber())
   }
 

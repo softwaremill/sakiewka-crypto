@@ -94,7 +94,7 @@ export default (currency: Currency) => {
       const derivedPubKeys = pubKeys.map((key: string) => keyApi.deriveKey(key, joinPath(uns.path!)).neutered().toBase58())
       const redeemScript = bitcoin.createMultisigRedeemScript(derivedPubKeys)
       // @ts-ignore
-      bitcoin.sign(txb, idx, signingKey, uns.amount,redeemScript)
+      bitcoin.sign(txb, idx, signingKey, new BigNumber(uns.amount)/*TODO CHECK CORRECT TYPES ARE RETURNED FROM REQUESTS!!*/,redeemScript)
     })
   }
 
@@ -116,7 +116,7 @@ export default (currency: Currency) => {
 
     unspents.forEach((uns: UTXO, idx: number) => {
       // @ts-ignore
-      tx.ins[idx].value = new BigNumber(uns.amount).toNumber() //TODO - do przegadania - roznice w testach i prawdziwej wartosci
+      tx.ins[idx].value = btcToSatoshi(uns.amount).toNumber()
     })
 
     const txb = bitcoin.txBuilderFromTx(tx)

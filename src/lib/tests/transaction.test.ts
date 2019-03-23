@@ -48,7 +48,8 @@ describe('sendCoins', () => {
 
   it('should send coins', async () => {
     // generates keyPairs and address
-    const inputValue = 700000000;
+    const inputValue = new BigNumber('7')
+    const inputValueSatoshi = 700000000
     const userKeyPair = defaultKeyModule.generateNewKeyPair()
     const backupKeyPair = defaultKeyModule.generateNewKeyPair()
     const serverKeyPair = defaultKeyModule.generateNewKeyPair()
@@ -70,7 +71,7 @@ describe('sendCoins', () => {
           txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           n: 0,
           path: createPath(2, 0, 0),
-          amount: new BigNumber(inputValue.toString())
+          amount: inputValue
         }
       ]
     })
@@ -101,21 +102,21 @@ describe('sendCoins', () => {
     // recreates transaction builder
     const tx = defaultBitcoinModule.txFromHex(transactionHex)
     // @ts-ignore
-    tx.ins[0].value = inputValue
+    tx.ins[0].value = inputValueSatoshi
     const txb = defaultBitcoinModule.txBuilderFromTx(tx)
 
     // should be able to sign with other keys without errors
     // @ts-ignore
     const hashType = currency == Currency.BTG ? (Transaction.SIGHASH_ALL | Transaction.SIGHASH_FORKID) : Transaction.SIGHASH_ALL
-    txb.sign(0, serverECPair, redeemScript, hashType, inputValue)
+    txb.sign(0, serverECPair, redeemScript, hashType, inputValueSatoshi)
 
     // signing again or using wrong key should throw errors
     expect(() => {
-      txb.sign(0, userECPair, redeemScript, hashType, inputValue)
+      txb.sign(0, userECPair, redeemScript, hashType, inputValueSatoshi)
     }).to.throw('Signature already exists')
 
     expect(() => {
-      txb.sign(0, anotherECPair, redeemScript, hashType, inputValue)
+      txb.sign(0, anotherECPair, redeemScript, hashType, inputValueSatoshi)
     }).to.throw('Key pair cannot sign for this input')
 
     expect(tx.outs.length).to.be.eq(4)
@@ -144,7 +145,7 @@ describe('sendCoins', () => {
             change: 0,
             addressIndex: 0
           },
-          amount: new BigNumber('700000000')
+          amount: new BigNumber('7')
         }
       ]
     })
@@ -154,7 +155,7 @@ describe('sendCoins', () => {
 
     const promise = transactionModule.send('1234', '13', [{
       address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
-      amount: new BigNumber('500000000')
+      amount: new BigNumber('5')
     }]);
     await expect(promise).to.eventually.be.rejected
       .and.have.property('errors')
@@ -184,7 +185,7 @@ describe('sendCoins', () => {
           txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           n: 0,
           path: createPath(2, 0, 0),
-          amount: new BigNumber('700000000')
+          amount: new BigNumber('7')
         }
       ]
     })
@@ -217,7 +218,7 @@ describe('sendCoins', () => {
       serverKeyPair.pubKey
     ], '2/0/0')
 
-    const inputValue = 700000000
+    const inputValue = new BigNumber('7')
     stubUnspents({
       change: 1.9,
       serviceFee: {
@@ -230,7 +231,7 @@ describe('sendCoins', () => {
           txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           n: 0,
           path: createPath(2, 0, 0),
-          amount: new BigNumber(inputValue.toString())
+          amount: inputValue
         }
       ]
     })
@@ -281,7 +282,7 @@ describe('sendCoins', () => {
           txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           n: 0,
           path: createPath(2, 0, 0),
-          amount: new BigNumber('700000000')
+          amount: new BigNumber('7')
         }
       ]
     })
@@ -309,6 +310,9 @@ describe('sendCoins', () => {
     stubCreateAddress('2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi')
 
     // generates keyPairs and address
+
+    const inputValue = new BigNumber('7')
+    const inputValueSatoshi = 700000000
     const userKeyPair = defaultKeyModule.generateNewKeyPair()
     const backupKeyPair = defaultKeyModule.generateNewKeyPair()
     const serverKeyPair = defaultKeyModule.generateNewKeyPair()
@@ -320,7 +324,6 @@ describe('sendCoins', () => {
       serverKeyPair.pubKey
     ], '2/0/0')
 
-    const inputValue = 700000000
     stubUnspents({
       change: 1.9,
       serviceFee: {
@@ -333,7 +336,7 @@ describe('sendCoins', () => {
           txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           n: 0,
           path: createPath(2, 0, 0),
-          amount: inputValue.toString()
+          amount: inputValue
         }
       ]
     })
@@ -365,22 +368,22 @@ describe('sendCoins', () => {
     // recreates transaction builder
     const tx = defaultBitcoinModule.txFromHex(transactionHex)
     //@ts-ignore
-    tx.ins[0].value = inputValue
+    tx.ins[0].value = inputValueSatoshi
     const txb = defaultBitcoinModule.txBuilderFromTx(tx)
 
     // should be able to sign with other keys without errors
 
     //@ts-ignore
     const hashType = currency == Currency.BTG ? (Transaction.SIGHASH_ALL | Transaction.SIGHASH_FORKID) : Transaction.SIGHASH_ALL
-    txb.sign(0, serverECPair, redeemScript, hashType, inputValue)
+    txb.sign(0, serverECPair, redeemScript, hashType, inputValueSatoshi)
 
     // signing again or using wrong key should throw errors
     expect(() => {
-      txb.sign(0, userECPair, redeemScript, hashType, inputValue)
+      txb.sign(0, userECPair, redeemScript, hashType, inputValueSatoshi)
     }).to.throw('Signature already exists')
 
     expect(() => {
-      txb.sign(0, anotherECPair, redeemScript, hashType, inputValue)
+      txb.sign(0, anotherECPair, redeemScript, hashType, inputValueSatoshi)
     }).to.throw('Key pair cannot sign for this input')
 
     expect(tx.outs.length).to.be.eq(4)
@@ -411,14 +414,14 @@ describe('sendCoins', () => {
           txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           n: 1,
           path: createPath(2, 0, 0),
-          amount: '650000000'
+          amount: '6.5'
         },
         {
           address,
           txHash: '10be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           n: 0,
           path: createPath(2, 0, 0),
-          amount: '50000000'
+          amount: '0.5'
         }
       ]
     })
@@ -470,7 +473,8 @@ describe('sendCoins', () => {
       serverKeyPair.pubKey
     ], '2/0/0')
 
-    const inputValue = 700000000
+    const inputValue = new BigNumber('7')
+    const inputValueSatoshi = 700000000
     stubUnspents({
       change: 1.9,
       outputs: [
@@ -511,22 +515,22 @@ describe('sendCoins', () => {
     // recreates transaction builder
     const tx = defaultBitcoinModule.txFromHex(transactionHex)
     //@ts-ignore
-    tx.ins[0].value = inputValue
+    tx.ins[0].value = inputValueSatoshi
     const txb = defaultBitcoinModule.txBuilderFromTx(tx)
 
     // should be able to sign with other keys without errors
 
     //@ts-ignore
     const hashType = currency == Currency.BTG ? (Transaction.SIGHASH_ALL | Transaction.SIGHASH_FORKID) : Transaction.SIGHASH_ALL
-    txb.sign(0, serverECPair, redeemScript, hashType, inputValue)
+    txb.sign(0, serverECPair, redeemScript, hashType, inputValueSatoshi)
 
     // signing again or using wrong key should throw errors
     expect(() => {
-      txb.sign(0, userECPair, redeemScript, hashType, inputValue)
+      txb.sign(0, userECPair, redeemScript, hashType, inputValueSatoshi)
     }).to.throw('Signature already exists')
 
     expect(() => {
-      txb.sign(0, anotherECPair, redeemScript, hashType, inputValue)
+      txb.sign(0, anotherECPair, redeemScript, hashType, inputValueSatoshi)
     }).to.throw('Key pair cannot sign for this input')
 
     expect(tx.outs.length).to.be.eq(3)
@@ -552,7 +556,7 @@ describe('sendCoins to multiple outputs', () => {
       serverKeyPair.pubKey
     ], '2/0/0')
 
-    const inputValue = 700000000
+    const inputValue = new BigNumber('7')
     stubUnspents({
       change: 1.9,
       serviceFee: {
@@ -655,7 +659,7 @@ describe('signTransaction', () => {
         txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
         n: 0,
         path: createPath(2, 0, 0),
-        amount: new BigNumber('700000000')
+        amount: new BigNumber('7')
       }
     ]
 
@@ -691,14 +695,14 @@ describe('sendCoins and signTransaction', () => {
       serverKeyPair.pubKey
     ], '2/1/0')
 
-    const inputValue = 700000000
+    const inputValue = new BigNumber('7')
     const unspents = [
       {
         address,
         txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
         n: 0,
         path: createPath(2, 0, 1),
-        amount: new BigNumber(inputValue.toString())
+        amount: inputValue
       }
     ];
     stubUnspents({
