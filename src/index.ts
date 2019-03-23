@@ -26,7 +26,7 @@ export default {
     transaction: transaction(Currency.BTG),
     wallet: wallet(Currency.BTG),
     key: key(Currency.BTG)
-  },
+  }
 }
 
 export { Currency } from './types/domain'
