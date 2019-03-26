@@ -1,7 +1,10 @@
-import * as key from '../key'
-import * as addressModule from '../address'
+import { currency } from './helpers'
+import keyFactory from '../key'
+import addressModuleFactory from '../address'
 import * as config from '../config'
 import * as constants from '../constants'
+const key = keyFactory(currency)
+const addressModule = addressModuleFactory(currency)
 
 beforeEach(() => {
   // @ts-ignore

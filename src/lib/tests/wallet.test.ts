@@ -1,10 +1,18 @@
 import { expect, use } from 'chai'
 
-import * as wallet from '../wallet'
-import * as backendApi from '../backend-api'
+import { currency } from './helpers'
+import walletModuleFactory from '../wallet'
+import * as backendApiFactory from '../backend-api'
 import BigNumber from 'bignumber.js'
 import chaiBigNumber from 'chai-bignumber'
 import * as pdfGen from '../keycard-pdf'
+const backendApi = backendApiFactory.withCurrency(currency)
+// @ts-ignore
+backendApiFactory.withCurrency = (c) => {
+  expect(c).to.eq(currency)
+  return backendApi
+}
+const wallet = walletModuleFactory(currency)
 
 beforeEach(() => {
   use(chaiBigNumber(BigNumber))

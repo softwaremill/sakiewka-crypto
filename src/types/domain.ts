@@ -31,6 +31,11 @@ export enum TransferType {
   OUTGOING_EXTERNAL = "outgoing_external"
 }
 
+export enum Currency {
+  BTC = "btc",
+  BTG = "btg"
+}
+
 export interface UTXO {
   txHash: string,
   n: number,
@@ -68,5 +73,8 @@ export interface TxOut {
 export interface SupportedNetworks {
   bitcoin: Network,
   testnet: Network,
-  regtest: Network
+  regtest: Network,
+  bitcoingold: Network
+  bitcoingoldtestnet: Network
+  bitcoingoldregtest: Network
 }

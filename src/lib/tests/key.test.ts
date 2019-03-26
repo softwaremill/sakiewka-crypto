@@ -1,9 +1,13 @@
 import { expect } from 'chai'
 
-import * as keyModule from '../key'
-import * as backendApi from '../backend-api'
+import { currency } from './helpers'
+import * as backendApiFactory from '../backend-api'
+import keyModuleFactory from '../key'
 import * as config from '../config'
 import { SUPPORTED_NETWORKS } from '../constants'
+
+const backendApi  = backendApiFactory.withCurrency(currency)
+const keyModule = keyModuleFactory(currency)
 
 // @ts-ignore
 backendApi.createWallet = jest.fn(() => {

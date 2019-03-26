@@ -1,65 +1,84 @@
-import * as backendApi from '../backend-api'
+import * as backendApiFactory from '../backend-api'
 import { KeyPair, KeyType } from '../../types/domain';
 import { GetKeyBackendResponse } from 'response';
-import * as keyModule from '../key'
+import { currency } from './helpers'
 
 export const stubGetWallet = (userKeyPair: KeyPair, backupKeyPair: KeyPair, serviceKeyPair: KeyPair) => {
-    // @ts-ignore
-    backendApi.getWallet = jest.fn(() => {
-        return Promise.resolve({
-            keys: [
-                { pubKey: userKeyPair.pubKey, type: KeyType.USER },
-                { pubKey: backupKeyPair.pubKey, type: KeyType.BACKUP },
-                { pubKey: serviceKeyPair.pubKey, type: KeyType.SERVICE }
-            ]
-        })
+  const backendApi = backendApiFactory.withCurrency(currency);
+  // @ts-ignore
+  backendApi.getWallet = jest.fn(() => {
+    return Promise.resolve({
+      keys: [
+        { pubKey: userKeyPair.pubKey, type: KeyType.USER },
+        { pubKey: backupKeyPair.pubKey, type: KeyType.BACKUP },
+        { pubKey: serviceKeyPair.pubKey, type: KeyType.SERVICE }
+      ]
     })
+  })
+  // @ts-ignore
+  backendApiFactory.withCurrency = (currency) => backendApi
 }
 
 export const stubUnspents = (unspents: any) => {
-    // @ts-ignore
-    backendApi.listUnspents = jest.fn(() => {
-        return Promise.resolve(unspents)
-    })
+  const backendApi = backendApiFactory.withCurrency(currency);
+  // @ts-ignore
+  backendApi.listUnspents = jest.fn(() => {
+    return Promise.resolve(unspents)
+  })
+  // @ts-ignore
+  backendApiFactory.withCurrency = (currency) => backendApi
 }
 
 export const stubSendTx = () => {
-    // @ts-ignore
-    const sendTxMock = jest.fn(() => {
-        return Promise.resolve(true)
-    })
-    // @ts-ignore
-    backendApi.sendTransaction = sendTxMock
-    return sendTxMock
+  const backendApi = backendApiFactory.withCurrency(currency);
+  // @ts-ignore
+  const sendTxMock = jest.fn(() => {
+    return Promise.resolve(true)
+  })
+  // @ts-ignore
+  backendApi.sendTransaction = sendTxMock
+  // @ts-ignore
+  backendApiFactory.withCurrency = (currency) => backendApi
+  return sendTxMock
 }
 
 export const createPath = (cosigner: number, change: number, address: number) => {
-    return {
-        cosignerIndex: cosigner,
-        change: change,
-        addressIndex: address
-    }
+  return {
+    cosignerIndex: cosigner,
+    change: change,
+    addressIndex: address
+  }
 }
 
 export const stubCreateAddress = (address: string) => {
-    // @ts-ignore
-    backendApi.createNewAddress = jest.fn(() => {
-        return Promise.resolve({
-            address: address
-        })
+  const backendApi = backendApiFactory.withCurrency(currency);
+  // @ts-ignore
+  backendApi.createNewAddress = jest.fn(() => {
+    return Promise.resolve({
+      address: address
     })
+  })
+  // @ts-ignore
+  backendApiFactory.withCurrency = (currency) => backendApi
 }
 
 export const stubFeesRates = (recommended: number) => {
-    // @ts-ignore
-    backendApi.getFeesRates = jest.fn(() => {
-        return Promise.resolve({ recommended: recommended })
-    })
+  const backendApi = backendApiFactory.withCurrency(currency);
+  // @ts-ignore
+  backendApi.getFeesRates = jest.fn(() => {
+    return Promise.resolve({ recommended: recommended })
+  })
+  // @ts-ignore
+  backendApiFactory.withCurrency = (currency) => backendApi
 }
 
 export const stubGetKey = (response: GetKeyBackendResponse) => {
-    // @ts-ignore
-    const mockImplementation = jest.fn(() => response)
-    // @ts-ignore
-    keyModule.getKey = mockImplementation
+  const backendApi = backendApiFactory.withCurrency(currency);
+
+  // @ts-ignore
+  const mockImplementation = jest.fn(() => response)
+  // @ts-ignore
+  backendApi.getKey = mockImplementation
+  // @ts-ignore
+  backendApiFactory.withCurrency = (currency) => backendApi
 }

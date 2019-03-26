@@ -1,6 +1,8 @@
 import { expect } from 'chai'
 
-import * as addressModule from '../address'
+import { currency } from './helpers'
+import addressModuleFactory from '../address'
+const addressModule  = addressModuleFactory(currency)
 import * as config from '../config'
 import { SUPPORTED_NETWORKS } from "../constants";
 
