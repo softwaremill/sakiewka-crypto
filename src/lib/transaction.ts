@@ -94,7 +94,7 @@ export default (currency: Currency) => {
       const derivedPubKeys = pubKeys.map((key: string) => keyApi.deriveKey(key, joinPath(uns.path!)).neutered().toBase58())
       const redeemScript = bitcoin.createMultisigRedeemScript(derivedPubKeys)
       // @ts-ignore
-      bitcoin.sign(txb, idx, signingKey, new BigNumber(uns.amount)/*TODO CHECK CORRECT TYPES ARE RETURNED FROM REQUESTS!!*/,redeemScript)
+      bitcoin.sign(txb, idx, signingKey, uns.amount,redeemScript)
     })
   }
 
@@ -110,9 +110,7 @@ export default (currency: Currency) => {
   }
 
   const signTransaction = (xprv: string, txHex: string, unspents: UTXO[]) => {
-    // const witnessValue = 50 * 1e8
     const tx = bitcoin.txFromHex(txHex)
-    // tx.ins.map(i => Object.assign({},i,{value:witnessValue}))
 
     unspents.forEach((uns: UTXO, idx: number) => {
       // @ts-ignore

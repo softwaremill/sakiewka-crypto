@@ -16,7 +16,7 @@ beforeEach(() => {
   mockImplementation.mockClear()
 })
 
-process.env.BACKEND_API_URL = `backurl/api/v1`
+process.env.BACKEND_API_URL = 'backurl/api/v1'
 
 describe('login', () => {
   it('should exist', () => {
@@ -24,28 +24,28 @@ describe('login', () => {
   })
 
   it('should send proper request', async () => {
-    await api.login('a', `b`)
+    await api.login('a', 'b')
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
-    expect(url).to.eq(`backurl/api/v1/user/login`)
+    expect(url).to.eq('backurl/api/v1/user/login')
     expect(params.method).to.eq('POST')
     expect(reqBody.email).to.eq('a')
-    expect(reqBody.password).to.eq(`b`)
+    expect(reqBody.password).to.eq('b')
     expect(reqBody).to.not.haveOwnProperty('code')
   })
 
   it('should send request with 2fa code', async () => {
-    await api.login('a', `b`, 123456)
+    await api.login('a', 'b', 123456)
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
-    expect(url).to.eq(`backurl/api/v1/user/login`)
+    expect(url).to.eq('backurl/api/v1/user/login')
     expect(params.method).to.eq('POST')
     expect(reqBody.email).to.eq('a')
-    expect(reqBody.password).to.eq(`b`)
+    expect(reqBody.password).to.eq('b')
     expect(reqBody.code).to.eq(123456)
   })
 })
@@ -61,7 +61,7 @@ describe('init2fa', () => {
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
-    expect(url).to.eq(`backurl/api/v1/user/2fa/init`)
+    expect(url).to.eq('backurl/api/v1/user/2fa/init')
     expect(params.method).to.eq('POST')
     expect(reqBody.password).to.eq('password')
   })
@@ -78,7 +78,7 @@ describe('confirm2fa', () => {
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
-    expect(url).to.eq(`backurl/api/v1/user/2fa/confirm`)
+    expect(url).to.eq('backurl/api/v1/user/2fa/confirm')
     expect(params.method).to.eq('POST')
     expect(reqBody.password).to.eq('password')
     expect(reqBody.code).to.eq(101202)
@@ -96,7 +96,7 @@ describe('disable2fa', () => {
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
-    expect(url).to.eq(`backurl/api/v1/user/2fa/disable`)
+    expect(url).to.eq('backurl/api/v1/user/2fa/disable')
     expect(params.method).to.eq('POST')
     expect(reqBody.password).to.eq('password')
     expect(reqBody.code).to.eq(112233)
@@ -114,7 +114,7 @@ describe('register', () => {
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
-    expect(url).to.eq(`backurl/api/v1/user/register`)
+    expect(url).to.eq('backurl/api/v1/user/register')
     expect(params.method).to.eq('POST')
     expect(reqBody.email).to.eq('a')
   })
@@ -130,7 +130,7 @@ describe('info', () => {
 
     const [url, params] = mockImplementation.mock.calls[0]
 
-    expect(url).to.eq(`backurl/api/v1/user/info`)
+    expect(url).to.eq('backurl/api/v1/user/info')
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })

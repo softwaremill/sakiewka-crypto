@@ -23,9 +23,9 @@ import { Currency, KeyType, UTXO } from '../../types/domain'
 import { currency } from "./helpers";
 import { Transaction } from "bitcoinjs-lib";
 
-const defaultKeyModule = keyModuleFactory(currency)
-const defaultAddressModule = addressModuleFactory(currency)
-const defaultBitcoinModule = bitcoinModuleFactory(currency)
+const keyModule = keyModuleFactory(currency)
+const addressModule = addressModuleFactory(currency)
+const bitcoinModule = bitcoinModuleFactory(currency)
 
 const transactionModuleWithStubbedApiCalls = () => transactionModuleFactory(currency)
 
@@ -50,11 +50,11 @@ describe('sendCoins', () => {
     // generates keyPairs and address
     const inputValue = new BigNumber('7')
     const inputValueSatoshi = 700000000
-    const userKeyPair = defaultKeyModule.generateNewKeyPair()
-    const backupKeyPair = defaultKeyModule.generateNewKeyPair()
-    const serverKeyPair = defaultKeyModule.generateNewKeyPair()
-    const anotherKeyPair = defaultKeyModule.generateNewKeyPair()
-    const { address, redeemScript } = defaultAddressModule.generateNewMultisigAddress([
+    const userKeyPair = keyModule.generateNewKeyPair()
+    const backupKeyPair = keyModule.generateNewKeyPair()
+    const serverKeyPair = keyModule.generateNewKeyPair()
+    const anotherKeyPair = keyModule.generateNewKeyPair()
+    const { address, redeemScript } = addressModule.generateNewMultisigAddress([
       userKeyPair.pubKey,
       backupKeyPair.pubKey,
       serverKeyPair.pubKey
@@ -95,15 +95,15 @@ describe('sendCoins', () => {
 
     const [, , transactionHex] = sendTxMock.mock.calls[0]
 
-    const serverECPair = defaultKeyModule.deriveKey(serverKeyPair.prvKey!, '2/0/0').keyPair
-    const userECPair = defaultKeyModule.deriveKey(userKeyPair.prvKey!, '2/0/0').keyPair
-    const anotherECPair = defaultKeyModule.deriveKey(anotherKeyPair.prvKey!, '2/0/0').keyPair
+    const serverECPair = keyModule.deriveKey(serverKeyPair.prvKey!, '2/0/0').keyPair
+    const userECPair = keyModule.deriveKey(userKeyPair.prvKey!, '2/0/0').keyPair
+    const anotherECPair = keyModule.deriveKey(anotherKeyPair.prvKey!, '2/0/0').keyPair
 
     // recreates transaction builder
-    const tx = defaultBitcoinModule.txFromHex(transactionHex)
+    const tx = bitcoinModule.txFromHex(transactionHex)
     // @ts-ignore
     tx.ins[0].value = inputValueSatoshi
-    const txb = defaultBitcoinModule.txBuilderFromTx(tx)
+    const txb = bitcoinModule.txBuilderFromTx(tx)
 
     // should be able to sign with other keys without errors
     // @ts-ignore
@@ -125,9 +125,9 @@ describe('sendCoins', () => {
 
   it('should throw error when neither password nor xprv are specified', async () => {
     // generates keyPairs and address
-    const userKeyPair = defaultKeyModule.generateNewKeyPair()
-    const backupKeyPair = defaultKeyModule.generateNewKeyPair()
-    const serverKeyPair = defaultKeyModule.generateNewKeyPair()
+    const userKeyPair = keyModule.generateNewKeyPair()
+    const backupKeyPair = keyModule.generateNewKeyPair()
+    const serverKeyPair = keyModule.generateNewKeyPair()
 
     stubUnspents({
       change: 1.9,
@@ -164,10 +164,10 @@ describe('sendCoins', () => {
 
   it('should throw error when there is no private key on server', async () => {
     // generates keyPairs and address
-    const userKeyPair = defaultKeyModule.generateNewKeyPair()
-    const backupKeyPair = defaultKeyModule.generateNewKeyPair()
-    const serverKeyPair = defaultKeyModule.generateNewKeyPair()
-    const { address } = defaultAddressModule.generateNewMultisigAddress([
+    const userKeyPair = keyModule.generateNewKeyPair()
+    const backupKeyPair = keyModule.generateNewKeyPair()
+    const serverKeyPair = keyModule.generateNewKeyPair()
+    const { address } = addressModule.generateNewMultisigAddress([
       userKeyPair.pubKey,
       backupKeyPair.pubKey,
       serverKeyPair.pubKey
@@ -208,11 +208,11 @@ describe('sendCoins', () => {
 
   it('should get private key from server and decode it when password provided', async () => {
     // generates keyPairs and address
-    const userKeyPair = defaultKeyModule.generateNewKeyPair()
-    const backupKeyPair = defaultKeyModule.generateNewKeyPair()
-    const serverKeyPair = defaultKeyModule.generateNewKeyPair()
+    const userKeyPair = keyModule.generateNewKeyPair()
+    const backupKeyPair = keyModule.generateNewKeyPair()
+    const serverKeyPair = keyModule.generateNewKeyPair()
 
-    const { address } = defaultAddressModule.generateNewMultisigAddress([
+    const { address } = addressModule.generateNewMultisigAddress([
       userKeyPair.pubKey,
       backupKeyPair.pubKey,
       serverKeyPair.pubKey
@@ -260,11 +260,11 @@ describe('sendCoins', () => {
 
   it('should return error when passphrase does not match', async () => {
     // generates keyPairs and address
-    const userKeyPair = defaultKeyModule.generateNewKeyPair()
-    const backupKeyPair = defaultKeyModule.generateNewKeyPair()
-    const serverKeyPair = defaultKeyModule.generateNewKeyPair()
+    const userKeyPair = keyModule.generateNewKeyPair()
+    const backupKeyPair = keyModule.generateNewKeyPair()
+    const serverKeyPair = keyModule.generateNewKeyPair()
 
-    const { address } = defaultAddressModule.generateNewMultisigAddress([
+    const { address } = addressModule.generateNewMultisigAddress([
       userKeyPair.pubKey,
       backupKeyPair.pubKey,
       serverKeyPair.pubKey
@@ -313,12 +313,12 @@ describe('sendCoins', () => {
 
     const inputValue = new BigNumber('7')
     const inputValueSatoshi = 700000000
-    const userKeyPair = defaultKeyModule.generateNewKeyPair()
-    const backupKeyPair = defaultKeyModule.generateNewKeyPair()
-    const serverKeyPair = defaultKeyModule.generateNewKeyPair()
-    const anotherKeyPair = defaultKeyModule.generateNewKeyPair()
+    const userKeyPair = keyModule.generateNewKeyPair()
+    const backupKeyPair = keyModule.generateNewKeyPair()
+    const serverKeyPair = keyModule.generateNewKeyPair()
+    const anotherKeyPair = keyModule.generateNewKeyPair()
 
-    const { address, redeemScript } = defaultAddressModule.generateNewMultisigAddress([
+    const { address, redeemScript } = addressModule.generateNewMultisigAddress([
       userKeyPair.pubKey,
       backupKeyPair.pubKey,
       serverKeyPair.pubKey
@@ -361,15 +361,15 @@ describe('sendCoins', () => {
 
     const [, , transactionHex] = sendTxMock.mock.calls[0]
 
-    const serverECPair = defaultKeyModule.deriveKey(serverKeyPair.prvKey!, '2/0/0').keyPair
-    const userECPair = defaultKeyModule.deriveKey(userKeyPair.prvKey!, '2/0/0').keyPair
-    const anotherECPair = defaultKeyModule.deriveKey(anotherKeyPair.prvKey!, '2/0/0').keyPair
+    const serverECPair = keyModule.deriveKey(serverKeyPair.prvKey!, '2/0/0').keyPair
+    const userECPair = keyModule.deriveKey(userKeyPair.prvKey!, '2/0/0').keyPair
+    const anotherECPair = keyModule.deriveKey(anotherKeyPair.prvKey!, '2/0/0').keyPair
 
     // recreates transaction builder
-    const tx = defaultBitcoinModule.txFromHex(transactionHex)
+    const tx = bitcoinModule.txFromHex(transactionHex)
     //@ts-ignore
     tx.ins[0].value = inputValueSatoshi
-    const txb = defaultBitcoinModule.txBuilderFromTx(tx)
+    const txb = bitcoinModule.txBuilderFromTx(tx)
 
     // should be able to sign with other keys without errors
 
@@ -392,11 +392,11 @@ describe('sendCoins', () => {
 
   it('should sort inputs and outputs lexicographically', async () => {
     // generates keyPairs and address
-    const userKeyPair = defaultKeyModule.generateNewKeyPair()
-    const backupKeyPair = defaultKeyModule.generateNewKeyPair()
-    const serverKeyPair = defaultKeyModule.generateNewKeyPair()
+    const userKeyPair = keyModule.generateNewKeyPair()
+    const backupKeyPair = keyModule.generateNewKeyPair()
+    const serverKeyPair = keyModule.generateNewKeyPair()
 
-    const { address } = defaultAddressModule.generateNewMultisigAddress([
+    const { address } = addressModule.generateNewMultisigAddress([
       userKeyPair.pubKey,
       backupKeyPair.pubKey,
       serverKeyPair.pubKey
@@ -414,14 +414,14 @@ describe('sendCoins', () => {
           txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           n: 1,
           path: createPath(2, 0, 0),
-          amount: '6.5'
+          amount: new BigNumber('6.5')
         },
         {
           address,
           txHash: '10be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           n: 0,
           path: createPath(2, 0, 0),
-          amount: '0.5'
+          amount: new BigNumber('0.5')
         }
       ]
     })
@@ -462,12 +462,12 @@ describe('sendCoins', () => {
     stubCreateAddress('2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi')
 
     // generates keyPairs and address
-    const userKeyPair = defaultKeyModule.generateNewKeyPair()
-    const backupKeyPair = defaultKeyModule.generateNewKeyPair()
-    const serverKeyPair = defaultKeyModule.generateNewKeyPair()
-    const anotherKeyPair = defaultKeyModule.generateNewKeyPair()
+    const userKeyPair = keyModule.generateNewKeyPair()
+    const backupKeyPair = keyModule.generateNewKeyPair()
+    const serverKeyPair = keyModule.generateNewKeyPair()
+    const anotherKeyPair = keyModule.generateNewKeyPair()
 
-    const { address, redeemScript } = defaultAddressModule.generateNewMultisigAddress([
+    const { address, redeemScript } = addressModule.generateNewMultisigAddress([
       userKeyPair.pubKey,
       backupKeyPair.pubKey,
       serverKeyPair.pubKey
@@ -508,15 +508,15 @@ describe('sendCoins', () => {
 
     const [, , transactionHex] = sendTxMock.mock.calls[0]
 
-    const serverECPair = defaultKeyModule.deriveKey(serverKeyPair.prvKey!, '2/0/0').keyPair
-    const userECPair = defaultKeyModule.deriveKey(userKeyPair.prvKey!, '2/0/0').keyPair
-    const anotherECPair = defaultKeyModule.deriveKey(anotherKeyPair.prvKey!, '2/0/0').keyPair
+    const serverECPair = keyModule.deriveKey(serverKeyPair.prvKey!, '2/0/0').keyPair
+    const userECPair = keyModule.deriveKey(userKeyPair.prvKey!, '2/0/0').keyPair
+    const anotherECPair = keyModule.deriveKey(anotherKeyPair.prvKey!, '2/0/0').keyPair
 
     // recreates transaction builder
-    const tx = defaultBitcoinModule.txFromHex(transactionHex)
+    const tx = bitcoinModule.txFromHex(transactionHex)
     //@ts-ignore
     tx.ins[0].value = inputValueSatoshi
-    const txb = defaultBitcoinModule.txBuilderFromTx(tx)
+    const txb = bitcoinModule.txBuilderFromTx(tx)
 
     // should be able to sign with other keys without errors
 
@@ -546,11 +546,11 @@ describe('sendCoins to multiple outputs', () => {
 
   it('should send coins', async () => {
     // generates keyPairs and address
-    const userKeyPair = defaultKeyModule.generateNewKeyPair()
-    const backupKeyPair = defaultKeyModule.generateNewKeyPair()
-    const serverKeyPair = defaultKeyModule.generateNewKeyPair()
+    const userKeyPair = keyModule.generateNewKeyPair()
+    const backupKeyPair = keyModule.generateNewKeyPair()
+    const serverKeyPair = keyModule.generateNewKeyPair()
 
-    const { address } = defaultAddressModule.generateNewMultisigAddress([
+    const { address } = addressModule.generateNewMultisigAddress([
       userKeyPair.pubKey,
       backupKeyPair.pubKey,
       serverKeyPair.pubKey
@@ -599,7 +599,7 @@ describe('sendCoins to multiple outputs', () => {
     )
 
     const [, , transactionHex] = sendTxMock.mock.calls[0]
-    const tx = defaultBitcoinModule.txFromHex(transactionHex)
+    const tx = bitcoinModule.txFromHex(transactionHex)
 
     expect(tx.outs.length).to.be.eq(5)
     expect(tx.ins.length).to.be.eq(1)
@@ -685,11 +685,11 @@ describe('sendCoins and signTransaction', () => {
     stubCreateAddress('2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi')
 
     // generates keyPairs and address
-    const userKeyPair = defaultKeyModule.deriveKeyPair(defaultKeyModule.generateNewKeyPair(), ROOT_DERIVATION_PATH)
-    const backupKeyPair = defaultKeyModule.deriveKeyPair(defaultKeyModule.generateNewKeyPair(), ROOT_DERIVATION_PATH)
-    const serverKeyPair = defaultKeyModule.deriveKeyPair(defaultKeyModule.generateNewKeyPair(), ROOT_DERIVATION_PATH)
+    const userKeyPair = keyModule.deriveKeyPair(keyModule.generateNewKeyPair(), ROOT_DERIVATION_PATH)
+    const backupKeyPair = keyModule.deriveKeyPair(keyModule.generateNewKeyPair(), ROOT_DERIVATION_PATH)
+    const serverKeyPair = keyModule.deriveKeyPair(keyModule.generateNewKeyPair(), ROOT_DERIVATION_PATH)
 
-    const { address } = defaultAddressModule.generateNewMultisigAddress([
+    const { address } = addressModule.generateNewMultisigAddress([
       userKeyPair.pubKey,
       backupKeyPair.pubKey,
       serverKeyPair.pubKey
