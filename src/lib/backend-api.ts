@@ -323,6 +323,11 @@ export const withCurrency = (currency: Currency) => {
     return response.data
   }
 
+  const getFeesRates = async (): Promise<GetFeesRates> => {
+    const response = await request(`${getBackendApiUrl()}/${currency}/fees`, { method: 'GET' })
+    return response.data
+  }
+
 
   return {
     confirm2fa,
@@ -348,9 +353,4 @@ export const withCurrency = (currency: Currency) => {
     register,
     setupPassword
   }
-}
-
-export const getFeesRates = async (): Promise<GetFeesRates> => {
-  const response = await request(`${getBackendApiUrl()}/fees`, { method: 'GET' })
-  return response.data
 }
