@@ -42,7 +42,7 @@ export default (currency: Currency) => {
 
     const outputs = createOutputs(unspentsResponse, recipients, changeAddres)
     outputs.forEach((out: TxOut) => {
-      txb.addOutput(out.script, out.value.toNumber())
+      txb.addOutput(out.script, btcToSatoshi(out.value).toNumber())
     })
 
     signInputs(inputs, xprv, pubKeys, txb)
@@ -77,10 +77,10 @@ export default (currency: Currency) => {
 
   const createOutputs = (unspentsResponse: ListUnspentsBackendResponse, recipients: Recipient[], changeAddres: string): TxOut[] => {
     const { change, serviceFee } = unspentsResponse
-    const changeRecipient: Recipient = { address: changeAddres, amount: btcToSatoshi(new BigNumber(change)) }
+    const changeRecipient: Recipient = { address: changeAddres, amount: new BigNumber(change) }
     const serviceRecipient = serviceFee ? [{
       address: serviceFee.address,
-      amount: btcToSatoshi(new BigNumber(serviceFee.amount))
+      amount: new BigNumber(serviceFee.amount)
     }] : []
     const txOuts = recipients.concat(changeRecipient)
       .concat(serviceRecipient)
@@ -94,7 +94,7 @@ export default (currency: Currency) => {
       const derivedPubKeys = pubKeys.map((key: string) => keyApi.deriveKey(key, joinPath(uns.path!)).neutered().toBase58())
       const redeemScript = bitcoin.createMultisigRedeemScript(derivedPubKeys)
       // @ts-ignore
-      bitcoin.sign(txb, idx, signingKey, uns.amount,redeemScript)
+      bitcoin.sign(txb, idx, signingKey, new BigNumber(uns.amount),redeemScript)
     })
   }
 
