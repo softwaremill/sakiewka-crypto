@@ -31,7 +31,7 @@ const transactionModuleWithStubbedApiCalls = () => transactionModuleFactory(curr
 
 beforeEach(() => {
   // @ts-ignore
-  config.network = SUPPORTED_NETWORKS.bitcoin
+  config.networkFactory = (c : Currency) => SUPPORTED_NETWORKS[c].mainnet
   use(chaiBigNumber(BigNumber))
   use(chaiAsPromised)
   // mocks
@@ -85,10 +85,10 @@ describe('sendCoins', () => {
       '13',
       [{
         address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
-        amount: new BigNumber('500000000'),
+        amount: new BigNumber('5'),
       }, {
         address,
-        amount: new BigNumber('199990000')
+        amount: new BigNumber('1.99990000')
       }],
       userKeyPair.prvKey!,
     )
@@ -198,7 +198,7 @@ describe('sendCoins', () => {
 
     const promise = transactionModule.send('1234', '13', [{
       address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
-      amount: new BigNumber('500000000')
+      amount: new BigNumber('5')
     }], undefined, "secretPassword");
 
     await expect(promise).to.eventually.be.rejected
@@ -248,10 +248,10 @@ describe('sendCoins', () => {
       '13',
       [{
         address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
-        amount: new BigNumber('500000000')
+        amount: new BigNumber('5')
       },{
         address,
-        amount: new BigNumber('199990000')
+        amount: new BigNumber('1.99990000')
       }],
       undefined,
       "secretPassword"
@@ -296,7 +296,7 @@ describe('sendCoins', () => {
 
     const promise = transactionModule.send('1234', '13', [{
       address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
-      amount: new BigNumber('500000000')
+      amount: new BigNumber('5')
     }], undefined, "otherPassword");
 
     await expect(promise).to.eventually.be.rejected
@@ -306,7 +306,7 @@ describe('sendCoins', () => {
 
   it('should send coins to testnet', async () => {
     // @ts-ignore
-    config.network = SUPPORTED_NETWORKS.testnet
+    config.networkFactory = (c : Currency) => SUPPORTED_NETWORKS[c].testnet
     stubCreateAddress('2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi')
 
     // generates keyPairs and address
@@ -351,10 +351,10 @@ describe('sendCoins', () => {
       '13',
       [{
         address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi',
-        amount: new BigNumber('500000000')
+        amount: new BigNumber('5')
       }, {
         address,
-        amount: new BigNumber('199990000')
+        amount: new BigNumber('1.99990000')
       }],
       userKeyPair.prvKey!,
     )
@@ -436,7 +436,7 @@ describe('sendCoins', () => {
       [
         {
           address: '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM',
-          amount: new BigNumber('500000000')
+          amount: new BigNumber('5')
         },
         {
           address: '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM',
@@ -458,7 +458,7 @@ describe('sendCoins', () => {
 
   it('should have only three outputs when api does not return serviceFee details', async () => {
     // @ts-ignore
-    config.network = SUPPORTED_NETWORKS.testnet
+    config.networkFactory = (c : Currency) => SUPPORTED_NETWORKS[c].testnet
     stubCreateAddress('2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi')
 
     // generates keyPairs and address
@@ -498,10 +498,10 @@ describe('sendCoins', () => {
       '13',
       [{
         address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi',
-        amount: new BigNumber('500000000')
+        amount: new BigNumber('5')
       }, {
         address,
-        amount: new BigNumber('199990000')
+        amount: new BigNumber('1.99990000')
       }],
       userKeyPair.prvKey!,
     )
@@ -584,7 +584,7 @@ describe('sendCoins to multiple outputs', () => {
       [
         {
           address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
-          amount: new BigNumber('500000000')
+          amount: new BigNumber('5')
         },
         {
           address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
@@ -592,7 +592,7 @@ describe('sendCoins to multiple outputs', () => {
         },
         {
           address,
-          amount: new BigNumber('199900000')
+          amount: new BigNumber('1.99900000')
         },
       ],
       userKeyPair.prvKey!,
@@ -681,7 +681,7 @@ describe('signTransaction', () => {
 describe('sendCoins and signTransaction', () => {
   it('should send coins to testnet and signTransaction', async () => {
     // @ts-ignore
-    config.network = SUPPORTED_NETWORKS.testnet
+    config.networkFactory = (c : Currency) => SUPPORTED_NETWORKS[c].testnet
     stubCreateAddress('2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi')
 
     // generates keyPairs and address
@@ -723,10 +723,10 @@ describe('sendCoins and signTransaction', () => {
       '13',
       [{
         address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi',
-        amount: new BigNumber('500000000')
+        amount: new BigNumber('5')
       }, {
         address,
-        amount: new BigNumber('199990000')
+        amount: new BigNumber('1.99990000')
       }
 
       ],

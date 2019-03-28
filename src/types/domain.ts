@@ -71,10 +71,14 @@ export interface TxOut {
 }
 
 export interface SupportedNetworks {
-  bitcoin: Network,
-  testnet: Network,
-  regtest: Network,
-  bitcoingold: Network
-  bitcoingoldtestnet: Network
-  bitcoingoldregtest: Network
+  btc: {
+    mainnet: Network,
+    testnet: Network,
+    regtest: Network,
+  },
+  btg: {
+    mainnet: Network,
+    testnet: Network,
+    regtest: Network,
+  },
 }
