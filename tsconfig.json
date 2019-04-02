@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-      "declaration": true,
+//      "declaration": true, //TODO - WŁĄCZYĆ PO CZWRATKU!
       "module": "commonjs",
       "lib": ["es7", "dom"],
       "esModuleInterop": true,
