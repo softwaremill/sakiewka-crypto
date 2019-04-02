@@ -1,7 +1,6 @@
 import { Currency, Recipient, WalletParams } from '../types/domain'
 import { ROOT_DERIVATION_PATH } from './constants'
 import { CreateWalletBackendParams, GetUtxosBackendParams, MaxTransferAmountParams, ReceipientsBackend } from 'response'
-import { satoshiToBtc } from './utils/helpers'
 import { generatePdf } from './keycard-pdf'
 import keyFactory from './key'
 import * as backendApiFactory from './backend-api'
@@ -54,7 +53,7 @@ export default (currency: Currency) => {
       feeRate,
       recipients: recipients.map((r: Recipient) => <ReceipientsBackend>({
         address: r.address,
-        amount: satoshiToBtc(r.amount).toString()
+        amount: r.amount.toString()
       }))
     }
     return backendApi.listUnspents(token, walletId, <GetUtxosBackendParams>params)

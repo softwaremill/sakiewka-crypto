@@ -134,7 +134,7 @@ describe('listUnspents', () => {
 
     const res = await wallet.listUnspents('testToken', 'walletId', '2', [{
       address: '0x1',
-      amount: new BigNumber(123)
+      amount: new BigNumber('0.00000123')
     }])
 
     const [token, walletId, { feeRate, recipients }] = mockImplementation.mock.calls[0]

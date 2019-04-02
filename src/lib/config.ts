@@ -1,5 +1,11 @@
 import { SUPPORTED_NETWORKS } from './constants'
+import { Currency } from '../types/domain';
 
-// @ts-ignore
-export const network = SUPPORTED_NETWORKS[process.env.BTC_NETWORK] || SUPPORTED_NETWORKS.bitcoin
-console.log(`*** SAKIEWKA-CRYPTO NETWORK IS SET TO ${JSON.stringify(network)}`)
+export const networkFactory = (currency : Currency) => {
+  const envNetwork = (process.env.BTC_NETWORK || 'mainnet').toLowerCase();
+  const network = SUPPORTED_NETWORKS[currency][envNetwork];
+  if(network == null) {
+    throw new Error(`There is no network for ${currency} and ${envNetwork}`)
+  }
+  return network
+}

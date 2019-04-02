@@ -2,13 +2,15 @@ import { expect } from 'chai'
 
 import { currency } from './helpers'
 import addressModuleFactory from '../address'
-const addressModule  = addressModuleFactory(currency)
+
+const addressModule = addressModuleFactory(currency)
 import * as config from '../config'
 import { SUPPORTED_NETWORKS } from "../constants";
+import { Currency } from "../../types/domain";
 
 beforeEach(() => {
   // @ts-ignore
-  config.network = SUPPORTED_NETWORKS.bitcoin
+  config.networkFactory = (c: Currency) => SUPPORTED_NETWORKS[c].mainnet
 })
 
 describe('generateNewMultisigAddress', () => {
@@ -27,13 +29,13 @@ describe('generateNewMultisigAddress', () => {
       pubKeys,
       '0/23')
 
-    expect(address).to.be.equal('37eVs6zAEe5R74LhT8QoKa3hdnrB8yRqY9')
+    expect(address).to.be.equal(currency == Currency.BTG ? 'AMjMb4MM1tRBprrFtgQY3pwrxsV9tXfdPM' : '37eVs6zAEe5R74LhT8QoKa3hdnrB8yRqY9')
     expect(redeemScript).to.be.an('Uint8Array')
   })
 
   it('should return proper testnet address', () => {
     // @ts-ignore
-    config.network = SUPPORTED_NETWORKS.testnet
+    config.networkFactory = (c: Currency) => SUPPORTED_NETWORKS[c].testnet
     const pubKeys = [
       'tpubD6NzVbkrYhZ4YLQpJAWwxCiNVAH13QSiFHWWTRmocy5zCMN6Nr8fbLVN38Y5nu7KwZ24ux74qotyyNkeF9KN52Gawcjr4ujHkQUDTBmw8Bu',
       'tpubD6NzVbkrYhZ4YWW2LBu48ZLMDtU6YZNug3dArpmhCZVCeRduVLF9FRNaLbwkND5Twf4DS1aXuFqvYd1S4BBTFGwjDM7iy1CK8vuwJHYqpdd',

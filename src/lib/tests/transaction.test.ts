@@ -28,15 +28,23 @@ const addressModule = addressModuleFactory(currency)
 const bitcoinModule = bitcoinModuleFactory(currency)
 
 const transactionModuleWithStubbedApiCalls = () => transactionModuleFactory(currency)
+const changeAddress = currency == Currency.BTG ? 'ATWyG3xpRdyYy1K6HBdVPBi629W4DNnB9m' : '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM'
+const serviceAddress = currency == Currency.BTG ? 'AWu3T7CWXXLxrHwuQ4tnHtubpdp1LHUZUK' : '3AnzyVbVSwfrre3vzQLwVMgZ34HH2Ja22d'
+const destinationAddress = currency == Currency.BTG ? 'Gh6q8MweJFqU5nVuoS8TC4hmPsAJJEtVuA' : '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN'
+
+const testnetChangeAddress = '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi'
+const testnetServiceAddress = '2Mw4fCozNRMZE95rJBk25J4MvRJzwkQyVxg'
+const testnetDestinationAddress = '2Mt42Wi2JBbAc6Q4GXsxDWbkDTwaEQhqoEM'
+
 
 beforeEach(() => {
   // @ts-ignore
-  config.network = SUPPORTED_NETWORKS.bitcoin
+  config.networkFactory = (c : Currency) => SUPPORTED_NETWORKS[c].mainnet
   use(chaiBigNumber(BigNumber))
   use(chaiAsPromised)
   // mocks
   // @ts-ignore
-  stubCreateAddress('3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM')
+  stubCreateAddress(changeAddress)
 })
 
 describe('sendCoins', () => {
@@ -63,7 +71,7 @@ describe('sendCoins', () => {
       change: 1.9,
       serviceFee: {
         amount: '0.09',
-        address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN'
+        address: destinationAddress
       },
       outputs: [
         {
@@ -84,11 +92,11 @@ describe('sendCoins', () => {
       '1234',
       '13',
       [{
-        address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
-        amount: new BigNumber('500000000'),
+        address: destinationAddress,
+        amount: new BigNumber('5'),
       }, {
         address,
-        amount: new BigNumber('199990000')
+        amount: new BigNumber('1.99990000')
       }],
       userKeyPair.prvKey!,
     )
@@ -133,7 +141,7 @@ describe('sendCoins', () => {
       change: 1.9,
       serviceFee: {
         amount: '0.09',
-        address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN'
+        address: serviceAddress
       },
       outputs: [
         {
@@ -154,7 +162,7 @@ describe('sendCoins', () => {
     const transactionModule = transactionModuleWithStubbedApiCalls()
 
     const promise = transactionModule.send('1234', '13', [{
-      address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
+      address: serviceAddress,
       amount: new BigNumber('5')
     }]);
     await expect(promise).to.eventually.be.rejected
@@ -177,7 +185,7 @@ describe('sendCoins', () => {
       change: 1.9,
       serviceFee: {
         amount: '0.09',
-        address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN'
+        address: serviceAddress
       },
       outputs: [
         {
@@ -197,8 +205,8 @@ describe('sendCoins', () => {
     const transactionModule = transactionModuleWithStubbedApiCalls()
 
     const promise = transactionModule.send('1234', '13', [{
-      address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
-      amount: new BigNumber('500000000')
+      address: destinationAddress,
+      amount: new BigNumber('5')
     }], undefined, "secretPassword");
 
     await expect(promise).to.eventually.be.rejected
@@ -223,7 +231,7 @@ describe('sendCoins', () => {
       change: 1.9,
       serviceFee: {
         amount: '0.09',
-        address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN'
+        address: serviceAddress
       },
       outputs: [
         {
@@ -247,11 +255,11 @@ describe('sendCoins', () => {
       '1234',
       '13',
       [{
-        address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
-        amount: new BigNumber('500000000')
+        address: destinationAddress,
+        amount: new BigNumber('5')
       },{
         address,
-        amount: new BigNumber('199990000')
+        amount: new BigNumber('1.99990000')
       }],
       undefined,
       "secretPassword"
@@ -274,7 +282,7 @@ describe('sendCoins', () => {
       change: 1.9,
       serviceFee: {
         amount: '0.09',
-        address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN'
+        address: serviceAddress
       },
       outputs: [
         {
@@ -295,8 +303,8 @@ describe('sendCoins', () => {
     const transactionModule = transactionModuleWithStubbedApiCalls()
 
     const promise = transactionModule.send('1234', '13', [{
-      address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
-      amount: new BigNumber('500000000')
+      address: destinationAddress,
+      amount: new BigNumber('5')
     }], undefined, "otherPassword");
 
     await expect(promise).to.eventually.be.rejected
@@ -306,8 +314,8 @@ describe('sendCoins', () => {
 
   it('should send coins to testnet', async () => {
     // @ts-ignore
-    config.network = SUPPORTED_NETWORKS.testnet
-    stubCreateAddress('2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi')
+    config.networkFactory = (c : Currency) => SUPPORTED_NETWORKS[c].testnet
+    stubCreateAddress(testnetChangeAddress)
 
     // generates keyPairs and address
 
@@ -328,7 +336,7 @@ describe('sendCoins', () => {
       change: 1.9,
       serviceFee: {
         amount: 0.09,
-        address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi'
+        address: testnetServiceAddress
       },
       outputs: [
         {
@@ -350,11 +358,11 @@ describe('sendCoins', () => {
       '1234',
       '13',
       [{
-        address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi',
-        amount: new BigNumber('500000000')
+        address: testnetDestinationAddress,
+        amount: new BigNumber('5')
       }, {
         address,
-        amount: new BigNumber('199990000')
+        amount: new BigNumber('1.99990000')
       }],
       userKeyPair.prvKey!,
     )
@@ -406,7 +414,7 @@ describe('sendCoins', () => {
       change: 1.9,
       serviceFee: {
         amount: 0.09,
-        address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN'
+        address: serviceAddress
       },
       outputs: [
         {
@@ -435,11 +443,11 @@ describe('sendCoins', () => {
       '13',
       [
         {
-          address: '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM',
-          amount: new BigNumber('500000000')
+          address: destinationAddress,
+          amount: new BigNumber('5')
         },
         {
-          address: '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM',
+          address: destinationAddress,
           amount: new BigNumber('1500')
         }
       ],
@@ -458,8 +466,8 @@ describe('sendCoins', () => {
 
   it('should have only three outputs when api does not return serviceFee details', async () => {
     // @ts-ignore
-    config.network = SUPPORTED_NETWORKS.testnet
-    stubCreateAddress('2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi')
+    config.networkFactory = (c : Currency) => SUPPORTED_NETWORKS[c].testnet
+    stubCreateAddress(testnetChangeAddress)
 
     // generates keyPairs and address
     const userKeyPair = keyModule.generateNewKeyPair()
@@ -497,11 +505,11 @@ describe('sendCoins', () => {
       '1234',
       '13',
       [{
-        address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi',
-        amount: new BigNumber('500000000')
+        address: testnetDestinationAddress,
+        amount: new BigNumber('5')
       }, {
         address,
-        amount: new BigNumber('199990000')
+        amount: new BigNumber('1.99990000')
       }],
       userKeyPair.prvKey!,
     )
@@ -561,7 +569,7 @@ describe('sendCoins to multiple outputs', () => {
       change: 1.9,
       serviceFee: {
         amount: 0.09,
-        address: '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM'
+        address: serviceAddress
       },
       outputs: [
         {
@@ -583,16 +591,16 @@ describe('sendCoins to multiple outputs', () => {
       '13',
       [
         {
-          address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
-          amount: new BigNumber('500000000')
+          address: destinationAddress,
+          amount: new BigNumber('5')
         },
         {
-          address: '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN',
+          address: destinationAddress,
           amount: new BigNumber('1500')
         },
         {
           address,
-          amount: new BigNumber('199900000')
+          amount: new BigNumber('1.99900000')
         },
       ],
       userKeyPair.prvKey!,
@@ -614,9 +622,7 @@ describe('decodeTransaction', () => {
 
   it('shoud decode transaction', () => {
     const txHex = '0100000001145bb243544451ead3b8694a9597dc5e93583c0172ca16a2f2c74c8fd698be1102000000b40047304402205d30d1796f373290e554284fd333e3ea287709063b0461dae4577b2180787e980220121677e33785cc82b26b6a2146a34a759d15e5194dcf84c93db24e9ebcc6e374014c6952210214d16a77e4ddaa07d6dbef0ea757ea5d56f26b9bfc85534227004005c4ce102b2103e7cd55f382bcf7269dd813edd445d67de5c729b543bb20e31073ed835f661e322102c292a1d33bb482d6ab53a7328c0d0211808a785cc8769a9ac01cb3550144f37b53aeffffffff020065cd1d000000001976a914ff1cb7a5b23491534c66e7638f56d852ad47542288acf6bceb0b0000000017a91480cff499983050ec4268d749a1f898bec53e9fc28700000000'
-    const changeAddress = '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM'
     const changeAmount = new BigNumber('1.99998710')
-    const recipientAddress = '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN'
     const sentAmount = new BigNumber('5')
     const utxoTxHash = '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14'
     const utxoTxId = 2
@@ -635,7 +641,7 @@ describe('decodeTransaction', () => {
     expect(result.outputs).to.have.lengthOf(2)
     // @ts-ignore
     expect(result.outputs[0].amount).to.be.bignumber.eq(sentAmount)
-    expect(result.outputs[0].address).to.eq(recipientAddress)
+    expect(result.outputs[0].address).to.eq(destinationAddress)
     // @ts-ignore
     expect(result.outputs[1].amount).to.be.bignumber.eq(changeAmount)
     expect(result.outputs[1].address).to.eq(changeAddress)
@@ -681,8 +687,8 @@ describe('signTransaction', () => {
 describe('sendCoins and signTransaction', () => {
   it('should send coins to testnet and signTransaction', async () => {
     // @ts-ignore
-    config.network = SUPPORTED_NETWORKS.testnet
-    stubCreateAddress('2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi')
+    config.networkFactory = (c : Currency) => SUPPORTED_NETWORKS[c].testnet
+    stubCreateAddress(testnetChangeAddress)
 
     // generates keyPairs and address
     const userKeyPair = keyModule.deriveKeyPair(keyModule.generateNewKeyPair(), ROOT_DERIVATION_PATH)
@@ -709,7 +715,7 @@ describe('sendCoins and signTransaction', () => {
       change: 1.9,
       serviceFee: {
         amount: 0.09,
-        address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi'
+        address: testnetServiceAddress
       },
       outputs: unspents
     })
@@ -722,11 +728,11 @@ describe('sendCoins and signTransaction', () => {
       '1234',
       '13',
       [{
-        address: '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi',
-        amount: new BigNumber('500000000')
+        address: testnetDestinationAddress,
+        amount: new BigNumber('5')
       }, {
         address,
-        amount: new BigNumber('199990000')
+        amount: new BigNumber('1.99990000')
       }
 
       ],

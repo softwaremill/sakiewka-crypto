@@ -3,12 +3,13 @@ import keyFactory from '../key'
 import addressModuleFactory from '../address'
 import * as config from '../config'
 import * as constants from '../constants'
+import { Currency } from "../../types/domain";
 const key = keyFactory(currency)
 const addressModule = addressModuleFactory(currency)
 
 beforeEach(() => {
   // @ts-ignore
-  config.network = constants.SUPPORTED_NETWORKS.testnet
+  config.networkFactory = (c:Currency) => constants.SUPPORTED_NETWORKS[c].testnet
 })
 
 describe('test data', () => {
