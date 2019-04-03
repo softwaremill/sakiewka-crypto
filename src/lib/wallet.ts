@@ -1,13 +1,11 @@
-import { Currency, Recipient, WalletParams } from '../types/domain'
+import { Recipient, WalletParams } from '../types/domain'
 import { ROOT_DERIVATION_PATH } from './constants'
 import { CreateWalletBackendParams, GetUtxosBackendParams, MaxTransferAmountParams, ReceipientsBackend } from 'response'
 import { generatePdf } from './keycard-pdf'
-import keyFactory from './key'
-import * as backendApiFactory from './backend-api'
+import { KeyModule } from './key'
+import { CurrencyBackendApi } from './backend-api';
 
-export default (backendApiUrl: string, currency: Currency, btcNetwork: string) => {
-  const keyModule = keyFactory(backendApiUrl, currency, btcNetwork)
-  const backendApi = backendApiFactory.withCurrency(backendApiUrl, currency)
+export default (backendApi: CurrencyBackendApi, keyModule: KeyModule) => {
 
   const createWallet = async (userToken: string, params: WalletParams): Promise<any> => {
     const userKeyPair = params.userPubKey ?

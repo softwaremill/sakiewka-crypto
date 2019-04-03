@@ -3,9 +3,9 @@ import { expect } from 'chai'
 import { currency } from './helpers'
 import * as backendApiFactory from '../backend-api'
 import keyModuleFactory from '../key'
+import bitoinFactory from '../bitcoin'
 
 const backendApi = backendApiFactory.withCurrency("http://backendApiUrl", currency)
-
 // @ts-ignore
 backendApi.createWallet = jest.fn(() => {
   return Promise.resolve({
@@ -16,12 +16,15 @@ backendApi.createWallet = jest.fn(() => {
 describe('generateNewKeyPair', () => {
   
   it('should exist', () => {
-    const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'mainnet')
+    const bitcoin = bitoinFactory(currency, 'mainnet')
+    const keyModule = keyModuleFactory(backendApi, bitcoin)
     expect(keyModule.generateNewKeyPair).to.be.a('function')
   })
 
   it('should return new keyPair', () => {
-    const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'mainnet')
+    const bitcoin = bitoinFactory(currency, 'mainnet')
+    const keyModule = keyModuleFactory(backendApi, bitcoin)
+
     const result = keyModule.generateNewKeyPair()
 
     expect(result).to.haveOwnProperty('pubKey')
@@ -32,8 +35,8 @@ describe('generateNewKeyPair', () => {
   })
 
   it('should return new testnet keyPair', () => {
-    const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'testnet')
-
+    const bitcoin = bitoinFactory(currency, 'testnet')
+    const keyModule = keyModuleFactory(backendApi, bitcoin)
 
     const result = keyModule.generateNewKeyPair()
 
@@ -45,8 +48,9 @@ describe('generateNewKeyPair', () => {
   })
 
   it('should return new regtest keyPair', () => {
-    // @ts-ignore
-    const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'regtest')
+    const bitcoin = bitoinFactory(currency, 'regtest')
+    const keyModule = keyModuleFactory(backendApi, bitcoin)
+
     const result = keyModule.generateNewKeyPair()
 
     expect(result).to.haveOwnProperty('pubKey')
@@ -58,7 +62,8 @@ describe('generateNewKeyPair', () => {
 })
 
 describe('encryptKeyPair', () => {
-  const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'mainnet')
+  const bitcoin = bitoinFactory(currency, 'mainnet')
+  const keyModule = keyModuleFactory(backendApi, bitcoin)
   it('should exist', () => {
     expect(keyModule.encryptKeyPair).to.be.a('function')
   })
@@ -75,12 +80,14 @@ describe('encryptKeyPair', () => {
 
 describe('deriveKey', () => {
   it('should exist', () => {
-    const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'mainnet')
+    const bitcoin = bitoinFactory(currency, 'mainnet')
+    const keyModule = keyModuleFactory(backendApi, bitcoin)
     expect(keyModule.deriveKey).to.be.a('function')
   })
 
   it('should create new hardened key for a given path', () => {
-    const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'mainnet')
+    const bitcoin = bitoinFactory(currency, 'mainnet')
+    const keyModule = keyModuleFactory(backendApi, bitcoin)
     const path = `0'`
     const keyPair = keyModule.generateNewKeyPair()
 
@@ -90,7 +97,8 @@ describe('deriveKey', () => {
   })
 
   it('should create new normal key for a given path', () => {
-    const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'mainnet')
+    const bitcoin = bitoinFactory(currency, 'mainnet')
+    const keyModule = keyModuleFactory(backendApi, bitcoin)
     const path = `11/20/15`
     const keyPair = keyModule.generateNewKeyPair()
 
@@ -101,7 +109,8 @@ describe('deriveKey', () => {
   })
 
   it('should work the same for relative and absolute paths', () => {
-    const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'mainnet')
+    const bitcoin = bitoinFactory(currency, 'mainnet')
+    const keyModule = keyModuleFactory(backendApi, bitcoin)
     const basePath = `m/45'/0`
     const relativePath = '0/0'
 
@@ -128,7 +137,8 @@ describe('deriveKey', () => {
   })
 
   it('should create testnet key', () => {
-    const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'testnet')
+    const bitcoin = bitoinFactory(currency, 'testnet')
+    const keyModule = keyModuleFactory(backendApi, bitcoin)
     const path = `11/20/15`
     const keyPair = keyModule.generateNewKeyPair()
 
@@ -140,7 +150,8 @@ describe('deriveKey', () => {
 })
 
 describe('deriveKeyPair', () => {
-  const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'mainnet')
+  const bitcoin = bitoinFactory(currency, 'mainnet')
+  const keyModule = keyModuleFactory(backendApi, bitcoin)
   it('should exist', () => {
     expect(keyModule.deriveKeyPair).to.be.a('function')
   })
@@ -157,7 +168,8 @@ describe('deriveKeyPair', () => {
 })
 
 describe('getKey', () => {
-  const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'mainnet')
+  const bitcoin = bitoinFactory(currency, 'mainnet')
+  const keyModule = keyModuleFactory(backendApi, bitcoin)
   it('should exist', () => {
     expect(keyModule.getKey).to.be.a('function')
   })

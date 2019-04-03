@@ -1,11 +1,9 @@
 import * as btgLib from 'bgoldjs-lib'
 import { Transaction, TransactionBuilder, ECPair } from "bgoldjs-lib";
 import { BitcoinOperations } from "./bitcoin-operations";
-import { networkFactory } from "./config";
 import { btcToSatoshi } from "./utils/helpers";
 import BigNumber from "bignumber.js";
 import { Currency } from '../types/domain';
-
 
 export default class BtgOperations extends BitcoinOperations {
   protected bitcoinLib = btgLib
@@ -17,7 +15,7 @@ export default class BtgOperations extends BitcoinOperations {
   }
 
   initializeTxBuilder = (): TransactionBuilder => {
-    const txb = new this.bitcoinLib.TransactionBuilder(networkFactory(this.btcNetwork, this.currency))
+    const txb = new this.bitcoinLib.TransactionBuilder(this.network)
     txb.setVersion(2)
     txb.enableBitcoinGold(true)
     return txb
@@ -25,6 +23,6 @@ export default class BtgOperations extends BitcoinOperations {
 
   txBuilderFromTx = (tx: Transaction): TransactionBuilder => {
     const forkid = Transaction.FORKID_BTG;
-    return btgLib.TransactionBuilder.fromTransaction(tx, networkFactory(this.btcNetwork, this.currency), forkid)
+    return btgLib.TransactionBuilder.fromTransaction(tx, this.network, forkid)
   }
 }

@@ -5,12 +5,7 @@ import * as backendApiFactory from '../backend-api'
 import { hashPassword } from '../crypto';
 
 const api = backendApiFactory.create("http://backendApiUrl")
-// @ts-ignore
-backendApiFactory.create = (u) => {
-  return api
-}
-
-const user = userFactory("http://backendApiUrl")
+const user = userFactory(api)
 
 describe('login', () => {
   it('should exist', () => {

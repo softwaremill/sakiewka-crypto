@@ -1,14 +1,19 @@
-import { Currency, KeyPair } from '../types/domain'
+import { KeyPair } from '../types/domain'
 import { getRandomBytes, encrypt } from './crypto'
 import { HDNode } from 'bitcoinjs-lib'
-import bitcoinFactory from './bitcoin'
-import * as backendApiFactory from './backend-api'
+import { CurrencyBackendApi } from './backend-api';
+import { BitcoinOperations } from './bitcoin-operations';
+import { GetKeyBackendResponse } from 'response';
 
+export interface KeyModule {
+  generateNewKeyPair(path?: string): KeyPair
+  encryptKeyPair(keyPair: KeyPair, passphrase: string): KeyPair
+  deriveKeyPair(keyPair: KeyPair, path: string): KeyPair
+  deriveKey(rootKey: string, path: string): HDNode
+  getKey(userToken: string, keyId: string, includePrivate?: boolean): Promise<GetKeyBackendResponse>
+}
 
-export default (backendApiUrl:string, currency: Currency, btcNetwork: string) => {
-  const backendApi = backendApiFactory.withCurrency(backendApiUrl, currency)
-  const bitcoin = bitcoinFactory(currency, btcNetwork)
-
+export default (backendApi: CurrencyBackendApi, bitcoin: BitcoinOperations): KeyModule => {
   const generateNewKeyPair = (
     path?: string
   ): KeyPair => {
@@ -58,8 +63,7 @@ export default (backendApiUrl:string, currency: Currency, btcNetwork: string) =>
     userToken: string,
     keyId: string,
     includePrivate?: boolean
-  ) => backendApi.getKey(userToken, keyId, includePrivate)
+  ): Promise<GetKeyBackendResponse> => backendApi.getKey(userToken, keyId, includePrivate)
 
   return { generateNewKeyPair, encryptKeyPair, deriveKeyPair, deriveKey, getKey }
-
 }

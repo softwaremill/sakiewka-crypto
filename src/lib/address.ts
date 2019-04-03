@@ -1,20 +1,16 @@
-import { Currency } from "../types/domain";
-import * as backendApiFactory from './backend-api'
-import bitcoinFactory from './bitcoin'
-import keyFactory from './key'
+import { KeyModule } from './key'
+import { CurrencyBackendApi } from "./backend-api";
+import { BitcoinOperations } from "./bitcoin-operations";
 
-export default (backendApiUrl: string, currency: Currency, btcNetwork: string) => {
-  const backendApi = backendApiFactory.withCurrency(backendApiUrl, currency)
-  const bitcoin = bitcoinFactory(currency, btcNetwork)
-  const keyApi = keyFactory(backendApiUrl, currency, btcNetwork)
+export default (backendApi: CurrencyBackendApi, bitcoinOps: BitcoinOperations, keyModule: KeyModule) => {
 
   const generateNewMultisigAddress = (rootKeys: String[], path: string): any => {
     const derivedKeys = rootKeys.map((rootKey: string) => {
-      return keyApi.deriveKey(rootKey, path).neutered().toBase58()
+      return keyModule.deriveKey(rootKey, path).neutered().toBase58()
     })
 
-    const redeemScript = bitcoin.createMultisigRedeemScript(derivedKeys)
-    const address = bitcoin.redeemScriptToAddress(redeemScript)
+    const redeemScript = bitcoinOps.createMultisigRedeemScript(derivedKeys)
+    const address = bitcoinOps.redeemScriptToAddress(redeemScript)
 
     return { address, redeemScript }
   }

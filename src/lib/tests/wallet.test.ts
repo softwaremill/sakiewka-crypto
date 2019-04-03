@@ -6,13 +6,13 @@ import * as backendApiFactory from '../backend-api'
 import BigNumber from 'bignumber.js'
 import chaiBigNumber from 'chai-bignumber'
 import * as pdfGen from '../keycard-pdf'
+import keyFactory from '../key'
+import bitcoinFactory from '../bitcoin'
 const backendApi = backendApiFactory.withCurrency("http://backendApiUrl", currency)
-// @ts-ignore
-backendApiFactory.withCurrency = (u, c) => {
-  expect(c).to.eq(currency)
-  return backendApi
-}
-const wallet = walletModuleFactory("http://backendApiUrl", currency, 'mainnet')
+
+const bitcoinOperation = bitcoinFactory(currency, 'mainnet')
+const keyModule = keyFactory(backendApi, bitcoinOperation)
+const wallet = walletModuleFactory(backendApi, keyModule)
 
 beforeEach(() => {
   use(chaiBigNumber(BigNumber))

@@ -1,8 +1,7 @@
-import { create } from './backend-api'
+import { BaseBackendApi } from './backend-api'
 import { hashPassword } from './crypto';
 
-export default (backendApiUrl: string) => {
-  const backend = create(backendApiUrl)
+export default (backend: BaseBackendApi) => {
 
   const login = (login: string, password: string, code?: number) => {
     return backend.login(login, hashPassword(password), code)

@@ -21,12 +21,26 @@ import {
   MaxTransferAmountResponse,
   MontlySummaryBackendResponse,
   SetupPasswordBackendResponse,
-  ListTransfersBackendResponse
+  ListTransfersBackendResponse,
+  ChainInfoResponse
 } from 'response'
 import request from './utils/request'
 import { Currency } from "../types/domain";
 
-export const create = (backendApiUrl: string) => {
+export interface BaseBackendApi {
+  login(login: string, password: string, codeIn?: number): Promise<LoginBackendResponse>
+  init2fa(token: string, password: string): Promise<Init2faBackendResponse>
+  confirm2fa(token: string, password: string, code: number): Promise<Confirm2faBackendResponse>
+  disable2fa(token: string, password: string, code: number): Promise<Disable2faBackendResponse>
+  register(login: string): Promise<RegisterBackendResponse>
+  setupPassword(token: string, password: String): Promise<SetupPasswordBackendResponse>
+  info(token: string): Promise<InfoBackendResponse>
+  monthlySummary(token: string, month: number, year: number, fiatCurrency: number): Promise<MontlySummaryBackendResponse>
+  listTransfers(token: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListTransfersBackendResponse>
+  chainInfo(): Promise<ChainInfoResponse>
+}
+
+export const create = (backendApiUrl: string): BaseBackendApi => {
   // BTC
   // user
   const login = async (login: string, password: string, codeIn?: number): Promise<LoginBackendResponse> => {
@@ -147,7 +161,7 @@ export const create = (backendApiUrl: string) => {
     return response.data
   }
 
-  const chainInfo = async () => {
+  const chainInfo = async (): Promise<ChainInfoResponse> => {
     const options = { method: 'GET' }
     const response = await request(`${backendApiUrl}/chain-info`, options)
     return response.data
@@ -167,9 +181,23 @@ export const create = (backendApiUrl: string) => {
   }
 }
 
-export const withCurrency = (backendApiUrl: string, currency: Currency) => {
+export interface CurrencyBackendApi {
+  createNewAddress(token: string, walletId: string, change: boolean, name?: string): Promise<CreateNewAddressBackendResponse>,
+  createWallet(token: string, params: CreateWalletBackendParams): Promise<CreateWalletBackendResponse>,
+  getAddress(token: string, walletId: string, address: string): Promise<GetAddressBackendResponse>,
+  getKey(token: string, keyId: string, includePrivate?: boolean): Promise<GetKeyBackendResponse>,
+  getWallet(token: string, walletId: string): Promise<GetWalletBackendResponse>,
+  getWalletBalance(token: string, walletId: string): Promise<GetWalletBalanceBackendResponse>,
+  listAddresses(token: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListAddressesBackendResponse>,
+  listUnspents(token: string, walletId: string, params: GetUtxosBackendParams): Promise<ListUnspentsBackendResponse>,
+  listWallets(token: string, limit: number, nextPageToken?: string): Promise<ListWalletsBackendResponse>,
+  sendTransaction(token: string, walletId: string, txHex: string): Promise<any>,
+  getFeesRates(): Promise<GetFeesRates>,
+  maxTransferAmount(token: string, walletId: string, params: MaxTransferAmountParams): Promise<MaxTransferAmountResponse>
+}
 
-  const baseApi = create(backendApiUrl)
+export const withCurrency = (backendApiUrl: string, currency: Currency): CurrencyBackendApi => {
+
   // wallet
   const createWallet = async (
     token: string,
@@ -349,7 +377,7 @@ export const withCurrency = (backendApiUrl: string, currency: Currency) => {
   }
 
 
-  return {
+  return <CurrencyBackendApi>{
     createNewAddress,
     createWallet,
     getAddress,
@@ -361,7 +389,6 @@ export const withCurrency = (backendApiUrl: string, currency: Currency) => {
     listWallets,
     sendTransaction,
     getFeesRates,
-    maxTransferAmount,
-    ...baseApi
+    maxTransferAmount
   }
 }

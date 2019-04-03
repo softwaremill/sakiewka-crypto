@@ -1,21 +1,17 @@
-import { Currency, DecodedTx, Key, KeyType, Path, Recipient, TxOut, UTXO } from '../types/domain'
+import { DecodedTx, Key, KeyType, Path, Recipient, TxOut, UTXO } from '../types/domain'
 import { TransactionBuilder } from 'bgoldjs-lib';
 import { GetKeyBackendResponse, GetWalletBackendResponse, ListUnspentsBackendResponse } from 'response';
 import BigNumber from "bignumber.js";
 import { btcToSatoshi, satoshiToBtc } from './utils/helpers'
 import { decrypt } from './crypto';
 import { API_ERROR } from './constants';
-import * as backendApiFactory from './backend-api'
-import bitcoinFactory from './bitcoin'
-import keyFactory from './key'
+import { KeyModule } from './key'
 import walletApiFactory from './wallet'
+import { CurrencyBackendApi } from './backend-api';
+import { BitcoinOperations } from './bitcoin-operations';
 
-
-export default (backendApiUrl: string, currency: Currency, btcNetwork: string) => {
-  const backendApi = backendApiFactory.withCurrency(backendApiUrl, currency)
-  const bitcoin = bitcoinFactory(currency, btcNetwork)
-  const keyApi = keyFactory(backendApiUrl, currency, btcNetwork)
-  const walletApi = walletApiFactory(backendApiUrl, currency, btcNetwork)
+export default (backendApi: CurrencyBackendApi, keyModule: KeyModule, bitcoin: BitcoinOperations) => {
+  const walletApi = walletApiFactory(backendApi, keyModule)
 
   const joinPath = (path: Path): string =>
     `${path.cosignerIndex}/${path.change}/${path.addressIndex}`
@@ -90,8 +86,8 @@ export default (backendApiUrl: string, currency: Currency, btcNetwork: string) =
 
   const signInputs = (unspents: UTXO[], xprv: string, pubKeys: string[], txb: TransactionBuilder) => {
     unspents.forEach((uns: UTXO, idx: number) => {
-      const signingKey = keyApi.deriveKey(xprv, joinPath(uns.path!)).keyPair
-      const derivedPubKeys = pubKeys.map((key: string) => keyApi.deriveKey(key, joinPath(uns.path!)).neutered().toBase58())
+      const signingKey = keyModule.deriveKey(xprv, joinPath(uns.path!)).keyPair
+      const derivedPubKeys = pubKeys.map((key: string) => keyModule.deriveKey(key, joinPath(uns.path!)).neutered().toBase58())
       const redeemScript = bitcoin.createMultisigRedeemScript(derivedPubKeys)
       // @ts-ignore
       bitcoin.sign(txb, idx, signingKey, new BigNumber(uns.amount), redeemScript)
@@ -120,7 +116,7 @@ export default (backendApiUrl: string, currency: Currency, btcNetwork: string) =
     const txb = bitcoin.txBuilderFromTx(tx)
 
     unspents.forEach((uns: UTXO, idx: number) => {
-      const signingKey = keyApi.deriveKey(xprv, joinPath(uns.path!)).keyPair
+      const signingKey = keyModule.deriveKey(xprv, joinPath(uns.path!)).keyPair
       bitcoin.sign(txb, idx, signingKey, uns.amount)
     })
 

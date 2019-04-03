@@ -1,7 +1,6 @@
 import * as btcLib from 'bitcoinjs-lib'
 import { ECPair, Transaction, TransactionBuilder } from 'bitcoinjs-lib'
 import { BitcoinOperations } from "./bitcoin-operations";
-import { networkFactory } from "./config";
 import { BigNumber } from "bignumber.js";
 import { Currency } from '../types/domain';
 
@@ -14,10 +13,10 @@ export default class BtcOperations extends BitcoinOperations {
   }
 
   initializeTxBuilder = (): TransactionBuilder => {
-    return new this.bitcoinLib.TransactionBuilder(networkFactory(this.btcNetwork, this.currency))
+    return new this.bitcoinLib.TransactionBuilder(this.network)
   }
 
   txBuilderFromTx = (tx: Transaction): TransactionBuilder => {
-    return btcLib.TransactionBuilder.fromTransaction(tx, networkFactory(this.btcNetwork, this.currency))
+    return btcLib.TransactionBuilder.fromTransaction(tx, this.network)
   }
 }

@@ -2,17 +2,24 @@ import { expect } from 'chai'
 
 import { currency } from './helpers'
 import addressModuleFactory from '../address'
-
+import * as backendFactory from '../backend-api'
+import keyFactory from '../key'
+import bitcoinFactory from '../bitcoin'
 import { Currency } from "../../types/domain";
 
+const backendApi = backendFactory.withCurrency('https://backendApiUrl', currency)
 describe('generateNewMultisigAddress', () => {
   it('should exist', () => {
-    const addressModule = addressModuleFactory('https://backendApiUrl', currency, 'mainnet')
+    const bitcoin = bitcoinFactory(currency, 'mainnet')
+    const keyModule = keyFactory(backendApi, bitcoin)
+    const addressModule = addressModuleFactory(backendApi, bitcoin, keyModule)
     expect(addressModule.generateNewMultisigAddress).to.be.a('function')
   })
 
   it('should return proper address', () => {
-    const addressModule = addressModuleFactory('https://backendApiUrl', currency, 'mainnet')
+    const bitcoin = bitcoinFactory(currency, 'mainnet')
+    const keyModule = keyFactory(backendApi, bitcoin)
+    const addressModule = addressModuleFactory(backendApi, bitcoin, keyModule)
 
     const pubKeys = [
       'xpub661MyMwAqRbcEbQrpBDMTDgW5Hjg5BFxoJD2SnzTmTASPxD4i4j1xMCKojYwgaRXXBRAHB7WPECxA2aQVfL61G4mWjnHMj6BJtAQKMVAiYs',
@@ -29,7 +36,9 @@ describe('generateNewMultisigAddress', () => {
   })
 
   it('should return proper testnet address', () => {
-    const addressModule = addressModuleFactory('https://backendApiUrl', currency, 'testnet')
+    const bitcoin = bitcoinFactory(currency, 'testnet')
+    const keyModule = keyFactory(backendApi, bitcoin)
+    const addressModule = addressModuleFactory(backendApi, bitcoin, keyModule)
     const pubKeys = [
       'tpubD6NzVbkrYhZ4YLQpJAWwxCiNVAH13QSiFHWWTRmocy5zCMN6Nr8fbLVN38Y5nu7KwZ24ux74qotyyNkeF9KN52Gawcjr4ujHkQUDTBmw8Bu',
       'tpubD6NzVbkrYhZ4YWW2LBu48ZLMDtU6YZNug3dArpmhCZVCeRduVLF9FRNaLbwkND5Twf4DS1aXuFqvYd1S4BBTFGwjDM7iy1CK8vuwJHYqpdd',
@@ -46,7 +55,9 @@ describe('generateNewMultisigAddress', () => {
 })
 
 describe('createNewAddress', () => {
-  const addressModule = addressModuleFactory('https://backendApiUrl', currency, 'mainnet')
+  const bitcoin = bitcoinFactory(currency, 'mainnet')
+  const keyModule = keyFactory(backendApi, bitcoin)
+  const addressModule = addressModuleFactory(backendApi, bitcoin, keyModule)
   it('should exist', () => {
     expect(addressModule.createNewAddress).to.be.a('function')
   })
@@ -55,13 +66,14 @@ describe('createNewAddress', () => {
     // @ts-ignore
     const mockImplementation = jest.fn(() => 'backend response')
     // @ts-ignore
-    addressModule.createNewAddress = mockImplementation
+    backendApi.createNewAddress = mockImplementation
 
     const res = await addressModule.createNewAddress('testToken', 'abcd')
 
-    const [token, walletId, name] = mockImplementation.mock.calls[0]
+    const [token, walletId, isChange, name] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
     expect(walletId).to.eq('abcd')
+    expect(isChange).to.eq(false)
     expect(name).to.eq(undefined)
     expect(res).to.eq('backend response')
   })
@@ -70,20 +82,23 @@ describe('createNewAddress', () => {
     // @ts-ignore
     const mockImplementation = jest.fn(() => 'backend response')
     // @ts-ignore
-    addressModule.createNewAddress = mockImplementation
+    backendApi.createNewAddress = mockImplementation
 
     const res = await addressModule.createNewAddress('testToken', 'abcd', 'testName')
 
-    const [token, walletId, name] = mockImplementation.mock.calls[0]
+    const [token, walletId,isChange, name] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
     expect(walletId).to.eq('abcd')
+    expect(isChange).to.eq(false)
     expect(name).to.eq('testName')
     expect(res).to.eq('backend response')
   })
 })
 
 describe('getAddress', () => {
-  const addressModule = addressModuleFactory('https://backendApiUrl', currency, 'mainnet')
+  const bitcoin = bitcoinFactory(currency, 'mainnet')
+  const keyModule = keyFactory(backendApi, bitcoin)
+  const addressModule = addressModuleFactory(backendApi, bitcoin, keyModule)
 
   it('should exist', () => {
     expect(addressModule.getAddress).to.be.a('function')
@@ -93,7 +108,7 @@ describe('getAddress', () => {
     // @ts-ignore
     const mockImplementation = jest.fn(() => 'backend response')
     // @ts-ignore
-    addressModule.getAddress = mockImplementation
+    backendApi.getAddress = mockImplementation
 
     const res = await addressModule.getAddress('testToken', 'abcd', 'testAddress')
 
@@ -106,7 +121,9 @@ describe('getAddress', () => {
 })
 
 describe('listAddresses', () => {
-  const addressModule = addressModuleFactory('https://backendApiUrl', currency, 'mainnet')
+  const bitcoin = bitcoinFactory(currency, 'mainnet')
+  const keyModule = keyFactory(backendApi, bitcoin)
+  const addressModule = addressModuleFactory(backendApi, bitcoin, keyModule)
 
   it('should exist', () => {
     expect(addressModule.listAddresses).to.be.a('function')
@@ -116,7 +133,7 @@ describe('listAddresses', () => {
     // @ts-ignore
     const mockImplementation = jest.fn(() => 'backend response')
     // @ts-ignore
-    addressModule.listAddresses = mockImplementation
+    backendApi.listAddresses = mockImplementation
 
     const res = await addressModule.listAddresses('testToken', 'testWalletId', 101, 'testNextPageToken')
 
