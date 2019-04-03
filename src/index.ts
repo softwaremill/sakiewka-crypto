@@ -1,6 +1,7 @@
 import * as constants from './lib/constants'
 import address from './lib/address'
 import * as crypto from './lib/crypto'
+import * as backendApiFactory from './lib/backend-api'
 import transaction from './lib/transaction'
 import wallet from './lib/wallet'
 import key from './lib/key'
@@ -9,7 +10,8 @@ import * as transfers from './lib/transfers'
 import * as config from './lib/config'
 import { Currency } from "./types/domain";
 
-export default (backendApiUrl: string) => {
+export default async (backendApiUrl: string) => {
+  const chainInfo = await backendApiFactory.create(backendApiUrl)
   return {
     user: user(backendApiUrl),
     transfers,

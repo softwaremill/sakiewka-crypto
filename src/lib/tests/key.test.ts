@@ -3,11 +3,8 @@ import { expect } from 'chai'
 import { currency } from './helpers'
 import * as backendApiFactory from '../backend-api'
 import keyModuleFactory from '../key'
-import * as config from '../config'
-import { SUPPORTED_NETWORKS } from '../constants'
 
 const backendApi = backendApiFactory.withCurrency("http://backendApiUrl", currency)
-const keyModule = keyModuleFactory("http://backendApiUrl", currency)
 
 // @ts-ignore
 backendApi.createWallet = jest.fn(() => {
@@ -16,17 +13,15 @@ backendApi.createWallet = jest.fn(() => {
   })
 })
 
-beforeEach(() => {
-  // @ts-ignore
-  config.networkFactory = (c: Currency) => SUPPORTED_NETWORKS[c].mainnet
-})
-
 describe('generateNewKeyPair', () => {
+  
   it('should exist', () => {
+    const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'mainnet')
     expect(keyModule.generateNewKeyPair).to.be.a('function')
   })
 
   it('should return new keyPair', () => {
+    const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'mainnet')
     const result = keyModule.generateNewKeyPair()
 
     expect(result).to.haveOwnProperty('pubKey')
@@ -37,8 +32,9 @@ describe('generateNewKeyPair', () => {
   })
 
   it('should return new testnet keyPair', () => {
-    // @ts-ignore
-    config.networkFactory = (c: Currency) => SUPPORTED_NETWORKS[c].testnet
+    const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'testnet')
+
+
     const result = keyModule.generateNewKeyPair()
 
     expect(result).to.haveOwnProperty('pubKey')
@@ -50,7 +46,7 @@ describe('generateNewKeyPair', () => {
 
   it('should return new regtest keyPair', () => {
     // @ts-ignore
-    config.networkFactory = (c: Currency) => SUPPORTED_NETWORKS[c].regtest
+    const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'regtest')
     const result = keyModule.generateNewKeyPair()
 
     expect(result).to.haveOwnProperty('pubKey')
@@ -62,6 +58,7 @@ describe('generateNewKeyPair', () => {
 })
 
 describe('encryptKeyPair', () => {
+  const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'mainnet')
   it('should exist', () => {
     expect(keyModule.encryptKeyPair).to.be.a('function')
   })
@@ -78,10 +75,12 @@ describe('encryptKeyPair', () => {
 
 describe('deriveKey', () => {
   it('should exist', () => {
+    const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'mainnet')
     expect(keyModule.deriveKey).to.be.a('function')
   })
 
   it('should create new hardened key for a given path', () => {
+    const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'mainnet')
     const path = `0'`
     const keyPair = keyModule.generateNewKeyPair()
 
@@ -91,6 +90,7 @@ describe('deriveKey', () => {
   })
 
   it('should create new normal key for a given path', () => {
+    const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'mainnet')
     const path = `11/20/15`
     const keyPair = keyModule.generateNewKeyPair()
 
@@ -101,6 +101,7 @@ describe('deriveKey', () => {
   })
 
   it('should work the same for relative and absolute paths', () => {
+    const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'mainnet')
     const basePath = `m/45'/0`
     const relativePath = '0/0'
 
@@ -127,8 +128,7 @@ describe('deriveKey', () => {
   })
 
   it('should create testnet key', () => {
-    // @ts-ignore
-    config.networkFactory = (c: Currency) => SUPPORTED_NETWORKS[c].testnet
+    const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'testnet')
     const path = `11/20/15`
     const keyPair = keyModule.generateNewKeyPair()
 
@@ -140,6 +140,7 @@ describe('deriveKey', () => {
 })
 
 describe('deriveKeyPair', () => {
+  const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'mainnet')
   it('should exist', () => {
     expect(keyModule.deriveKeyPair).to.be.a('function')
   })
@@ -156,6 +157,7 @@ describe('deriveKeyPair', () => {
 })
 
 describe('getKey', () => {
+  const keyModule = keyModuleFactory("http://backendApiUrl", currency, 'mainnet')
   it('should exist', () => {
     expect(keyModule.getKey).to.be.a('function')
   })

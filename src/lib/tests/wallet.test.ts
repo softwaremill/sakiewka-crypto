@@ -12,7 +12,7 @@ backendApiFactory.withCurrency = (u, c) => {
   expect(c).to.eq(currency)
   return backendApi
 }
-const wallet = walletModuleFactory("http://backendApiUrl", currency)
+const wallet = walletModuleFactory("http://backendApiUrl", currency, 'mainnet')
 
 beforeEach(() => {
   use(chaiBigNumber(BigNumber))

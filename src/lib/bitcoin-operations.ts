@@ -38,11 +38,16 @@ interface UTXO_btcjs {
 }
 
 export class BitcoinOperations {
-  protected bitcoinLib : any
-  protected currency : Currency
+  protected bitcoinLib: any
+  protected currency: Currency
+  protected btcNetwork: string
+
+  constructor(btcNetwork: string) {
+    this.btcNetwork = btcNetwork
+  }
 
   private base58ToKeyBuffer = (key: string): Buffer => {
-    return this.bitcoinLib.HDNode.fromBase58(key, networkFactory(this.currency)).getPublicKeyBuffer()
+    return this.bitcoinLib.HDNode.fromBase58(key, networkFactory(this.btcNetwork, this.currency)).getPublicKeyBuffer()
   }
 
   createMultisigRedeemScript = (base58Keys: string[]): Buffer => {
@@ -58,19 +63,19 @@ export class BitcoinOperations {
 
   redeemScriptToAddress = (redeemScript: Buffer): string => {
     const scriptPubKey = this.multisigRedeemScriptToScriptPubKey(redeemScript)
-    return this.bitcoinLib.address.fromOutputScript(scriptPubKey, networkFactory(this.currency))
+    return this.bitcoinLib.address.fromOutputScript(scriptPubKey, networkFactory(this.btcNetwork, this.currency))
   }
 
   outputScriptToAddress = (outputScript: Buffer): string => {
-    return this.bitcoinLib.address.fromOutputScript(outputScript, networkFactory(this.currency))
+    return this.bitcoinLib.address.fromOutputScript(outputScript, networkFactory(this.btcNetwork, this.currency))
   }
 
   base58ToECPair = (base58Key: string): ECPair => {
-    return this.bitcoinLib.HDNode.fromBase58(base58Key, networkFactory(this.currency)).keyPair
+    return this.bitcoinLib.HDNode.fromBase58(base58Key, networkFactory(this.btcNetwork, this.currency)).keyPair
   }
 
   base58ToHDNode = (base58Key: string): HDNode => {
-    return this.bitcoinLib.HDNode.fromBase58(base58Key, networkFactory(this.currency))
+    return this.bitcoinLib.HDNode.fromBase58(base58Key, networkFactory(this.btcNetwork, this.currency))
   }
 
   hdNodeToBase58Pub = (node: HDNode): string => {
@@ -82,7 +87,7 @@ export class BitcoinOperations {
   }
 
   seedBufferToHDNode = (seedBuffer: Buffer): HDNode => {
-    return this.bitcoinLib.HDNode.fromSeedBuffer(seedBuffer, networkFactory(this.currency))
+    return this.bitcoinLib.HDNode.fromSeedBuffer(seedBuffer, networkFactory(this.btcNetwork, this.currency))
   }
 
   txFromHex = (transactionHex: string): Transaction => {
@@ -90,7 +95,7 @@ export class BitcoinOperations {
   }
 
   addressToOutputScript = (address: string): Buffer => {
-    return this.bitcoinLib.address.toOutputScript(address, networkFactory(this.currency))
+    return this.bitcoinLib.address.toOutputScript(address, networkFactory(this.btcNetwork, this.currency))
   }
 
   decodeTxOutput = (output: Out): Recipient => ({
@@ -120,9 +125,9 @@ export class BitcoinOperations {
       .map(tx => ({ script: tx.script, value: new BigNumber(tx.value) }))
   }
 
-  initializeTxBuilder : () => TransactionBuilder
+  initializeTxBuilder: () => TransactionBuilder
 
-  txBuilderFromTx : (tx: Transaction) => TransactionBuilder
+  txBuilderFromTx: (tx: Transaction) => TransactionBuilder
 
-  sign : (txb:TransactionBuilder,idx:number,signingKey:ECPair,amount?:BigNumber,redeemScript?:Buffer) => void
+  sign: (txb: TransactionBuilder, idx: number, signingKey: ECPair, amount?: BigNumber, redeemScript?: Buffer) => void
 }

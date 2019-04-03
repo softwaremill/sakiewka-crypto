@@ -146,6 +146,13 @@ export const create = (backendApiUrl: string) => {
     const response = await request(`${backendApiUrl}/transfers${queryString}`, options)
     return response.data
   }
+
+  const chainInfo = async () => {
+    const options = { method: 'GET' }
+    const response = await request(`${backendApiUrl}/chain-info`, options)
+    return response.data
+  }
+
   return {
     login,
     init2fa,
@@ -155,7 +162,8 @@ export const create = (backendApiUrl: string) => {
     setupPassword,
     info,
     monthlySummary,
-    listTransfers
+    listTransfers,
+    chainInfo
   }
 }
 

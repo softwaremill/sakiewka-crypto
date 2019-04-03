@@ -11,11 +11,11 @@ import keyFactory from './key'
 import walletApiFactory from './wallet'
 
 
-export default (backendApiUrl: string, currency: Currency) => {
+export default (backendApiUrl: string, currency: Currency, btcNetwork: string) => {
   const backendApi = backendApiFactory.withCurrency(backendApiUrl, currency)
-  const bitcoin = bitcoinFactory(currency)
-  const keyApi = keyFactory(backendApiUrl, currency)
-  const walletApi = walletApiFactory(backendApiUrl, currency)
+  const bitcoin = bitcoinFactory(currency, btcNetwork)
+  const keyApi = keyFactory(backendApiUrl, currency, btcNetwork)
+  const walletApi = walletApiFactory(backendApiUrl, currency, btcNetwork)
 
   const joinPath = (path: Path): string =>
     `${path.cosignerIndex}/${path.change}/${path.addressIndex}`
@@ -94,7 +94,7 @@ export default (backendApiUrl: string, currency: Currency) => {
       const derivedPubKeys = pubKeys.map((key: string) => keyApi.deriveKey(key, joinPath(uns.path!)).neutered().toBase58())
       const redeemScript = bitcoin.createMultisigRedeemScript(derivedPubKeys)
       // @ts-ignore
-      bitcoin.sign(txb, idx, signingKey, new BigNumber(uns.amount),redeemScript)
+      bitcoin.sign(txb, idx, signingKey, new BigNumber(uns.amount), redeemScript)
     })
   }
 
@@ -121,7 +121,7 @@ export default (backendApiUrl: string, currency: Currency) => {
 
     unspents.forEach((uns: UTXO, idx: number) => {
       const signingKey = keyApi.deriveKey(xprv, joinPath(uns.path!)).keyPair
-      bitcoin.sign(txb,idx,signingKey,uns.amount)
+      bitcoin.sign(txb, idx, signingKey, uns.amount)
     })
 
     const builtTx = txb.build()

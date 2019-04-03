@@ -3,22 +3,17 @@ import { expect } from 'chai'
 import { currency } from './helpers'
 import addressModuleFactory from '../address'
 
-const addressModule = addressModuleFactory('https://backendApiUrl', currency)
-import * as config from '../config'
-import { SUPPORTED_NETWORKS } from "../constants";
 import { Currency } from "../../types/domain";
-
-beforeEach(() => {
-  // @ts-ignore
-  config.networkFactory = (c: Currency) => SUPPORTED_NETWORKS[c].mainnet
-})
 
 describe('generateNewMultisigAddress', () => {
   it('should exist', () => {
+    const addressModule = addressModuleFactory('https://backendApiUrl', currency, 'mainnet')
     expect(addressModule.generateNewMultisigAddress).to.be.a('function')
   })
 
   it('should return proper address', () => {
+    const addressModule = addressModuleFactory('https://backendApiUrl', currency, 'mainnet')
+
     const pubKeys = [
       'xpub661MyMwAqRbcEbQrpBDMTDgW5Hjg5BFxoJD2SnzTmTASPxD4i4j1xMCKojYwgaRXXBRAHB7WPECxA2aQVfL61G4mWjnHMj6BJtAQKMVAiYs',
       'xpub661MyMwAqRbcGukLdXtbs5TTqkddNUYzdWAmZ3mQTRZgtaySzU9ePfVEZWtQJBZGbfKfhPZfG74z6TXkeEx2atofMhn2n4bHLzjDWHREM5u',
@@ -34,8 +29,7 @@ describe('generateNewMultisigAddress', () => {
   })
 
   it('should return proper testnet address', () => {
-    // @ts-ignore
-    config.networkFactory = (c: Currency) => SUPPORTED_NETWORKS[c].testnet
+    const addressModule = addressModuleFactory('https://backendApiUrl', currency, 'testnet')
     const pubKeys = [
       'tpubD6NzVbkrYhZ4YLQpJAWwxCiNVAH13QSiFHWWTRmocy5zCMN6Nr8fbLVN38Y5nu7KwZ24ux74qotyyNkeF9KN52Gawcjr4ujHkQUDTBmw8Bu',
       'tpubD6NzVbkrYhZ4YWW2LBu48ZLMDtU6YZNug3dArpmhCZVCeRduVLF9FRNaLbwkND5Twf4DS1aXuFqvYd1S4BBTFGwjDM7iy1CK8vuwJHYqpdd',
@@ -52,6 +46,7 @@ describe('generateNewMultisigAddress', () => {
 })
 
 describe('createNewAddress', () => {
+  const addressModule = addressModuleFactory('https://backendApiUrl', currency, 'mainnet')
   it('should exist', () => {
     expect(addressModule.createNewAddress).to.be.a('function')
   })
@@ -88,6 +83,8 @@ describe('createNewAddress', () => {
 })
 
 describe('getAddress', () => {
+  const addressModule = addressModuleFactory('https://backendApiUrl', currency, 'mainnet')
+
   it('should exist', () => {
     expect(addressModule.getAddress).to.be.a('function')
   })
@@ -109,6 +106,8 @@ describe('getAddress', () => {
 })
 
 describe('listAddresses', () => {
+  const addressModule = addressModuleFactory('https://backendApiUrl', currency, 'mainnet')
+
   it('should exist', () => {
     expect(addressModule.listAddresses).to.be.a('function')
   })

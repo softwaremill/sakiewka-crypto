@@ -3,14 +3,11 @@ import BtgOperations from './btg-operations'
 import BtcOperations from "./btc-operations";
 import { BitcoinOperations } from "./bitcoin-operations";
 
-const btgOperations = new BtgOperations()
-const btcOperations = new BtcOperations()
-
-export default (currency:Currency) : BitcoinOperations => {
-  if(currency == Currency.BTC) {
-    return btcOperations
-  } else if(currency == Currency.BTG) {
-    return btgOperations
+export default (currency: Currency, btcNetwork: string): BitcoinOperations => {
+  if (currency == Currency.BTC) {
+    return new BtcOperations(btcNetwork)
+  } else if (currency == Currency.BTG) {
+    return new BtgOperations(btcNetwork)
   } else {
     throw new Error(`No bitcoin operations for ${currency}`)
   }

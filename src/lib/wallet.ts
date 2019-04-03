@@ -5,8 +5,8 @@ import { generatePdf } from './keycard-pdf'
 import keyFactory from './key'
 import * as backendApiFactory from './backend-api'
 
-export default (backendApiUrl: string, currency: Currency) => {
-  const keyModule = keyFactory(backendApiUrl, currency)
+export default (backendApiUrl: string, currency: Currency, btcNetwork: string) => {
+  const keyModule = keyFactory(backendApiUrl, currency, btcNetwork)
   const backendApi = backendApiFactory.withCurrency(backendApiUrl, currency)
 
   const createWallet = async (userToken: string, params: WalletParams): Promise<any> => {

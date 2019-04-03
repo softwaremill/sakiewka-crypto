@@ -1,16 +1,9 @@
 import { currency } from './helpers'
 import keyFactory from '../key'
 import addressModuleFactory from '../address'
-import * as config from '../config'
 import * as constants from '../constants'
-import { Currency } from "../../types/domain";
-const key = keyFactory("http://backendApiUrl", currency)
-const addressModule = addressModuleFactory("http://backendApiUrl", currency)
-
-beforeEach(() => {
-  // @ts-ignore
-  config.networkFactory = (c: Currency) => constants.SUPPORTED_NETWORKS[c].testnet
-})
+const key = keyFactory("http://backendApiUrl", currency, 'testnet')
+const addressModule = addressModuleFactory("http://backendApiUrl", currency, 'testnet')
 
 describe('test data', () => {
   it('should generate a set of keys', () => {
