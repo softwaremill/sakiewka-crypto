@@ -26,7 +26,6 @@ export default async (backendApiUrl: string) => {
     user: user(backendApi),
     transfers,
     config,
-    constants,
     crypto,
     [Currency.BTC]: creatCurrencyModule(btcBackendApi, btcOps),
     [Currency.BTG]: creatCurrencyModule(btgBackendApi, btgOps),
@@ -45,4 +44,5 @@ function creatCurrencyModule(backendApi: backendApiFactory.CurrencyBackendApi, b
 
 
 export { Currency } from './types/domain'
+export { constants }
 
