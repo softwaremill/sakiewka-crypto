@@ -6,15 +6,15 @@ import { btcToSatoshi, satoshiToBtc } from './utils/helpers'
 import { decrypt } from './crypto';
 import { API_ERROR } from './constants';
 import { KeyModule } from './key'
-import walletApiFactory from './wallet'
+import { WalletApi } from './wallet'
 import { CurrencyBackendApi } from './backend-api';
 import { BitcoinOperations } from './bitcoin-operations';
 
-export default (backendApi: CurrencyBackendApi, keyModule: KeyModule, bitcoin: BitcoinOperations) => {
-  const walletApi = walletApiFactory(backendApi, keyModule)
+export interface TransactionApi {
+  send(userToken: string, walletId: string, recipients: Recipient[], xprv?: string, passphrase?: string): Promise<string>
+}
 
-  const joinPath = (path: Path): string =>
-    `${path.cosignerIndex}/${path.change}/${path.addressIndex}`
+export const transactionApiFactory = (backendApi: CurrencyBackendApi, keyModule: KeyModule, bitcoin: BitcoinOperations, walletApi: WalletApi): TransactionApi => {
 
   const send = async (
     userToken: string, walletId: string, recipients: Recipient[], xprv?: string, passphrase?: string
@@ -93,6 +93,15 @@ export default (backendApi: CurrencyBackendApi, keyModule: KeyModule, bitcoin: B
       bitcoin.sign(txb, idx, signingKey, new BigNumber(uns.amount), redeemScript)
     })
   }
+  return { send }
+}
+
+export interface TransactionModule {
+  decodeTransaction(txHex: string): DecodedTx
+  signTransaction(xprv: string, txHex: string, unspents: UTXO[]): { txHex: string, txHash: string }
+}
+
+export const transactionModuleFactory = (keyModule: KeyModule, bitcoin: BitcoinOperations): TransactionModule => {
 
   const decodeTransaction = (txHex: string): DecodedTx => {
     const tx = bitcoin.txFromHex(txHex)
@@ -128,5 +137,8 @@ export default (backendApi: CurrencyBackendApi, keyModule: KeyModule, bitcoin: B
     }
   }
 
-  return { send, decodeTransaction, signTransaction }
+  return { decodeTransaction, signTransaction }
 }
+
+const joinPath = (path: Path): string =>
+  `${path.cosignerIndex}/${path.change}/${path.addressIndex}`

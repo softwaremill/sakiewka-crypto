@@ -1,8 +1,8 @@
 import { expect, use } from 'chai'
 
-import transactionModuleFactory from '../transaction'
-import keyModuleFactory from '../key'
-import addressModuleFactory from '../address'
+import { transactionModuleFactory, transactionApiFactory } from '../transaction'
+import { keyModuleFactory } from '../key'
+import { addressModuleFactory } from '../address'
 import bitcoinModuleFactory from '../bitcoin'
 import { ROOT_DERIVATION_PATH, API_ERROR } from '../constants'
 import BigNumber from "bignumber.js";
@@ -22,6 +22,7 @@ import {
 import { Currency, KeyType, UTXO } from '../../types/domain'
 import { currency } from "./helpers";
 import { Transaction } from "bitcoinjs-lib";
+import { walletApiFactory } from '../wallet';
 
 const changeAddress = currency == Currency.BTG ? 'ATWyG3xpRdyYy1K6HBdVPBi629W4DNnB9m' : '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM'
 const serviceAddress = currency == Currency.BTG ? 'AWu3T7CWXXLxrHwuQ4tnHtubpdp1LHUZUK' : '3AnzyVbVSwfrre3vzQLwVMgZ34HH2Ja22d'
@@ -41,14 +42,14 @@ describe('sendCoins', () => {
   const backend = backendFactory.withCurrency("http://backendApiUrl", currency)
   stubCreateAddress(backend, changeAddress)
   const bitcoinModule = bitcoinModuleFactory(currency, 'mainnet')
-  const keyModule = keyModuleFactory(backend, bitcoinModule)
-  const transactionModuleWithStubbedApiCalls = () => transactionModuleFactory(backend, keyModule, bitcoinModule)
-  const addressModule = addressModuleFactory(backend, bitcoinModule, keyModule)
+  const keyModule = keyModuleFactory(bitcoinModule)
+  const walletApi = walletApiFactory(backend, keyModule)
+  const transactionApi = transactionApiFactory(backend, keyModule, bitcoinModule, walletApi)
+  const addressModule = addressModuleFactory(bitcoinModule, keyModule)
 
   stubFeesRates(backend, 5)
   it('should exist', () => {
-    const transactionModule = transactionModuleWithStubbedApiCalls()
-    expect(transactionModule.send).to.be.a('function')
+    expect(transactionApi.send).to.be.a('function')
   })
 
   it('should send coins', async () => {
@@ -83,9 +84,7 @@ describe('sendCoins', () => {
     stubGetWallet(backend, userKeyPair, backupKeyPair, serverKeyPair)
     const sendTxMock = stubSendTx(backend)
 
-    const transactionModule = transactionModuleWithStubbedApiCalls()
-
-    await transactionModule.send(
+    await transactionApi.send(
       '1234',
       '13',
       [{
@@ -156,9 +155,7 @@ describe('sendCoins', () => {
     })
     stubGetWallet(backend, userKeyPair, backupKeyPair, serverKeyPair)
 
-    const transactionModule = transactionModuleWithStubbedApiCalls()
-
-    const promise = transactionModule.send('1234', '13', [{
+    const promise = transactionApi.send('1234', '13', [{
       address: serviceAddress,
       amount: new BigNumber('5')
     }]);
@@ -198,10 +195,7 @@ describe('sendCoins', () => {
     stubGetKey(backend, { id: '1', pubKey: 'pubKey', keyType: KeyType.USER, created: 'date' })
     stubGetWallet(backend, userKeyPair, backupKeyPair, serverKeyPair)
 
-
-    const transactionModule = transactionModuleWithStubbedApiCalls()
-
-    const promise = transactionModule.send('1234', '13', [{
+    const promise = transactionApi.send('1234', '13', [{
       address: destinationAddress,
       amount: new BigNumber('5')
     }], undefined, "secretPassword");
@@ -246,9 +240,7 @@ describe('sendCoins', () => {
     stubGetWallet(backend, userKeyPair, backupKeyPair, serverKeyPair)
     stubSendTx(backend)
 
-    const transactionModule = transactionModuleWithStubbedApiCalls()
-
-    await transactionModule.send(
+    await transactionApi.send(
       '1234',
       '13',
       [{
@@ -297,9 +289,7 @@ describe('sendCoins', () => {
     stubGetWallet(backend, userKeyPair, backupKeyPair, serverKeyPair)
     stubSendTx(backend)
 
-    const transactionModule = transactionModuleWithStubbedApiCalls()
-
-    const promise = transactionModule.send('1234', '13', [{
+    const promise = transactionApi.send('1234', '13', [{
       address: destinationAddress,
       amount: new BigNumber('5')
     }], undefined, "otherPassword");
@@ -311,6 +301,7 @@ describe('sendCoins', () => {
 
 
   it('should sort inputs and outputs lexicographically', async () => {
+    const transactionModule = transactionModuleFactory(keyModule, bitcoinModule)
     // generates keyPairs and address
     const userKeyPair = keyModule.generateNewKeyPair()
     const backupKeyPair = keyModule.generateNewKeyPair()
@@ -348,9 +339,7 @@ describe('sendCoins', () => {
     stubGetWallet(backend, userKeyPair, backupKeyPair, serverKeyPair)
     const sendTxMock = stubSendTx(backend)
 
-    const transactionModule = transactionModuleWithStubbedApiCalls()
-
-    await transactionModule.send(
+    await transactionApi.send(
       '1234',
       '13',
       [
@@ -380,15 +369,15 @@ describe('sendCoins', () => {
 describe('sendCoins to multiple outputs', () => {
   const backend = backendFactory.withCurrency("http://backendApiUrl", currency)
   const bitcoinModule = bitcoinModuleFactory(currency, 'mainnet')
-  const keyModule = keyModuleFactory(backend, bitcoinModule)
-  const transactionModuleWithStubbedApiCalls = () => transactionModuleFactory(backend, keyModule, bitcoinModule)
-  const addressModule = addressModuleFactory(backend, bitcoinModule, keyModule)
+  const keyModule = keyModuleFactory(bitcoinModule)
+  const walletApi = walletApiFactory(backend, keyModule)
+  const transactionApi = transactionApiFactory(backend, keyModule, bitcoinModule, walletApi)
+  const addressModule = addressModuleFactory(bitcoinModule, keyModule)
 
   stubFeesRates(backend, 5)
   stubCreateAddress(backend, changeAddress)
   it('should exist', () => {
-    const transactionModule = transactionModuleWithStubbedApiCalls()
-    expect(transactionModule.send).to.be.a('function')
+    expect(transactionApi.send).to.be.a('function')
   })
 
   it('should send coins', async () => {
@@ -423,9 +412,7 @@ describe('sendCoins to multiple outputs', () => {
     stubGetWallet(backend, userKeyPair, backupKeyPair, serverKeyPair)
     const sendTxMock = stubSendTx(backend)
 
-    const transactionModule = transactionModuleWithStubbedApiCalls()
-
-    await transactionModule.send(
+    await transactionApi.send(
       '1234',
       '13',
       [
@@ -456,13 +443,12 @@ describe('sendCoins to multiple outputs', () => {
 describe('decodeTransaction', () => {
   const backend = backendFactory.withCurrency("http://backendApiUrl", currency)
   const bitcoinModule = bitcoinModuleFactory(currency, 'mainnet')
-  const keyModule = keyModuleFactory(backend, bitcoinModule)
-  const transactionModuleWithStubbedApiCalls = () => transactionModuleFactory(backend, keyModule, bitcoinModule)
+  const keyModule = keyModuleFactory(bitcoinModule)
+  const transactionModule = transactionModuleFactory(keyModule, bitcoinModule)
 
   stubFeesRates(backend, 5)
 
   it('shoud exist', () => {
-    const transactionModule = transactionModuleWithStubbedApiCalls()
     expect(transactionModule.decodeTransaction).to.be.a('function')
   })
 
@@ -472,8 +458,6 @@ describe('decodeTransaction', () => {
     const sentAmount = new BigNumber('5')
     const utxoTxHash = '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14'
     const utxoTxId = 2
-
-    const transactionModule = transactionModuleWithStubbedApiCalls()
 
     const result = transactionModule.decodeTransaction(txHex)
 
@@ -499,13 +483,12 @@ describe('decodeTransaction', () => {
 describe('signTransaction', () => {
   const backend = backendFactory.withCurrency("http://backendApiUrl", currency)
   const bitcoinModule = bitcoinModuleFactory(currency, 'mainnet')
-  const keyModule = keyModuleFactory(backend, bitcoinModule)
-  const transactionModuleWithStubbedApiCalls = () => transactionModuleFactory(backend, keyModule, bitcoinModule)
+  const keyModule = keyModuleFactory(bitcoinModule)
+  const transactionModule = transactionModuleFactory(keyModule, bitcoinModule)
 
   stubFeesRates(backend, 5)
 
   it('shoud exist', () => {
-    const transactionModule = transactionModuleWithStubbedApiCalls()
     expect(transactionModule.signTransaction).to.be.a('function')
   })
 
@@ -521,8 +504,6 @@ describe('signTransaction', () => {
         amount: new BigNumber('7')
       }
     ]
-
-    const transactionModule = transactionModuleWithStubbedApiCalls()
 
     const result = transactionModule.signTransaction(xprv, txHex, unspents)
     expect(result.txHex).to.not.eq(txHex)
@@ -540,10 +521,11 @@ describe('signTransaction', () => {
 describe('testnet transactions', () => {
   const backend = backendFactory.withCurrency("http://backendApiUrl", currency)
   const bitcoinModule = bitcoinModuleFactory(currency, 'testnet')
-  const keyModule = keyModuleFactory(backend, bitcoinModule)
-  const transactionModuleWithStubbedApiCalls = () => transactionModuleFactory(backend, keyModule, bitcoinModule)
-  const addressModule = addressModuleFactory(backend, bitcoinModule, keyModule)
-
+  const keyModule = keyModuleFactory(bitcoinModule)
+  const walletApi = walletApiFactory(backend, keyModule)
+  const transactionApi = transactionApiFactory(backend, keyModule, bitcoinModule, walletApi)
+  const addressModule = addressModuleFactory(bitcoinModule, keyModule)
+  const transactionModule = transactionModuleFactory(keyModule, bitcoinModule)
   stubFeesRates(backend, 5)
 
   it('should send coins to testnet and signTransaction', async () => {
@@ -581,9 +563,7 @@ describe('testnet transactions', () => {
     stubGetWallet(backend, userKeyPair, backupKeyPair, serverKeyPair)
     const sendTxMock = stubSendTx(backend)
 
-    const transactionModule = transactionModuleWithStubbedApiCalls()
-
-    await transactionModule.send(
+    await transactionApi.send(
       '1234',
       '13',
       [{
@@ -642,9 +622,7 @@ describe('testnet transactions', () => {
     stubGetWallet(backend, userKeyPair, backupKeyPair, serverKeyPair)
     const sendTxMock = stubSendTx(backend)
 
-    const transactionModule = transactionModuleWithStubbedApiCalls()
-
-    await transactionModule.send(
+    await transactionApi.send(
       '1234',
       '13',
       [{
@@ -720,9 +698,7 @@ describe('testnet transactions', () => {
     stubGetWallet(backend, userKeyPair, backupKeyPair, serverKeyPair)
     const sendTxMock = stubSendTx(backend)
 
-    const transactionModule = transactionModuleWithStubbedApiCalls()
-
-    await transactionModule.send(
+    await transactionApi.send(
       '1234',
       '13',
       [{

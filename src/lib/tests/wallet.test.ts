@@ -1,18 +1,18 @@
 import { expect, use } from 'chai'
 
 import { currency } from './helpers'
-import walletModuleFactory from '../wallet'
+import { walletApiFactory } from '../wallet'
 import * as backendApiFactory from '../backend-api'
 import BigNumber from 'bignumber.js'
 import chaiBigNumber from 'chai-bignumber'
 import * as pdfGen from '../keycard-pdf'
-import keyFactory from '../key'
+import { keyModuleFactory } from '../key'
 import bitcoinFactory from '../bitcoin'
 const backendApi = backendApiFactory.withCurrency("http://backendApiUrl", currency)
 
 const bitcoinOperation = bitcoinFactory(currency, 'mainnet')
-const keyModule = keyFactory(backendApi, bitcoinOperation)
-const wallet = walletModuleFactory(backendApi, keyModule)
+const keyModule = keyModuleFactory(bitcoinOperation)
+const wallet = walletApiFactory(backendApi, keyModule)
 
 beforeEach(() => {
   use(chaiBigNumber(BigNumber))

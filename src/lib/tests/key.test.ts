@@ -2,7 +2,7 @@ import { expect } from 'chai'
 
 import { currency } from './helpers'
 import * as backendApiFactory from '../backend-api'
-import keyModuleFactory from '../key'
+import { keyApiFactory, keyModuleFactory } from '../key'
 import bitoinFactory from '../bitcoin'
 
 const backendApi = backendApiFactory.withCurrency("http://backendApiUrl", currency)
@@ -14,16 +14,16 @@ backendApi.createWallet = jest.fn(() => {
 })
 
 describe('generateNewKeyPair', () => {
-  
+
   it('should exist', () => {
     const bitcoin = bitoinFactory(currency, 'mainnet')
-    const keyModule = keyModuleFactory(backendApi, bitcoin)
+    const keyModule = keyModuleFactory(bitcoin)
     expect(keyModule.generateNewKeyPair).to.be.a('function')
   })
 
   it('should return new keyPair', () => {
     const bitcoin = bitoinFactory(currency, 'mainnet')
-    const keyModule = keyModuleFactory(backendApi, bitcoin)
+    const keyModule = keyModuleFactory(bitcoin)
 
     const result = keyModule.generateNewKeyPair()
 
@@ -36,7 +36,7 @@ describe('generateNewKeyPair', () => {
 
   it('should return new testnet keyPair', () => {
     const bitcoin = bitoinFactory(currency, 'testnet')
-    const keyModule = keyModuleFactory(backendApi, bitcoin)
+    const keyModule = keyModuleFactory(bitcoin)
 
     const result = keyModule.generateNewKeyPair()
 
@@ -49,7 +49,7 @@ describe('generateNewKeyPair', () => {
 
   it('should return new regtest keyPair', () => {
     const bitcoin = bitoinFactory(currency, 'regtest')
-    const keyModule = keyModuleFactory(backendApi, bitcoin)
+    const keyModule = keyModuleFactory(bitcoin)
 
     const result = keyModule.generateNewKeyPair()
 
@@ -63,7 +63,7 @@ describe('generateNewKeyPair', () => {
 
 describe('encryptKeyPair', () => {
   const bitcoin = bitoinFactory(currency, 'mainnet')
-  const keyModule = keyModuleFactory(backendApi, bitcoin)
+  const keyModule = keyModuleFactory(bitcoin)
   it('should exist', () => {
     expect(keyModule.encryptKeyPair).to.be.a('function')
   })
@@ -81,13 +81,13 @@ describe('encryptKeyPair', () => {
 describe('deriveKey', () => {
   it('should exist', () => {
     const bitcoin = bitoinFactory(currency, 'mainnet')
-    const keyModule = keyModuleFactory(backendApi, bitcoin)
+    const keyModule = keyModuleFactory(bitcoin)
     expect(keyModule.deriveKey).to.be.a('function')
   })
 
   it('should create new hardened key for a given path', () => {
     const bitcoin = bitoinFactory(currency, 'mainnet')
-    const keyModule = keyModuleFactory(backendApi, bitcoin)
+    const keyModule = keyModuleFactory(bitcoin)
     const path = `0'`
     const keyPair = keyModule.generateNewKeyPair()
 
@@ -98,7 +98,7 @@ describe('deriveKey', () => {
 
   it('should create new normal key for a given path', () => {
     const bitcoin = bitoinFactory(currency, 'mainnet')
-    const keyModule = keyModuleFactory(backendApi, bitcoin)
+    const keyModule = keyModuleFactory(bitcoin)
     const path = `11/20/15`
     const keyPair = keyModule.generateNewKeyPair()
 
@@ -110,7 +110,7 @@ describe('deriveKey', () => {
 
   it('should work the same for relative and absolute paths', () => {
     const bitcoin = bitoinFactory(currency, 'mainnet')
-    const keyModule = keyModuleFactory(backendApi, bitcoin)
+    const keyModule = keyModuleFactory(bitcoin)
     const basePath = `m/45'/0`
     const relativePath = '0/0'
 
@@ -138,7 +138,7 @@ describe('deriveKey', () => {
 
   it('should create testnet key', () => {
     const bitcoin = bitoinFactory(currency, 'testnet')
-    const keyModule = keyModuleFactory(backendApi, bitcoin)
+    const keyModule = keyModuleFactory(bitcoin)
     const path = `11/20/15`
     const keyPair = keyModule.generateNewKeyPair()
 
@@ -151,7 +151,7 @@ describe('deriveKey', () => {
 
 describe('deriveKeyPair', () => {
   const bitcoin = bitoinFactory(currency, 'mainnet')
-  const keyModule = keyModuleFactory(backendApi, bitcoin)
+  const keyModule = keyModuleFactory(bitcoin)
   it('should exist', () => {
     expect(keyModule.deriveKeyPair).to.be.a('function')
   })
@@ -168,8 +168,7 @@ describe('deriveKeyPair', () => {
 })
 
 describe('getKey', () => {
-  const bitcoin = bitoinFactory(currency, 'mainnet')
-  const keyModule = keyModuleFactory(backendApi, bitcoin)
+  const keyModule = keyApiFactory(backendApi)
   it('should exist', () => {
     expect(keyModule.getKey).to.be.a('function')
   })

@@ -1,14 +1,12 @@
 import { currency } from './helpers'
-import keyFactory from '../key'
-import * as backendFactory from '../backend-api'
-import addressModuleFactory from '../address'
+import { keyModuleFactory } from '../key'
+import { addressModuleFactory } from '../address'
 import bitoinFactory from '../bitcoin'
 import * as constants from '../constants'
 
-const backend = backendFactory.withCurrency("http://backendApiUrl", currency)
 const bitcoin = bitoinFactory(currency, 'testnet')
-const key = keyFactory(backend, bitcoin)
-const addressModule = addressModuleFactory(backend, bitcoin, key)
+const key = keyModuleFactory(bitcoin)
+const addressModule = addressModuleFactory(bitcoin, key)
 
 describe('test data', () => {
   it('should generate a set of keys', () => {

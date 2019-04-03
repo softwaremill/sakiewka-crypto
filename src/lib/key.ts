@@ -10,10 +10,13 @@ export interface KeyModule {
   encryptKeyPair(keyPair: KeyPair, passphrase: string): KeyPair
   deriveKeyPair(keyPair: KeyPair, path: string): KeyPair
   deriveKey(rootKey: string, path: string): HDNode
+}
+
+export interface KeyApi {
   getKey(userToken: string, keyId: string, includePrivate?: boolean): Promise<GetKeyBackendResponse>
 }
 
-export default (backendApi: CurrencyBackendApi, bitcoin: BitcoinOperations): KeyModule => {
+export const keyModuleFactory = (bitcoin: BitcoinOperations): KeyModule => {
   const generateNewKeyPair = (
     path?: string
   ): KeyPair => {
@@ -58,12 +61,14 @@ export default (backendApi: CurrencyBackendApi, bitcoin: BitcoinOperations): Key
     if (path === '') return node
     return node.derivePath(path)
   }
+  return { generateNewKeyPair, encryptKeyPair, deriveKeyPair, deriveKey }
+}
 
+export const keyApiFactory = (backendApi: CurrencyBackendApi): KeyApi => {
   const getKey = (
     userToken: string,
     keyId: string,
     includePrivate?: boolean
   ): Promise<GetKeyBackendResponse> => backendApi.getKey(userToken, keyId, includePrivate)
-
-  return { generateNewKeyPair, encryptKeyPair, deriveKeyPair, deriveKey, getKey }
+  return { getKey }
 }
