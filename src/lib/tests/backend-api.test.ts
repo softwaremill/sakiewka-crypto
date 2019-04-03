@@ -2,7 +2,7 @@ import { expect } from 'chai'
 
 import { currency } from './helpers'
 import * as apiFactory from '../backend-api'
-const api  = apiFactory.withCurrency(currency)
+const api  = apiFactory.withCurrency('backurl/api/v1', currency)
 import * as request from '../utils/request'
 import { MaxTransferAmountParams } from 'response';
 
@@ -15,8 +15,6 @@ beforeEach(() => {
   // @ts-ignore
   mockImplementation.mockClear()
 })
-
-process.env.BACKEND_API_URL = 'backurl/api/v1'
 
 describe('login', () => {
   it('should exist', () => {

@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import { currency } from './helpers'
 import addressModuleFactory from '../address'
 
-const addressModule = addressModuleFactory(currency)
+const addressModule = addressModuleFactory('https://backendApiUrl', currency)
 import * as config from '../config'
 import { SUPPORTED_NETWORKS } from "../constants";
 import { Currency } from "../../types/domain";

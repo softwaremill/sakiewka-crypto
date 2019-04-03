@@ -1,8 +1,16 @@
 import { expect } from 'chai'
 
-import * as user from '../user'
-import * as api from '../backend-api'
+import userFactory from '../user'
+import * as backendApiFactory from '../backend-api'
 import { hashPassword } from '../crypto';
+
+const api = backendApiFactory.create("http://backendApiUrl")
+// @ts-ignore
+backendApiFactory.create = (u) => {
+  return api
+}
+
+const user = userFactory("http://backendApiUrl")
 
 describe('login', () => {
   it('should exist', () => {

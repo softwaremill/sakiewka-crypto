@@ -11,11 +11,11 @@ import keyFactory from './key'
 import walletApiFactory from './wallet'
 
 
-export default (currency: Currency) => {
-  const backendApi = backendApiFactory.withCurrency(currency)
+export default (backendApiUrl: string, currency: Currency) => {
+  const backendApi = backendApiFactory.withCurrency(backendApiUrl, currency)
   const bitcoin = bitcoinFactory(currency)
-  const keyApi = keyFactory(currency)
-  const walletApi = walletApiFactory(currency)
+  const keyApi = keyFactory(backendApiUrl, currency)
+  const walletApi = walletApiFactory(backendApiUrl, currency)
 
   const joinPath = (path: Path): string =>
     `${path.cosignerIndex}/${path.change}/${path.addressIndex}`

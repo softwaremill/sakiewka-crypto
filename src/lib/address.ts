@@ -3,10 +3,10 @@ import * as backendApiFactory from './backend-api'
 import bitcoinFactory from './bitcoin'
 import keyFactory from './key'
 
-export default (currency: Currency) => {
-  const backendApi = backendApiFactory.withCurrency(currency)
+export default (backendApiUrl: string, currency: Currency) => {
+  const backendApi = backendApiFactory.withCurrency(backendApiUrl, currency)
   const bitcoin = bitcoinFactory(currency)
-  const keyApi = keyFactory(currency)
+  const keyApi = keyFactory(backendApiUrl, currency)
 
   const generateNewMultisigAddress = (rootKeys: String[], path: string): any => {
     const derivedKeys = rootKeys.map((rootKey: string) => {

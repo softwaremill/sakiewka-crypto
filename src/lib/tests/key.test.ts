@@ -6,8 +6,8 @@ import keyModuleFactory from '../key'
 import * as config from '../config'
 import { SUPPORTED_NETWORKS } from '../constants'
 
-const backendApi  = backendApiFactory.withCurrency(currency)
-const keyModule = keyModuleFactory(currency)
+const backendApi = backendApiFactory.withCurrency("http://backendApiUrl", currency)
+const keyModule = keyModuleFactory("http://backendApiUrl", currency)
 
 // @ts-ignore
 backendApi.createWallet = jest.fn(() => {
@@ -18,7 +18,7 @@ backendApi.createWallet = jest.fn(() => {
 
 beforeEach(() => {
   // @ts-ignore
-  config.networkFactory = (c : Currency) => SUPPORTED_NETWORKS[c].mainnet
+  config.networkFactory = (c: Currency) => SUPPORTED_NETWORKS[c].mainnet
 })
 
 describe('generateNewKeyPair', () => {
@@ -38,7 +38,7 @@ describe('generateNewKeyPair', () => {
 
   it('should return new testnet keyPair', () => {
     // @ts-ignore
-    config.networkFactory = (c : Currency) => SUPPORTED_NETWORKS[c].testnet
+    config.networkFactory = (c: Currency) => SUPPORTED_NETWORKS[c].testnet
     const result = keyModule.generateNewKeyPair()
 
     expect(result).to.haveOwnProperty('pubKey')
@@ -50,7 +50,7 @@ describe('generateNewKeyPair', () => {
 
   it('should return new regtest keyPair', () => {
     // @ts-ignore
-    config.networkFactory = (c : Currency) => SUPPORTED_NETWORKS[c].regtest
+    config.networkFactory = (c: Currency) => SUPPORTED_NETWORKS[c].regtest
     const result = keyModule.generateNewKeyPair()
 
     expect(result).to.haveOwnProperty('pubKey')
@@ -128,7 +128,7 @@ describe('deriveKey', () => {
 
   it('should create testnet key', () => {
     // @ts-ignore
-    config.networkFactory = (c : Currency) => SUPPORTED_NETWORKS[c].testnet
+    config.networkFactory = (c: Currency) => SUPPORTED_NETWORKS[c].testnet
     const path = `11/20/15`
     const keyPair = keyModule.generateNewKeyPair()
 

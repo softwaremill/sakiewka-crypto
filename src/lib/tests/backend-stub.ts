@@ -4,7 +4,7 @@ import { GetKeyBackendResponse } from 'response';
 import { currency } from './helpers'
 
 export const stubGetWallet = (userKeyPair: KeyPair, backupKeyPair: KeyPair, serviceKeyPair: KeyPair) => {
-  const backendApi = backendApiFactory.withCurrency(currency);
+  const backendApi = backendApiFactory.withCurrency("http://backendApiUrl", currency)
   // @ts-ignore
   backendApi.getWallet = jest.fn(() => {
     return Promise.resolve({
@@ -20,7 +20,7 @@ export const stubGetWallet = (userKeyPair: KeyPair, backupKeyPair: KeyPair, serv
 }
 
 export const stubUnspents = (unspents: any) => {
-  const backendApi = backendApiFactory.withCurrency(currency);
+  const backendApi = backendApiFactory.withCurrency("http://backendApiUrl", currency)
   // @ts-ignore
   backendApi.listUnspents = jest.fn(() => {
     return Promise.resolve(unspents)
@@ -30,7 +30,7 @@ export const stubUnspents = (unspents: any) => {
 }
 
 export const stubSendTx = () => {
-  const backendApi = backendApiFactory.withCurrency(currency);
+  const backendApi = backendApiFactory.withCurrency("http://backendApiUrl", currency)
   // @ts-ignore
   const sendTxMock = jest.fn(() => {
     return Promise.resolve(true)
@@ -51,7 +51,7 @@ export const createPath = (cosigner: number, change: number, address: number) =>
 }
 
 export const stubCreateAddress = (address: string) => {
-  const backendApi = backendApiFactory.withCurrency(currency);
+  const backendApi = backendApiFactory.withCurrency("http://backendApiUrl", currency)
   // @ts-ignore
   backendApi.createNewAddress = jest.fn(() => {
     return Promise.resolve({
@@ -63,7 +63,7 @@ export const stubCreateAddress = (address: string) => {
 }
 
 export const stubFeesRates = (recommended: number) => {
-  const backendApi = backendApiFactory.withCurrency(currency);
+  const backendApi = backendApiFactory.withCurrency("http://backendApiUrl", currency)
   // @ts-ignore
   backendApi.getFeesRates = jest.fn(() => {
     return Promise.resolve({ recommended: recommended })
@@ -73,7 +73,7 @@ export const stubFeesRates = (recommended: number) => {
 }
 
 export const stubGetKey = (response: GetKeyBackendResponse) => {
-  const backendApi = backendApiFactory.withCurrency(currency);
+  const backendApi = backendApiFactory.withCurrency("http://backendApiUrl", currency)
 
   // @ts-ignore
   const mockImplementation = jest.fn(() => response)

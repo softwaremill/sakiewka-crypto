@@ -4,12 +4,12 @@ import addressModuleFactory from '../address'
 import * as config from '../config'
 import * as constants from '../constants'
 import { Currency } from "../../types/domain";
-const key = keyFactory(currency)
-const addressModule = addressModuleFactory(currency)
+const key = keyFactory("http://backendApiUrl", currency)
+const addressModule = addressModuleFactory("http://backendApiUrl", currency)
 
 beforeEach(() => {
   // @ts-ignore
-  config.networkFactory = (c:Currency) => constants.SUPPORTED_NETWORKS[c].testnet
+  config.networkFactory = (c: Currency) => constants.SUPPORTED_NETWORKS[c].testnet
 })
 
 describe('test data', () => {

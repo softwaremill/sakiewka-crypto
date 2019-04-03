@@ -23,11 +23,11 @@ import { Currency, KeyType, UTXO } from '../../types/domain'
 import { currency } from "./helpers";
 import { Transaction } from "bitcoinjs-lib";
 
-const keyModule = keyModuleFactory(currency)
-const addressModule = addressModuleFactory(currency)
+const keyModule = keyModuleFactory("http://backendApiUrl", currency)
+const addressModule = addressModuleFactory("http://backendApiUrl", currency)
 const bitcoinModule = bitcoinModuleFactory(currency)
 
-const transactionModuleWithStubbedApiCalls = () => transactionModuleFactory(currency)
+const transactionModuleWithStubbedApiCalls = () => transactionModuleFactory("http://backendApiUrl", currency)
 const changeAddress = currency == Currency.BTG ? 'ATWyG3xpRdyYy1K6HBdVPBi629W4DNnB9m' : '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM'
 const serviceAddress = currency == Currency.BTG ? 'AWu3T7CWXXLxrHwuQ4tnHtubpdp1LHUZUK' : '3AnzyVbVSwfrre3vzQLwVMgZ34HH2Ja22d'
 const destinationAddress = currency == Currency.BTG ? 'Gh6q8MweJFqU5nVuoS8TC4hmPsAJJEtVuA' : '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN'
@@ -39,7 +39,7 @@ const testnetDestinationAddress = '2Mt42Wi2JBbAc6Q4GXsxDWbkDTwaEQhqoEM'
 
 beforeEach(() => {
   // @ts-ignore
-  config.networkFactory = (c : Currency) => SUPPORTED_NETWORKS[c].mainnet
+  config.networkFactory = (c: Currency) => SUPPORTED_NETWORKS[c].mainnet
   use(chaiBigNumber(BigNumber))
   use(chaiAsPromised)
   // mocks
@@ -257,7 +257,7 @@ describe('sendCoins', () => {
       [{
         address: destinationAddress,
         amount: new BigNumber('5')
-      },{
+      }, {
         address,
         amount: new BigNumber('1.99990000')
       }],
@@ -314,7 +314,7 @@ describe('sendCoins', () => {
 
   it('should send coins to testnet', async () => {
     // @ts-ignore
-    config.networkFactory = (c : Currency) => SUPPORTED_NETWORKS[c].testnet
+    config.networkFactory = (c: Currency) => SUPPORTED_NETWORKS[c].testnet
     stubCreateAddress(testnetChangeAddress)
 
     // generates keyPairs and address
@@ -466,7 +466,7 @@ describe('sendCoins', () => {
 
   it('should have only three outputs when api does not return serviceFee details', async () => {
     // @ts-ignore
-    config.networkFactory = (c : Currency) => SUPPORTED_NETWORKS[c].testnet
+    config.networkFactory = (c: Currency) => SUPPORTED_NETWORKS[c].testnet
     stubCreateAddress(testnetChangeAddress)
 
     // generates keyPairs and address
@@ -687,7 +687,7 @@ describe('signTransaction', () => {
 describe('sendCoins and signTransaction', () => {
   it('should send coins to testnet and signTransaction', async () => {
     // @ts-ignore
-    config.networkFactory = (c : Currency) => SUPPORTED_NETWORKS[c].testnet
+    config.networkFactory = (c: Currency) => SUPPORTED_NETWORKS[c].testnet
     stubCreateAddress(testnetChangeAddress)
 
     // generates keyPairs and address

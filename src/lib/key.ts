@@ -5,8 +5,8 @@ import bitcoinFactory from './bitcoin'
 import * as backendApiFactory from './backend-api'
 
 
-export default (currency: Currency) => {
-  const backendApi = backendApiFactory.withCurrency(currency)
+export default (backendApiUrl:string, currency: Currency) => {
+  const backendApi = backendApiFactory.withCurrency(backendApiUrl, currency)
   const bitcoin = bitcoinFactory(currency)
 
   const generateNewKeyPair = (

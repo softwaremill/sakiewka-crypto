@@ -1,16 +1,23 @@
-import {
-  monthlySummary as monthlySummaryBackend,
-  listTransfers as listTransfersBackend
-} from './backend-api'
+import { create } from './backend-api'
 import { ListTransfersBackendResponse, MontlySummaryBackendResponse } from '../types/response';
 
-export const monthlySummary = (token: string, month: number, year: number, fiatCurrency: number) : Promise<MontlySummaryBackendResponse> => {
-  return monthlySummaryBackend(token, month, year, fiatCurrency)
-}
+export default (backendApiUrl: string) => {
 
-export const listTransfers =  async (token: string,
-                                     walletId: string,
-                                     limit: number,
-                                     nextPageToken?: string): Promise<ListTransfersBackendResponse> => {
-  return listTransfersBackend(token,walletId,limit,nextPageToken)
+  const backend = create(backendApiUrl)
+
+  const monthlySummary = (token: string, month: number, year: number, fiatCurrency: number): Promise<MontlySummaryBackendResponse> => {
+    return backend.monthlySummary(token, month, year, fiatCurrency)
+  }
+
+  const listTransfers = async (token: string,
+    walletId: string,
+    limit: number,
+    nextPageToken?: string): Promise<ListTransfersBackendResponse> => {
+    return backend.listTransfers(token, walletId, limit, nextPageToken)
+  }
+
+  return {
+    monthlySummary,
+    listTransfers
+  }
 }
