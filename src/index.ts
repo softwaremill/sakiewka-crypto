@@ -1,47 +1,61 @@
 import * as constants from './lib/constants'
-import { addressApiFactory, addressModuleFactory } from './lib/address'
+import { addressApiFactory, addressModuleFactory, AddressApi, AddressModule } from './lib/address'
 import * as crypto from './lib/crypto'
-import * as backendApiFactory from './lib/backend-api'
-import { transactionApiFactory, transactionModuleFactory } from './lib/transaction'
-import { walletApiFactory } from './lib/wallet'
-import { keyApiFactory, keyModuleFactory } from './lib/key'
-import user from './lib/user'
-import * as transfers from './lib/transfers'
+import { SakiewkaBackend, backendFactory } from './lib/backend-api'
+import { transactionApiFactory, transactionModuleFactory, TransactionApi, TransactionModule } from './lib/transaction'
+import { walletApiFactory, WalletApi } from './lib/wallet'
+import { keyApiFactory, keyModuleFactory, KeyApi, KeyModule } from './lib/key'
+import { UserApi, userApiFactory } from './lib/user'
+import { transfersApiFactory, TransfersApi } from './lib/transfers'
 import { Currency } from "./types/domain";
 import bitcoinOps from './lib/bitcoin'
 import { BitcoinOperations } from './lib/bitcoin-operations';
 
-export const sakiewkaApi = async (backendApiUrl: string) => {
-  const backendApi = backendApiFactory.create(backendApiUrl)
-  const chainInfo = await backendApi.chainInfo()
+export interface SakiewkaApi {
+  user: UserApi,
+  transfers: TransfersApi,
+  [Currency.BTC]: SakiewkaCurrencyApi,
+  [Currency.BTG]: SakiewkaCurrencyApi
+}
 
-  const btcBackendApi = backendApiFactory.withCurrency(backendApiUrl, Currency.BTC)
-  const btcOps = bitcoinOps(Currency.BTC, chainInfo.chain)
+export interface SakiewkaCurrencyApi {
+  address: AddressApi,
+  transaction: TransactionApi,
+  wallet: WalletApi,
+  key: KeyApi
+}
 
-  const btgBackendApi = backendApiFactory.withCurrency(backendApiUrl, Currency.BTG)
-  const btgOps = bitcoinOps(Currency.BTG, chainInfo.chain)
+export const sakiewkaApi = (sakiewkaBackend: SakiewkaBackend, chainInfo: string): SakiewkaApi => {
 
-  function creatCurrencyApi(backendApi: backendApiFactory.CurrencyBackendApi, bitcoinOps: BitcoinOperations) {
-    const keyApi = keyApiFactory(backendApi)
-    const keyModule = keyModuleFactory(bitcoinOps)
-    const walletApi = walletApiFactory(backendApi, keyModule)
+  function createCurrencyApi(backendApi: SakiewkaBackend, currency: Currency): SakiewkaCurrencyApi {
+    const operationsModule = bitcoinOps(currency, chainInfo)
+    const keyApi = keyApiFactory(backendApi[currency])
+    const keyModule = keyModuleFactory(operationsModule)
+    const walletApi = walletApiFactory(backendApi[currency], keyModule)
     return {
-      address: addressApiFactory(backendApi),
-      transaction: transactionApiFactory(backendApi, keyModule, bitcoinOps, walletApi),
+      address: addressApiFactory(backendApi[currency]),
+      transaction: transactionApiFactory(backendApi[currency], keyModule, operationsModule, walletApi),
       wallet: walletApi,
       key: keyApi
     };
   }
 
   return {
-    user: user(backendApi),
-    transfers,
-    [Currency.BTC]: creatCurrencyApi(btcBackendApi, btcOps),
-    [Currency.BTG]: creatCurrencyApi(btgBackendApi, btgOps),
+    user: userApiFactory(sakiewkaBackend.core),
+    transfers: transfersApiFactory(sakiewkaBackend.core),
+    [Currency.BTC]: createCurrencyApi(sakiewkaBackend, Currency.BTC),
+    [Currency.BTG]: createCurrencyApi(sakiewkaBackend, Currency.BTG),
   }
 }
 
-export const sakiewkaModule = (currency: Currency, btcNetwork: string) => {
+export interface SakiewkaModule {
+  transaction: TransactionModule,
+  address: AddressModule,
+  key: KeyModule,
+  bitcoin: BitcoinOperations
+}
+
+export const sakiewkaModule = (currency: Currency, btcNetwork: string): SakiewkaModule => {
   const bitcoinOperations = bitcoinOps(currency, btcNetwork);
   const keyModule = keyModuleFactory(bitcoinOperations)
   const transactionModule = transactionModuleFactory(keyModule, bitcoinOperations)
@@ -58,3 +72,4 @@ export const sakiewkaModule = (currency: Currency, btcNetwork: string) => {
 export { Currency } from './types/domain'
 export { constants }
 export { crypto }
+export { backendFactory, SakiewkaBackend }

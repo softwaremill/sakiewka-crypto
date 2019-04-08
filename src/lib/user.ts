@@ -1,7 +1,18 @@
 import { BaseBackendApi } from './backend-api'
 import { hashPassword } from './crypto';
+import { LoginBackendResponse, RegisterBackendResponse, SetupPasswordBackendResponse, Init2faBackendResponse, Confirm2faBackendResponse, Disable2faBackendResponse, InfoBackendResponse } from 'response';
 
-export default (backend: BaseBackendApi) => {
+export interface UserApi {
+  login(login: string, password: string, code?: number): Promise<LoginBackendResponse>
+  register(login: string): Promise<RegisterBackendResponse>
+  setupPassword(token: string, password: string): Promise<SetupPasswordBackendResponse>
+  init2fa(token: string, password: string): Promise<Init2faBackendResponse>
+  confirm2fa(token: string, password: string, code: number): Promise<Confirm2faBackendResponse>
+  disable2fa(token: string, password: string, code: number): Promise<Disable2faBackendResponse>
+  info(token: string): Promise<InfoBackendResponse>
+}
+
+export const userApiFactory = (backend: BaseBackendApi): UserApi => {
 
   const login = (login: string, password: string, code?: number) => {
     return backend.login(login, hashPassword(password), code)

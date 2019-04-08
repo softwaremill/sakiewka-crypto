@@ -163,5 +163,5 @@ export interface MaxTransferAmountResponse {
 }
 
 export interface ChainInfoResponse {
-  chain: string
+  type: string
 }

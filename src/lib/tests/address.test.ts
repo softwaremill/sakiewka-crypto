@@ -55,18 +55,17 @@ describe('generateNewMultisigAddress', () => {
 })
 
 describe('createNewAddress', () => {
-  const addressModule = addressApiFactory(backendApi)
+  const addressApi = addressApiFactory(backendApi)
   it('should exist', () => {
-    expect(addressModule.createNewAddress).to.be.a('function')
+    expect(addressApi.createNewAddress).to.be.a('function')
   })
 
   it('should accept 2 arguments and pass them backend-api method and return result of its call', async () => {
     // @ts-ignore
     const mockImplementation = jest.fn(() => 'backend response')
-    // @ts-ignore
     backendApi.createNewAddress = mockImplementation
 
-    const res = await addressModule.createNewAddress('testToken', 'abcd')
+    const res = await addressApi.createNewAddress('testToken', 'abcd')
 
     const [token, walletId, isChange, name] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
@@ -79,10 +78,9 @@ describe('createNewAddress', () => {
   it('should accept 3 arguments and pass them backend-api method and return result of its call', async () => {
     // @ts-ignore
     const mockImplementation = jest.fn(() => 'backend response')
-    // @ts-ignore
     backendApi.createNewAddress = mockImplementation
 
-    const res = await addressModule.createNewAddress('testToken', 'abcd', 'testName')
+    const res = await addressApi.createNewAddress('testToken', 'abcd', 'testName')
 
     const [token, walletId, isChange, name] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
@@ -103,7 +101,6 @@ describe('getAddress', () => {
   it('should pass proper arguments to backend-api method and return result of its call', async () => {
     // @ts-ignore
     const mockImplementation = jest.fn(() => 'backend response')
-    // @ts-ignore
     backendApi.getAddress = mockImplementation
 
     const res = await addressModule.getAddress('testToken', 'abcd', 'testAddress')
@@ -126,7 +123,6 @@ describe('listAddresses', () => {
   it('should pass proper arguments to backend-api method and return result of its call', async () => {
     // @ts-ignore
     const mockImplementation = jest.fn(() => 'backend response')
-    // @ts-ignore
     backendApi.listAddresses = mockImplementation
 
     const res = await addressModule.listAddresses('testToken', 'testWalletId', 101, 'testNextPageToken')

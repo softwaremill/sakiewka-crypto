@@ -22,10 +22,27 @@ import {
   MontlySummaryBackendResponse,
   SetupPasswordBackendResponse,
   ListTransfersBackendResponse,
-  ChainInfoResponse
+  ChainInfoResponse as ChainModeResponse
 } from 'response'
 import request from './utils/request'
 import { Currency } from "../types/domain";
+
+export interface SakiewkaBackend {
+  core: BaseBackendApi,
+  [Currency.BTC]: CurrencyBackendApi,
+  [Currency.BTG]: CurrencyBackendApi
+}
+
+export const backendFactory = (backendApiUrl: string): SakiewkaBackend => {
+  const backendApi = create(backendApiUrl)
+  const btcBackendApi = withCurrency(backendApiUrl, Currency.BTC)
+  const btgBackendApi = withCurrency(backendApiUrl, Currency.BTG)
+  return {
+    core: backendApi,
+    [Currency.BTC]: btcBackendApi,
+    [Currency.BTG]: btgBackendApi
+  }
+}
 
 export interface BaseBackendApi {
   login(login: string, password: string, codeIn?: number): Promise<LoginBackendResponse>
@@ -37,7 +54,7 @@ export interface BaseBackendApi {
   info(token: string): Promise<InfoBackendResponse>
   monthlySummary(token: string, month: number, year: number, fiatCurrency: number): Promise<MontlySummaryBackendResponse>
   listTransfers(token: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListTransfersBackendResponse>
-  chainInfo(): Promise<ChainInfoResponse>
+  chainNetworkType(): Promise<ChainModeResponse>
 }
 
 export const create = (backendApiUrl: string): BaseBackendApi => {
@@ -161,9 +178,9 @@ export const create = (backendApiUrl: string): BaseBackendApi => {
     return response.data
   }
 
-  const chainInfo = async (): Promise<ChainInfoResponse> => {
+  const chainNetworkType = async (): Promise<ChainModeResponse> => {
     const options = { method: 'GET' }
-    const response = await request(`${backendApiUrl}/chain-info`, options)
+    const response = await request(`${backendApiUrl}/chain-network-type`, options)
     return response.data
   }
 
@@ -177,7 +194,7 @@ export const create = (backendApiUrl: string): BaseBackendApi => {
     info,
     monthlySummary,
     listTransfers,
-    chainInfo
+    chainNetworkType
   }
 }
 
