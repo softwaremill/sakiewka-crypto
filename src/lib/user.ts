@@ -7,7 +7,7 @@ import {
   register as registerBackend,
   setupPassword as setupPasswordBackend
 } from './backend-api'
-import { hashPassword } from './crypto';
+import { hashPassword } from './crypto'
 
 export const login = (login: string, password: string, code?: number) => {
   return loginBackend(login, hashPassword(password), code)

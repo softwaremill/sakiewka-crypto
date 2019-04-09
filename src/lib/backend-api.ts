@@ -2,30 +2,30 @@ import {
   Confirm2faBackendResponse,
   CreateNewAddressBackendResponse,
   CreateWalletBackendParams,
-  CreateWalletBackendResponse,
+  CreateWalletBackendResponse, CreateWebhookResponse, DeleteWebhookResponse,
   Disable2faBackendResponse,
   GetAddressBackendResponse,
   GetFeesRates,
   GetKeyBackendResponse,
+  GetUtxosBackendParams,
   GetWalletBackendResponse,
   GetWalletBalanceBackendResponse,
   InfoBackendResponse,
   Init2faBackendResponse,
   ListAddressesBackendResponse,
+  ListTransfersBackendResponse,
   ListUnspentsBackendResponse,
   ListWalletsBackendResponse,
+  ListWebhooksResponse,
   LoginBackendResponse,
-  RegisterBackendResponse,
-  GetUtxosBackendParams,
   MaxTransferAmountParams,
   MaxTransferAmountResponse,
   MontlySummaryBackendResponse,
-  SetupPasswordBackendResponse,
-  ListTransfersBackendResponse
+  RegisterBackendResponse,
+  SetupPasswordBackendResponse
 } from 'response'
 import request from './utils/request'
-import { Currency } from "../types/domain";
-
+import { Currency } from '..'
 
 const getBackendApiUrl = () => process.env.BACKEND_API_URL
 
@@ -217,6 +217,71 @@ export const withCurrency = (currency: Currency) => {
     return response.data
   }
 
+  const listWebhooks = async (
+    token: string,
+    walletId: string,
+    limit: number = 10
+  ): Promise<ListWebhooksResponse> => {
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: token
+      }
+    }
+    const response = await request(`${getBackendApiUrl()}/${currency}/wallet/${walletId}/webhooks?limit=${limit}`, options)
+    return response.data
+  }
+
+  const getWebhook = async (
+    token: string,
+    walletId: string,
+    webhookId: string
+  ): Promise<ListWebhooksResponse> => {
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: token
+      }
+    }
+    const response = await request(`${getBackendApiUrl()}/${currency}/wallet/${walletId}/webhooks/${webhookId}`, options)
+    return response.data
+  }
+
+  const createWebhook = async (
+    token: string,
+    walletId: string,
+    callbackUrl: string,
+    settings: Object
+  ): Promise<CreateWebhookResponse> => {
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: token
+      },
+      body: JSON.stringify({
+        callbackUrl,
+        settings
+      })
+    }
+    const response = await request(`${getBackendApiUrl()}/${currency}/wallet/${walletId}/webhooks`, options)
+    return response.data
+  }
+
+  const deleteWebhook = async (
+    token: string,
+    walletId: string,
+    webhookId: string
+  ): Promise<DeleteWebhookResponse> => {
+    const options = {
+      method: 'DELETE',
+      headers: {
+        Authorization: token
+      }
+    }
+    const response = await request(`${getBackendApiUrl()}/${currency}/wallet/${walletId}/webhooks/${webhookId}`, options)
+    return response.data
+  }
+
   const createNewAddress = async (token: string, walletId: string, change: boolean = false, name?: string
   ): Promise<CreateNewAddressBackendResponse> => {
     const options = {
@@ -328,7 +393,6 @@ export const withCurrency = (currency: Currency) => {
     return response.data
   }
 
-
   return {
     confirm2fa,
     createNewAddress,
@@ -351,6 +415,10 @@ export const withCurrency = (currency: Currency) => {
     maxTransferAmount,
     monthlySummary,
     register,
-    setupPassword
+    setupPassword,
+    listWebhooks,
+    getWebhook,
+    deleteWebhook,
+    createWebhook
   }
 }

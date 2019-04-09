@@ -4,11 +4,14 @@ export interface LoginBackendResponse {
   token: string
 }
 
-export interface RegisterBackendResponse {}
+export interface RegisterBackendResponse {
+}
 
-export interface SetupPasswordBackendResponse {}
+export interface SetupPasswordBackendResponse {
+}
 
-export interface InfoBackendResponse {}
+export interface InfoBackendResponse {
+}
 
 export interface MontlySummaryBackendResponse {
   spentBTC: string,
@@ -30,16 +33,18 @@ export interface TransferItemBackendResponse {
   spent: string,
   serviceFee: string,
   timestamp: number,
-  transferType : TransferType
+  transferType: TransferType
 }
 
 export interface Init2faBackendResponse {
   qrCodeUrl: string
 }
 
-export interface Confirm2faBackendResponse {}
+export interface Confirm2faBackendResponse {
+}
 
-export interface Disable2faBackendResponse {}
+export interface Disable2faBackendResponse {
+}
 
 export interface CreateWalletBackendParams {
   name: string,
@@ -56,7 +61,7 @@ export interface GetUtxosBackendParams {
 
 export interface ReceipientsBackend {
   address: string,
-  amount : string
+  amount: string
 }
 
 interface WalletBackendResponse {
@@ -104,6 +109,21 @@ export interface ListWalletsBackendResponse {}
 
 export interface GetWalletBalanceBackendResponse {}
 
+export interface GetWebhooksResponse {
+  id: string,
+  walletId: string,
+  callbackUrl: string,
+  settings: any
+}
+
+export interface ListWebhooksResponse {
+  webhooks: GetWebhooksResponse[]
+}
+
+export interface DeleteWebhookResponse {}
+
+export interface CreateWebhookResponse {}
+
 export interface ListUnspentsBackendResponse {
   outputs: UTXO[],
   amount: string,
@@ -120,7 +140,7 @@ export interface ServiceFee {
 export interface GetKeyBackendResponse {
   id: string
   pubKey: string
-  prvKey? : string
+  prvKey?: string
   keyType: KeyType
   created: string
 }

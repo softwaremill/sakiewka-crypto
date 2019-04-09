@@ -7,7 +7,8 @@ import key from './lib/key'
 import * as user from './lib/user'
 import * as transfers from './lib/transfers'
 import * as config from './lib/config'
-import { Currency } from "./types/domain";
+import { Currency } from './types/domain'
+import webhooks from './lib/webhooks'
 
 export default {
   user,
@@ -19,13 +20,15 @@ export default {
     address: address(Currency.BTC),
     transaction: transaction(Currency.BTC),
     wallet: wallet(Currency.BTC),
-    key: key(Currency.BTC)
+    key: key(Currency.BTC),
+    webhooks: webhooks(Currency.BTC)
   },
   [Currency.BTG]: {
     address: address(Currency.BTG),
     transaction: transaction(Currency.BTG),
     wallet: wallet(Currency.BTG),
-    key: key(Currency.BTG)
+    key: key(Currency.BTG),
+    webhooks: webhooks(Currency.BTG)
   }
 }
 
