@@ -6,8 +6,6 @@ This is a library intended to be used as a dependency to other packages. It hand
 
 First run  `npm ci`
 
-To use Testnet set `BTC_NETWORK` env variable to `testnet`.
-
 ### Docs:
 Run `npm run generate-docs`  
 Open `/docs/index.html`
@@ -31,3 +29,9 @@ To run integration tests you have to specify `BACKEND_API_URL` in `.env` file.
 ### package.json modification:
 
 Do not modify package.lock manually. Always use `npm install` when adding or updating packages.
+
+### Design
+
+There are two families of components: api and module.
+Components from api family are used to provide unified access layer for our backend api.
+Components from module family consits mostly of cryptographic functions which can be executed locally.
