@@ -3,9 +3,9 @@ import bitcoinFactory from "../bitcoin";
 import { Currency } from "../../types/domain";
 
 describe('btc redeem script', () => {
-  const test = (currency:Currency,key1:string,key2:string,key3:string,expectedResult:string) => {
+  const test = (currency: Currency, key1: string, key2: string, key3: string, expectedResult: string) => {
     it(`should create same ${currency} script regardless of public keys order`, () => {
-      const bitcoin = bitcoinFactory(Currency.BTC)
+      const bitcoin = bitcoinFactory(Currency.BTC, 'mainnet')
       const result1 = bitcoin.createMultisigRedeemScript([key1, key2, key3])
       const result2 = bitcoin.createMultisigRedeemScript([key1, key3, key2])
       const result3 = bitcoin.createMultisigRedeemScript([key2, key1, key3])

@@ -1,13 +1,20 @@
-import { Currency, Recipient, WalletParams } from '../types/domain'
+import { Recipient, WalletParams } from '../types/domain'
 import { ROOT_DERIVATION_PATH } from './constants'
-import { CreateWalletBackendParams, GetUtxosBackendParams, MaxTransferAmountParams, ReceipientsBackend } from 'response'
+import { CreateWalletBackendParams, GetUtxosBackendParams, MaxTransferAmountParams, ReceipientsBackend, MaxTransferAmountResponse, ListUnspentsBackendResponse, GetWalletBalanceBackendResponse, ListWalletsBackendResponse, GetWalletBackendResponse } from 'response'
 import { generatePdf } from './keycard-pdf'
-import keyFactory from './key'
-import * as backendApiFactory from './backend-api'
+import { KeyModule } from './key'
+import { CurrencyBackendApi } from './backend-api';
 
-export default (currency: Currency) => {
-  const keyModule = keyFactory(currency)
-  const backendApi = backendApiFactory.withCurrency(currency)
+export interface WalletApi {
+  createWallet(userToken: string, params: WalletParams): Promise<any>
+  getWallet(userToken: string, walletId: string): Promise<GetWalletBackendResponse>
+  listWallets(userToken: string, limit: number, nextPageToken?: string): Promise<ListWalletsBackendResponse>
+  getWalletBalance(userToken: string, walletId: string): Promise<GetWalletBalanceBackendResponse>
+  listUnspents(token: string, walletId: string, feeRate: string, recipients: Recipient[]): Promise<ListUnspentsBackendResponse>
+  maxTransferAmount(token: string, walletId: string, feeRate: string, recipient: string): Promise<MaxTransferAmountResponse>
+}
+
+export const walletApiFactory = (backendApi: CurrencyBackendApi, keyModule: KeyModule): WalletApi => {
 
   const createWallet = async (userToken: string, params: WalletParams): Promise<any> => {
     const userKeyPair = params.userPubKey ?
@@ -40,15 +47,15 @@ export default (currency: Currency) => {
     return { ...response, pdf }
   }
 
-  const getWallet = (userToken: string, walletId: string) => backendApi.getWallet(userToken, walletId)
+  const getWallet = (userToken: string, walletId: string): Promise<GetWalletBackendResponse> => backendApi.getWallet(userToken, walletId)
 
-  const listWallets = (userToken: string, limit: number, nextPageToken?: string) => backendApi.listWallets(userToken, limit, nextPageToken)
+  const listWallets = (userToken: string, limit: number, nextPageToken?: string): Promise<ListWalletsBackendResponse> => backendApi.listWallets(userToken, limit, nextPageToken)
 
-  const getWalletBalance = (userToken: string, walletId: string) => backendApi.getWalletBalance(userToken, walletId)
+  const getWalletBalance = (userToken: string, walletId: string): Promise<GetWalletBalanceBackendResponse> => backendApi.getWalletBalance(userToken, walletId)
 
   const listUnspents = (
     token: string, walletId: string, feeRate: string, recipients: Recipient[]
-  ) => {
+  ): Promise<ListUnspentsBackendResponse> => {
     const params = {
       feeRate,
       recipients: recipients.map((r: Recipient) => <ReceipientsBackend>({
@@ -59,7 +66,7 @@ export default (currency: Currency) => {
     return backendApi.listUnspents(token, walletId, <GetUtxosBackendParams>params)
   }
 
-  const maxTransferAmount = (token: string, walletId: string, feeRate: string, recipient: string) => {
+  const maxTransferAmount = (token: string, walletId: string, feeRate: string, recipient: string): Promise<MaxTransferAmountResponse> => {
     const params: MaxTransferAmountParams = {
       recipient,
       feeRate

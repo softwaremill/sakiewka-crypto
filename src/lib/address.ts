@@ -1,24 +1,15 @@
-import { Currency } from "../types/domain";
-import * as backendApiFactory from './backend-api'
-import bitcoinFactory from './bitcoin'
-import keyFactory from './key'
+import { KeyModule } from './key'
+import { CurrencyBackendApi } from "./backend-api";
+import { BitcoinOperations } from "./bitcoin-operations";
+import { CreateNewAddressBackendResponse, GetAddressBackendResponse, ListAddressesBackendResponse } from 'response';
 
-export default (currency: Currency) => {
-  const backendApi = backendApiFactory.withCurrency(currency)
-  const bitcoin = bitcoinFactory(currency)
-  const keyApi = keyFactory(currency)
+export interface AddressApi {
+  createNewAddress(userToken: string, walletId: string, name?: string): Promise<CreateNewAddressBackendResponse>
+  getAddress(userToken: string, walletId: string, address: string): Promise<GetAddressBackendResponse>
+  listAddresses(userToken: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListAddressesBackendResponse>
+}
 
-  const generateNewMultisigAddress = (rootKeys: String[], path: string): any => {
-    const derivedKeys = rootKeys.map((rootKey: string) => {
-      return keyApi.deriveKey(rootKey, path).neutered().toBase58()
-    })
-
-    const redeemScript = bitcoin.createMultisigRedeemScript(derivedKeys)
-    const address = bitcoin.redeemScriptToAddress(redeemScript)
-
-    return { address, redeemScript }
-  }
-
+export const addressApiFactory = (backendApi: CurrencyBackendApi): AddressApi => {
   const createNewAddress = (
     userToken: string,
     walletId: string,
@@ -37,6 +28,24 @@ export default (currency: Currency) => {
     limit: number,
     nextPageToken?: string
   ) => backendApi.listAddresses(userToken, walletId, limit, nextPageToken)
+  return { createNewAddress, getAddress, listAddresses }
 
-  return { generateNewMultisigAddress, createNewAddress, getAddress, listAddresses }
+}
+
+export interface AddressModule {
+  generateNewMultisigAddress(rootKeys: String[], path: string): { address: string, redeemScript: Buffer }
+}
+
+export const addressModuleFactory = (bitcoinOps: BitcoinOperations, keyModule: KeyModule): AddressModule => {
+  const generateNewMultisigAddress = (rootKeys: String[], path: string): { address: string, redeemScript: Buffer } => {
+    const derivedKeys = rootKeys.map((rootKey: string) => {
+      return keyModule.deriveKey(rootKey, path).neutered().toBase58()
+    })
+
+    const redeemScript = bitcoinOps.createMultisigRedeemScript(derivedKeys)
+    const address = bitcoinOps.redeemScriptToAddress(redeemScript)
+
+    return { address, redeemScript }
+  }
+  return { generateNewMultisigAddress }
 }
