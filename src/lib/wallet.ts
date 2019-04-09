@@ -1,6 +1,15 @@
 import { Recipient, WalletParams } from '../types/domain'
 import { ROOT_DERIVATION_PATH } from './constants'
-import { CreateWalletBackendParams, GetUtxosBackendParams, MaxTransferAmountParams, ReceipientsBackend, MaxTransferAmountResponse, ListUnspentsBackendResponse, GetWalletBalanceBackendResponse, ListWalletsBackendResponse, GetWalletBackendResponse } from 'response'
+import {
+  CreateWalletBackendParams,
+  GetUtxosBackendParams,
+  MaxTransferAmountParams,
+  ReceipientsBackend,
+  MaxTransferAmountResponse,
+  ListUnspentsBackendResponse,
+  ListWalletsBackendResponse,
+  GetWalletBackendResponse
+} from 'response'
 import { generatePdf } from './keycard-pdf'
 import { KeyModule } from './key'
 import { CurrencyBackendApi } from './backend-api';
@@ -9,7 +18,6 @@ export interface WalletApi {
   createWallet(userToken: string, params: WalletParams): Promise<any>
   getWallet(userToken: string, walletId: string): Promise<GetWalletBackendResponse>
   listWallets(userToken: string, limit: number, nextPageToken?: string): Promise<ListWalletsBackendResponse>
-  getWalletBalance(userToken: string, walletId: string): Promise<GetWalletBalanceBackendResponse>
   listUnspents(token: string, walletId: string, feeRate: string, recipients: Recipient[]): Promise<ListUnspentsBackendResponse>
   maxTransferAmount(token: string, walletId: string, feeRate: string, recipient: string): Promise<MaxTransferAmountResponse>
 }
@@ -51,8 +59,6 @@ export const walletApiFactory = (backendApi: CurrencyBackendApi, keyModule: KeyM
 
   const listWallets = (userToken: string, limit: number, nextPageToken?: string): Promise<ListWalletsBackendResponse> => backendApi.listWallets(userToken, limit, nextPageToken)
 
-  const getWalletBalance = (userToken: string, walletId: string): Promise<GetWalletBalanceBackendResponse> => backendApi.getWalletBalance(userToken, walletId)
-
   const listUnspents = (
     token: string, walletId: string, feeRate: string, recipients: Recipient[]
   ): Promise<ListUnspentsBackendResponse> => {
@@ -77,7 +83,6 @@ export const walletApiFactory = (backendApi: CurrencyBackendApi, keyModule: KeyM
   return {
     createWallet,
     getWallet,
-    getWalletBalance,
     listUnspents,
     listWallets,
     maxTransferAmount
