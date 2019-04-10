@@ -18,10 +18,14 @@ export namespace hash {
 
 export namespace misc {
   export function scrypt(input: string, salt: string)
+  export function pbkdf2(password: string, salt: string,iter:number,length:number)
 }
 
 export namespace codec {
   export namespace hex {
     export function fromBits(input: String[])
+  }
+  export namespace utf8String {
+    export function toBits(input: string)
   }
 }

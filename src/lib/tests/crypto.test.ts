@@ -14,6 +14,7 @@ describe('encrypt/decrypt', () => {
     const decrypted = crypto.decrypt(password, encrypted)
 
     expect(JSON.parse(encrypted)).to.have.ownProperty('cipher')
+    expect(encrypted).to.not.eq(message).and.not.include(message)
     expect(decrypted).to.be.eq(message)
   })
 
@@ -65,3 +66,14 @@ describe('hashSha1', () => {
     expect(result).to.eq('d2581121a80ea419e91878d321100cc99dfb21db')
   })
 })
+
+describe('pbkdf2', function () {
+  it('should exist', () => {
+    expect(crypto.pbkdf2).to.be.a('function')
+  })
+
+  it('should produce long key from password', () => {
+    const result = crypto.pbkdf2('password')
+    expect(result).to.eq('eb86507e3258bb521ac88a30e9ee0041f51b28b8afff6ae3a39523aaf803e34826f499b70e1568f78c48b2ae6a2c8872176f5991f42026e4e95bc8df8f6a6345')
+  })
+});
