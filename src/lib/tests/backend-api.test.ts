@@ -2,7 +2,8 @@ import { expect } from 'chai'
 
 import { currency } from './helpers'
 import * as apiFactory from '../backend-api'
-const api  = apiFactory.withCurrency(currency)
+const baseApi = apiFactory.create('backurl/api/v1')
+const api  = apiFactory.withCurrency('backurl/api/v1', currency)
 import * as request from '../utils/request'
 import { MaxTransferAmountParams } from 'response';
 
@@ -16,15 +17,13 @@ beforeEach(() => {
   mockImplementation.mockClear()
 })
 
-process.env.BACKEND_API_URL = 'backurl/api/v1'
-
 describe('login', () => {
   it('should exist', () => {
-    expect(api.login).to.be.a('function')
+    expect(baseApi.login).to.be.a('function')
   })
 
   it('should send proper request', async () => {
-    await api.login('a', 'b')
+    await baseApi.login('a', 'b')
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
@@ -37,7 +36,7 @@ describe('login', () => {
   })
 
   it('should send request with 2fa code', async () => {
-    await api.login('a', 'b', 123456)
+    await baseApi.login('a', 'b', 123456)
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
@@ -52,11 +51,11 @@ describe('login', () => {
 
 describe('init2fa', () => {
   it('should exist', () => {
-    expect(api.init2fa).to.be.a('function')
+    expect(baseApi.init2fa).to.be.a('function')
   })
 
   it('should send proper request', async () => {
-    await api.init2fa('testToken', 'password')
+    await baseApi.init2fa('testToken', 'password')
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
@@ -69,11 +68,11 @@ describe('init2fa', () => {
 
 describe('confirm2fa', () => {
   it('should exist', () => {
-    expect(api.confirm2fa).to.be.a('function')
+    expect(baseApi.confirm2fa).to.be.a('function')
   })
 
   it('should send proper request', async () => {
-    await api.confirm2fa('testToken', 'password', 101202)
+    await baseApi.confirm2fa('testToken', 'password', 101202)
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
@@ -87,11 +86,11 @@ describe('confirm2fa', () => {
 
 describe('disable2fa', () => {
   it('should exist', () => {
-    expect(api.disable2fa).to.be.a('function')
+    expect(baseApi.disable2fa).to.be.a('function')
   })
 
   it('should send proper request', async () => {
-    await api.disable2fa('testToken', 'password', 112233)
+    await baseApi.disable2fa('testToken', 'password', 112233)
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
@@ -105,11 +104,11 @@ describe('disable2fa', () => {
 
 describe('register', () => {
   it('should exist', () => {
-    expect(api.register).to.be.a('function')
+    expect(baseApi.register).to.be.a('function')
   })
 
   it('should send proper request', async () => {
-    await api.register('a')
+    await baseApi.register('a')
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
@@ -122,11 +121,11 @@ describe('register', () => {
 
 describe('info', () => {
   it('should exist', () => {
-    expect(api.info).to.be.a('function')
+    expect(baseApi.info).to.be.a('function')
   })
 
   it('should send proper request', async () => {
-    await api.info('testToken')
+    await baseApi.info('testToken')
 
     const [url, params] = mockImplementation.mock.calls[0]
 
@@ -224,7 +223,7 @@ describe('createNewAddress', () => {
   })
 
   it('should send proper request without name param', async () => {
-    await api.createNewAddress('testToken', 'walletId')
+    await api.createNewAddress('testToken', 'walletId', false)
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
@@ -378,11 +377,11 @@ describe('maxTransferAmount', () => {
 
 describe('setupPassword', () => {
   it('should exist', () => {
-    expect(api.setupPassword).to.be.a('function')
+    expect(baseApi.setupPassword).to.be.a('function')
   })
 
   it('should send proper request', async () => {
-    await api.setupPassword('testToken', 'secret')
+    await baseApi.setupPassword('testToken', 'secret')
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)

@@ -1,16 +1,12 @@
 import { currency } from './helpers'
-import keyFactory from '../key'
-import addressModuleFactory from '../address'
-import * as config from '../config'
+import { keyModuleFactory } from '../key'
+import { addressModuleFactory } from '../address'
+import bitoinFactory from '../bitcoin'
 import * as constants from '../constants'
-import { Currency } from "../../types/domain";
-const key = keyFactory(currency)
-const addressModule = addressModuleFactory(currency)
 
-beforeEach(() => {
-  // @ts-ignore
-  config.networkFactory = (c:Currency) => constants.SUPPORTED_NETWORKS[c].testnet
-})
+const bitcoin = bitoinFactory(currency, 'testnet')
+const key = keyModuleFactory(bitcoin)
+const addressModule = addressModuleFactory(bitcoin, key)
 
 describe('test data', () => {
   it('should generate a set of keys', () => {

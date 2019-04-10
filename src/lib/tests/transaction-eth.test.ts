@@ -1,9 +1,9 @@
 import { expect } from 'chai'
 import ethUtil from 'ethereumjs-util'
 
-import * as transaction from '../transaction-eth'
+import transactionFactory from '../transaction-eth'
 import * as backendApi from '../zlevator'
-import { createETHOperationHash, createTokenOperationHash, createGenericOperationHash, createSignature } from '../ethereum'
+import ethereumFactory from '../ethereum'
 
 import { v4 as uuid } from 'uuid';
 import { fail } from 'assert';
@@ -27,11 +27,13 @@ backendApi.sendETH = jest.fn(() => {
 backendApi.sendTokens = jest.fn(() => {
   return Promise.resolve({ tx: '311' })
 })
-
+const transaction = transactionFactory('mainnet')
+const ethereum = ethereumFactory('mainnet')
 const prvKey = '2E63835168223C0D81C152B86C6AE6FFE8EDC63327691953251DCFC6895C96DA'
 const signerAddress = ethUtil.privateToAddress(new Buffer(prvKey, 'hex')).toString('hex')
 
 describe('send ETH', () => {
+
   it('should exist', () => {
     expect(transaction.sendETH).to.be.a('function')
   })
@@ -46,7 +48,7 @@ describe('send ETH', () => {
     // @ts-ignore
     const [, value, expireBlock, contractNonce, , signature] = backendApi.sendETH.mock.calls[0]
 
-    const operationHash = createETHOperationHash(address, value, data, expireBlock, contractNonce)
+    const operationHash = ethereum.createETHOperationHash(address, value, data, expireBlock, contractNonce)
 
     const sigParams = ethUtil.fromRpcSig(signature)
     const pub = ethUtil.ecrecover(
@@ -74,7 +76,7 @@ describe('send Tokens', () => {
     // @ts-ignore
     const [, value, expireBlock, contractNonce, signature] = backendApi.sendTokens.mock.calls[0]
 
-    const operationHash = createTokenOperationHash(address, value, tokenAddress, expireBlock, contractNonce)
+    const operationHash = ethereum.createTokenOperationHash(address, value, tokenAddress, expireBlock, contractNonce)
 
     const sigParams = ethUtil.fromRpcSig(signature)
     const pub = ethUtil.ecrecover(
@@ -94,9 +96,9 @@ describe('sign generic message', () => {
     const txType = "MY_TX"
     const address = '0xa378869a5009b131Ef9c0b300f4049F7bB7091e6'
 
-    const operationHash = createGenericOperationHash(['string', 'address'], [txType, address]);
+    const operationHash = ethereum.createGenericOperationHash(['string', 'address'], [txType, address]);
 
-    const signature = createSignature(operationHash, prvKey)
+    const signature = ethereum.createSignature(operationHash, prvKey)
 
     const sigParams = ethUtil.fromRpcSig(signature)
     const pub = ethUtil.ecrecover(
