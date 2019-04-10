@@ -1,15 +1,16 @@
 import * as constants from './lib/constants'
-import { addressApiFactory, addressModuleFactory, AddressApi, AddressModule } from './lib/address'
+import { AddressApi, addressApiFactory, AddressModule, addressModuleFactory } from './lib/address'
 import * as crypto from './lib/crypto'
-import { SakiewkaBackend, backendFactory } from './lib/backend-api'
-import { transactionApiFactory, transactionModuleFactory, TransactionApi, TransactionModule } from './lib/transaction'
-import { walletApiFactory, WalletApi } from './lib/wallet'
-import { keyApiFactory, keyModuleFactory, KeyApi, KeyModule } from './lib/key'
+import { backendFactory, SakiewkaBackend } from './lib/backend-api'
+import { TransactionApi, transactionApiFactory, TransactionModule, transactionModuleFactory } from './lib/transaction'
+import { WalletApi, walletApiFactory } from './lib/wallet'
+import { KeyApi, keyApiFactory, KeyModule, keyModuleFactory } from './lib/key'
 import { UserApi, userApiFactory } from './lib/user'
-import { transfersApiFactory, TransfersApi } from './lib/transfers'
-import { Currency } from "./types/domain";
+import { TransfersApi, transfersApiFactory } from './lib/transfers'
+import { Currency } from './types/domain';
 import bitcoinOps from './lib/bitcoin'
 import { BitcoinOperations } from './lib/bitcoin-operations';
+import { WebhooksApi, webhooksApiFactory } from './lib/webhooks';
 
 export interface SakiewkaApi {
   user: UserApi,
@@ -22,7 +23,8 @@ export interface SakiewkaCurrencyApi {
   address: AddressApi,
   transaction: TransactionApi,
   wallet: WalletApi,
-  key: KeyApi
+  key: KeyApi,
+  webhooks: WebhooksApi
 }
 
 /*
@@ -60,7 +62,8 @@ export const sakiewkaApi = (sakiewkaBackend: SakiewkaBackend, chainInfo: string)
       address: addressApiFactory(backendApi[currency]),
       transaction: transactionApiFactory(backendApi[currency], keyModule, operationsModule, walletApi),
       wallet: walletApi,
-      key: keyApi
+      key: keyApi,
+      webhooks: webhooksApiFactory(backendApi[currency])
     };
   }
 
@@ -88,10 +91,9 @@ export const sakiewkaModule = (currency: Currency, btcNetwork: string): Sakiewka
     transaction: transactionModule,
     address: addressModule,
     key: keyModule,
-    bitcoin: bitcoinOperations,
+    bitcoin: bitcoinOperations
   }
 }
-
 
 export { Currency } from './types/domain'
 export { constants }

@@ -1,8 +1,11 @@
 import {
+  ChainInfoResponse as ChainModeResponse,
   Confirm2faBackendResponse,
   CreateNewAddressBackendResponse,
   CreateWalletBackendParams,
-  CreateWalletBackendResponse, CreateWebhookResponse, DeleteWebhookResponse,
+  CreateWalletBackendResponse,
+  CreateWebhookResponse,
+  DeleteWebhookResponse,
   Disable2faBackendResponse,
   GetAddressBackendResponse,
   GetFeesRates,
@@ -23,13 +26,9 @@ import {
   MontlySummaryBackendResponse,
   RegisterBackendResponse,
   SetupPasswordBackendResponse
-  SetupPasswordBackendResponse,
-  ListTransfersBackendResponse,
-  ChainInfoResponse as ChainModeResponse
 } from 'response'
 import request from './utils/request'
-import { Currency } from '..'
-import { Currency } from "../types/domain";
+import { Currency } from '../types/domain';
 
 export interface SakiewkaBackend {
   core: BaseBackendApi,
@@ -164,9 +163,9 @@ export const create = (backendApiUrl: string): BaseBackendApi => {
   }
 
   const listTransfers = async (token: string,
-    walletId: string,
-    limit: number,
-    nextPageToken?: string): Promise<ListTransfersBackendResponse> => {
+                               walletId: string,
+                               limit: number,
+                               nextPageToken?: string): Promise<ListTransfersBackendResponse> => {
     const options = {
       method: 'GET',
       headers: {
@@ -215,6 +214,10 @@ export interface CurrencyBackendApi {
   sendTransaction(token: string, walletId: string, txHex: string): Promise<any>,
   getFeesRates(): Promise<GetFeesRates>,
   maxTransferAmount(token: string, walletId: string, params: MaxTransferAmountParams): Promise<MaxTransferAmountResponse>
+  createWebhook(token: string, walletId: string, callbackUrl: string, settings: Object): Promise<CreateWebhookResponse>
+  listWebhooks(token: string, walletId: string, limit: number): Promise<ListWebhooksResponse>
+  getWebhook(token: string, walletId: string, webhookId: string): Promise<ListWebhooksResponse>
+  deleteWebhook(token: string, walletId: string, webhookId: string): Promise<DeleteWebhookResponse>
 }
 
 export const withCurrency = (backendApiUrl: string, currency: Currency): CurrencyBackendApi => {
@@ -297,7 +300,7 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
         Authorization: token
       }
     }
-    const response = await request(`${getBackendApiUrl()}/${currency}/wallet/${walletId}/webhooks?limit=${limit}`, options)
+    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks?limit=${limit}`, options)
     return response.data
   }
 
@@ -312,7 +315,7 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
         Authorization: token
       }
     }
-    const response = await request(`${getBackendApiUrl()}/${currency}/wallet/${walletId}/webhooks/${webhookId}`, options)
+    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks/${webhookId}`, options)
     return response.data
   }
 
@@ -332,7 +335,7 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
         settings
       })
     }
-    const response = await request(`${getBackendApiUrl()}/${currency}/wallet/${walletId}/webhooks`, options)
+    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks`, options)
     return response.data
   }
 
@@ -347,7 +350,7 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
         Authorization: token
       }
     }
-    const response = await request(`${getBackendApiUrl()}/${currency}/wallet/${walletId}/webhooks/${webhookId}`, options)
+    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks/${webhookId}`, options)
     return response.data
   }
 
@@ -463,7 +466,6 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
   }
 
   return <CurrencyBackendApi>{
-    confirm2fa,
     createNewAddress,
     createWallet,
     getAddress,
@@ -476,16 +478,6 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     sendTransaction,
     getFeesRates,
     maxTransferAmount,
-    disable2fa,
-    getBackendApiUrl,
-    info,
-    init2fa,
-    listTransfers,
-    login,
-    maxTransferAmount,
-    monthlySummary,
-    register,
-    setupPassword,
     listWebhooks,
     getWebhook,
     deleteWebhook,

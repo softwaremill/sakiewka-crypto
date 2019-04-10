@@ -1,20 +1,26 @@
-import * as backendApiFactory from './backend-api'
-import { Currency } from '..'
+import { CurrencyBackendApi } from './backend-api'
 
-export default (currency: Currency) => {
-  const backendApi = backendApiFactory.withCurrency(currency)
+import { CreateWebhookResponse, DeleteWebhookResponse, ListWebhooksResponse } from '../types/response'
 
+export interface WebhooksApi {
+  createWebhook(token: string, walletId: string, callbackUrl: string, settings: Object): Promise<CreateWebhookResponse>
+  listWebhooks(token: string, walletId: string, limit: number): Promise<ListWebhooksResponse>
+  getWebhook(token: string, walletId: string, webhookId: string): Promise<ListWebhooksResponse>
+  deleteWebhook(token: string, walletId: string, webhookId: string): Promise<DeleteWebhookResponse>
+}
+
+export const webhooksApiFactory = (backend: CurrencyBackendApi): WebhooksApi => {
   const getWebhook = (userToken: string, walletId: string, webhookId: string) =>
-    backendApi.getWebhook(userToken, walletId, webhookId)
+    backend.getWebhook(userToken, walletId, webhookId)
 
   const listWebhooks = (userToken: string, walletId: string, limit: number = 10) =>
-    backendApi.listWebhooks(userToken, walletId, limit)
+    backend.listWebhooks(userToken, walletId, limit)
 
   const createWebhook = (userToken: string, walletId: string, callbackUrl: string, settings: Object) =>
-    backendApi.createWebhook(userToken, walletId, callbackUrl, settings)
+    backend.createWebhook(userToken, walletId, callbackUrl, settings)
 
   const deleteWebhook = (userToken: string, walletId: string, webhookId: string) =>
-    backendApi.deleteWebhook(userToken, walletId, webhookId)
+    backend.deleteWebhook(userToken, walletId, webhookId)
 
   return {
     getWebhook,

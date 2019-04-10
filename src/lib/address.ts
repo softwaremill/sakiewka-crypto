@@ -1,11 +1,13 @@
 import { KeyModule } from './key'
-import { CurrencyBackendApi } from "./backend-api";
-import { BitcoinOperations } from "./bitcoin-operations";
+import { CurrencyBackendApi } from './backend-api';
+import { BitcoinOperations } from './bitcoin-operations';
 import { CreateNewAddressBackendResponse, GetAddressBackendResponse, ListAddressesBackendResponse } from 'response';
 
 export interface AddressApi {
   createNewAddress(userToken: string, walletId: string, name?: string): Promise<CreateNewAddressBackendResponse>
+
   getAddress(userToken: string, walletId: string, address: string): Promise<GetAddressBackendResponse>
+
   listAddresses(userToken: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListAddressesBackendResponse>
 }
 
