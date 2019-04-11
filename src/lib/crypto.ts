@@ -2,10 +2,10 @@ import crypto from 'crypto'
 import sjcl from 'sjcl-complete'
 
 
-export const pbkdf2 = (passphrase:string) : string => {
+export const pbkdf2 = (passphrase: string): string => {
   const passphraseAsBits = sjcl.codec.utf8String.toBits(passphrase)
-  const salt = '0fabdd8eab54b3e678658c06b17bb5de839380bbc66593f8573d45e80bbe082e';
-  const outputAsBits = sjcl.misc.pbkdf2(passphraseAsBits,salt,10000,512)
+  const salt = '0fabdd8eab54b3e678658c06b17bb5de839380bbc66593f8573d45e80bbe082e'
+  const outputAsBits = sjcl.misc.pbkdf2(passphraseAsBits, salt, 10000, 512)
   return sjcl.codec.hex.fromBits(outputAsBits)
 }
 

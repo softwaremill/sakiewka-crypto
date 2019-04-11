@@ -1,6 +1,7 @@
 export as namespace sjclComplete
 
 export function encrypt(password: string, plaintext: string, params?: object, rp?: object): string
+
 export function decrypt(password: string, json: string, params?: object): string
 
 export namespace random {
@@ -18,7 +19,8 @@ export namespace hash {
 
 export namespace misc {
   export function scrypt(input: string, salt: string)
-  export function pbkdf2(password: string, salt: string,iter:number,length:number)
+
+  export function pbkdf2(password: string, salt: string, iter: number, length: number)
 }
 
 export namespace codec {
