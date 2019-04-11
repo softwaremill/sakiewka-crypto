@@ -8,7 +8,6 @@ import {
   GetFeesRates,
   GetKeyBackendResponse,
   GetWalletBackendResponse,
-  GetWalletBalanceBackendResponse,
   InfoBackendResponse,
   Init2faBackendResponse,
   ListAddressesBackendResponse,
@@ -204,7 +203,6 @@ export interface CurrencyBackendApi {
   getAddress(token: string, walletId: string, address: string): Promise<GetAddressBackendResponse>,
   getKey(token: string, keyId: string, includePrivate?: boolean): Promise<GetKeyBackendResponse>,
   getWallet(token: string, walletId: string): Promise<GetWalletBackendResponse>,
-  getWalletBalance(token: string, walletId: string): Promise<GetWalletBalanceBackendResponse>,
   listAddresses(token: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListAddressesBackendResponse>,
   listUnspents(token: string, walletId: string, params: GetUtxosBackendParams): Promise<ListUnspentsBackendResponse>,
   listWallets(token: string, limit: number, nextPageToken?: string): Promise<ListWalletsBackendResponse>,
@@ -264,21 +262,6 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     const queryString = `limit=${limit}${nextPageToken ? `&nextPageToken=${nextPageToken}` : ''}`
 
     const response = await request(`${backendApiUrl}/${currency}/wallet?${queryString}`, options)
-    return response.data
-  }
-
-  const getWalletBalance = async (
-    token: string,
-    walletId: string
-  ): Promise<GetWalletBalanceBackendResponse> => {
-    const options = {
-      method: 'GET',
-      headers: {
-        Authorization: token
-      }
-    }
-
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/balance`, options)
     return response.data
   }
 
@@ -400,7 +383,6 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     getAddress,
     getKey,
     getWallet,
-    getWalletBalance,
     listAddresses,
     listUnspents,
     listWallets,

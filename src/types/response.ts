@@ -75,7 +75,11 @@ export interface CreateWalletBackendResponse extends WalletBackendResponse {
 export interface GetWalletBackendResponse extends WalletBackendResponse {
   name: string,
   currency: string,
-  created: string
+  created: string,
+  balance: {
+    available: string,
+    locked: string
+  }
 }
 
 export interface CreateNewAddressBackendResponse {
@@ -100,9 +104,10 @@ export interface GetAddressBackendResponse {
 
 export interface ListAddressesBackendResponse {}
 
-export interface ListWalletsBackendResponse {}
-
-export interface GetWalletBalanceBackendResponse {}
+export interface ListWalletsBackendResponse {
+  wallets: GetWalletBackendResponse[],
+  nextPageToken?: string
+}
 
 export interface ListUnspentsBackendResponse {
   outputs: UTXO[],
