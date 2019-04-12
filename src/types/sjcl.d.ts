@@ -1,4 +1,4 @@
-export as namespace sjclComplete
+export as namespace sjcl
 
 export function encrypt(password: string, plaintext: string, params?: object, rp?: object): string
 
@@ -9,10 +9,7 @@ export namespace random {
 }
 
 export namespace hash {
-  export namespace sha512 {
-    export function hash(input: string)
-  }
-  export namespace sha1 {
+  export namespace sha256 {
     export function hash(input: string)
   }
 }

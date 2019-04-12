@@ -17,63 +17,41 @@ describe('encrypt/decrypt', () => {
     expect(encrypted).to.not.eq(message).and.not.include(message)
     expect(decrypted).to.be.eq(message)
   })
-
-  it('should produce sha512 hash', () => {
-    const message = 'testMSG'
-    const password = 'abcd'
-    const encrypted = crypto.encrypt(password, message)
-    const decrypted = crypto.decrypt(password, encrypted)
-
-    expect(JSON.parse(encrypted)).to.have.ownProperty('cipher')
-    expect(decrypted).to.be.eq(message)
-  })
 })
 
-describe('hashSha512', () => {
+describe('hashUserPassword', () => {
   it('should exist', () => {
-    expect(crypto.hashSha512).to.be.a('function')
-  })
-
-  it('should produce sha512 hash', () => {
-    const result = crypto.hashSha512('testMessage')
-
-    expect(result).to.have.lengthOf(128)
-  })
-})
-
-describe('hashPassword', () => {
-  it('should exist', () => {
-    expect(crypto.hashPassword).to.be.a('function')
+    expect(crypto.hashUserPassword).to.be.a('function')
   })
 
   it('should produce hash', () => {
-    const result = crypto.hashPassword('testMessage')
+    const result = crypto.hashUserPassword('testMessage')
 
     expect(result).to.have.lengthOf(64)
-    expect(result).to.eq('1d54362dabeb1ef499cc2c675e4938204e39ce8bb1cfd835821ac1f4e98d03a9')
+    expect(result).to.eq('e8db9edce462eda233ced6b2a2a8f6e47d70f4f044be8e5cf2e1534691d1c86f')
   })
 })
 
-describe('hashSha1', () => {
+describe('hashSha256', () => {
   it('should exist', () => {
-    expect(crypto.hashSha1).to.be.a('function')
+    expect(crypto.hashSha256).to.be.a('function')
   })
 
   it('should produce hash', () => {
-    const result = crypto.hashSha1('testMessage')
+    const result = crypto.hashSha256('testMessage')
 
-    expect(result).to.have.lengthOf(40)
-    expect(result).to.eq('d2581121a80ea419e91878d321100cc99dfb21db')
+    expect(result).to.have.lengthOf(64)
+    expect(result).to.eq('d9920dc69e7b8352ea5774041afeaf8eeebd1c4985bae1368c2a5559c12bcb56')
   })
 })
 
-describe('pbkdf2', function () {
+describe('hashWalletPassword', function () {
   it('should exist', () => {
-    expect(crypto.pbkdf2).to.be.a('function')
+    expect(crypto.hashWalletPassword).to.be.a('function')
   })
 
   it('should produce long key from password', () => {
-    const result = crypto.pbkdf2('password')
-    expect(result).to.eq('eb86507e3258bb521ac88a30e9ee0041f51b28b8afff6ae3a39523aaf803e34826f499b70e1568f78c48b2ae6a2c8872176f5991f42026e4e95bc8df8f6a6345')
+    const result = crypto.hashWalletPassword('password')
+    expect(result).to.eq('50ebd3bfcbaa28188b19aba53da7226da05fa06a70e4acdcde5b16653601832c453475e4e29d3dd7a01febbcf82e39cb02aa8b567f38985309edb38609149769')
   })
 });
