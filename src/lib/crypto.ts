@@ -12,7 +12,7 @@ export const encrypt = (password: string, input: string): string => {
   const randomSalt = sjcl.random.randomWords(2, 0)
   const randomIV = sjcl.random.randomWords(2, 0)
   const encryptOptions = { iter: 10000, ks: 256, salt: randomSalt, iv: randomIV, ts: 96 }
-  return sjcl.encrypt(hashWalletPassword(password), input, encryptOptions)
+  return sjcl.encrypt(hashWalletPassword(password), input, encryptOptions).toString()
 }
 
 export const decrypt = (password: string, input: string): string => {
