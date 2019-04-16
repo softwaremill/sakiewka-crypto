@@ -1,5 +1,5 @@
 import { BaseBackendApi } from './backend-api'
-import { hashUserPassword } from './crypto';
+import { hashPassword } from './crypto';
 import { LoginBackendResponse, RegisterBackendResponse, SetupPasswordBackendResponse, Init2faBackendResponse, Confirm2faBackendResponse, Disable2faBackendResponse, InfoBackendResponse } from 'response';
 
 export interface UserApi {
@@ -15,7 +15,7 @@ export interface UserApi {
 export const userApiFactory = (backend: BaseBackendApi): UserApi => {
 
   const login = (login: string, password: string, code?: number) => {
-    return backend.login(login, hashUserPassword(password), code)
+    return backend.login(login, hashPassword(password), code)
   }
 
   const register = (login: string) => {
@@ -23,7 +23,7 @@ export const userApiFactory = (backend: BaseBackendApi): UserApi => {
   }
 
   const setupPassword = (token: string, password: string) => {
-    return backend.setupPassword(token, hashUserPassword(password))
+    return backend.setupPassword(token, hashPassword(password))
   }
 
   const info = (token: string) => {
@@ -31,15 +31,15 @@ export const userApiFactory = (backend: BaseBackendApi): UserApi => {
   }
 
   const init2fa = (token: string, password: string) => {
-    return backend.init2fa(token, hashUserPassword(password))
+    return backend.init2fa(token, hashPassword(password))
   }
 
   const confirm2fa = (token: string, password: string, code: number) => {
-    return backend.confirm2fa(token, hashUserPassword(password), code)
+    return backend.confirm2fa(token, hashPassword(password), code)
   }
 
   const disable2fa = (token: string, password: string, code: number) => {
-    return backend.disable2fa(token, hashUserPassword(password), code)
+    return backend.disable2fa(token, hashPassword(password), code)
   }
 
   return {

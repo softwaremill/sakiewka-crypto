@@ -2,7 +2,7 @@ import { expect } from 'chai'
 
 import { userApiFactory } from '../user'
 import * as backendApiFactory from '../backend-api'
-import { hashUserPassword } from '../crypto';
+import { hashPassword } from '../crypto';
 
 const api = backendApiFactory.create("http://backendApiUrl")
 const user = userApiFactory(api)
@@ -23,7 +23,7 @@ describe('login', () => {
 
     const [loginArg, passwordArg] = mockImplementation.mock.calls[0]
     expect(loginArg).to.eq('a')
-    expect(passwordArg).to.eq(hashUserPassword(password))
+    expect(passwordArg).to.eq(hashPassword(password))
     expect(res).to.eq('backend response')
   })
 
@@ -39,7 +39,7 @@ describe('login', () => {
 
     const [loginArg, passwordArg, codeArg] = mockImplementation.mock.calls[0]
     expect(loginArg).to.eq('a')
-    expect(passwordArg).to.eq(hashUserPassword(password))
+    expect(passwordArg).to.eq(hashPassword(password))
     expect(codeArg).to.eq(code)
     expect(res).to.eq('backend response')
   })
@@ -61,7 +61,7 @@ describe('init2fa', () => {
 
     const [tokenArg, passwordArg] = mockImplementation.mock.calls[0]
     expect(tokenArg).to.eq('testToken')
-    expect(passwordArg).to.eq(hashUserPassword(password))
+    expect(passwordArg).to.eq(hashPassword(password))
     expect(res).to.eq('backend response')
   })
 })
@@ -83,7 +83,7 @@ describe('confirm2fa', () => {
 
     const [tokenArg, passwordArg, codeArg] = mockImplementation.mock.calls[0]
     expect(tokenArg).to.eq('testToken')
-    expect(passwordArg).to.eq(hashUserPassword(password))
+    expect(passwordArg).to.eq(hashPassword(password))
     expect(codeArg).to.eq(code)
     expect(res).to.eq('backend response')
   })
@@ -106,7 +106,7 @@ describe('disable2fa', () => {
 
     const [tokenArg, passwordArg, codeArg] = mockImplementation.mock.calls[0]
     expect(tokenArg).to.eq('testToken')
-    expect(passwordArg).to.eq(hashUserPassword(password))
+    expect(passwordArg).to.eq(hashPassword(password))
     expect(codeArg).to.eq(code)
     expect(res).to.eq('backend response')
   })
@@ -148,7 +148,7 @@ describe('setupPassword', () => {
 
     const [tokenArg, passwordArg] = mockImplementation.mock.calls[0]
     expect(tokenArg).to.eq('testToken')
-    expect(passwordArg).to.eq(hashUserPassword(password))
+    expect(passwordArg).to.eq(hashPassword(password))
     expect(res).to.eq('backend response')
   })
 })
