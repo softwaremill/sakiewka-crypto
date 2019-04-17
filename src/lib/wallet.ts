@@ -12,7 +12,7 @@ import {
 } from 'response'
 import { generatePdf } from './keycard-pdf'
 import { KeyModule } from './key'
-import { CurrencyBackendApi } from './backend-api';
+import { CurrencyBackendApi } from './backend-api'
 
 export interface WalletApi {
   createWallet(userToken: string, params: WalletParams): Promise<any>

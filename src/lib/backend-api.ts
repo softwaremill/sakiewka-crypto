@@ -272,21 +272,6 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     return response.data
   }
 
-  const getWalletBalance = async (
-    token: string,
-    walletId: string
-  ): Promise<GetWalletBalanceBackendResponse> => {
-    const options = {
-      method: 'GET',
-      headers: {
-        Authorization: token
-      }
-    }
-
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/balance`, options)
-    return response.data
-  }
-
   const listWebhooks = async (
     token: string,
     walletId: string,
