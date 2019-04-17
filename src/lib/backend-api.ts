@@ -215,7 +215,7 @@ export interface CurrencyBackendApi {
   getFeesRates(): Promise<GetFeesRates>,
   maxTransferAmount(token: string, walletId: string, params: MaxTransferAmountParams): Promise<MaxTransferAmountResponse>
   createWebhook(token: string, walletId: string, callbackUrl: string, settings: Object): Promise<CreateWebhookResponse>
-  listWebhooks(token: string, walletId: string, limit: number): Promise<ListWebhooksResponse>
+  listWebhooks(token: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListWebhooksResponse>
   getWebhook(token: string, walletId: string, webhookId: string): Promise<ListWebhooksResponse>
   deleteWebhook(token: string, walletId: string, webhookId: string): Promise<DeleteWebhookResponse>
 }
@@ -292,7 +292,8 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
   const listWebhooks = async (
     token: string,
     walletId: string,
-    limit: number = 10
+    limit: number,
+    nextPageToken?: string
   ): Promise<ListWebhooksResponse> => {
     const options = {
       method: 'GET',
@@ -300,7 +301,8 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
         Authorization: token
       }
     }
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks?limit=${limit}`, options)
+    const queryString = `limit=${limit}${nextPageToken ? `&nextPageToken=${nextPageToken}` : ''}`
+    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks?${queryString}`, options)
     return response.data
   }
 

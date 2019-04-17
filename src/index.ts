@@ -7,10 +7,10 @@ import { WalletApi, walletApiFactory } from './lib/wallet'
 import { KeyApi, keyApiFactory, KeyModule, keyModuleFactory } from './lib/key'
 import { UserApi, userApiFactory } from './lib/user'
 import { TransfersApi, transfersApiFactory } from './lib/transfers'
-import { Currency } from './types/domain';
+import { Currency } from './types/domain'
 import bitcoinOps from './lib/bitcoin'
-import { BitcoinOperations } from './lib/bitcoin-operations';
-import { WebhooksApi, webhooksApiFactory } from './lib/webhooks';
+import { BitcoinOperations } from './lib/bitcoin-operations'
+import { WebhooksApi, webhooksApiFactory } from './lib/webhooks'
 
 export interface SakiewkaApi {
   user: UserApi,
@@ -26,30 +26,6 @@ export interface SakiewkaCurrencyApi {
   key: KeyApi,
   webhooks: WebhooksApi
 }
-
-/*
-export default {
-  user,
-  transfers,
-  config,
-  constants,
-  crypto,
-  [Currency.BTC]: {
-    address: address(Currency.BTC),
-    transaction: transaction(Currency.BTC),
-    wallet: wallet(Currency.BTC),
-    key: key(Currency.BTC),
-    webhooks: webhooks(Currency.BTC)
-  },
-  [Currency.BTG]: {
-    address: address(Currency.BTG),
-    transaction: transaction(Currency.BTG),
-    wallet: wallet(Currency.BTG),
-    key: key(Currency.BTG),
-    webhooks: webhooks(Currency.BTG)
-  }
-}
- */
 
 export const sakiewkaApi = (sakiewkaBackend: SakiewkaBackend, chainInfo: string): SakiewkaApi => {
 
@@ -71,7 +47,7 @@ export const sakiewkaApi = (sakiewkaBackend: SakiewkaBackend, chainInfo: string)
     user: userApiFactory(sakiewkaBackend.core),
     transfers: transfersApiFactory(sakiewkaBackend.core),
     [Currency.BTC]: createCurrencyApi(sakiewkaBackend, Currency.BTC),
-    [Currency.BTG]: createCurrencyApi(sakiewkaBackend, Currency.BTG),
+    [Currency.BTG]: createCurrencyApi(sakiewkaBackend, Currency.BTG)
   }
 }
 
@@ -83,7 +59,7 @@ export interface SakiewkaModule {
 }
 
 export const sakiewkaModule = (currency: Currency, btcNetwork: string): SakiewkaModule => {
-  const bitcoinOperations = bitcoinOps(currency, btcNetwork);
+  const bitcoinOperations = bitcoinOps(currency, btcNetwork)
   const keyModule = keyModuleFactory(bitcoinOperations)
   const transactionModule = transactionModuleFactory(keyModule, bitcoinOperations)
   const addressModule = addressModuleFactory(bitcoinOperations, keyModule)

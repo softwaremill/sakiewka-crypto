@@ -13,8 +13,8 @@ export const webhooksApiFactory = (backend: CurrencyBackendApi): WebhooksApi => 
   const getWebhook = (userToken: string, walletId: string, webhookId: string) =>
     backend.getWebhook(userToken, walletId, webhookId)
 
-  const listWebhooks = (userToken: string, walletId: string, limit: number = 10) =>
-    backend.listWebhooks(userToken, walletId, limit)
+  const listWebhooks = (userToken: string, walletId: string, limit: number, nextPageToken?: string) =>
+    backend.listWebhooks(userToken, walletId, limit, nextPageToken)
 
   const createWebhook = (userToken: string, walletId: string, callbackUrl: string, settings: Object) =>
     backend.createWebhook(userToken, walletId, callbackUrl, settings)
