@@ -14,29 +14,8 @@ describe('encrypt/decrypt', () => {
     const decrypted = crypto.decrypt(password, encrypted)
 
     expect(JSON.parse(encrypted)).to.have.ownProperty('cipher')
+    expect(encrypted).to.not.eq(message).and.not.include(message)
     expect(decrypted).to.be.eq(message)
-  })
-
-  it('should produce sha512 hash', () => {
-    const message = 'testMSG'
-    const password = 'abcd'
-    const encrypted = crypto.encrypt(password, message)
-    const decrypted = crypto.decrypt(password, encrypted)
-
-    expect(JSON.parse(encrypted)).to.have.ownProperty('cipher')
-    expect(decrypted).to.be.eq(message)
-  })
-})
-
-describe('hashSha512', () => {
-  it('should exist', () => {
-    expect(crypto.hashSha512).to.be.a('function')
-  })
-
-  it('should produce sha512 hash', () => {
-    const result = crypto.hashSha512('testMessage')
-
-    expect(result).to.have.lengthOf(128)
   })
 })
 
@@ -49,19 +28,19 @@ describe('hashPassword', () => {
     const result = crypto.hashPassword('testMessage')
 
     expect(result).to.have.lengthOf(64)
-    expect(result).to.eq('1d54362dabeb1ef499cc2c675e4938204e39ce8bb1cfd835821ac1f4e98d03a9')
+    expect(result).to.eq('e8db9edce462eda233ced6b2a2a8f6e47d70f4f044be8e5cf2e1534691d1c86f')
   })
 })
 
-describe('hashSha1', () => {
+describe('hashSha256', () => {
   it('should exist', () => {
-    expect(crypto.hashSha1).to.be.a('function')
+    expect(crypto.hashSha256).to.be.a('function')
   })
 
   it('should produce hash', () => {
-    const result = crypto.hashSha1('testMessage')
+    const result = crypto.hashSha256('testMessage')
 
-    expect(result).to.have.lengthOf(40)
-    expect(result).to.eq('d2581121a80ea419e91878d321100cc99dfb21db')
+    expect(result).to.have.lengthOf(64)
+    expect(result).to.eq('d9920dc69e7b8352ea5774041afeaf8eeebd1c4985bae1368c2a5559c12bcb56')
   })
 })

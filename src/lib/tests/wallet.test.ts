@@ -101,26 +101,6 @@ describe('listWallets', () => {
   })
 })
 
-describe('getWalletBalance', () => {
-  it('should exist', () => {
-    expect(wallet.getWalletBalance).to.be.a('function')
-  })
-
-  it('should pass proper arguments to backend-api method and return result of its call', async () => {
-    // @ts-ignore
-    const mockImplementation = jest.fn(() => 'backend response')
-    // @ts-ignore
-    backendApi.getWalletBalance = mockImplementation
-
-    const res = await wallet.getWalletBalance('testToken', 'walletId')
-
-    const [token, walletId] = mockImplementation.mock.calls[0]
-    expect(token).to.eq('testToken')
-    expect(walletId).to.eq('walletId')
-    expect(res).to.eq('backend response')
-  })
-})
-
 describe('listUnspents', () => {
   it('should exist', () => {
     expect(wallet.listUnspents).to.be.a('function')

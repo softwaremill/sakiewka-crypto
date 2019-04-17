@@ -201,22 +201,6 @@ describe('listWallets', () => {
   })
 })
 
-describe('getWalletBalance', () => {
-  it('should exist', () => {
-    expect(api.getWalletBalance).to.be.a('function')
-  })
-
-  it('should send proper request', async () => {
-    await api.getWalletBalance('testToken', '13')
-
-    const [url, params] = mockImplementation.mock.calls[0]
-
-    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/13/balance`)
-    expect(params.method).to.eq('GET')
-    expect(params.headers.Authorization).to.eq('testToken')
-  })
-})
-
 describe('createNewAddress', () => {
   it('should exist', () => {
     expect(api.createNewAddress).to.be.a('function')
