@@ -1,15 +1,13 @@
-import { use } from 'chai'
+import { expect, use } from 'chai'
 
 import { currency } from './helpers'
 import * as backendApiFactory from '../backend-api'
 import BigNumber from 'bignumber.js'
 import chaiBigNumber from 'chai-bignumber'
-import bitcoinFactory from '../bitcoin'
 import { webhooksApiFactory } from '../webhooks'
 
 const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency)
 
-const bitcoinOperation = bitcoinFactory(currency, 'mainnet')
 const webhooksApi = webhooksApiFactory(backendApi)
 
 beforeEach(() => {
@@ -17,5 +15,7 @@ beforeEach(() => {
 })
 
 describe('createWebhook', () => {
-  // TODO-Darek: write specs
+  it('should exist', () => {
+    expect(webhooksApi.createWebhook).to.be.a('function')
+  })
 })
