@@ -5,6 +5,7 @@ import * as backendApiFactory from '../backend-api'
 import BigNumber from 'bignumber.js'
 import chaiBigNumber from 'chai-bignumber'
 import { webhooksApiFactory } from '../webhooks'
+import { WebhookType } from '../constants';
 
 const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency)
 
@@ -29,13 +30,15 @@ describe('createWebhook', () => {
       'testToken',
       'testWalletId',
       'http://test.callback.com',
+      WebhookType.TRANSFER_CONFIRMATION,
       {}
     )
 
-    const [token, walletId, callbackUrl, settings] = mockImplementation.mock.calls[0]
+    const [token, walletId, callbackUrl, type, settings] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
     expect(walletId).to.eq('testWalletId')
     expect(callbackUrl).to.eq('http://test.callback.com')
+    expect(type).to.eq('transfer_confirmation')
     expect(settings).to.be.a('object').that.is.empty
     expect(res).to.be.a('object').that.is.empty
   })
