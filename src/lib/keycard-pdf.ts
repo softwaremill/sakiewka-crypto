@@ -56,14 +56,11 @@ const generateBackupPdf = async (walletName: string, servicePublicKey: string, u
   const imageHeight = 15
   const imageOffset = qrOffsetGenerator(190, 190)
 
-  addLogo(doc, logoPath || DEFAULT_LOGO_PATH, imageHeight)
-  addGeneratedAt(doc, walletName)
-  printFlash(doc, 'Print this page or keep it securely offline. See second page for FAQ', 0, 70)
+  addLogo(doc, logoPath || DEFAULT_LOGO_PATH, imageHeight, walletName)
 
   if (userPrivateKey) {
     await drawDataBox(doc, {
-      header: 'A: User Key',
-      description: 'This is your password-encrypted private key',
+      header: `User Key - '${walletName}'`,
       data: userPrivateKey,
       x: doc.page.margins.left,
       y: imageOffset.next().value
@@ -72,8 +69,7 @@ const generateBackupPdf = async (walletName: string, servicePublicKey: string, u
 
   if (backupPrivateKey) {
     await drawDataBox(doc, {
-      header: 'B: Backup Key',
-      description: 'This is your password-encrypted backup private key',
+      header: `Backup Key - '${walletName}'`,
       data: backupPrivateKey,
       x: doc.page.margins.left,
       y: imageOffset.next().value
@@ -81,8 +77,7 @@ const generateBackupPdf = async (walletName: string, servicePublicKey: string, u
   }
 
   await drawDataBox(doc, {
-    header: 'C: Service Public Key',
-    description: 'This is the public part of the key the service will use to co-sign transactions with you on Your wallet',
+    header: `Service Public Key - '${walletName}'`,
     data: servicePublicKey,
     x: doc.page.margins.left,
     y: imageOffset.next().value
@@ -97,13 +92,20 @@ const generateBackupPdf = async (walletName: string, servicePublicKey: string, u
   // })
 
   doc.addPage()
-  addTitle(doc, 'KeyCard FAQ')
   addParagraph(
     doc,
     'What is the Key Card?',
     'The KeyCard contains important information which can be used to recover the Bitcoin ' +
     'from your Wallet in several situations. Each SoftwareMill Wallet has its own, unique KeyCard. ' +
     'If you have created multiple Wallets, you should retain the KeyCard for each of them.'
+  )
+
+  addParagraph(
+    doc,
+    'What are "User", "Backup" and "Service Public" keys?',
+    'User key is your password-encrypted private key. ' +
+    'Backup key is your password-encrypted backup private key. ' +
+    'Service Public key is the public part of the key the service will use to co-sign transactions with you on Your wallet'
   )
 
   addParagraph(
@@ -162,30 +164,15 @@ const generateBackupPdf = async (walletName: string, servicePublicKey: string, u
   return doc
 }
 
-const addLogo = (doc: PDFKit.PDFDocument, src: string, imageHeight: number) => {
+const addLogo = (doc: PDFKit.PDFDocument, src: string, imageHeight: number, walletName: string) => {
   const path = `${__dirname}/${src}`
   doc.image(path, doc.page.margins.left, doc.page.margins.top + imageHeight / 2, { height: imageHeight })
     .fontSize(fontSizes.DOCUMENT_TITLE)
-    .text('Key Card', { align: 'right' })
-}
-
-const addGeneratedAt = (doc: PDFKit.PDFDocument, walletName: string) => {
-  const date = new Date()
-  doc.fontSize(fontSizes.REGULAR)
-    .fill(colors.INFO_COLOR)
-    .text(`Generated at ${date.toDateString()} for Wallet named: `, doc.page.margins.left, doc.page.margins.top + 45, { lineBreak: false })
-    .font(fonts.STRONG_FONT)
-    .text(walletName)
-    .font(fonts.REGULAR_FONT)
-}
-
-const addTitle = (doc: PDFKit.PDFDocument, title: string) => {
-  doc.fontSize(fontSizes.HEADER_1).text(title)
+    .text(`Sakiewka Key Card`, { align: 'right' })
 }
 
 const addParagraph = (doc: PDFKit.PDFDocument, title: string, ...contents: string[]) => {
   doc.fontSize(fontSizes.HEADER_4)
-    .moveDown()
     .fill(colors.REGULAR_COLOR)
     .text(title)
     .fontSize(fontSizes.REGULAR)
@@ -196,42 +183,35 @@ const addParagraph = (doc: PDFKit.PDFDocument, title: string, ...contents: strin
   })
 }
 
-const printFlash = (doc: PDFKit.PDFDocument, message: string, x: number, y: number) => {
-  doc.save()
-  doc.rect(doc.page.margins.left + x, doc.page.margins.top + y, doc.page.width - doc.page.margins.right - doc.page.margins.left, 25)
-
-  doc.fill(colors.WARN_BG_COLOR)
-  doc.restore()
-  doc.fontSize(fontSizes.REGULAR)
-    .fill(colors.WARN_TEXT_COLOR)
-    .text(message, doc.page.margins.left + x, doc.page.margins.top + 8 + y, { align: 'center' })
-    .fill(colors.REGULAR_COLOR)
-}
-
 const drawDataBox = async (doc: PDFKit.PDFDocument, data: DataBoxConfig): Promise<PDFKit.PDFDocument> => {
   doc.save()
+  doc.fontSize(fontSizes.HEADER_3)
+    .fill(colors.REGULAR_COLOR)
+    .text(data.header, data.x, data.y - 22)
   const qrcode = await QRCode.toDataURL(data.data, { margin: 0, width: QR_WIDTH })
   const buffer = Buffer.from(qrcode.replace('data:image/png;base64,', ''), 'base64')
   doc.image(buffer, data.x, data.y)
   doc.stroke()
   doc.restore()
   doc.fontSize(fontSizes.HEADER_3)
-    .text(data.header, data.x + QR_WIDTH + QR_DATA_GAP, data.y)
+  doc
+    .rect(doc.page.margins.left - 15, data.y - 35, 25 + doc.page.width - 2 * doc.page.margins.left, 180)
+    .stroke()
   doc.fontSize(fontSizes.REGULAR)
-    .fill(colors.INFO_COLOR)
-    .text(data.description)
-  doc.moveDown()
-  doc.fontSize(fontSizes.SMALL)
     .font(fonts.MONOSPACE_FONT)
     .fill(colors.REGULAR_COLOR)
-    .text(data.data)
+    .text(data.data, data.x + QR_WIDTH + QR_DATA_GAP, data.y)
     .font(fonts.REGULAR_FONT)
+
+  const date = new Date()
+  doc.fontSize(fontSizes.REGULAR)
+    .fill(colors.INFO_COLOR)
+    .text(`Created at ${date.toDateString()}`, data.x + 200, data.y + 120)
   return doc
 }
 
 interface DataBoxConfig {
   header: string
-  description: string
   data: string
   x: number
   y: number
