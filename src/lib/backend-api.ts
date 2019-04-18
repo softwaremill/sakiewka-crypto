@@ -213,7 +213,7 @@ export interface CurrencyBackendApi {
   sendTransaction(token: string, walletId: string, txHex: string): Promise<any>,
   getFeesRates(): Promise<GetFeesRates>,
   maxTransferAmount(token: string, walletId: string, params: MaxTransferAmountParams): Promise<MaxTransferAmountResponse>
-  createWebhook(token: string, walletId: string, callbackUrl: string, settings: Object): Promise<CreateWebhookResponse>
+  createWebhook(token: string, walletId: string, callbackUrl: string, type: string, settings: Object): Promise<CreateWebhookResponse>
   listWebhooks(token: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListWebhooksResponse>
   getWebhook(token: string, walletId: string, webhookId: string): Promise<GetWebhooksResponse>
   deleteWebhook(token: string, walletId: string, webhookId: string): Promise<DeleteWebhookResponse>
@@ -309,6 +309,7 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     token: string,
     walletId: string,
     callbackUrl: string,
+    type: string,
     settings: Object
   ): Promise<CreateWebhookResponse> => {
     const options = {
@@ -318,7 +319,10 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
       },
       body: JSON.stringify({
         callbackUrl,
-        settings
+        settings: {
+          type,
+          ...settings
+        }
       })
     }
     const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks`, options)
