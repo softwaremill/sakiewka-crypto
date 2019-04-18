@@ -1,11 +1,11 @@
 import { CurrencyBackendApi } from './backend-api'
 
-import { CreateWebhookResponse, DeleteWebhookResponse, ListWebhooksResponse } from '../types/response'
+import { CreateWebhookResponse, DeleteWebhookResponse, GetWebhooksResponse, ListWebhooksResponse } from '../types/response'
 
 export interface WebhooksApi {
   createWebhook(token: string, walletId: string, callbackUrl: string, settings: Object): Promise<CreateWebhookResponse>
-  listWebhooks(token: string, walletId: string, limit: number): Promise<ListWebhooksResponse>
-  getWebhook(token: string, walletId: string, webhookId: string): Promise<ListWebhooksResponse>
+  listWebhooks(token: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListWebhooksResponse>
+  getWebhook(token: string, walletId: string, webhookId: string): Promise<GetWebhooksResponse>
   deleteWebhook(token: string, walletId: string, webhookId: string): Promise<DeleteWebhookResponse>
 }
 

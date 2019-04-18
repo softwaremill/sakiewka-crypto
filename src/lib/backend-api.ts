@@ -12,6 +12,7 @@ import {
   GetKeyBackendResponse,
   GetUtxosBackendParams,
   GetWalletBackendResponse,
+  GetWebhooksResponse,
   InfoBackendResponse,
   Init2faBackendResponse,
   ListAddressesBackendResponse,
@@ -214,7 +215,7 @@ export interface CurrencyBackendApi {
   maxTransferAmount(token: string, walletId: string, params: MaxTransferAmountParams): Promise<MaxTransferAmountResponse>
   createWebhook(token: string, walletId: string, callbackUrl: string, settings: Object): Promise<CreateWebhookResponse>
   listWebhooks(token: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListWebhooksResponse>
-  getWebhook(token: string, walletId: string, webhookId: string): Promise<ListWebhooksResponse>
+  getWebhook(token: string, walletId: string, webhookId: string): Promise<GetWebhooksResponse>
   deleteWebhook(token: string, walletId: string, webhookId: string): Promise<DeleteWebhookResponse>
 }
 
@@ -293,7 +294,7 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     token: string,
     walletId: string,
     webhookId: string
-  ): Promise<ListWebhooksResponse> => {
+  ): Promise<GetWebhooksResponse> => {
     const options = {
       method: 'GET',
       headers: {
