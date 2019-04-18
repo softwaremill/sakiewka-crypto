@@ -1,5 +1,5 @@
-import { Network } from "bitcoinjs-lib";
-import { BigNumber } from "bignumber.js";
+import { Network } from 'bitcoinjs-lib'
+import { BigNumber } from 'bignumber.js'
 
 export interface WalletParams {
   passphrase: string,
@@ -20,20 +20,20 @@ export interface Key {
 }
 
 export enum KeyType {
-  USER = "user",
-  SERVICE = "service",
-  BACKUP = "backup"
+  USER = 'user',
+  SERVICE = 'service',
+  BACKUP = 'backup'
 }
 
 export enum TransferType {
-  INCOMING = "incoming",
-  OUTGOING = "outgoing",
-  OUTGOING_EXTERNAL = "outgoing_external"
+  INCOMING = 'incoming',
+  OUTGOING = 'outgoing',
+  OUTGOING_EXTERNAL = 'outgoing_external'
 }
 
 export enum Currency {
-  BTC = "btc",
-  BTG = "btg"
+  BTC = 'btc',
+  BTG = 'btg'
 }
 
 export interface UTXO {
@@ -74,11 +74,11 @@ export interface SupportedNetworks {
   btc: {
     mainnet: Network,
     testnet: Network,
-    regtest: Network,
+    regtest: Network
   },
   btg: {
     mainnet: Network,
     testnet: Network,
-    regtest: Network,
+    regtest: Network
   },
 }

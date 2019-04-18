@@ -1,30 +1,34 @@
 import {
+  ChainInfoResponse as ChainModeResponse,
   Confirm2faBackendResponse,
   CreateNewAddressBackendResponse,
   CreateWalletBackendParams,
   CreateWalletBackendResponse,
+  CreateWebhookResponse,
+  DeleteWebhookResponse,
   Disable2faBackendResponse,
   GetAddressBackendResponse,
   GetFeesRates,
   GetKeyBackendResponse,
+  GetUtxosBackendParams,
   GetWalletBackendResponse,
+  GetWebhooksResponse,
   InfoBackendResponse,
   Init2faBackendResponse,
   ListAddressesBackendResponse,
+  ListTransfersBackendResponse,
   ListUnspentsBackendResponse,
   ListWalletsBackendResponse,
+  ListWebhooksResponse,
   LoginBackendResponse,
-  RegisterBackendResponse,
-  GetUtxosBackendParams,
   MaxTransferAmountParams,
   MaxTransferAmountResponse,
   MontlySummaryBackendResponse,
-  SetupPasswordBackendResponse,
-  ListTransfersBackendResponse,
-  ChainInfoResponse as ChainModeResponse
+  RegisterBackendResponse,
+  SetupPasswordBackendResponse
 } from 'response'
 import request from './utils/request'
-import { Currency } from "../types/domain";
+import { Currency } from '../types/domain';
 
 export interface SakiewkaBackend {
   core: BaseBackendApi,
@@ -159,9 +163,9 @@ export const create = (backendApiUrl: string): BaseBackendApi => {
   }
 
   const listTransfers = async (token: string,
-    walletId: string,
-    limit: number,
-    nextPageToken?: string): Promise<ListTransfersBackendResponse> => {
+                               walletId: string,
+                               limit: number,
+                               nextPageToken?: string): Promise<ListTransfersBackendResponse> => {
     const options = {
       method: 'GET',
       headers: {
@@ -209,6 +213,10 @@ export interface CurrencyBackendApi {
   sendTransaction(token: string, walletId: string, txHex: string): Promise<any>,
   getFeesRates(): Promise<GetFeesRates>,
   maxTransferAmount(token: string, walletId: string, params: MaxTransferAmountParams): Promise<MaxTransferAmountResponse>
+  createWebhook(token: string, walletId: string, callbackUrl: string, settings: Object): Promise<CreateWebhookResponse>
+  listWebhooks(token: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListWebhooksResponse>
+  getWebhook(token: string, walletId: string, webhookId: string): Promise<GetWebhooksResponse>
+  deleteWebhook(token: string, walletId: string, webhookId: string): Promise<DeleteWebhookResponse>
 }
 
 export const withCurrency = (backendApiUrl: string, currency: Currency): CurrencyBackendApi => {
@@ -262,6 +270,73 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     const queryString = `limit=${limit}${nextPageToken ? `&nextPageToken=${nextPageToken}` : ''}`
 
     const response = await request(`${backendApiUrl}/${currency}/wallet?${queryString}`, options)
+    return response.data
+  }
+
+  const listWebhooks = async (
+    token: string,
+    walletId: string,
+    limit: number,
+    nextPageToken?: string
+  ): Promise<ListWebhooksResponse> => {
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: token
+      }
+    }
+    const queryString = `limit=${limit}${nextPageToken ? `&nextPageToken=${nextPageToken}` : ''}`
+    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks?${queryString}`, options)
+    return response.data
+  }
+
+  const getWebhook = async (
+    token: string,
+    walletId: string,
+    webhookId: string
+  ): Promise<GetWebhooksResponse> => {
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: token
+      }
+    }
+    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks/${webhookId}`, options)
+    return response.data
+  }
+
+  const createWebhook = async (
+    token: string,
+    walletId: string,
+    callbackUrl: string,
+    settings: Object
+  ): Promise<CreateWebhookResponse> => {
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: token
+      },
+      body: JSON.stringify({
+        callbackUrl,
+        settings
+      })
+    }
+    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks`, options)
+    return response.data
+  }
+
+  const deleteWebhook = async (
+    token: string,
+    walletId: string,
+    webhookId: string
+  ): Promise<DeleteWebhookResponse> => {
+    const options = {
+      method: 'DELETE',
+      headers: {
+        Authorization: token
+      }
+    }
+    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks/${webhookId}`, options)
     return response.data
   }
 
@@ -376,7 +451,6 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     return response.data
   }
 
-
   return <CurrencyBackendApi>{
     createNewAddress,
     createWallet,
@@ -388,6 +462,10 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     listWallets,
     sendTransaction,
     getFeesRates,
-    maxTransferAmount
+    maxTransferAmount,
+    listWebhooks,
+    getWebhook,
+    deleteWebhook,
+    createWebhook
   }
 }

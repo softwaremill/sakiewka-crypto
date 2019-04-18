@@ -52,4 +52,3 @@ export const userApiFactory = (backend: BaseBackendApi): UserApi => {
     disable2fa
   }
 }
-
