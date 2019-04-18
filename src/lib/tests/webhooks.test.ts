@@ -5,6 +5,7 @@ import * as backendApiFactory from '../backend-api'
 import BigNumber from 'bignumber.js'
 import chaiBigNumber from 'chai-bignumber'
 import { webhooksApiFactory } from '../webhooks'
+import { WebhookType } from '../constants';
 
 const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency)
 
@@ -29,7 +30,7 @@ describe('createWebhook', () => {
       'testToken',
       'testWalletId',
       'http://test.callback.com',
-      'transfer_confirmation',
+      WebhookType.TRANSFER_CONFIRMATION,
       {}
     )
 
