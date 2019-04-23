@@ -1,8 +1,14 @@
-import * as nodeFetch from 'node-fetch'
+// @ts-ignore
+jest.mock('cross-fetch')
+
+import crossFetch from 'cross-fetch'
 import { expect } from 'chai'
 
 import request from '../request'
 import { fail } from 'assert';
+
+// @ts-ignore
+const { Response, Headers } = jest.requireActual('cross-fetch')
 
 describe('request', () => {
   it('should exist', () => {
@@ -11,14 +17,12 @@ describe('request', () => {
 
   it('should return proper error message when server returns internal error', async () => {
     // @ts-ignore
-    nodeFetch.default = jest.fn(() => {
-      return Promise.resolve(new nodeFetch.Response(
-        JSON.stringify({
-            errors: [{ message: 'test error', code: 'test code' }]
-        }),
-        { status: 500, statusText: '', headers: new nodeFetch.Headers({ "Content-type": "json" }) }
-      ))
-    })
+    crossFetch.mockResolvedValueOnce(new Response(
+      JSON.stringify({
+        errors: [{ message: 'test error', code: 'test code' }]
+      }),
+      { status: 500, statusText: '', headers: new Headers({ "Content-type": "json" }) }
+    ))
 
     const options = {
       method: 'GET',
@@ -37,11 +41,10 @@ describe('request', () => {
 
   it('should return proper error message when server returns error without body', async () => {
     // @ts-ignore
-    nodeFetch.default = jest.fn(() => {
-      return Promise.resolve(new nodeFetch.Response('',
-        { status: 400, statusText: 'BadRequest' }
-      ))
-    })
+    crossFetch.mockResolvedValueOnce(new Response(
+      '',
+      { status: 400, statusText: 'BadRequest' }
+    ))
 
     const options = {
       method: 'GET',
@@ -59,11 +62,10 @@ describe('request', () => {
 
   it('should return proper error message when server returns error with text-plain body', async () => {
     // @ts-ignore
-    nodeFetch.default = jest.fn(() => {
-      return Promise.resolve(new nodeFetch.Response("Something went wrong",
-        { status: 400, statusText: 'BadRequest', headers: new nodeFetch.Headers({ "Content-type": "text" }) }
-      ))
-    })
+    crossFetch.mockResolvedValueOnce(new Response(
+      "Something went wrong",
+      { status: 400, statusText: 'BadRequest', headers: new Headers({ "Content-type": "text" }) }
+    ))
 
     const options = {
       method: 'GET',
