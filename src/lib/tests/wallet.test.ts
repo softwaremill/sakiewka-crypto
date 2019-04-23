@@ -7,6 +7,7 @@ import BigNumber from 'bignumber.js'
 import chaiBigNumber from 'chai-bignumber'
 import * as pdfGen from '../keycard-pdf'
 import { keyModuleFactory } from '../key'
+import { DailyAmountPolicy } from '../../types/domain'
 import bitcoinFactory from '../bitcoin'
 const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency)
 
@@ -147,5 +148,46 @@ describe('getMaxTransferAmount', () => {
     expect(feeRate).to.eq('2')
     expect(res).to.eq('backend response')
     expect(recipient).to.be.eq('0x1')
+  })
+})
+
+describe('addPolicy', () => {
+  it('should exist', () => {
+    expect(wallet.addPolicy).to.be.a('function')
+  })
+
+  it('should pass proper arguments to backend-api method', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    backendApi.addPolicy = mockImplementation
+
+    const res = await wallet.addPolicy('testToken', 'walletId', new DailyAmountPolicy('11'))
+
+    const [token, walletId, policy] = mockImplementation.mock.calls[0]
+    expect(token).to.eq('testToken')
+    expect(walletId).to.eq('walletId')
+    expect(policy).to.eql(new DailyAmountPolicy('11'))
+    expect(res).to.eq('backend response')
+  })
+})
+
+describe('getPolicies', () => {
+  it('should exist', () => {
+    expect(wallet.getPolicies).to.be.a('function')
+  })
+
+  it('should pass proper arguments to backend-api method', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    backendApi.getPolicies = mockImplementation
+
+    const res = await wallet.getPolicies('testToken', 'walletId')
+
+    const [token, walletId] = mockImplementation.mock.calls[0]
+    expect(token).to.eq('testToken')
+    expect(walletId).to.eq('walletId')
+    expect(res).to.eq('backend response')
   })
 })

@@ -25,10 +25,11 @@ import {
   MaxTransferAmountResponse,
   MontlySummaryBackendResponse,
   RegisterBackendResponse,
-  SetupPasswordBackendResponse
+  SetupPasswordBackendResponse,
+  WalletPoliciesResponse
 } from 'response'
 import request from './utils/request'
-import { Currency } from '../types/domain';
+import { Currency, PolicySettings } from '../types/domain';
 import { WebhookType } from './constants';
 
 export interface SakiewkaBackend {
@@ -164,9 +165,9 @@ export const create = (backendApiUrl: string): BaseBackendApi => {
   }
 
   const listTransfers = async (token: string,
-                               walletId: string,
-                               limit: number,
-                               nextPageToken?: string): Promise<ListTransfersBackendResponse> => {
+    walletId: string,
+    limit: number,
+    nextPageToken?: string): Promise<ListTransfersBackendResponse> => {
     const options = {
       method: 'GET',
       headers: {
@@ -218,6 +219,8 @@ export interface CurrencyBackendApi {
   listWebhooks(token: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListWebhooksResponse>
   getWebhook(token: string, walletId: string, webhookId: string): Promise<GetWebhooksResponse>
   deleteWebhook(token: string, walletId: string, webhookId: string): Promise<DeleteWebhookResponse>
+  addPolicy(token: string, walletId: string, policy: PolicySettings): Promise<any>
+  getPolicies(token: string, walletId: string) : Promise<WalletPoliciesResponse>
 }
 
 export const withCurrency = (backendApiUrl: string, currency: Currency): CurrencyBackendApi => {
@@ -456,7 +459,32 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     return response.data
   }
 
-  return <CurrencyBackendApi>{
+  const addPolicy = async (token: string, walletId: string, policy: PolicySettings): Promise<any> => {
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: token
+      },
+      body: JSON.stringify(policy)
+    }
+
+    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/policy`, options)
+    return response.data
+  }
+
+  const getPolicies = async (token: string, walletId: string): Promise<WalletPoliciesResponse> => {
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: token
+      }
+    }
+
+    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/policy`, options)
+    return response.data
+  }
+
+  return {
     createNewAddress,
     createWallet,
     getAddress,
@@ -471,6 +499,8 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     listWebhooks,
     getWebhook,
     deleteWebhook,
-    createWebhook
+    createWebhook,
+    addPolicy,
+    getPolicies,
   }
 }

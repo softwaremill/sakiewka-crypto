@@ -1,4 +1,4 @@
-import { UTXO, Key, Path, KeyType, TransferType } from './domain'
+import { UTXO, Key, Path, KeyType, TransferType, PolicySettings } from './domain'
 
 export interface LoginBackendResponse {
   token: string
@@ -189,4 +189,14 @@ export interface MaxTransferAmountResponse {
 
 export interface ChainInfoResponse {
   type: string
+}
+
+export interface WalletPoliciesResponse {
+  policies: WalletPolicy[]
+}
+
+export interface WalletPolicy {
+  id: string,
+  created: string,
+  settings: PolicySettings
 }

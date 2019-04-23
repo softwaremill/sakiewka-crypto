@@ -39,7 +39,7 @@ export enum Currency {
 export interface UTXO {
   txHash: string,
   n: number,
-  amount? : BigNumber,
+  amount?: BigNumber,
   path?: Path
 }
 
@@ -67,7 +67,7 @@ export interface Signature {
 
 export interface TxOut {
   script: Buffer,
-  value : BigNumber
+  value: BigNumber
 }
 
 export interface SupportedNetworks {
@@ -81,4 +81,31 @@ export interface SupportedNetworks {
     testnet: Network,
     regtest: Network
   },
+}
+
+export interface PolicySettings {
+  kind: PolicyKind
+}
+
+export enum PolicyKind {
+  MaxDailyAmount = "maxDailyAmount",
+  Whitelist = "whitelist"
+}
+
+export class DailyAmountPolicy implements PolicySettings {
+  kind: PolicyKind = PolicyKind.MaxDailyAmount
+  amount: string
+
+  constructor(amount: string) {
+    this.amount = amount
+  }
+}
+
+export class WhitelistPolicy implements PolicySettings {
+  kind: PolicyKind = PolicyKind.Whitelist
+  addresses: string[]
+
+  constructor(addresss: string[]) {
+    this.addresses = addresss
+  }
 }
