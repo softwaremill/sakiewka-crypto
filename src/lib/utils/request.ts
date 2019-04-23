@@ -1,4 +1,4 @@
-import nodeFetch, { Response } from 'node-fetch'
+import crossFetch from 'cross-fetch'
 import { ApiError, ApiErrorDetails } from '../../types/api'
 import { ErrorResponse } from 'response';
 import { INTERNAL_ERROR_CODE } from '../constants';
@@ -35,7 +35,7 @@ const checkStatus = async (response: Response): Promise<Response> => {
 }
 
 export default function request(url: string, options: object): Promise<any> {
-  return nodeFetch(url, options)
+  return crossFetch(url, options)
     .then(checkStatus)
     .then(parseResponse)
 }

@@ -1,4 +1,4 @@
-import * as nodeFetch from 'node-fetch'
+import * as crossFetch from 'cross-fetch'
 import { expect } from 'chai'
 
 import request from '../request'
@@ -11,12 +11,12 @@ describe('request', () => {
 
   it('should return proper error message when server returns internal error', async () => {
     // @ts-ignore
-    nodeFetch.default = jest.fn(() => {
-      return Promise.resolve(new nodeFetch.Response(
+    crossFetch.default = jest.fn(() => {
+      return Promise.resolve(new crossFetch.Response(
         JSON.stringify({
             errors: [{ message: 'test error', code: 'test code' }]
         }),
-        { status: 500, statusText: '', headers: new nodeFetch.Headers({ "Content-type": "json" }) }
+        { status: 500, statusText: '', headers: new crossFetch.Headers({ "Content-type": "json" }) }
       ))
     })
 
@@ -37,8 +37,8 @@ describe('request', () => {
 
   it('should return proper error message when server returns error without body', async () => {
     // @ts-ignore
-    nodeFetch.default = jest.fn(() => {
-      return Promise.resolve(new nodeFetch.Response('',
+    crossFetch.default = jest.fn(() => {
+      return Promise.resolve(new crossFetch.Response('',
         { status: 400, statusText: 'BadRequest' }
       ))
     })
@@ -59,9 +59,9 @@ describe('request', () => {
 
   it('should return proper error message when server returns error with text-plain body', async () => {
     // @ts-ignore
-    nodeFetch.default = jest.fn(() => {
-      return Promise.resolve(new nodeFetch.Response("Something went wrong",
-        { status: 400, statusText: 'BadRequest', headers: new nodeFetch.Headers({ "Content-type": "text" }) }
+    crossFetch.default = jest.fn(() => {
+      return Promise.resolve(new crossFetch.Response("Something went wrong",
+        { status: 400, statusText: 'BadRequest', headers: new crossFetch.Headers({ "Content-type": "text" }) }
       ))
     })
 
