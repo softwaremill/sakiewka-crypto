@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import { currency } from './helpers'
 import * as apiFactory from '../backend-api'
 const baseApi = apiFactory.create('backurl/api/v1')
-const api  = apiFactory.withCurrency('backurl/api/v1', currency)
+const api = apiFactory.withCurrency('backurl/api/v1', currency)
 import * as request from '../utils/request'
 import { MaxTransferAmountParams } from 'response';
 import { PolicySettings, DailyAmountPolicy, PolicyKind } from '../../types/domain';
@@ -377,18 +377,18 @@ describe('setupPassword', () => {
   })
 })
 
-describe('addPolicy', () => {
+describe('createPolicy', () => {
   it('should exist', () => {
-    expect(api.addPolicy).to.be.a('function')
+    expect(api.createPolicy).to.be.a('function')
   })
 
   it('should send proper request', async () => {
     const data: PolicySettings = new DailyAmountPolicy('1.0')
-    await api.addPolicy('testToken', 'testWalletId', data)
+    await api.createPolicy('testToken', data)
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
-    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/policy`)
+    expect(url).to.eq(`backurl/api/v1/${currency}/policy`)
     expect(params.method).to.eq('POST')
     expect(params.headers.Authorization).to.eq('testToken')
     expect(reqBody.kind).to.be.eq(PolicyKind.MaxDailyAmount)
@@ -396,17 +396,73 @@ describe('addPolicy', () => {
   })
 })
 
-describe('getPolicies', () => {
+describe('listPolicies', () => {
   it('should exist', () => {
-    expect(api.addPolicy).to.be.a('function')
+    expect(api.listPolicies).to.be.a('function')
+  })
+
+  it('should send proper request with limit', async () => {
+    await api.listPolicies('testToken', 10)
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    expect(url).to.eq(`backurl/api/v1/${currency}/policy?limit=10`)
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
+  })
+
+  it('should send proper request with limit and nextPageToken', async () => {
+    await api.listPolicies('testToken', 10, '123')
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    expect(url).to.eq(`backurl/api/v1/${currency}/policy?limit=10&nextPageToken=123`)
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
+  })
+})
+
+describe('listPoliciesForWallet', () => {
+  it('should exist', () => {
+    expect(api.listPoliciesForWallet).to.be.a('function')
   })
 
   it('should send proper request', async () => {
-    await api.getPolicies('testToken', 'testWalletId')
+    await api.listPoliciesForWallet('testToken', '123')
 
     const [url, params] = mockImplementation.mock.calls[0]
-    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/policy`)
+    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/123/policy`)
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
+  })
+})
+
+describe('listWalletsForPolicy', () => {
+  it('should exist', () => {
+    expect(api.listWalletsForPolicy).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    await api.listWalletsForPolicy('testToken', '123')
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    expect(url).to.eq(`backurl/api/v1/${currency}/policy/123/wallet`)
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
+  })
+})
+
+describe('assignPolicy', () => {
+  it('should exist', () => {
+    expect(api.assignPolicy).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    await api.assignPolicy('testToken', '123', { walletId: '456' })
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    const reqBody = JSON.parse(params.body)
+    expect(url).to.eq(`backurl/api/v1/${currency}/policy/123/assign`)
+    expect(params.method).to.eq('POST')
+    expect(params.headers.Authorization).to.eq('testToken')
+    expect(reqBody.walletId).to.be.eq('456')
   })
 })

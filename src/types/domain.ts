@@ -109,3 +109,9 @@ export class WhitelistPolicy implements PolicySettings {
     this.addresses = addresss
   }
 }
+
+export interface Policy {
+  id: string,
+  created: string,
+  settings: PolicySettings
+}

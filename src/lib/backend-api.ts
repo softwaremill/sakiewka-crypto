@@ -26,7 +26,11 @@ import {
   MontlySummaryBackendResponse,
   RegisterBackendResponse,
   SetupPasswordBackendResponse,
-  WalletPoliciesResponse
+  WalletPoliciesResponse,
+  PolicyCreatedResponse,
+  ListPoliciesResponse,
+  AssignPolicyBackendParams,
+  ListWaleltsForPolicyResponse
 } from 'response'
 import request from './utils/request'
 import { Currency, PolicySettings } from '../types/domain';
@@ -219,8 +223,11 @@ export interface CurrencyBackendApi {
   listWebhooks(token: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListWebhooksResponse>
   getWebhook(token: string, walletId: string, webhookId: string): Promise<GetWebhooksResponse>
   deleteWebhook(token: string, walletId: string, webhookId: string): Promise<DeleteWebhookResponse>
-  addPolicy(token: string, walletId: string, policy: PolicySettings): Promise<any>
-  getPolicies(token: string, walletId: string) : Promise<WalletPoliciesResponse>
+  createPolicy(token: string, policy: PolicySettings): Promise<PolicyCreatedResponse>
+  listPoliciesForWallet(token: string, walletId: string): Promise<WalletPoliciesResponse>
+  listPolicies(token: string, limit: number, nextPageToken?: string): Promise<ListPoliciesResponse>
+  assignPolicy(token: string, policyId: string, params: AssignPolicyBackendParams): Promise<any> 
+  listWalletsForPolicy(token: string, policyId: string) : Promise<ListWaleltsForPolicyResponse>
 }
 
 export const withCurrency = (backendApiUrl: string, currency: Currency): CurrencyBackendApi => {
@@ -459,7 +466,7 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     return response.data
   }
 
-  const addPolicy = async (token: string, walletId: string, policy: PolicySettings): Promise<any> => {
+  const createPolicy = async (token: string, policy: PolicySettings): Promise<any> => {
     const options = {
       method: 'POST',
       headers: {
@@ -468,11 +475,11 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
       body: JSON.stringify(policy)
     }
 
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/policy`, options)
+    const response = await request(`${backendApiUrl}/${currency}/policy`, options)
     return response.data
   }
 
-  const getPolicies = async (token: string, walletId: string): Promise<WalletPoliciesResponse> => {
+  const listPoliciesForWallet = async (token: string, walletId: string): Promise<WalletPoliciesResponse> => {
     const options = {
       method: 'GET',
       headers: {
@@ -481,6 +488,45 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     }
 
     const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/policy`, options)
+    return response.data
+  }
+
+  const listPolicies = async (token: string, limit : number, nextPageToken?:string):Promise<ListPoliciesResponse> => {
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: token
+      }
+    }
+    const nextPageParam = nextPageToken ? `&nextPageToken=${nextPageToken}` : ''
+    const queryString = `?limit=${limit}${nextPageParam}`
+
+    const response = await request(`${backendApiUrl}/${currency}/policy${queryString}`, options)
+    return response.data
+  }
+
+  const assignPolicy = async (token: string, policyId: string, assignParams: AssignPolicyBackendParams) : Promise<any> => {
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: token
+      },
+      body: JSON.stringify(assignParams)
+    }
+
+    const response = await request(`${backendApiUrl}/${currency}/policy/${policyId}/assign`, options)
+    return response.data
+  }
+
+  const listWalletsForPolicy = async (token: string, policyId: string): Promise<ListWaleltsForPolicyResponse> => {
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: token
+      }
+    }
+
+    const response = await request(`${backendApiUrl}/${currency}/policy/${policyId}/wallet`, options)
     return response.data
   }
 
@@ -500,7 +546,10 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     getWebhook,
     deleteWebhook,
     createWebhook,
-    addPolicy,
-    getPolicies,
+    createPolicy,
+    listPoliciesForWallet,
+    listPolicies,
+    assignPolicy,
+    listWalletsForPolicy,
   }
 }

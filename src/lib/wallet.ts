@@ -1,4 +1,4 @@
-import { Recipient, WalletParams, PolicySettings } from '../types/domain'
+import { Recipient, WalletParams } from '../types/domain'
 import { ROOT_DERIVATION_PATH } from './constants'
 import {
   CreateWalletBackendParams,
@@ -9,7 +9,6 @@ import {
   ListUnspentsBackendResponse,
   ListWalletsBackendResponse,
   GetWalletBackendResponse,
-  WalletPoliciesResponse
 } from 'response'
 import { generatePdf } from './keycard-pdf'
 import { KeyModule } from './key'
@@ -21,8 +20,6 @@ export interface WalletApi {
   listWallets(userToken: string, limit: number, nextPageToken?: string): Promise<ListWalletsBackendResponse>
   listUnspents(token: string, walletId: string, feeRate: string, recipients: Recipient[]): Promise<ListUnspentsBackendResponse>
   maxTransferAmount(token: string, walletId: string, feeRate: string, recipient: string): Promise<MaxTransferAmountResponse>
-  addPolicy(token: string, walletId: string, policy: PolicySettings): Promise<any>
-  getPolicies(token: string, walletId: string): Promise<WalletPoliciesResponse>
 }
 
 export const walletApiFactory = (backendApi: CurrencyBackendApi, keyModule: KeyModule): WalletApi => {
@@ -83,17 +80,11 @@ export const walletApiFactory = (backendApi: CurrencyBackendApi, keyModule: KeyM
     return backendApi.maxTransferAmount(token, walletId, params)
   }
 
-  const addPolicy = (token: string, walletId: string, policy: PolicySettings): Promise<any> => backendApi.addPolicy(token, walletId, policy)
-
-  const getPolicies = (token: string, walletId: string) : Promise<WalletPoliciesResponse> => backendApi.getPolicies(token, walletId)
-
   return {
     createWallet,
     getWallet,
     listUnspents,
     listWallets,
     maxTransferAmount,
-    addPolicy,
-    getPolicies,
   }
 }
