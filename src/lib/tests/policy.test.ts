@@ -90,6 +90,26 @@ describe('listPoliciesForWallet', () => {
   })
 })
 
+describe('listWalletsForPolicy', () => {
+  it('should exist', () => {
+    expect(policy.listWalletsForPolicy).to.be.a('function')
+  })
+
+  it('should pass proper arguments to backend-api method', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    backendApi.listWalletsForPolicy = mockImplementation
+
+    const res = await policy.listWalletsForPolicy('testToken', '11')
+
+    const [token, policyId] = mockImplementation.mock.calls[0]
+    expect(token).to.eq('testToken')
+    expect(policyId).to.eq('11')
+    expect(res).to.eq('backend response')
+  })
+})
+
 describe('assignPolicy', () => {
   it('should exist', () => {
     expect(policy.assignPolicy).to.be.a('function')
