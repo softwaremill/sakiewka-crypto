@@ -4,7 +4,8 @@ import * as QRCode from 'qrcode'
 
 const QR_DATA_GAP = 15
 const QR_WIDTH = 128
-const DEFAULT_LOGO_PATH = '../../resources/sml-logo.png'
+const LOGO_BASE64_DEFAULT =
+  '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';
 
 const colors = {
   REGULAR_COLOR: '#000',
@@ -29,8 +30,8 @@ const fontSizes = {
   SMALL: 8
 }
 
-export const generatePdf = async (walletName: string, servicePublicKey: string, userPrivateKey?: string, backupPrivateKey?: string, logoPath?: string): Promise<string> => {
-  const doc = await generateBackupPdf(walletName, servicePublicKey, userPrivateKey, backupPrivateKey, logoPath)
+export const generatePdf = async (walletName: string, servicePublicKey: string, userPrivateKey?: string, backupPrivateKey?: string, logoBase64?: string): Promise<string> => {
+  const doc = await generateBackupPdf(walletName, servicePublicKey, userPrivateKey, backupPrivateKey, logoBase64)
   const stream = doc.pipe(new Base64Encode())
   let base64Pdf: string = ''
   stream.on('data', (data: string) => base64Pdf += data)
@@ -48,7 +49,7 @@ function* qrOffsetGenerator(spacing: number, offset: number): IterableIterator<n
   }
 }
 
-const generateBackupPdf = async (walletName: string, servicePublicKey: string, userPrivateKey?: string, backupPrivateKey?: string, logoPath?: string): Promise<PDFKit.PDFDocument> => {
+const generateBackupPdf = async (walletName: string, servicePublicKey: string, userPrivateKey?: string, backupPrivateKey?: string, logoBase64?: string): Promise<PDFKit.PDFDocument> => {
   const doc = new PDFDocument()
   doc.registerFont(fonts.MONOSPACE_FONT, 'Courier')
   doc.registerFont(fonts.REGULAR_FONT, 'Helvetica')
@@ -56,7 +57,7 @@ const generateBackupPdf = async (walletName: string, servicePublicKey: string, u
   const imageHeight = 15
   const imageOffset = qrOffsetGenerator(190, 190)
 
-  addLogo(doc, logoPath || DEFAULT_LOGO_PATH, imageHeight, walletName)
+  addLogo(doc, logoBase64 || LOGO_BASE64_DEFAULT, imageHeight, walletName)
 
   if (userPrivateKey) {
     await drawDataBox(doc, {
@@ -164,9 +165,9 @@ const generateBackupPdf = async (walletName: string, servicePublicKey: string, u
   return doc
 }
 
-const addLogo = (doc: PDFKit.PDFDocument, src: string, imageHeight: number, walletName: string) => {
-  const path = `${__dirname}/${src}`
-  doc.image(path, doc.page.margins.left, doc.page.margins.top + imageHeight / 2, { height: imageHeight })
+const addLogo = (doc: PDFKit.PDFDocument, base64Image: string, imageHeight: number, walletName: string) => {
+  const image = new Buffer(base64Image, 'base64');
+  doc.image(image, doc.page.margins.left, doc.page.margins.top + imageHeight / 2, { height: imageHeight })
     .fontSize(fontSizes.DOCUMENT_TITLE)
     .text(`Sakiewka Key Card`, { align: 'right' })
 }

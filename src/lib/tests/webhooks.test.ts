@@ -30,7 +30,7 @@ describe('createWebhook', () => {
       'testToken',
       'testWalletId',
       'http://test.callback.com',
-      WebhookType.TRANSFER_CONFIRMATION,
+      WebhookType.TRANSFER,
       {}
     )
 
@@ -38,7 +38,7 @@ describe('createWebhook', () => {
     expect(token).to.eq('testToken')
     expect(walletId).to.eq('testWalletId')
     expect(callbackUrl).to.eq('http://test.callback.com')
-    expect(type).to.eq('transfer_confirmation')
+    expect(type).to.eq('transfer')
     expect(settings).to.be.a('object').that.is.empty
     expect(res).to.be.a('object').that.is.empty
   })
@@ -57,7 +57,7 @@ describe('getWebhook', () => {
           walletId: 'walletId345',
           callbackUrl: 'http://test.callbackurl.com',
           settings: {
-            webhookType: 'transaction_confirmation'
+            webhookType: 'transfer'
           }
         }
       )
@@ -80,7 +80,7 @@ describe('getWebhook', () => {
       walletId: 'walletId345',
       callbackUrl: 'http://test.callbackurl.com',
       settings: {
-        webhookType: 'transaction_confirmation'
+        webhookType: 'transfer'
       }
     })
   })
@@ -100,7 +100,7 @@ describe('listWebhooks', () => {
             walletId: 'walletId345',
             callbackUrl: 'http://test.callbackurl.com',
             settings: {
-              webhookType: 'transaction_confirmation'
+              webhookType: 'transfer'
             }
           }
         ]
@@ -127,7 +127,7 @@ describe('listWebhooks', () => {
         walletId: 'walletId345',
         callbackUrl: 'http://test.callbackurl.com',
         settings: {
-          webhookType: 'transaction_confirmation'
+          webhookType: 'transfer'
         }
       }
     ])

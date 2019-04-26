@@ -50,8 +50,7 @@ export const walletApiFactory = (backendApi: CurrencyBackendApi, keyModule: KeyM
       params.name,
       response.servicePubKey,
       backendRequestParams.userPrvKey,
-      backendRequestParams.backupPrvKey,
-      '../../resources/sml-logo.png'
+      backendRequestParams.backupPrvKey
     )
 
     return { ...response, pdf }

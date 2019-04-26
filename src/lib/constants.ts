@@ -48,6 +48,5 @@ export const SUPPORTED_NETWORKS: SupportedNetworks = {
 }
 
 export enum WebhookType {
-  TRANSFER_CONFIRMATION = "transfer_confirmation",
-  TRANSFER_MINED = "transfer_mined"
+  TRANSFER = "transfer"
 }
