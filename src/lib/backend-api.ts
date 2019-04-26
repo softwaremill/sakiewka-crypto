@@ -26,7 +26,7 @@ import {
   MontlySummaryBackendResponse,
   RegisterBackendResponse,
   SetupPasswordBackendResponse,
-  WalletPoliciesResponse,
+  ListPoliciesForWalletResponse,
   PolicyCreatedResponse,
   ListPoliciesResponse,
   AssignPolicyBackendParams,
@@ -224,7 +224,7 @@ export interface CurrencyBackendApi {
   getWebhook(token: string, walletId: string, webhookId: string): Promise<GetWebhooksResponse>
   deleteWebhook(token: string, walletId: string, webhookId: string): Promise<DeleteWebhookResponse>
   createPolicy(token: string, policy: PolicySettings): Promise<PolicyCreatedResponse>
-  listPoliciesForWallet(token: string, walletId: string): Promise<WalletPoliciesResponse>
+  listPoliciesForWallet(token: string, walletId: string): Promise<ListPoliciesForWalletResponse>
   listPolicies(token: string, limit: number, nextPageToken?: string): Promise<ListPoliciesResponse>
   assignPolicy(token: string, policyId: string, params: AssignPolicyBackendParams): Promise<any> 
   listWalletsForPolicy(token: string, policyId: string) : Promise<ListWaleltsForPolicyResponse>
@@ -479,7 +479,7 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     return response.data
   }
 
-  const listPoliciesForWallet = async (token: string, walletId: string): Promise<WalletPoliciesResponse> => {
+  const listPoliciesForWallet = async (token: string, walletId: string): Promise<ListPoliciesForWalletResponse> => {
     const options = {
       method: 'GET',
       headers: {

@@ -191,7 +191,7 @@ export interface ChainInfoResponse {
   type: string
 }
 
-export interface WalletPoliciesResponse {
+export interface ListPoliciesForWalletResponse {
   policies: Policy[]
 }
 
