@@ -1,10 +1,10 @@
 import { PolicySettings } from '../types/domain'
-import { ListPoliciesResponse, ListWaleltsForPolicyResponse } from 'response'
+import { ListPoliciesResponse, ListWalletsForPolicyResponse } from 'response'
 import { CurrencyBackendApi } from './backend-api';
 
 export interface PolicyApi {
     createPolicy(token: string, policy: PolicySettings): Promise<any>
-    listWalletsForPolicy(token: string, policyId: string): Promise<ListWaleltsForPolicyResponse>
+    listWalletsForPolicy(token: string, policyId: string): Promise<ListWalletsForPolicyResponse>
     listPolicies(token: string, limit: number, nextPageToken?: string): Promise<ListPoliciesResponse>
     assignPolicy(token: string, policyId: string, walletId: string): Promise<any>
 }
@@ -13,7 +13,7 @@ export const policyApiFactory = (backendApi: CurrencyBackendApi): PolicyApi => {
     const createPolicy = (token: string, policy: PolicySettings): Promise<any> =>
         backendApi.createPolicy(token, policy)
 
-    const listWalletsForPolicy = (token: string, policyId: string): Promise<ListWaleltsForPolicyResponse> =>
+    const listWalletsForPolicy = (token: string, policyId: string): Promise<ListWalletsForPolicyResponse> =>
         backendApi.listWalletsForPolicy(token, policyId)
 
     const listPolicies = (token: string, limit: number, nextPageToken?: string): Promise<ListPoliciesResponse> =>

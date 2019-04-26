@@ -30,7 +30,7 @@ import {
   PolicyCreatedResponse,
   ListPoliciesResponse,
   AssignPolicyBackendParams,
-  ListWaleltsForPolicyResponse
+  ListWalletsForPolicyResponse
 } from 'response'
 import request from './utils/request'
 import { Currency, PolicySettings } from '../types/domain';
@@ -227,7 +227,7 @@ export interface CurrencyBackendApi {
   listPoliciesForWallet(token: string, walletId: string): Promise<ListPoliciesForWalletResponse>
   listPolicies(token: string, limit: number, nextPageToken?: string): Promise<ListPoliciesResponse>
   assignPolicy(token: string, policyId: string, params: AssignPolicyBackendParams): Promise<any> 
-  listWalletsForPolicy(token: string, policyId: string) : Promise<ListWaleltsForPolicyResponse>
+  listWalletsForPolicy(token: string, policyId: string) : Promise<ListWalletsForPolicyResponse>
 }
 
 export const withCurrency = (backendApiUrl: string, currency: Currency): CurrencyBackendApi => {
@@ -518,7 +518,7 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     return response.data
   }
 
-  const listWalletsForPolicy = async (token: string, policyId: string): Promise<ListWaleltsForPolicyResponse> => {
+  const listWalletsForPolicy = async (token: string, policyId: string): Promise<ListWalletsForPolicyResponse> => {
     const options = {
       method: 'GET',
       headers: {

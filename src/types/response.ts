@@ -208,4 +208,4 @@ export interface AssignPolicyBackendParams {
   walletId: string
 }
 
-export interface ListWaleltsForPolicyResponse {}
+export interface ListWalletsForPolicyResponse {}
