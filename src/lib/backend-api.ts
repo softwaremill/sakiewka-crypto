@@ -30,10 +30,11 @@ import {
   PolicyCreatedResponse,
   ListPoliciesResponse,
   AssignPolicyBackendParams,
-  ListWalletsForPolicyResponse
+  ListWalletsForPolicyResponse,
+  PolicyCreateRequest
 } from 'response'
 import request from './utils/request'
-import { Currency, PolicySettings } from '../types/domain';
+import { Currency } from '../types/domain';
 import { WebhookType } from './constants';
 
 export interface SakiewkaBackend {
@@ -223,7 +224,7 @@ export interface CurrencyBackendApi {
   listWebhooks(token: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListWebhooksResponse>
   getWebhook(token: string, walletId: string, webhookId: string): Promise<GetWebhooksResponse>
   deleteWebhook(token: string, walletId: string, webhookId: string): Promise<DeleteWebhookResponse>
-  createPolicy(token: string, policy: PolicySettings): Promise<PolicyCreatedResponse>
+  createPolicy(token: string, params: PolicyCreateRequest): Promise<PolicyCreatedResponse>
   listPoliciesForWallet(token: string, walletId: string): Promise<ListPoliciesForWalletResponse>
   listPolicies(token: string, limit: number, nextPageToken?: string): Promise<ListPoliciesResponse>
   assignPolicy(token: string, policyId: string, params: AssignPolicyBackendParams): Promise<any> 
@@ -466,13 +467,13 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     return response.data
   }
 
-  const createPolicy = async (token: string, policy: PolicySettings): Promise<any> => {
+  const createPolicy = async (token: string, params: PolicyCreateRequest): Promise<any> => {
     const options = {
       method: 'POST',
       headers: {
         Authorization: token
       },
-      body: JSON.stringify(policy)
+      body: JSON.stringify(params)
     }
 
     const response = await request(`${backendApiUrl}/${currency}/policy`, options)

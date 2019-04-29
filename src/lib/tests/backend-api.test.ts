@@ -383,16 +383,16 @@ describe('createPolicy', () => {
   })
 
   it('should send proper request', async () => {
-    const data: PolicySettings = new DailyAmountPolicy('1.0')
-    await api.createPolicy('testToken', data)
+    const settings: PolicySettings = new DailyAmountPolicy('1.0')
+    await api.createPolicy('testToken', {name: 'a', settings} )
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
     expect(url).to.eq(`backurl/api/v1/${currency}/policy`)
     expect(params.method).to.eq('POST')
     expect(params.headers.Authorization).to.eq('testToken')
-    expect(reqBody.kind).to.be.eq(PolicyKind.MaxDailyAmount)
-    expect(reqBody.amount).to.be.eq('1.0')
+    expect(reqBody.settings.kind).to.be.eq(PolicyKind.MaxDailyAmount)
+    expect(reqBody.settings.amount).to.be.eq('1.0')
   })
 })
 

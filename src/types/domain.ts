@@ -113,5 +113,6 @@ export class WhitelistPolicy implements PolicySettings {
 export interface Policy {
   id: string,
   created: string,
+  name: string,
   settings: PolicySettings
 }

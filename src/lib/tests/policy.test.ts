@@ -25,10 +25,11 @@ describe('addPolicy', () => {
     // @ts-ignore
     backendApi.createPolicy = mockImplementation
 
-    const res = await policy.createPolicy('testToken', new DailyAmountPolicy('11'))
+    const res = await policy.createPolicy('testToken', 'name', new DailyAmountPolicy('11'))
 
-    const [token, settings] = mockImplementation.mock.calls[0]
+    const [token, { name, settings }] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
+    expect(name).to.eq('name')
     expect(settings).to.eql(new DailyAmountPolicy('11'))
     expect(res).to.eq('backend response')
   })
@@ -105,7 +106,7 @@ describe('assignPolicy', () => {
     const [token, policyId, walletId] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
     expect(policyId).to.eq('policyId')
-    expect(walletId).to.eql({walletId: 'walletId'})
+    expect(walletId).to.eql({ walletId: 'walletId' })
     expect(res).to.eq('backend response')
   })
 })
