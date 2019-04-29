@@ -128,7 +128,7 @@ export interface ListWebhooksResponse {
 export interface DeleteWebhookResponse {}
 
 export interface CreateWebhookResponse {
-  webhookId: string
+  id: string
 }
 
 export interface ListUnspentsBackendResponse {
