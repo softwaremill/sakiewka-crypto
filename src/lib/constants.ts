@@ -46,7 +46,3 @@ export const SUPPORTED_NETWORKS: SupportedNetworks = {
     regtest: networks.bitcoingoldregtest,
   }
 }
-
-export enum WebhookType {
-  TRANSFER = "transfer"
-}

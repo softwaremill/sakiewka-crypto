@@ -5,7 +5,6 @@ import * as backendApiFactory from '../backend-api'
 import BigNumber from 'bignumber.js'
 import chaiBigNumber from 'chai-bignumber'
 import { webhooksApiFactory } from '../webhooks'
-import { WebhookType } from '../constants';
 
 const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency)
 
@@ -30,16 +29,18 @@ describe('createWebhook', () => {
       'testToken',
       'testWalletId',
       'http://test.callback.com',
-      WebhookType.TRANSFER,
-      {}
+      {
+        'type': 'transfer'
+      }
     )
 
-    const [token, walletId, callbackUrl, type, settings] = mockImplementation.mock.calls[0]
+    const [token, walletId, callbackUrl, settings] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
     expect(walletId).to.eq('testWalletId')
     expect(callbackUrl).to.eq('http://test.callback.com')
-    expect(type).to.eq('transfer')
-    expect(settings).to.be.a('object').that.is.empty
+    expect(settings).to.be.deep.eq({
+      'type': 'transfer'
+    })
     expect(res).to.be.a('object').that.is.empty
   })
 })
@@ -57,7 +58,7 @@ describe('getWebhook', () => {
           walletId: 'walletId345',
           callbackUrl: 'http://test.callbackurl.com',
           settings: {
-            webhookType: 'transfer'
+            type: 'transfer'
           }
         }
       )
@@ -80,7 +81,7 @@ describe('getWebhook', () => {
       walletId: 'walletId345',
       callbackUrl: 'http://test.callbackurl.com',
       settings: {
-        webhookType: 'transfer'
+        type: 'transfer'
       }
     })
   })
@@ -100,7 +101,7 @@ describe('listWebhooks', () => {
             walletId: 'walletId345',
             callbackUrl: 'http://test.callbackurl.com',
             settings: {
-              webhookType: 'transfer'
+              type: 'transfer'
             }
           }
         ]
@@ -127,7 +128,7 @@ describe('listWebhooks', () => {
         walletId: 'walletId345',
         callbackUrl: 'http://test.callbackurl.com',
         settings: {
-          webhookType: 'transfer'
+          type: 'transfer'
         }
       }
     ])
