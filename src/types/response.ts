@@ -22,9 +22,7 @@ export interface MontlySummaryBackendResponse {
 
 export interface ListTransfersBackendResponse {
   transfers: TransferItemBackendResponse[],
-  nextPageToken?: string,
-  serviceFeeBTC: string,
-  serviceFeeFiat: string
+  nextPageToken?: string
 }
 
 export interface TransferItemBackendResponse {

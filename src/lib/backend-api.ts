@@ -56,8 +56,8 @@ export interface BaseBackendApi {
   register(login: string): Promise<RegisterBackendResponse>
   setupPassword(token: string, password: String): Promise<SetupPasswordBackendResponse>
   info(token: string): Promise<InfoBackendResponse>
-  monthlySummary(token: string, month: number, year: number, fiatCurrency: number): Promise<MontlySummaryBackendResponse>
-  listTransfers(token: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListTransfersBackendResponse>
+  monthlySummary(token: string, month: number, year: number, fiatCurrency: string): Promise<MontlySummaryBackendResponse>
+  listTransfers(token: string, limit: number, nextPageToken?: string): Promise<ListTransfersBackendResponse>
   chainNetworkType(): Promise<ChainModeResponse>
 }
 
@@ -151,7 +151,7 @@ export const create = (backendApiUrl: string): BaseBackendApi => {
     return response.data
   }
 
-  const monthlySummary = async (token: string, month: number, year: number, fiatCurrency: number): Promise<MontlySummaryBackendResponse> => {
+  const monthlySummary = async (token: string, month: number, year: number, fiatCurrency: string): Promise<MontlySummaryBackendResponse> => {
     const options = {
       method: 'GET',
       headers: {
@@ -164,7 +164,6 @@ export const create = (backendApiUrl: string): BaseBackendApi => {
   }
 
   const listTransfers = async (token: string,
-                               walletId: string,
                                limit: number,
                                nextPageToken?: string): Promise<ListTransfersBackendResponse> => {
     const options = {
@@ -173,10 +172,8 @@ export const create = (backendApiUrl: string): BaseBackendApi => {
         Authorization: token
       }
     }
-
     const nextPageParam = nextPageToken ? `&nextPageToken=${nextPageToken}` : ''
-    const walletIdParam = walletId ? `&walletId=${walletId}` : ''
-    const queryString = `?limit=${limit}${nextPageParam}${walletIdParam}`
+    const queryString = `?limit=${limit}${nextPageParam}`
 
     const response = await request(`${backendApiUrl}/transfers${queryString}`, options)
     return response.data
