@@ -1,5 +1,5 @@
 import { KeyPair } from '../types/domain'
-import { getRandomBytes, encrypt } from './crypto'
+import { getRandomBytes, encrypt, decrypt } from './crypto'
 import { HDNode } from 'bitcoinjs-lib'
 import { CurrencyBackendApi } from './backend-api';
 import { BitcoinOperations } from './bitcoin-operations';
@@ -8,6 +8,7 @@ import { GetKeyBackendResponse } from 'response';
 export interface KeyModule {
   generateNewKeyPair(path?: string): KeyPair
   encryptKeyPair(keyPair: KeyPair, passphrase: string): KeyPair
+  decryptKeyPair(keyPair: KeyPair, passphrase: string) : KeyPair
   deriveKeyPair(keyPair: KeyPair, path: string): KeyPair
   deriveKey(rootKey: string, path: string): HDNode
 }
@@ -42,6 +43,17 @@ export const keyModuleFactory = (bitcoin: BitcoinOperations): KeyModule => {
     return { ...keyPair }
   }
 
+  const decryptKeyPair = (keyPair: KeyPair, passphrase: string): KeyPair => { 
+    if (keyPair.prvKey) {
+      return {
+        ...keyPair,
+        prvKey: decrypt(passphrase, keyPair.prvKey)
+      }
+    }
+
+    return { ...keyPair }
+  }
+
   const deriveKeyPair = (
     keyPair: KeyPair, path: string
   ): KeyPair => {
@@ -61,7 +73,7 @@ export const keyModuleFactory = (bitcoin: BitcoinOperations): KeyModule => {
     if (path === '') return node
     return node.derivePath(path)
   }
-  return { generateNewKeyPair, encryptKeyPair, deriveKeyPair, deriveKey }
+  return { generateNewKeyPair, encryptKeyPair, deriveKeyPair, deriveKey, decryptKeyPair }
 }
 
 export const keyApiFactory = (backendApi: CurrencyBackendApi): KeyApi => {
