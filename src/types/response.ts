@@ -1,4 +1,4 @@
-import { UTXO, Key, Path, KeyType, TransferType } from './domain'
+import { UTXO, Key, Path, KeyType } from './domain'
 
 export interface LoginBackendResponse {
   token: string
