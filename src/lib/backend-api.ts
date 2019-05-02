@@ -25,7 +25,8 @@ import {
   MaxTransferAmountResponse,
   MontlySummaryBackendResponse,
   RegisterBackendResponse,
-  SetupPasswordBackendResponse
+  SetupPasswordBackendResponse,
+  TransferItemBackendResponse
 } from 'response'
 import request from './utils/request'
 import { Currency } from '../types/domain';
@@ -215,6 +216,8 @@ export interface CurrencyBackendApi {
   listWebhooks(token: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListWebhooksResponse>
   getWebhook(token: string, walletId: string, webhookId: string): Promise<GetWebhooksResponse>
   deleteWebhook(token: string, walletId: string, webhookId: string): Promise<DeleteWebhookResponse>
+  listTransfers(token: string, walletId: string, limit: number, nextPageParam?: string): Promise<ListTransfersBackendResponse>
+  findTransferByTxHash(token: string, walletId: string, txHash: string): Promise<TransferItemBackendResponse>
 }
 
 export const withCurrency = (backendApiUrl: string, currency: Currency): CurrencyBackendApi => {
@@ -453,7 +456,33 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     return response.data
   }
 
-  return <CurrencyBackendApi>{
+  const listTransfers = async (token: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListTransfersBackendResponse> => {
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: token
+      }
+    }
+    const nextPageParam = nextPageToken ? `&nextPageToken=${nextPageToken}` : ''
+    const queryString = `?limit=${limit}${nextPageParam}`
+
+    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/transfers${queryString}`, options)
+    return response.data
+  }
+
+  const findTransferByTxHash = async(token: string, walletId: string, txHash: string): Promise<TransferItemBackendResponse> => {
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: token
+      }
+    }
+
+    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/transfers/${txHash}`, options)
+    return response.data
+  }
+
+  return {
     createNewAddress,
     createWallet,
     getAddress,
@@ -468,6 +497,8 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     listWebhooks,
     getWebhook,
     deleteWebhook,
-    createWebhook
+    createWebhook,
+    listTransfers,
+    findTransferByTxHash
   }
 }

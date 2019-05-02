@@ -26,13 +26,18 @@ export interface ListTransfersBackendResponse {
 }
 
 export interface TransferItemBackendResponse {
-  walletId: string,
-  txHash: string,
-  spent: string,
-  serviceFee: string,
-  timestamp: number,
-  transferType: TransferType
+  chain: string,
+  wallet: TransferItemWallet
+  timestamp: string,
+  transaction: TransferItemTransaction,
+  block?: TransferItemBlock
 }
+
+export interface TransferItemWallet {}
+
+export interface TransferItemBlock {}
+
+export interface TransferItemTransaction {}
 
 export interface Init2faBackendResponse {
   qrCodeUrl: string
