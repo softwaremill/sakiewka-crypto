@@ -375,3 +375,33 @@ describe('setupPassword', () => {
     expect(reqBody.password).to.eq("secret")
   })
 })
+
+describe('listTransfers', ()=> {
+  it('should exist', () => {
+    expect(baseApi.listTransfers).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    await baseApi.listTransfers('testToken', 50, 'npt')
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    expect(url).to.eq(`backurl/api/v1/transfers?limit=50&nextPageToken=npt`)
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
+  })
+})
+
+describe('monthlySummary', ()=> {
+  it('should exist', () => {
+    expect(baseApi.monthlySummary).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    await baseApi.monthlySummary('testToken', 5, 1223, 'pln')
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    expect(url).to.eq(`backurl/api/v1/transfers/monthly-summary/5/1223/pln`)
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
+  })
+})
