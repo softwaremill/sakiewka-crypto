@@ -127,7 +127,9 @@ export interface ListWebhooksResponse {
 
 export interface DeleteWebhookResponse {}
 
-export interface CreateWebhookResponse {}
+export interface CreateWebhookResponse {
+  id: string
+}
 
 export interface ListUnspentsBackendResponse {
   outputs: UTXO[],
