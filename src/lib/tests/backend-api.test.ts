@@ -3,9 +3,10 @@ import { expect } from 'chai'
 import { currency } from './helpers'
 import * as apiFactory from '../backend-api'
 const baseApi = apiFactory.create('backurl/api/v1')
-const api  = apiFactory.withCurrency('backurl/api/v1', currency)
+const api = apiFactory.withCurrency('backurl/api/v1', currency)
 import * as request from '../utils/request'
 import { MaxTransferAmountParams } from 'response';
+import { PolicySettings, DailyAmountPolicy, PolicyKind } from '../../types/domain';
 
 // @ts-ignore
 const mockImplementation = jest.fn(() => ({ data: 'testToken' }))
@@ -373,5 +374,95 @@ describe('setupPassword', () => {
     expect(params.method).to.eq('POST')
     expect(params.headers.Authorization).to.eq('testToken')
     expect(reqBody.password).to.eq("secret")
+  })
+})
+
+describe('createPolicy', () => {
+  it('should exist', () => {
+    expect(api.createPolicy).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    const settings: PolicySettings = new DailyAmountPolicy('1.0')
+    await api.createPolicy('testToken', {name: 'a', settings} )
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    const reqBody = JSON.parse(params.body)
+    expect(url).to.eq(`backurl/api/v1/${currency}/policy`)
+    expect(params.method).to.eq('POST')
+    expect(params.headers.Authorization).to.eq('testToken')
+    expect(reqBody.settings.kind).to.be.eq(PolicyKind.MaxDailyAmount)
+    expect(reqBody.settings.amount).to.be.eq('1.0')
+  })
+})
+
+describe('listPolicies', () => {
+  it('should exist', () => {
+    expect(api.listPolicies).to.be.a('function')
+  })
+
+  it('should send proper request with limit', async () => {
+    await api.listPolicies('testToken', 10)
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    expect(url).to.eq(`backurl/api/v1/${currency}/policy?limit=10`)
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
+  })
+
+  it('should send proper request with limit and nextPageToken', async () => {
+    await api.listPolicies('testToken', 10, '123')
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    expect(url).to.eq(`backurl/api/v1/${currency}/policy?limit=10&nextPageToken=123`)
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
+  })
+})
+
+describe('listPoliciesForWallet', () => {
+  it('should exist', () => {
+    expect(api.listPoliciesForWallet).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    await api.listPoliciesForWallet('testToken', '123')
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/123/policy`)
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
+  })
+})
+
+describe('listWalletsForPolicy', () => {
+  it('should exist', () => {
+    expect(api.listWalletsForPolicy).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    await api.listWalletsForPolicy('testToken', '123')
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    expect(url).to.eq(`backurl/api/v1/${currency}/policy/123/wallet`)
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
+  })
+})
+
+describe('assignPolicy', () => {
+  it('should exist', () => {
+    expect(api.assignPolicy).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    await api.assignPolicy('testToken', '123', { walletId: '456' })
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    const reqBody = JSON.parse(params.body)
+    expect(url).to.eq(`backurl/api/v1/${currency}/policy/123/assign`)
+    expect(params.method).to.eq('POST')
+    expect(params.headers.Authorization).to.eq('testToken')
+    expect(reqBody.walletId).to.be.eq('456')
   })
 })
