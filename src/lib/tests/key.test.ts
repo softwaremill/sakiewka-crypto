@@ -61,20 +61,25 @@ describe('generateNewKeyPair', () => {
   })
 })
 
-describe('encryptKeyPair', () => {
+describe('encrypt/decrypt KeyPair', () => {
   const bitcoin = bitoinFactory(currency, 'mainnet')
   const keyModule = keyModuleFactory(bitcoin)
   it('should exist', () => {
     expect(keyModule.encryptKeyPair).to.be.a('function')
+    expect(keyModule.decryptKeyPair).to.be.a('function')
   })
 
-  it('should return encrypted keyPair', () => {
-    const result = keyModule.encryptKeyPair({ pubKey: 'abc', prvKey: 'bcd' }, 'pass')
+  it('should encryp/decrypt keyPair', () => {
+    const keyPair = { pubKey: 'abc', prvKey: 'bcd' };
+    const encryptedResults = keyModule.encryptKeyPair(keyPair, 'pass')
 
-    expect(result).to.haveOwnProperty('pubKey')
-    expect(result).to.haveOwnProperty('prvKey')
-    expect(result.pubKey).to.have.lengthOf(3)
-    expect(JSON.parse(result.prvKey!)).to.haveOwnProperty('cipher')
+    expect(encryptedResults).to.haveOwnProperty('pubKey')
+    expect(encryptedResults).to.haveOwnProperty('prvKey')
+    expect(encryptedResults.pubKey).to.have.lengthOf(3)
+    expect(JSON.parse(encryptedResults.prvKey!)).to.haveOwnProperty('cipher')
+
+    const decryptedResults = keyModule.decryptKeyPair(encryptedResults, 'pass')
+    expect(decryptedResults).to.be.eql(keyPair)
   })
 })
 

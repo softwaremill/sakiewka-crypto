@@ -26,7 +26,13 @@ import {
   MontlySummaryBackendResponse,
   RegisterBackendResponse,
   SetupPasswordBackendResponse,
-  TransferItemBackendResponse
+  TransferItemBackendResponse,
+  ListPoliciesForWalletResponse,
+  PolicyCreatedResponse,
+  ListPoliciesResponse,
+  AssignPolicyBackendParams,
+  ListWalletsForPolicyResponse,
+  PolicyCreateRequest
 } from 'response'
 import request from './utils/request'
 import { Currency } from '../types/domain';
@@ -165,8 +171,8 @@ export const create = (backendApiUrl: string): BaseBackendApi => {
   }
 
   const listTransfers = async (token: string,
-                               limit: number,
-                               nextPageToken?: string): Promise<ListTransfersBackendResponse> => {
+    limit: number,
+    nextPageToken?: string): Promise<ListTransfersBackendResponse> => {
     const options = {
       method: 'GET',
       headers: {
@@ -218,6 +224,11 @@ export interface CurrencyBackendApi {
   deleteWebhook(token: string, walletId: string, webhookId: string): Promise<DeleteWebhookResponse>
   listTransfers(token: string, walletId: string, limit: number, nextPageParam?: string): Promise<ListTransfersBackendResponse>
   findTransferByTxHash(token: string, walletId: string, txHash: string): Promise<TransferItemBackendResponse>
+  createPolicy(token: string, params: PolicyCreateRequest): Promise<PolicyCreatedResponse>
+  listPoliciesForWallet(token: string, walletId: string): Promise<ListPoliciesForWalletResponse>
+  listPolicies(token: string, limit: number, nextPageToken?: string): Promise<ListPoliciesResponse>
+  assignPolicy(token: string, policyId: string, params: AssignPolicyBackendParams): Promise<any>
+  listWalletsForPolicy(token: string, policyId: string): Promise<ListWalletsForPolicyResponse>
 }
 
 export const withCurrency = (backendApiUrl: string, currency: Currency): CurrencyBackendApi => {
@@ -456,6 +467,44 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     return response.data
   }
 
+  const createPolicy = async (token: string, params: PolicyCreateRequest): Promise<any> => {
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: token
+      },
+      body: JSON.stringify(params)
+    }
+
+    const response = await request(`${backendApiUrl}/${currency}/policy`, options)
+    return response.data
+  }
+
+  const listPoliciesForWallet = async (token: string, walletId: string): Promise<ListPoliciesForWalletResponse> => {
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: token
+      }
+    }
+
+    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/policy`, options)
+    return response.data
+  }
+
+  const assignPolicy = async (token: string, policyId: string, assignParams: AssignPolicyBackendParams): Promise<any> => {
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: token
+      },
+      body: JSON.stringify(assignParams)
+    }
+
+    const response = await request(`${backendApiUrl}/${currency}/policy/${policyId}/assign`, options)
+    return response.data
+  }
+
   const listTransfers = async (token: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListTransfersBackendResponse> => {
     const options = {
       method: 'GET',
@@ -470,15 +519,39 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     return response.data
   }
 
-  const findTransferByTxHash = async(token: string, walletId: string, txHash: string): Promise<TransferItemBackendResponse> => {
+  const listPolicies = async (token: string, limit: number, nextPageToken?: string): Promise<ListPoliciesResponse> => {
     const options = {
       method: 'GET',
       headers: {
         Authorization: token
       }
     }
+    const nextPageParam = nextPageToken ? `&nextPageToken=${nextPageToken}` : ''
+    const queryString = `?limit=${limit}${nextPageParam}`
 
+    const response = await request(`${backendApiUrl}/${currency}/policy${queryString}`, options)
+    return response.data
+  }
+
+  const findTransferByTxHash = async (token: string, walletId: string, txHash: string): Promise<TransferItemBackendResponse> => {
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: token
+      }
+    }
     const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/transfers/${txHash}`, options)
+    return response.data
+  }
+
+  const listWalletsForPolicy = async (token: string, policyId: string): Promise<ListWalletsForPolicyResponse> => {
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: token
+      }
+    }
+    const response = await request(`${backendApiUrl}/${currency}/policy/${policyId}/wallet`, options)
     return response.data
   }
 
@@ -499,6 +572,11 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     deleteWebhook,
     createWebhook,
     listTransfers,
-    findTransferByTxHash
+    findTransferByTxHash,
+    createPolicy,
+    listPoliciesForWallet,
+    listPolicies,
+    assignPolicy,
+    listWalletsForPolicy,
   }
 }

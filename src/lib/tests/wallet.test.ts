@@ -149,3 +149,23 @@ describe('getMaxTransferAmount', () => {
     expect(recipient).to.be.eq('0x1')
   })
 })
+
+describe('listPoliciesForWallet', () => {
+  it('should exist', () => {
+    expect(wallet.listPoliciesForWallet).to.be.a('function')
+  })
+
+  it('should pass proper arguments to backend-api method', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    backendApi.listPoliciesForWallet = mockImplementation
+
+    const res = await wallet.listPoliciesForWallet('testToken', '11')
+
+    const [token, walletId] = mockImplementation.mock.calls[0]
+    expect(token).to.eq('testToken')
+    expect(walletId).to.eq('11')
+    expect(res).to.eq('backend response')
+  })
+})

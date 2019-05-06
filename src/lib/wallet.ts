@@ -8,7 +8,8 @@ import {
   MaxTransferAmountResponse,
   ListUnspentsBackendResponse,
   ListWalletsBackendResponse,
-  GetWalletBackendResponse
+  GetWalletBackendResponse,
+  ListPoliciesForWalletResponse,
 } from 'response'
 import { generatePdf } from './keycard-pdf'
 import { KeyModule } from './key'
@@ -20,6 +21,7 @@ export interface WalletApi {
   listWallets(userToken: string, limit: number, nextPageToken?: string): Promise<ListWalletsBackendResponse>
   listUnspents(token: string, walletId: string, feeRate: string, recipients: Recipient[]): Promise<ListUnspentsBackendResponse>
   maxTransferAmount(token: string, walletId: string, feeRate: string, recipient: string): Promise<MaxTransferAmountResponse>
+  listPoliciesForWallet(token: string, walletId: string): Promise<ListPoliciesForWalletResponse>
 }
 
 export const walletApiFactory = (backendApi: CurrencyBackendApi, keyModule: KeyModule): WalletApi => {
@@ -79,11 +81,15 @@ export const walletApiFactory = (backendApi: CurrencyBackendApi, keyModule: KeyM
     return backendApi.maxTransferAmount(token, walletId, params)
   }
 
+  const listPoliciesForWallet = (token: string, walletId: string): Promise<ListPoliciesForWalletResponse> =>
+  backendApi.listPoliciesForWallet(token, walletId)
+
   return {
     createWallet,
     getWallet,
     listUnspents,
     listWallets,
-    maxTransferAmount
+    maxTransferAmount,
+    listPoliciesForWallet,
   }
 }
