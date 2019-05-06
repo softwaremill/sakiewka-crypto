@@ -1,4 +1,4 @@
-import { UTXO, Key, Path, KeyType, TransferType, Policy, PolicySettings } from './domain'
+import { UTXO, Key, Path, KeyType, Policy, PolicySettings } from './domain'
 
 export interface LoginBackendResponse {
   token: string
@@ -22,19 +22,22 @@ export interface MontlySummaryBackendResponse {
 
 export interface ListTransfersBackendResponse {
   transfers: TransferItemBackendResponse[],
-  nextPageToken?: string,
-  serviceFeeBTC: string,
-  serviceFeeFiat: string
+  nextPageToken?: string
 }
 
 export interface TransferItemBackendResponse {
-  walletId: string,
-  txHash: string,
-  spent: string,
-  serviceFee: string,
-  timestamp: number,
-  transferType: TransferType
+  chain: string,
+  wallet: TransferItemWallet
+  timestamp: string,
+  transaction: TransferItemTransaction,
+  block?: TransferItemBlock
 }
+
+export interface TransferItemWallet {}
+
+export interface TransferItemBlock {}
+
+export interface TransferItemTransaction {}
 
 export interface Init2faBackendResponse {
   qrCodeUrl: string

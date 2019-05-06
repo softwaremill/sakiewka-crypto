@@ -466,3 +466,63 @@ describe('assignPolicy', () => {
     expect(reqBody.walletId).to.be.eq('456')
   })
 })
+
+describe('listTransfers', ()=> {
+  it('should exist', () => {
+    expect(baseApi.listTransfers).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    await baseApi.listTransfers('testToken', 50, 'npt')
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    expect(url).to.eq(`backurl/api/v1/transfers?limit=50&nextPageToken=npt`)
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
+  })
+})
+
+describe('monthlySummary', ()=> {
+  it('should exist', () => {
+    expect(baseApi.monthlySummary).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    await baseApi.monthlySummary('testToken', 5, 1223, 'pln')
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    expect(url).to.eq(`backurl/api/v1/transfers/monthly-summary/5/1223/pln`)
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
+  })
+})
+
+describe('list chain transfers', () => {
+  it('should exist', () => {
+    expect(api.listTransfers).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    await api.listTransfers('testToken', 'testWalletId', 20, 'npt')
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/transfers?limit=20&nextPageToken=npt`)
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
+  })
+})
+
+describe('find chain transfer by tx hash', () => {
+  it('should exist', () => {
+    expect(api.findTransferByTxHash).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    await api.findTransferByTxHash('testToken', 'testWalletId', '0x20')
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/transfers/0x20`)
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
+  })
+})
