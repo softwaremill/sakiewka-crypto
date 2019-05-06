@@ -165,7 +165,7 @@ export const create = (backendApiUrl: string): BaseBackendApi => {
       }
     }
 
-    const response = await request(`${backendApiUrl}/transfers/monthly-summary/${month}/${year}/${fiatCurrency}`, options)
+    const response = await request(`${backendApiUrl}/transfer/monthly-summary/${month}/${year}/${fiatCurrency}`, options)
     return response.data
   }
 
@@ -181,7 +181,7 @@ export const create = (backendApiUrl: string): BaseBackendApi => {
     const nextPageParam = nextPageToken ? `&nextPageToken=${nextPageToken}` : ''
     const queryString = `?limit=${limit}${nextPageParam}`
 
-    const response = await request(`${backendApiUrl}/transfers${queryString}`, options)
+    const response = await request(`${backendApiUrl}/transfer${queryString}`, options)
     return response.data
   }
 
@@ -494,7 +494,7 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     const nextPageParam = nextPageToken ? `&nextPageToken=${nextPageToken}` : ''
     const queryString = `?limit=${limit}${nextPageParam}`
 
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/transfers${queryString}`, options)
+    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/transfer${queryString}`, options)
     return response.data
   }
 
@@ -505,7 +505,7 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
         Authorization: token
       }
     }
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/transfers/${txHash}`, options)
+    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/transfer/${txHash}`, options)
     return response.data
   }
 

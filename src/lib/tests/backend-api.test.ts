@@ -476,7 +476,7 @@ describe('listTransfers', ()=> {
     await baseApi.listTransfers('testToken', 50, 'npt')
 
     const [url, params] = mockImplementation.mock.calls[0]
-    expect(url).to.eq(`backurl/api/v1/transfers?limit=50&nextPageToken=npt`)
+    expect(url).to.eq(`backurl/api/v1/transfer?limit=50&nextPageToken=npt`)
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
@@ -491,7 +491,7 @@ describe('monthlySummary', ()=> {
     await baseApi.monthlySummary('testToken', 5, 1223, 'pln')
 
     const [url, params] = mockImplementation.mock.calls[0]
-    expect(url).to.eq(`backurl/api/v1/transfers/monthly-summary/5/1223/pln`)
+    expect(url).to.eq(`backurl/api/v1/transfer/monthly-summary/5/1223/pln`)
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
@@ -506,7 +506,7 @@ describe('list chain transfers', () => {
     await api.listTransfers('testToken', 'testWalletId', 20, 'npt')
 
     const [url, params] = mockImplementation.mock.calls[0]
-    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/transfers?limit=20&nextPageToken=npt`)
+    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/transfer?limit=20&nextPageToken=npt`)
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
@@ -521,7 +521,7 @@ describe('find chain transfer by tx hash', () => {
     await api.findTransferByTxHash('testToken', 'testWalletId', '0x20')
 
     const [url, params] = mockImplementation.mock.calls[0]
-    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/transfers/0x20`)
+    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/transfer/0x20`)
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
