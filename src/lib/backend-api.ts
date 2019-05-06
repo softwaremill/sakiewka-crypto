@@ -492,19 +492,6 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     return response.data
   }
 
-  const assignPolicy = async (token: string, policyId: string, assignParams: AssignPolicyBackendParams): Promise<any> => {
-    const options = {
-      method: 'POST',
-      headers: {
-        Authorization: token
-      },
-      body: JSON.stringify(assignParams)
-    }
-
-    const response = await request(`${backendApiUrl}/${currency}/policy/${policyId}/assign`, options)
-    return response.data
-  }
-
   const listTransfers = async (token: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListTransfersBackendResponse> => {
     const options = {
       method: 'GET',
@@ -516,6 +503,17 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     const queryString = `?limit=${limit}${nextPageParam}`
 
     const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/transfers${queryString}`, options)
+    return response.data
+  }
+
+  const findTransferByTxHash = async (token: string, walletId: string, txHash: string): Promise<TransferItemBackendResponse> => {
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: token
+      }
+    }
+    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/transfers/${txHash}`, options)
     return response.data
   }
 
@@ -533,14 +531,16 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     return response.data
   }
 
-  const findTransferByTxHash = async (token: string, walletId: string, txHash: string): Promise<TransferItemBackendResponse> => {
+  const assignPolicy = async (token: string, policyId: string, assignParams: AssignPolicyBackendParams): Promise<any> => {
     const options = {
-      method: 'GET',
+      method: 'POST',
       headers: {
         Authorization: token
-      }
+      },
+      body: JSON.stringify(assignParams)
     }
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/transfers/${txHash}`, options)
+
+    const response = await request(`${backendApiUrl}/${currency}/policy/${policyId}/assign`, options)
     return response.data
   }
 
