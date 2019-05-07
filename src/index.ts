@@ -11,7 +11,8 @@ import { Currency } from './types/domain'
 import bitcoinOps from './lib/bitcoin'
 import { BitcoinOperations } from './lib/bitcoin-operations'
 import { WebhooksApi, webhooksApiFactory } from './lib/webhooks'
-import { policyApiFactory, PolicyApi } from './lib/policies';
+import { policyApiFactory, PolicyApi } from './lib/policies'
+import { feeRatesApiFactory, FeeRatesApi } from './lib/fee-rates'
 
 export interface SakiewkaApi {
   user: UserApi,
@@ -27,7 +28,8 @@ export interface SakiewkaCurrencyApi {
   key: KeyApi,
   webhooks: WebhooksApi,
   policy: PolicyApi,
-  transfers: ChainTransfersApi
+  transfers: ChainTransfersApi,
+  feeRates: FeeRatesApi,
 }
 
 export const sakiewkaApi = (sakiewkaBackend: SakiewkaBackend, chainInfo: string): SakiewkaApi => {
@@ -44,8 +46,9 @@ export const sakiewkaApi = (sakiewkaBackend: SakiewkaBackend, chainInfo: string)
       key: keyApi,
       webhooks: webhooksApiFactory(backendApi[currency]),
       policy: policyApiFactory(backendApi[currency]),
-      transfers: chainTransfersApiFactory(backendApi[currency])
-    };
+      transfers: chainTransfersApiFactory(backendApi[currency]),
+      feeRates: feeRatesApiFactory(backendApi[currency])
+    }
   }
 
   return {
