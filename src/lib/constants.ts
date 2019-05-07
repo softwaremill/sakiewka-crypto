@@ -3,7 +3,7 @@ import { Currency, SupportedNetworks } from '../types/domain'
 
 export const ROOT_DERIVATION_PATH = 'm/45\''
 
-export const BASE_API_PATH = 'api'
+export const BASE_API_PATH = 'api/v1.0'
 
 export const INTERNAL_ERROR_CODE = 'SKC3'
 
