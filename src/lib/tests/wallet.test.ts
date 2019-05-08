@@ -120,7 +120,7 @@ describe('listUnspents', () => {
     const [token, walletId, { feeRate, recipients }] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
     expect(walletId).to.eq('walletId')
-    expect(feeRate).to.eq('2')
+    expect(feeRate).to.eq(2)
     expect(res).to.eq('backend response')
     // @ts-ignore
     expect(recipients[0].amount).to.be.bignumber.eq(0.00000123)
@@ -139,12 +139,12 @@ describe('getMaxTransferAmount', () => {
     // @ts-ignore
     backendApi.maxTransferAmount = mockImplementation
 
-    const res = await wallet.maxTransferAmount('testToken', 'walletId', '2', '0x1')
+    const res = await wallet.maxTransferAmount('testToken', 'walletId', 2, '0x1')
 
     const [token, walletId, { recipient, feeRate }] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
     expect(walletId).to.eq('walletId')
-    expect(feeRate).to.eq('2')
+    expect(feeRate).to.eq(2)
     expect(res).to.eq('backend response')
     expect(recipient).to.be.eq('0x1')
   })

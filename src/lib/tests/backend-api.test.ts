@@ -303,7 +303,7 @@ describe('listUnspents', () => {
     expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/utxo`)
     expect(params.method).to.eq('POST')
     expect(params.headers.Authorization).to.eq('testToken')
-    expect(reqBody.feeRate).to.eq('22')
+    expect(reqBody.feeRate).to.eq(22)
     expect(reqBody.recipients[0].address).to.eq('0x0')
     expect(reqBody.recipients[0].amount).to.eq('888')
   })
@@ -349,7 +349,7 @@ describe('maxTransferAmount', () => {
   it('should send proper request', async () => {
     const data: MaxTransferAmountParams = {
       recipient: '0x0',
-      feeRate: '22'
+      feeRate: 22
     }
     await api.maxTransferAmount('testToken', 'testWalletId', data)
 

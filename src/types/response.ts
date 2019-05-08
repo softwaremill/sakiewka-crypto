@@ -185,7 +185,7 @@ export interface ErrorDetails {
 
 export interface MaxTransferAmountParams {
   recipient: string,
-  feeRate: string
+  feeRate: number
 }
 
 export interface MaxTransferAmountResponse {

@@ -8,7 +8,7 @@ const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', curren
 // @ts-ignore
 backendApi.getFeesRates = jest.fn(() => {
   return Promise.resolve({
-    recommended: '123'
+    recommended: 123
   })
 })
 
@@ -20,6 +20,6 @@ describe('getKey', () => {
 
   it('should pass proper arguments to backend-api method and return result of its call', async () => {
     const res = await keyModule.getFeeRate()
-    expect(res.recommended).to.eq('123')
+    expect(res.recommended).to.eq(123)
   })
 })
