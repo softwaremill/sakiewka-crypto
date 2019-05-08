@@ -112,7 +112,7 @@ describe('listUnspents', () => {
     // @ts-ignore
     backendApi.listUnspents = mockImplementation
 
-    const res = await wallet.listUnspents('testToken', 'walletId', '2', [{
+    const res = await wallet.listUnspents('testToken', 'walletId', 2, [{
       address: '0x1',
       amount: new BigNumber('0.00000123')
     }])
