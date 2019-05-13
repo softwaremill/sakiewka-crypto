@@ -87,7 +87,7 @@ export const walletApiFactory = (backendApi: CurrencyBackendApi, keyModule: KeyM
     return backendApi.listPoliciesForWallet(token, walletId)
   }
 
-  const listUtxoByAddress = (token: string, walletId: string, address:string, limit: number, nextPageToken?: string): Promise<ListUtxosByAddressBackendResponse> => {
+  const listUtxosByAddress = (token: string, walletId: string, address:string, limit: number, nextPageToken?: string): Promise<ListUtxosByAddressBackendResponse> => {
     return backendApi.listUtxosByAddress(token, walletId, address,limit,nextPageToken)
   }
 
@@ -98,6 +98,6 @@ export const walletApiFactory = (backendApi: CurrencyBackendApi, keyModule: KeyM
     listWallets,
     maxTransferAmount,
     listPoliciesForWallet,
-    listUtxosByAddress: listUtxoByAddress
+    listUtxosByAddress: listUtxosByAddress
   }
 }
