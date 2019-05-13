@@ -32,7 +32,8 @@ import {
   ListPoliciesResponse,
   AssignPolicyBackendParams,
   ListWalletsForPolicyResponse,
-  PolicyCreateRequest
+  PolicyCreateRequest,
+  ListUtxosByAddressBackendResponse
 } from 'response'
 import request from './utils/request'
 import { Currency } from '../types/domain';
@@ -218,6 +219,7 @@ export interface CurrencyBackendApi {
   getFeesRates(): Promise<GetFeesRates>,
   maxTransferAmount(token: string, walletId: string, params: MaxTransferAmountParams): Promise<MaxTransferAmountResponse>
   createWebhook(token: string, walletId: string, callbackUrl: string, settings: Object): Promise<CreateWebhookResponse>
+  listUtxosByAddress(token: string, walletId: string, address:string, limit: number, nextPageToken?: string): Promise<ListUtxosByAddressBackendResponse>
   listWebhooks(token: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListWebhooksResponse>
   getWebhook(token: string, walletId: string, webhookId: string): Promise<GetWebhooksResponse>
   deleteWebhook(token: string, walletId: string, webhookId: string): Promise<DeleteWebhookResponse>
@@ -281,6 +283,23 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     const queryString = `limit=${limit}${nextPageToken ? `&nextPageToken=${nextPageToken}` : ''}`
 
     const response = await request(`${backendApiUrl}/${currency}/wallet?${queryString}`, options)
+    return response.data
+  }
+
+
+  const listUtxosByAddress = async (token: string,
+                                    walletId: string,
+                                    address: string,
+                                    limit: number,
+                                    nextPageToken?: string): Promise<ListUtxosByAddressBackendResponse> => {
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: token
+      }
+    }
+    const queryString = `limit=${limit}${nextPageToken ? `&nextPageToken=${nextPageToken}` : ''}`
+    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/${address}/utxo?${queryString}`, options)
     return response.data
   }
 
@@ -559,6 +578,7 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     sendTransaction,
     getFeesRates,
     maxTransferAmount,
+    listUtxosByAddress,
     listWebhooks,
     getWebhook,
     deleteWebhook,
