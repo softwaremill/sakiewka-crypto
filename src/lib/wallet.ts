@@ -19,7 +19,7 @@ export interface WalletApi {
   createWallet(userToken: string, params: WalletParams): Promise<any>
   getWallet(userToken: string, walletId: string): Promise<GetWalletBackendResponse>
   listWallets(userToken: string, limit: number, nextPageToken?: string): Promise<ListWalletsBackendResponse>
-  listUnspents(token: string, walletId: string, feeRate: number, recipients: Recipient[]): Promise<ListUnspentsBackendResponse>
+  listUnspents(token: string, walletId: string, recipients: Recipient[], feeRate?: number): Promise<ListUnspentsBackendResponse>
   maxTransferAmount(token: string, walletId: string, feeRate: number, recipient: string): Promise<MaxTransferAmountResponse>
   listPoliciesForWallet(token: string, walletId: string): Promise<ListPoliciesForWalletResponse>
 }
@@ -61,7 +61,7 @@ export const walletApiFactory = (backendApi: CurrencyBackendApi, keyModule: KeyM
   const listWallets = (userToken: string, limit: number, nextPageToken?: string): Promise<ListWalletsBackendResponse> => backendApi.listWallets(userToken, limit, nextPageToken)
 
   const listUnspents = (
-    token: string, walletId: string, feeRate: number, recipients: Recipient[]
+    token: string, walletId: string, recipients: Recipient[], feeRate?: number
   ): Promise<ListUnspentsBackendResponse> => {
     const params = {
       feeRate,

@@ -18,8 +18,7 @@ export const transactionApiFactory = (backendApi: CurrencyBackendApi, keyModule:
 
   const send = async (
     userToken: string, walletId: string, recipients: Recipient[], xprv?: string, passphrase?: string, userProvidedFeeRate?: number): Promise<string> => {
-    const feeRate = userProvidedFeeRate || (await backendApi.getFeesRates()).recommended
-    const unspentsResponse = await walletApi.listUnspents(userToken, walletId, feeRate, recipients)
+    const unspentsResponse = await walletApi.listUnspents(userToken, walletId, recipients, userProvidedFeeRate)
     const wallet = await backendApi.getWallet(userToken, walletId)
     const pubKeys = wallet.keys.map((key: Key) => key.pubKey)
     const changeAddresResponse = await backendApi.createNewAddress(userToken, walletId, true)

@@ -58,7 +58,7 @@ export interface CreateWalletBackendParams {
 }
 
 export interface GetUtxosBackendParams {
-  feeRate: number,
+  feeRate?: number,
   recipients: ReceipientsBackend[]
 }
 
