@@ -169,3 +169,26 @@ describe('listPoliciesForWallet', () => {
     expect(res).to.eq('backend response')
   })
 })
+
+describe('list utxos by address', () => {
+  it('should exist', () => {
+    expect(wallet.listUtxosByAddress).to.be.a('function')
+  })
+
+  it('should pass proper arguments to backend-api method', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    backendApi.listUtxosByAddress = mockImplementation
+
+    const res = await wallet.listUtxosByAddress('testToken', '11','some-address',11,'nextpagetoken')
+
+    const [token, walletId, address, limit, nextPageToken] = mockImplementation.mock.calls[0]
+    expect(token).to.eq('testToken')
+    expect(walletId).to.eq('11')
+    expect(address).to.eq('some-address')
+    expect(limit).to.eq(11)
+    expect(nextPageToken).to.eq('nextpagetoken')
+    expect(res).to.eq('backend response')
+  })
+})

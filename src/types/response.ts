@@ -25,6 +25,11 @@ export interface ListTransfersBackendResponse {
   nextPageToken?: string
 }
 
+export interface ListUtxosByAddressBackendResponse {
+  transfers: UTXO[],
+  nextPageToken?: string
+}
+
 export interface TransferItemBackendResponse {
   chain: string,
   wallet: TransferItemWallet

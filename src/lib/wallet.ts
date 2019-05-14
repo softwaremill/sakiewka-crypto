@@ -9,7 +9,7 @@ import {
   ListUnspentsBackendResponse,
   ListWalletsBackendResponse,
   GetWalletBackendResponse,
-  ListPoliciesForWalletResponse,
+  ListPoliciesForWalletResponse, ListUtxosByAddressBackendResponse,
 } from 'response'
 import { generatePdf } from './keycard-pdf'
 import { KeyModule } from './key'
@@ -22,6 +22,8 @@ export interface WalletApi {
   listUnspents(token: string, walletId: string, recipients: Recipient[], feeRate?: number): Promise<ListUnspentsBackendResponse>
   maxTransferAmount(token: string, walletId: string, feeRate: number, recipient: string): Promise<MaxTransferAmountResponse>
   listPoliciesForWallet(token: string, walletId: string): Promise<ListPoliciesForWalletResponse>
+  listUtxosByAddress(token: string, walletId: string, address:string, limit: number, nextPageToken?: string): Promise<ListUtxosByAddressBackendResponse>
+
 }
 
 export const walletApiFactory = (backendApi: CurrencyBackendApi, keyModule: KeyModule): WalletApi => {
@@ -81,8 +83,13 @@ export const walletApiFactory = (backendApi: CurrencyBackendApi, keyModule: KeyM
     return backendApi.maxTransferAmount(token, walletId, params)
   }
 
-  const listPoliciesForWallet = (token: string, walletId: string): Promise<ListPoliciesForWalletResponse> =>
-    backendApi.listPoliciesForWallet(token, walletId)
+  const listPoliciesForWallet = (token: string, walletId: string): Promise<ListPoliciesForWalletResponse> => {
+    return backendApi.listPoliciesForWallet(token, walletId)
+  }
+
+  const listUtxosByAddress = (token: string, walletId: string, address:string, limit: number, nextPageToken?: string): Promise<ListUtxosByAddressBackendResponse> => {
+    return backendApi.listUtxosByAddress(token, walletId, address,limit,nextPageToken)
+  }
 
   return {
     createWallet,
@@ -91,5 +98,6 @@ export const walletApiFactory = (backendApi: CurrencyBackendApi, keyModule: KeyM
     listWallets,
     maxTransferAmount,
     listPoliciesForWallet,
+    listUtxosByAddress: listUtxosByAddress
   }
 }
