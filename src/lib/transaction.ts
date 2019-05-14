@@ -1,26 +1,24 @@
 import { DecodedTx, Key, KeyType, Path, Recipient, TxOut, UTXO } from '../types/domain'
-import { TransactionBuilder } from 'bgoldjs-lib';
-import { GetKeyBackendResponse, GetWalletBackendResponse, ListUnspentsBackendResponse } from 'response';
-import BigNumber from "bignumber.js";
+import { TransactionBuilder } from 'bgoldjs-lib'
+import { GetKeyBackendResponse, GetWalletBackendResponse, ListUnspentsBackendResponse } from 'response'
+import BigNumber from 'bignumber.js'
 import { btcToSatoshi, satoshiToBtc } from './utils/helpers'
-import { decrypt } from './crypto';
-import { API_ERROR } from './constants';
+import { decrypt } from './crypto'
+import { API_ERROR } from './constants'
 import { KeyModule } from './key'
 import { WalletApi } from './wallet'
-import { CurrencyBackendApi } from './backend-api';
-import { BitcoinOperations } from './bitcoin-operations';
+import { CurrencyBackendApi } from './backend-api'
+import { BitcoinOperations } from './bitcoin-operations'
 
 export interface TransactionApi {
-  send(userToken: string, walletId: string, recipients: Recipient[], xprv?: string, passphrase?: string): Promise<string>
+  send(userToken: string, walletId: string, recipients: Recipient[], xprv?: string, passphrase?: string, feeRate?: number): Promise<string>
 }
 
 export const transactionApiFactory = (backendApi: CurrencyBackendApi, keyModule: KeyModule, bitcoin: BitcoinOperations, walletApi: WalletApi): TransactionApi => {
 
   const send = async (
-    userToken: string, walletId: string, recipients: Recipient[], xprv?: string, passphrase?: string
-  ): Promise<string> => {
-    const { recommended } = await backendApi.getFeesRates()
-    const unspentsResponse = await walletApi.listUnspents(userToken, walletId, recommended, recipients)
+    userToken: string, walletId: string, recipients: Recipient[], xprv?: string, passphrase?: string, userProvidedFeeRate?: number): Promise<string> => {
+    const unspentsResponse = await walletApi.listUnspents(userToken, walletId, recipients, userProvidedFeeRate)
     const wallet = await backendApi.getWallet(userToken, walletId)
     const pubKeys = wallet.keys.map((key: Key) => key.pubKey)
     const changeAddresResponse = await backendApi.createNewAddress(userToken, walletId, true)
@@ -42,7 +40,7 @@ export const transactionApiFactory = (backendApi: CurrencyBackendApi, keyModule:
     })
 
     signInputs(inputs, xprv, pubKeys, txb)
-    let txHex = txb.build().toHex();
+    const txHex = txb.build().toHex()
     return txHex
   }
 
@@ -107,7 +105,7 @@ export const transactionModuleFactory = (keyModule: KeyModule, bitcoin: BitcoinO
     const tx = bitcoin.txFromHex(txHex)
     const outputs: Recipient[] = tx.outs
       .map(bitcoin.decodeTxOutput)
-      .map(o => ({ ...o, amount: satoshiToBtc(o.amount) }));
+      .map(o => ({ ...o, amount: satoshiToBtc(o.amount) }))
 
     const inputs: UTXO[] = tx.ins.map(bitcoin.decodeTxInput)
 

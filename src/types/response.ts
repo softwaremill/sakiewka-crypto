@@ -38,11 +38,11 @@ export interface TransferItemBackendResponse {
   block?: TransferItemBlock
 }
 
-export interface TransferItemWallet {}
+export interface TransferItemWallet { }
 
-export interface TransferItemBlock {}
+export interface TransferItemBlock { }
 
-export interface TransferItemTransaction {}
+export interface TransferItemTransaction { }
 
 export interface Init2faBackendResponse {
   qrCodeUrl: string
@@ -63,7 +63,7 @@ export interface CreateWalletBackendParams {
 }
 
 export interface GetUtxosBackendParams {
-  feeRate: string,
+  feeRate?: number,
   recipients: ReceipientsBackend[]
 }
 
@@ -115,7 +115,7 @@ export interface GetAddressBackendResponse {
   created: string
 }
 
-export interface ListAddressesBackendResponse {}
+export interface ListAddressesBackendResponse { }
 
 export interface ListWalletsBackendResponse {
   wallets: GetWalletBackendResponse[],
@@ -133,7 +133,7 @@ export interface ListWebhooksResponse {
   webhooks: GetWebhooksResponse[]
 }
 
-export interface DeleteWebhookResponse {}
+export interface DeleteWebhookResponse { }
 
 export interface CreateWebhookResponse {
   id: string
@@ -175,7 +175,7 @@ export interface SendTokensResponse {
 }
 
 export interface GetFeesRates {
-  recommended: string
+  recommended: number
 }
 
 export interface ErrorResponse {
@@ -190,7 +190,7 @@ export interface ErrorDetails {
 
 export interface MaxTransferAmountParams {
   recipient: string,
-  feeRate: string
+  feeRate: number
 }
 
 export interface MaxTransferAmountResponse {
@@ -223,4 +223,4 @@ export interface AssignPolicyBackendParams {
   walletId: string
 }
 
-export interface ListWalletsForPolicyResponse {}
+export interface ListWalletsForPolicyResponse { }

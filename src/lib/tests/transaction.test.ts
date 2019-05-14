@@ -364,6 +364,58 @@ describe('sendCoins', () => {
     expect(tx.outputs[0].amount.isLessThan(tx.outputs[1].amount)).to.be.true
     expect(tx.outputs[1].amount.isLessThan(tx.outputs[2].amount)).to.be.true
   })
+
+  it('should use user provided feeRate if defined', async () => {
+    // generates keyPairs and address
+    const userKeyPair = keyModule.generateNewKeyPair()
+    const backupKeyPair = keyModule.generateNewKeyPair()
+    const serverKeyPair = keyModule.generateNewKeyPair()
+
+    const { address } = addressModule.generateNewMultisigAddress([
+      userKeyPair.pubKey,
+      backupKeyPair.pubKey,
+      serverKeyPair.pubKey
+    ], '2/0/0')
+
+    const getUnspentsMock = stubUnspents(backend, {
+      change: 1.9,
+      serviceFee: {
+        amount: 0.09,
+        address: serviceAddress
+      },
+      outputs: [
+        {
+          address,
+          txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+          n: 1,
+          path: createPath(2, 0, 0),
+          amount: new BigNumber('6.5')
+        }
+      ]
+    })
+    stubGetWallet(backend, userKeyPair, backupKeyPair, serverKeyPair)
+    stubSendTx(backend)
+
+    await transactionApi.send(
+      '1234',
+      '13',
+      [
+        {
+          address: destinationAddress,
+          amount: new BigNumber('5')
+        },
+        {
+          address: destinationAddress,
+          amount: new BigNumber('1500')
+        }
+      ],
+      userKeyPair.prvKey!,
+      undefined,
+      332
+    )
+    const [, , { feeRate }] = getUnspentsMock.mock.calls[0]
+    expect(feeRate).to.be.eq(332)
+  })
 })
 
 describe('sendCoins to multiple outputs', () => {

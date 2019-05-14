@@ -17,9 +17,12 @@ export const stubGetWallet = (backendApi: CurrencyBackendApi, userKeyPair: KeyPa
 
 export const stubUnspents = (backendApi: CurrencyBackendApi, unspents: any) => {
   // @ts-ignore
-  backendApi.listUnspents = jest.fn(() => {
+  const getUnspentsMock = jest.fn(() => {
     return Promise.resolve(unspents)
   })
+  // @ts-ignore
+  backendApi.listUnspents = getUnspentsMock
+  return getUnspentsMock
 }
 
 export const stubSendTx = (backendApi: CurrencyBackendApi) => {

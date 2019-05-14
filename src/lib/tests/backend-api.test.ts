@@ -5,8 +5,8 @@ import * as apiFactory from '../backend-api'
 const baseApi = apiFactory.create('backurl/api/v1')
 const api = apiFactory.withCurrency('backurl/api/v1', currency)
 import * as request from '../utils/request'
-import { MaxTransferAmountParams } from 'response';
-import { PolicySettings, DailyAmountPolicy, PolicyKind } from '../../types/domain';
+import { MaxTransferAmountParams } from 'response'
+import { PolicySettings, DailyAmountPolicy, PolicyKind } from '../../types/domain'
 
 // @ts-ignore
 const mockImplementation = jest.fn(() => ({ data: 'testToken' }))
@@ -293,7 +293,7 @@ describe('listUnspents', () => {
 
   it('should send proper request', async () => {
     const data = {
-      feeRate: '22',
+      feeRate: 22,
       recipients: [{ address: '0x0', amount: '888' }]
     }
     await api.listUnspents('testToken', 'testWalletId', data)
@@ -303,7 +303,7 @@ describe('listUnspents', () => {
     expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/utxo`)
     expect(params.method).to.eq('POST')
     expect(params.headers.Authorization).to.eq('testToken')
-    expect(reqBody.feeRate).to.eq('22')
+    expect(reqBody.feeRate).to.eq(22)
     expect(reqBody.recipients[0].address).to.eq('0x0')
     expect(reqBody.recipients[0].amount).to.eq('888')
   })
@@ -349,7 +349,7 @@ describe('maxTransferAmount', () => {
   it('should send proper request', async () => {
     const data: MaxTransferAmountParams = {
       recipient: '0x0',
-      feeRate: '22'
+      feeRate: 22
     }
     await api.maxTransferAmount('testToken', 'testWalletId', data)
 
@@ -370,10 +370,10 @@ describe('setupPassword', () => {
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
-    expect(url).to.eq(`backurl/api/v1/user/setup-password`)
+    expect(url).to.eq('backurl/api/v1/user/setup-password')
     expect(params.method).to.eq('POST')
     expect(params.headers.Authorization).to.eq('testToken')
-    expect(reqBody.password).to.eq("secret")
+    expect(reqBody.password).to.eq('secret')
   })
 })
 
@@ -384,7 +384,7 @@ describe('createPolicy', () => {
 
   it('should send proper request', async () => {
     const settings: PolicySettings = new DailyAmountPolicy('1.0')
-    await api.createPolicy('testToken', {name: 'a', settings} )
+    await api.createPolicy('testToken', { settings, name: 'a' })
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
@@ -467,7 +467,7 @@ describe('assignPolicy', () => {
   })
 })
 
-describe('listTransfers', ()=> {
+describe('listTransfers', () => {
   it('should exist', () => {
     expect(baseApi.listTransfers).to.be.a('function')
   })
@@ -476,13 +476,13 @@ describe('listTransfers', ()=> {
     await baseApi.listTransfers('testToken', 50, 'npt')
 
     const [url, params] = mockImplementation.mock.calls[0]
-    expect(url).to.eq(`backurl/api/v1/transfer?limit=50&nextPageToken=npt`)
+    expect(url).to.eq('backurl/api/v1/transfer?limit=50&nextPageToken=npt')
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
 })
 
-describe('monthlySummary', ()=> {
+describe('monthlySummary', () => {
   it('should exist', () => {
     expect(baseApi.monthlySummary).to.be.a('function')
   })
@@ -491,7 +491,7 @@ describe('monthlySummary', ()=> {
     await baseApi.monthlySummary('testToken', 5, 1223, 'pln')
 
     const [url, params] = mockImplementation.mock.calls[0]
-    expect(url).to.eq(`backurl/api/v1/transfer/monthly-summary/5/1223/pln`)
+    expect(url).to.eq('backurl/api/v1/transfer/monthly-summary/5/1223/pln')
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })

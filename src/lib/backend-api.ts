@@ -36,7 +36,7 @@ import {
   ListUtxosByAddressBackendResponse
 } from 'response'
 import request from './utils/request'
-import { Currency } from '../types/domain';
+import { Currency } from '../types/domain'
 
 export interface SakiewkaBackend {
   core: BaseBackendApi,
@@ -589,6 +589,6 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     listPoliciesForWallet,
     listPolicies,
     assignPolicy,
-    listWalletsForPolicy,
+    listWalletsForPolicy
   }
 }
