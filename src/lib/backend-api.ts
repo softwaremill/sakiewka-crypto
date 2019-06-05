@@ -207,7 +207,7 @@ export const create = (backendApiUrl: string): BaseBackendApi => {
 }
 
 export interface CurrencyBackendApi {
-  createNewAddress(token: string, walletId: string, change: boolean, name?: string): Promise<CreateNewAddressBackendResponse>,
+  createNewAddress(token: string, walletId: string, isChange: boolean, name?: string): Promise<CreateNewAddressBackendResponse>,
   createWallet(token: string, params: CreateWalletBackendParams): Promise<CreateWalletBackendResponse>,
   getAddress(token: string, walletId: string, address: string): Promise<GetAddressBackendResponse>,
   getKey(token: string, keyId: string, includePrivate?: boolean): Promise<GetKeyBackendResponse>,
@@ -367,7 +367,7 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     return response.data
   }
 
-  const createNewAddress = async (token: string, walletId: string, change: boolean = false, name?: string
+  const createNewAddress = async (token: string, walletId: string, isChange: boolean = false, name?: string
   ): Promise<CreateNewAddressBackendResponse> => {
     const options = {
       method: 'POST',
@@ -375,11 +375,12 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
         Authorization: token
       },
       body: JSON.stringify({
-        name
+        name,
+        isChange
       })
     }
 
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/address?change=${change}`, options)
+    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/address`, options)
     return response.data
   }
 

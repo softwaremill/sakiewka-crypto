@@ -213,10 +213,11 @@ describe('createNewAddress', () => {
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
-    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/walletId/address?change=false`)
+    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/walletId/address`)
     expect(params.method).to.eq('POST')
     expect(params.headers.Authorization).to.eq('testToken')
     expect(reqBody.name).to.eq(undefined)
+    expect(reqBody.isChange).to.eq(false)
   })
 
   it('should send proper request for change address', async () => {
@@ -225,10 +226,11 @@ describe('createNewAddress', () => {
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
-    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/walletId/address?change=true`)
+    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/walletId/address`)
     expect(params.method).to.eq('POST')
     expect(params.headers.Authorization).to.eq('testToken')
     expect(reqBody.name).to.eq(undefined)
+    expect(reqBody.isChange).to.eq(true)
   })
 
   it('should send proper request with name param', async () => {
@@ -237,10 +239,11 @@ describe('createNewAddress', () => {
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
 
-    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/walletId/address?change=false`)
+    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/walletId/address`)
     expect(params.method).to.eq('POST')
     expect(params.headers.Authorization).to.eq('testToken')
     expect(reqBody.name).to.eq('testName')
+    expect(reqBody.isChange).to.eq(false)
   })
 })
 
