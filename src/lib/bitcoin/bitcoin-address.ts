@@ -1,17 +1,17 @@
-import { KeyModule } from './key'
-import { CurrencyBackendApi } from './backend-api';
+import { KeyModule } from './bitcoin-key'
+import { BitcoinBackendApi } from './bitcoin-backend-api';
 import { BitcoinOperations } from './bitcoin-operations';
-import { CreateNewAddressBackendResponse, GetAddressBackendResponse, ListAddressesBackendResponse } from 'response';
+import { CreateNewBitcoinAddressBackendResponse, GetBitcoinAddressBackendResponse, ListAddressesBackendResponse } from 'response';
 
 export interface AddressApi {
-  createNewAddress(userToken: string, walletId: string, name?: string): Promise<CreateNewAddressBackendResponse>
+  createNewAddress(userToken: string, walletId: string, name?: string): Promise<CreateNewBitcoinAddressBackendResponse>
 
-  getAddress(userToken: string, walletId: string, address: string): Promise<GetAddressBackendResponse>
+  getAddress(userToken: string, walletId: string, address: string): Promise<GetBitcoinAddressBackendResponse>
 
   listAddresses(userToken: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListAddressesBackendResponse>
 }
 
-export const addressApiFactory = (backendApi: CurrencyBackendApi): AddressApi => {
+export const addressApiFactory = (backendApi: BitcoinBackendApi): AddressApi => {
   const createNewAddress = (
     userToken: string,
     walletId: string,

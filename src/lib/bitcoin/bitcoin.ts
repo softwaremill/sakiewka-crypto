@@ -1,8 +1,8 @@
-import { Currency } from '../types/domain'
+import { Currency } from '../../types/domain'
 import BtgOperations from './btg-operations'
 import BtcOperations from './btc-operations'
 import { BitcoinOperations } from './bitcoin-operations'
-import { networkFactory } from './config'
+import { networkFactory } from '../config'
 
 export default (currency: Currency, btcNetwork: string): BitcoinOperations => {
   if (currency === Currency.BTC) {

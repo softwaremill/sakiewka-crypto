@@ -1,15 +1,15 @@
 import { expect, use } from 'chai'
 
-import { transactionModuleFactory, transactionApiFactory } from '../transaction'
-import { keyModuleFactory } from '../key'
-import { addressModuleFactory } from '../address'
-import bitcoinModuleFactory from '../bitcoin'
-import { ROOT_DERIVATION_PATH, API_ERROR } from '../constants'
+import { transactionModuleFactory, transactionApiFactory } from '../../bitcoin/bitcoin-transaction'
+import { keyModuleFactory } from '../../bitcoin/bitcoin-key'
+import { addressModuleFactory } from '../../bitcoin/bitcoin-address'
+import bitcoinModuleFactory from '../../bitcoin/bitcoin'
+import { ROOT_DERIVATION_PATH, API_ERROR } from '../../constants'
 import BigNumber from "bignumber.js";
-import * as backendFactory from '../backend-api'
+import * as backendFactory from '../../bitcoin/bitcoin-backend-api'
 import chaiBigNumber from 'chai-bignumber'
 import chaiAsPromised from 'chai-as-promised'
-import { encrypt } from '../crypto';
+import { encrypt } from '../../crypto';
 import {
   stubGetWallet,
   stubUnspents,
@@ -18,11 +18,11 @@ import {
   stubCreateAddress,
   stubFeesRates,
   stubGetKey
-} from './backend-stub';
-import { Currency, KeyType, UTXO } from '../../types/domain'
-import { currency } from "./helpers";
+} from '../backend-stub';
+import { Currency, KeyType, UTXO } from '../../../types/domain'
+import { currency } from "../helpers";
 import { Transaction } from "bitcoinjs-lib";
-import { walletApiFactory } from '../wallet';
+import { walletApiFactory } from '../../bitcoin/bitcoin-wallet';
 
 const changeAddress = currency == Currency.BTG ? 'ATWyG3xpRdyYy1K6HBdVPBi629W4DNnB9m' : '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM'
 const serviceAddress = currency == Currency.BTG ? 'AWu3T7CWXXLxrHwuQ4tnHtubpdp1LHUZUK' : '3AnzyVbVSwfrre3vzQLwVMgZ34HH2Ja22d'

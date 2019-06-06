@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 
-import { keyModuleFactory } from '../../eos/key'
+import { keyModuleFactory } from '../../eos/eos-key'
 import { PrivateKey } from 'eosjs-ecc';
 
 const keyModule = keyModuleFactory()

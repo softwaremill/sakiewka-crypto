@@ -1,8 +1,8 @@
 import { KeyPair, KeyType } from '../../types/domain';
 import { GetKeyBackendResponse } from 'response';
-import { CurrencyBackendApi } from '../backend-api';
+import { BitcoinBackendApi } from '../bitcoin/bitcoin-backend-api';
 
-export const stubGetWallet = (backendApi: CurrencyBackendApi, userKeyPair: KeyPair, backupKeyPair: KeyPair, serviceKeyPair: KeyPair) => {
+export const stubGetWallet = (backendApi: BitcoinBackendApi, userKeyPair: KeyPair, backupKeyPair: KeyPair, serviceKeyPair: KeyPair) => {
   // @ts-ignore
   backendApi.getWallet = jest.fn(() => {
     return Promise.resolve({
@@ -15,7 +15,7 @@ export const stubGetWallet = (backendApi: CurrencyBackendApi, userKeyPair: KeyPa
   })
 }
 
-export const stubUnspents = (backendApi: CurrencyBackendApi, unspents: any) => {
+export const stubUnspents = (backendApi: BitcoinBackendApi, unspents: any) => {
   // @ts-ignore
   const getUnspentsMock = jest.fn(() => {
     return Promise.resolve(unspents)
@@ -25,7 +25,7 @@ export const stubUnspents = (backendApi: CurrencyBackendApi, unspents: any) => {
   return getUnspentsMock
 }
 
-export const stubSendTx = (backendApi: CurrencyBackendApi) => {
+export const stubSendTx = (backendApi: BitcoinBackendApi) => {
   // @ts-ignore
   const sendTxMock = jest.fn(() => {
     return Promise.resolve(true)
@@ -43,7 +43,7 @@ export const createPath = (cosigner: number, change: number, address: number) =>
   }
 }
 
-export const stubCreateAddress = (backendApi: CurrencyBackendApi, address: string) => {
+export const stubCreateAddress = (backendApi: BitcoinBackendApi, address: string) => {
   // @ts-ignore
   backendApi.createNewAddress = jest.fn(() => {
     return Promise.resolve({
@@ -52,14 +52,14 @@ export const stubCreateAddress = (backendApi: CurrencyBackendApi, address: strin
   })
 }
 
-export const stubFeesRates = (backendApi: CurrencyBackendApi, recommended: number) => {
+export const stubFeesRates = (backendApi: BitcoinBackendApi, recommended: number) => {
   // @ts-ignore
   backendApi.getFeesRates = jest.fn(() => {
     return Promise.resolve({ recommended: recommended })
   })
 }
 
-export const stubGetKey = (backendApi: CurrencyBackendApi, response: GetKeyBackendResponse) => {
+export const stubGetKey = (backendApi: BitcoinBackendApi, response: GetKeyBackendResponse) => {
   // @ts-ignore
   backendApi.getKey = jest.fn(() => response)
 }

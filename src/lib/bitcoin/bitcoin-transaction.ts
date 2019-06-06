@@ -1,20 +1,20 @@
-import { DecodedTx, Key, KeyType, Path, Recipient, TxOut, UTXO } from '../types/domain'
+import { DecodedTx, Key, KeyType, Path, Recipient, TxOut, UTXO } from '../../types/domain'
 import { TransactionBuilder } from 'bgoldjs-lib'
 import { GetKeyBackendResponse, GetWalletBackendResponse, ListUnspentsBackendResponse } from 'response'
 import BigNumber from 'bignumber.js'
-import { btcToSatoshi, satoshiToBtc } from './utils/helpers'
-import { decrypt } from './crypto'
-import { API_ERROR } from './constants'
-import { KeyModule } from './key'
-import { WalletApi } from './wallet'
-import { CurrencyBackendApi } from './backend-api'
+import { btcToSatoshi, satoshiToBtc } from '../utils/helpers'
+import { decrypt } from '../crypto'
+import { API_ERROR } from '../constants'
+import { KeyModule } from './bitcoin-key'
+import { WalletApi } from './bitcoin-wallet'
+import { BitcoinBackendApi } from './bitcoin-backend-api'
 import { BitcoinOperations } from './bitcoin-operations'
 
 export interface TransactionApi {
   send(userToken: string, walletId: string, recipients: Recipient[], xprv?: string, passphrase?: string, feeRate?: number): Promise<string>
 }
 
-export const transactionApiFactory = (backendApi: CurrencyBackendApi, keyModule: KeyModule, bitcoin: BitcoinOperations, walletApi: WalletApi): TransactionApi => {
+export const transactionApiFactory = (backendApi: BitcoinBackendApi, keyModule: KeyModule, bitcoin: BitcoinOperations, walletApi: WalletApi): TransactionApi => {
 
   const send = async (
     userToken: string, walletId: string, recipients: Recipient[], xprv?: string, passphrase?: string, userProvidedFeeRate?: number): Promise<string> => {

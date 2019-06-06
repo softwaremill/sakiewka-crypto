@@ -1,8 +1,8 @@
 import { expect } from 'chai'
 
-import { currency } from './helpers'
-import * as backendApiFactory from '../backend-api'
-import { feeRatesApiFactory } from '../fee-rates';
+import { currency } from '../helpers'
+import * as backendApiFactory from '../../bitcoin/bitcoin-backend-api'
+import { feeRatesApiFactory } from '../../bitcoin/bitcoin-fee-rates';
 
 const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency)
 // @ts-ignore

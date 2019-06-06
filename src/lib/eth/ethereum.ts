@@ -1,8 +1,8 @@
 import ethAbi from 'ethereumjs-abi'
 import ethUtil from 'ethereumjs-util'
 
-import bitcoin from './bitcoin'
-import { Currency } from "../types/domain"
+import bitcoin from '../bitcoin/bitcoin'
+import { Currency } from '../../types/domain'
 
 export default (btcNetwork: string) => {
   const { base58ToHDNode } = bitcoin(Currency.BTC, btcNetwork)

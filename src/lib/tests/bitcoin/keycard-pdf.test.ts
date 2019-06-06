@@ -1,5 +1,5 @@
 import { expect, use } from 'chai'
-import { generatePdf } from '../keycard-pdf'
+import { generatePdf } from '../../bitcoin/bitcoin-keycard-pdf'
 import chaiString from 'chai-string'
 import * as fs from 'fs'
 
