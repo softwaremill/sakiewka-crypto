@@ -171,3 +171,24 @@ describe('info', () => {
     expect(res).to.eq('backend response')
   })
 })
+
+describe('balance', () => {
+  it('should exist', () => {
+    expect(user.register).to.be.a('function')
+  })
+
+  it('should pass proper arguments to backend-api method and return result of its call', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    user.balance = mockImplementation
+
+    const currency = 'USD'
+    const res = await user.balance('testToken', currency)
+    const [token, fiatCurrency] = mockImplementation.mock.calls[0]
+
+    expect(token).to.eq('testToken')
+    expect(fiatCurrency).to.eq(currency)
+    expect(res).to.eq('backend response')
+  })
+})
