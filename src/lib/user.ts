@@ -10,7 +10,7 @@ export interface UserApi {
   confirm2fa(token: string, password: string, code: number): Promise<Confirm2faBackendResponse>
   disable2fa(token: string, password: string, code: number): Promise<Disable2faBackendResponse>
   info(token: string): Promise<InfoBackendResponse>
-  balance(fiatCurrency: string): Promise<BalanceBackendResponse>
+  balance(token: string, fiatCurrency: string): Promise<BalanceBackendResponse>
 }
 
 export const userApiFactory = (backend: BaseBackendApi): UserApi => {
@@ -43,8 +43,8 @@ export const userApiFactory = (backend: BaseBackendApi): UserApi => {
     return backend.disable2fa(token, hashPassword(password), code)
   }
 
-  const balance = (fiatCurrency: string) => {
-    return backend.balance(fiatCurrency)
+  const balance = (token: string, fiatCurrency: string) => {
+    return backend.balance(token, fiatCurrency)
   }
 
   return {

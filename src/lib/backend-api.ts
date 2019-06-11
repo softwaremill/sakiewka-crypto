@@ -67,7 +67,7 @@ export interface BaseBackendApi {
   monthlySummary(token: string, month: number, year: number, fiatCurrency: string): Promise<MontlySummaryBackendResponse>
   listTransfers(token: string, limit: number, nextPageToken?: string): Promise<ListTransfersBackendResponse>
   chainNetworkType(): Promise<ChainModeResponse>
-  balance(fiatCurrency: string): Promise<BalanceBackendResponse>
+  balance(token: string, fiatCurrency: string): Promise<BalanceBackendResponse>
 }
 
 export const create = (backendApiUrl: string): BaseBackendApi => {
@@ -194,9 +194,12 @@ export const create = (backendApiUrl: string): BaseBackendApi => {
     return response.data
   }
 
-  const balance = async (fiatCurrency: string): Promise<BalanceBackendResponse> => {
+  const balance = async (token: string, fiatCurrency: string): Promise<BalanceBackendResponse> => {
     const options = {
       method: 'GET',
+      headers: {
+        Authorization: token
+      },
       body: JSON.stringify({ fiatCurrency })
     }
     const response = await request(`${backendApiUrl}/user/balance`, options)
