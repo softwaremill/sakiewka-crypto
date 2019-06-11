@@ -33,7 +33,8 @@ export enum TransferType {
 
 export enum Currency {
   BTC = 'btc',
-  BTG = 'btg'
+  BTG = 'btg',
+  EOS = 'eos'
 }
 
 export interface UTXO {

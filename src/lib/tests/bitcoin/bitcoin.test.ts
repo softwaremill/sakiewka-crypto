@@ -1,6 +1,6 @@
 import { expect } from 'chai'
-import bitcoinFactory from "../bitcoin";
-import { Currency } from "../../types/domain";
+import bitcoinFactory from "../../bitcoin/bitcoin";
+import { Currency } from '../../../types/domain';
 
 describe('btc redeem script', () => {
   const test = (currency: Currency, key1: string, key2: string, key3: string, expectedResult: string) => {

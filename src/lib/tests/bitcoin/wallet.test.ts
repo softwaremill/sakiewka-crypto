@@ -1,13 +1,13 @@
 import { expect, use } from 'chai'
 
-import { currency } from './helpers'
-import { walletApiFactory } from '../wallet'
-import * as backendApiFactory from '../backend-api'
+import { currency } from '../helpers'
+import { walletApiFactory } from '../../bitcoin/bitcoin-wallet'
+import * as backendApiFactory from '../../bitcoin/bitcoin-backend-api'
 import BigNumber from 'bignumber.js'
 import chaiBigNumber from 'chai-bignumber'
-import * as pdfGen from '../keycard-pdf'
-import { keyModuleFactory } from '../key'
-import bitcoinFactory from '../bitcoin'
+import * as pdfGen from '../../bitcoin/bitcoin-keycard-pdf'
+import { keyModuleFactory } from '../../bitcoin/bitcoin-key'
+import bitcoinFactory from '../../bitcoin/bitcoin'
 const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency)
 
 const bitcoinOperation = bitcoinFactory(currency, 'mainnet')

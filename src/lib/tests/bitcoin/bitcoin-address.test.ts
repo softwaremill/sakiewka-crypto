@@ -1,11 +1,11 @@
 import { expect } from 'chai'
 
-import { currency } from './helpers'
-import { addressModuleFactory, addressApiFactory } from '../address'
-import * as backendFactory from '../backend-api'
-import { keyModuleFactory } from '../key'
-import bitcoinFactory from '../bitcoin'
-import { Currency } from "../../types/domain";
+import { currency } from '../helpers'
+import { addressModuleFactory, addressApiFactory } from '../../bitcoin/bitcoin-address'
+import * as backendFactory from '../../bitcoin/bitcoin-backend-api'
+import { keyModuleFactory } from '../../bitcoin/bitcoin-key'
+import bitcoinFactory from '../../bitcoin/bitcoin'
+import { Currency } from '../../../types/domain';
 
 const backendApi = backendFactory.withCurrency('https://backendApiUrl', currency)
 describe('generateNewMultisigAddress', () => {

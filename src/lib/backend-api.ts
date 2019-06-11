@@ -1,53 +1,44 @@
 import {
+  AssignPolicyBackendParams,
   ChainInfoResponse as ChainModeResponse,
   Confirm2faBackendResponse,
-  CreateNewAddressBackendResponse,
   CreateWalletBackendParams,
-  CreateWalletBackendResponse,
   CreateWebhookResponse,
   DeleteWebhookResponse,
   Disable2faBackendResponse,
-  GetAddressBackendResponse,
-  GetFeesRates,
   GetKeyBackendResponse,
-  GetUtxosBackendParams,
   GetWalletBackendResponse,
   GetWebhooksResponse,
   InfoBackendResponse,
   Init2faBackendResponse,
   ListAddressesBackendResponse,
+  ListPoliciesForWalletResponse,
+  ListPoliciesResponse,
   ListTransfersBackendResponse,
-  ListUnspentsBackendResponse,
   ListWalletsBackendResponse,
+  ListWalletsForPolicyResponse,
   ListWebhooksResponse,
   LoginBackendResponse,
-  MaxTransferAmountParams,
-  MaxTransferAmountResponse,
   MontlySummaryBackendResponse,
+  PolicyCreateRequest,
   RegisterBackendResponse,
   SetupPasswordBackendResponse,
-  TransferItemBackendResponse,
-  ListPoliciesForWalletResponse,
-  PolicyCreatedResponse,
-  ListPoliciesResponse,
-  AssignPolicyBackendParams,
-  ListWalletsForPolicyResponse,
-  PolicyCreateRequest,
-  ListUtxosByAddressBackendResponse
+  TransferItemBackendResponse
 } from 'response'
 import request from './utils/request'
 import { Currency } from '../types/domain'
+import * as bitcoinBackendFactory from './bitcoin/bitcoin-backend-api';
 
 export interface SakiewkaBackend {
-  core: BaseBackendApi,
-  [Currency.BTC]: CurrencyBackendApi,
-  [Currency.BTG]: CurrencyBackendApi
+  core: CoreBackendApi,
+  [Currency.BTC]: bitcoinBackendFactory.BitcoinBackendApi,
+  [Currency.BTG]: bitcoinBackendFactory.BitcoinBackendApi
 }
 
 export const backendFactory = (backendApiUrl: string): SakiewkaBackend => {
   const backendApi = create(backendApiUrl)
-  const btcBackendApi = withCurrency(backendApiUrl, Currency.BTC)
-  const btgBackendApi = withCurrency(backendApiUrl, Currency.BTG)
+  const btcBackendApi = bitcoinBackendFactory.withCurrency(backendApiUrl, Currency.BTC)
+  const btgBackendApi = bitcoinBackendFactory.withCurrency(backendApiUrl, Currency.BTG)
   return {
     core: backendApi,
     [Currency.BTC]: btcBackendApi,
@@ -55,7 +46,7 @@ export const backendFactory = (backendApiUrl: string): SakiewkaBackend => {
   }
 }
 
-export interface BaseBackendApi {
+export interface CoreBackendApi {
   login(login: string, password: string, codeIn?: number): Promise<LoginBackendResponse>
   init2fa(token: string, password: string): Promise<Init2faBackendResponse>
   confirm2fa(token: string, password: string, code: number): Promise<Confirm2faBackendResponse>
@@ -68,7 +59,7 @@ export interface BaseBackendApi {
   chainNetworkType(): Promise<ChainModeResponse>
 }
 
-export const create = (backendApiUrl: string): BaseBackendApi => {
+export const create = (backendApiUrl: string): CoreBackendApi => {
   // BTC
   // user
   const login = async (login: string, password: string, codeIn?: number): Promise<LoginBackendResponse> => {
@@ -206,39 +197,13 @@ export const create = (backendApiUrl: string): BaseBackendApi => {
   }
 }
 
-export interface CurrencyBackendApi {
-  createNewAddress(token: string, walletId: string, isChange: boolean, name?: string): Promise<CreateNewAddressBackendResponse>,
-  createWallet(token: string, params: CreateWalletBackendParams): Promise<CreateWalletBackendResponse>,
-  getAddress(token: string, walletId: string, address: string): Promise<GetAddressBackendResponse>,
-  getKey(token: string, keyId: string, includePrivate?: boolean): Promise<GetKeyBackendResponse>,
-  getWallet(token: string, walletId: string): Promise<GetWalletBackendResponse>,
-  listAddresses(token: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListAddressesBackendResponse>,
-  listUnspents(token: string, walletId: string, params: GetUtxosBackendParams): Promise<ListUnspentsBackendResponse>,
-  listWallets(token: string, limit: number, nextPageToken?: string): Promise<ListWalletsBackendResponse>,
-  sendTransaction(token: string, walletId: string, txHex: string): Promise<any>,
-  getFeesRates(): Promise<GetFeesRates>,
-  maxTransferAmount(token: string, walletId: string, params: MaxTransferAmountParams): Promise<MaxTransferAmountResponse>
-  createWebhook(token: string, walletId: string, callbackUrl: string, settings: Object): Promise<CreateWebhookResponse>
-  listUtxosByAddress(token: string, walletId: string, address:string, limit: number, nextPageToken?: string): Promise<ListUtxosByAddressBackendResponse>
-  listWebhooks(token: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListWebhooksResponse>
-  getWebhook(token: string, walletId: string, webhookId: string): Promise<GetWebhooksResponse>
-  deleteWebhook(token: string, walletId: string, webhookId: string): Promise<DeleteWebhookResponse>
-  listTransfers(token: string, walletId: string, limit: number, nextPageParam?: string): Promise<ListTransfersBackendResponse>
-  findTransferByTxHash(token: string, walletId: string, txHash: string): Promise<TransferItemBackendResponse>
-  createPolicy(token: string, params: PolicyCreateRequest): Promise<PolicyCreatedResponse>
-  listPoliciesForWallet(token: string, walletId: string): Promise<ListPoliciesForWalletResponse>
-  listPolicies(token: string, limit: number, nextPageToken?: string): Promise<ListPoliciesResponse>
-  assignPolicy(token: string, policyId: string, params: AssignPolicyBackendParams): Promise<any>
-  listWalletsForPolicy(token: string, policyId: string): Promise<ListWalletsForPolicyResponse>
-}
 
-export const withCurrency = (backendApiUrl: string, currency: Currency): CurrencyBackendApi => {
-
+export const currencyApi = (backendApiUrl: string, currency: Currency) => {
   // wallet
-  const createWallet = async (
+  const createWallet = async <T>(
     token: string,
     params: CreateWalletBackendParams
-  ): Promise<CreateWalletBackendResponse> => {
+  ): Promise<T> => {
     const options = {
       method: 'POST',
       headers: {
@@ -286,22 +251,6 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     return response.data
   }
 
-
-  const listUtxosByAddress = async (token: string,
-                                    walletId: string,
-                                    address: string,
-                                    limit: number,
-                                    nextPageToken?: string): Promise<ListUtxosByAddressBackendResponse> => {
-    const options = {
-      method: 'GET',
-      headers: {
-        Authorization: token
-      }
-    }
-    const queryString = `limit=${limit}${nextPageToken ? `&nextPageToken=${nextPageToken}` : ''}`
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/${address}/utxo?${queryString}`, options)
-    return response.data
-  }
 
   const listWebhooks = async (
     token: string,
@@ -367,24 +316,8 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     return response.data
   }
 
-  const createNewAddress = async (token: string, walletId: string, isChange: boolean = false, name?: string
-  ): Promise<CreateNewAddressBackendResponse> => {
-    const options = {
-      method: 'POST',
-      headers: {
-        Authorization: token
-      },
-      body: JSON.stringify({
-        name,
-        isChange
-      })
-    }
 
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/address`, options)
-    return response.data
-  }
-
-  const getAddress = async (token: string, walletId: string, address: string): Promise<GetAddressBackendResponse> => {
+  const getAddress = async <T>(token: string, walletId: string, address: string): Promise<T> => {
     const options = {
       method: 'GET',
       headers: {
@@ -415,37 +348,6 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     return response.data
   }
 
-  const listUnspents = async (token: string, walletId: string, params: GetUtxosBackendParams): Promise<ListUnspentsBackendResponse> => {
-    const options = {
-      method: 'POST',
-      headers: {
-        Authorization: token
-      },
-      body: JSON.stringify({
-        ...params
-      })
-    }
-
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/utxo`, options)
-    return response.data
-  }
-
-  // transaction
-  const sendTransaction = async (token: string, walletId: string, txHex: string): Promise<string> => {
-    const options = {
-      method: 'POST',
-      headers: {
-        Authorization: token
-      },
-      body: JSON.stringify({
-        txHex
-      })
-    }
-
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/send`, options)
-    return response.data
-  }
-
   const getKey = async (
     token: string,
     keyId: string,
@@ -459,23 +361,6 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
     }
 
     const response = await request(`${backendApiUrl}/${currency}/key/${keyId}${includePrivate ? `?includePrivate=${includePrivate}` : ''}`, options)
-    return response.data
-  }
-
-  const maxTransferAmount = async (token: string, walletId: string, params: MaxTransferAmountParams): Promise<MaxTransferAmountResponse> => {
-    const options = {
-      method: 'GET',
-      headers: {
-        Authorization: token
-      }
-    }
-
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/max-transfer-amount?recipient=${params.recipient}&feeRate=${params.feeRate}`, options)
-    return response.data
-  }
-
-  const getFeesRates = async (): Promise<GetFeesRates> => {
-    const response = await request(`${backendApiUrl}/${currency}/fees`, { method: 'GET' })
     return response.data
   }
 
@@ -568,18 +453,12 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Currenc
   }
 
   return {
-    createNewAddress,
     createWallet,
     getAddress,
     getKey,
     getWallet,
     listAddresses,
-    listUnspents,
     listWallets,
-    sendTransaction,
-    getFeesRates,
-    maxTransferAmount,
-    listUtxosByAddress,
     listWebhooks,
     getWebhook,
     deleteWebhook,

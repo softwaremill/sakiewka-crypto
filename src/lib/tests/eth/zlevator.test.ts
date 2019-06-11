@@ -2,8 +2,8 @@ import { expect } from 'chai'
 
 import { v4 as uuid } from 'uuid';
 
-import * as api from '../zlevator'
-import * as request from '../utils/request'
+import * as api from '../../eth/zlevator'
+import * as request from '../../utils/request'
 
 // @ts-ignore
 const mockImplementation = jest.fn(() => ({ data: 'testToken' }))

@@ -7,7 +7,7 @@ import {
   In,
 } from 'bitcoinjs-lib'
 import bip69 from 'bip69'
-import { UTXO, Recipient, Path, TxOut } from '../types/domain'
+import { UTXO, Recipient, Path, TxOut } from '../../types/domain'
 import { BigNumber } from "bignumber.js";
 
 const btcjsToUtxo = (input: UTXO_btcjs): UTXO => {

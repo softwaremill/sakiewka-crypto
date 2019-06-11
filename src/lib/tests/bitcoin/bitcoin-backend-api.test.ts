@@ -1,12 +1,13 @@
 import { expect } from 'chai'
 
-import { currency } from './helpers'
-import * as apiFactory from '../backend-api'
+import { currency } from '../helpers'
+import * as apiFactory from '../../backend-api'
+import * as bitcoinApiFactory from '../../bitcoin/bitcoin-backend-api'
 const baseApi = apiFactory.create('backurl/api/v1')
-const api = apiFactory.withCurrency('backurl/api/v1', currency)
-import * as request from '../utils/request'
-import { MaxTransferAmountParams } from 'response'
-import { PolicySettings, DailyAmountPolicy, PolicyKind } from '../../types/domain'
+const bitcoinApi = bitcoinApiFactory.withCurrency('backurl/api/v1', currency)
+import * as request from '../../utils/request'
+import { MaxTransferAmountBitcoinParams } from 'response'
+import { PolicySettings, DailyAmountPolicy, PolicyKind } from '../../../types/domain'
 
 // @ts-ignore
 const mockImplementation = jest.fn(() => ({ data: 'testToken' }))
@@ -138,7 +139,7 @@ describe('info', () => {
 
 describe('createWallet', () => {
   it('should exist', () => {
-    expect(api.createWallet).to.be.a('function')
+    expect(bitcoinApi.createWallet).to.be.a('function')
   })
 
   it('should send proper request when pub keys provided', async () => {
@@ -147,7 +148,7 @@ describe('createWallet', () => {
       userPubKey: '123',
       backupPubKey: '456'
     }
-    await api.createWallet('testToken', data)
+    await bitcoinApi.createWallet('testToken', data)
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
@@ -162,11 +163,11 @@ describe('createWallet', () => {
 })
 describe('getWallet', () => {
   it('should exist', () => {
-    expect(api.getWallet).to.be.a('function')
+    expect(bitcoinApi.getWallet).to.be.a('function')
   })
 
   it('should send proper request', async () => {
-    await api.getWallet('testToken', '13')
+    await bitcoinApi.getWallet('testToken', '13')
 
     const [url, params] = mockImplementation.mock.calls[0]
 
@@ -178,11 +179,11 @@ describe('getWallet', () => {
 
 describe('listWallets', () => {
   it('should exist', () => {
-    expect(api.getWallet).to.be.a('function')
+    expect(bitcoinApi.getWallet).to.be.a('function')
   })
 
   it('should send proper request without nextPageToken', async () => {
-    await api.listWallets('testToken', 10)
+    await bitcoinApi.listWallets('testToken', 10)
 
     const [url, params] = mockImplementation.mock.calls[0]
 
@@ -192,7 +193,7 @@ describe('listWallets', () => {
   })
 
   it('should send proper request with nextPageToken', async () => {
-    await api.listWallets('testToken', 10, 'abcd')
+    await bitcoinApi.listWallets('testToken', 10, 'abcd')
 
     const [url, params] = mockImplementation.mock.calls[0]
 
@@ -204,11 +205,11 @@ describe('listWallets', () => {
 
 describe('createNewAddress', () => {
   it('should exist', () => {
-    expect(api.createNewAddress).to.be.a('function')
+    expect(bitcoinApi.createNewAddress).to.be.a('function')
   })
 
   it('should send proper request without name param', async () => {
-    await api.createNewAddress('testToken', 'walletId', false)
+    await bitcoinApi.createNewAddress('testToken', 'walletId', false)
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
@@ -221,7 +222,7 @@ describe('createNewAddress', () => {
   })
 
   it('should send proper request for change address', async () => {
-    await api.createNewAddress('testToken', 'walletId', true)
+    await bitcoinApi.createNewAddress('testToken', 'walletId', true)
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
@@ -234,7 +235,7 @@ describe('createNewAddress', () => {
   })
 
   it('should send proper request with name param', async () => {
-    await api.createNewAddress('testToken', 'walletId', false, 'testName')
+    await bitcoinApi.createNewAddress('testToken', 'walletId', false, 'testName')
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
@@ -249,11 +250,11 @@ describe('createNewAddress', () => {
 
 describe('getAddress', () => {
   it('should exist', () => {
-    expect(api.getAddress).to.be.a('function')
+    expect(bitcoinApi.getAddress).to.be.a('function')
   })
 
   it('should send proper request', async () => {
-    await api.getAddress('testToken', 'testWalletId', 'addressValue')
+    await bitcoinApi.getAddress('testToken', 'testWalletId', 'addressValue')
 
     const [url, params] = mockImplementation.mock.calls[0]
 
@@ -265,11 +266,11 @@ describe('getAddress', () => {
 
 describe('listAddresses', () => {
   it('should exist', () => {
-    expect(api.listAddresses).to.be.a('function')
+    expect(bitcoinApi.listAddresses).to.be.a('function')
   })
 
   it('should send proper request without nextPageToken', async () => {
-    await api.listAddresses('testToken', 'testWalletId', 10)
+    await bitcoinApi.listAddresses('testToken', 'testWalletId', 10)
 
     const [url, params] = mockImplementation.mock.calls[0]
 
@@ -279,7 +280,7 @@ describe('listAddresses', () => {
   })
 
   it('should send proper request with nextPageToken', async () => {
-    await api.listAddresses('testToken', 'testWalletId', 10, 'abcd')
+    await bitcoinApi.listAddresses('testToken', 'testWalletId', 10, 'abcd')
 
     const [url, params] = mockImplementation.mock.calls[0]
 
@@ -291,7 +292,7 @@ describe('listAddresses', () => {
 
 describe('listUnspents', () => {
   it('should exist', () => {
-    expect(api.listUnspents).to.be.a('function')
+    expect(bitcoinApi.listUnspents).to.be.a('function')
   })
 
   it('should send proper request', async () => {
@@ -299,7 +300,7 @@ describe('listUnspents', () => {
       feeRate: 22,
       recipients: [{ address: '0x0', amount: '888' }]
     }
-    await api.listUnspents('testToken', 'testWalletId', data)
+    await bitcoinApi.listUnspents('testToken', 'testWalletId', data)
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
@@ -314,17 +315,17 @@ describe('listUnspents', () => {
 
 describe('sendTransaction', () => {
   it('should exist', () => {
-    expect(api.sendTransaction).to.be.a('function')
+    expect(bitcoinApi.sendTransaction).to.be.a('function')
   })
 })
 
 describe('getKey', () => {
   it('should exist', () => {
-    expect(api.getKey).to.be.a('function')
+    expect(bitcoinApi.getKey).to.be.a('function')
   })
 
   it('should send proper request without includePrivate param', async () => {
-    await api.getKey('testToken', 'testKeyId')
+    await bitcoinApi.getKey('testToken', 'testKeyId')
 
     const [url, params] = mockImplementation.mock.calls[0]
 
@@ -334,7 +335,7 @@ describe('getKey', () => {
   })
 
   it('should send proper request with includePrivate param', async () => {
-    await api.getKey('testToken', 'testKeyId', true)
+    await bitcoinApi.getKey('testToken', 'testKeyId', true)
 
     const [url, params] = mockImplementation.mock.calls[0]
 
@@ -346,15 +347,15 @@ describe('getKey', () => {
 
 describe('maxTransferAmount', () => {
   it('should exist', () => {
-    expect(api.maxTransferAmount).to.be.a('function')
+    expect(bitcoinApi.maxTransferAmount).to.be.a('function')
   })
 
   it('should send proper request', async () => {
-    const data: MaxTransferAmountParams = {
+    const data: MaxTransferAmountBitcoinParams = {
       recipient: '0x0',
       feeRate: 22
     }
-    await api.maxTransferAmount('testToken', 'testWalletId', data)
+    await bitcoinApi.maxTransferAmount('testToken', 'testWalletId', data)
 
     const [url, params] = mockImplementation.mock.calls[0]
     expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/max-transfer-amount?recipient=0x0&feeRate=22`)
@@ -382,12 +383,12 @@ describe('setupPassword', () => {
 
 describe('createPolicy', () => {
   it('should exist', () => {
-    expect(api.createPolicy).to.be.a('function')
+    expect(bitcoinApi.createPolicy).to.be.a('function')
   })
 
   it('should send proper request', async () => {
     const settings: PolicySettings = new DailyAmountPolicy('1.0')
-    await api.createPolicy('testToken', { settings, name: 'a' })
+    await bitcoinApi.createPolicy('testToken', { settings, name: 'a' })
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
@@ -401,11 +402,11 @@ describe('createPolicy', () => {
 
 describe('listPolicies', () => {
   it('should exist', () => {
-    expect(api.listPolicies).to.be.a('function')
+    expect(bitcoinApi.listPolicies).to.be.a('function')
   })
 
   it('should send proper request with limit', async () => {
-    await api.listPolicies('testToken', 10)
+    await bitcoinApi.listPolicies('testToken', 10)
 
     const [url, params] = mockImplementation.mock.calls[0]
     expect(url).to.eq(`backurl/api/v1/${currency}/policy?limit=10`)
@@ -414,7 +415,7 @@ describe('listPolicies', () => {
   })
 
   it('should send proper request with limit and nextPageToken', async () => {
-    await api.listPolicies('testToken', 10, '123')
+    await bitcoinApi.listPolicies('testToken', 10, '123')
 
     const [url, params] = mockImplementation.mock.calls[0]
     expect(url).to.eq(`backurl/api/v1/${currency}/policy?limit=10&nextPageToken=123`)
@@ -425,11 +426,11 @@ describe('listPolicies', () => {
 
 describe('listPoliciesForWallet', () => {
   it('should exist', () => {
-    expect(api.listPoliciesForWallet).to.be.a('function')
+    expect(bitcoinApi.listPoliciesForWallet).to.be.a('function')
   })
 
   it('should send proper request', async () => {
-    await api.listPoliciesForWallet('testToken', '123')
+    await bitcoinApi.listPoliciesForWallet('testToken', '123')
 
     const [url, params] = mockImplementation.mock.calls[0]
     expect(url).to.eq(`backurl/api/v1/${currency}/wallet/123/policy`)
@@ -440,11 +441,11 @@ describe('listPoliciesForWallet', () => {
 
 describe('listWalletsForPolicy', () => {
   it('should exist', () => {
-    expect(api.listWalletsForPolicy).to.be.a('function')
+    expect(bitcoinApi.listWalletsForPolicy).to.be.a('function')
   })
 
   it('should send proper request', async () => {
-    await api.listWalletsForPolicy('testToken', '123')
+    await bitcoinApi.listWalletsForPolicy('testToken', '123')
 
     const [url, params] = mockImplementation.mock.calls[0]
     expect(url).to.eq(`backurl/api/v1/${currency}/policy/123/wallet`)
@@ -455,11 +456,11 @@ describe('listWalletsForPolicy', () => {
 
 describe('assignPolicy', () => {
   it('should exist', () => {
-    expect(api.assignPolicy).to.be.a('function')
+    expect(bitcoinApi.assignPolicy).to.be.a('function')
   })
 
   it('should send proper request', async () => {
-    await api.assignPolicy('testToken', '123', { walletId: '456' })
+    await bitcoinApi.assignPolicy('testToken', '123', { walletId: '456' })
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
@@ -502,11 +503,11 @@ describe('monthlySummary', () => {
 
 describe('list chain transfers', () => {
   it('should exist', () => {
-    expect(api.listTransfers).to.be.a('function')
+    expect(bitcoinApi.listTransfers).to.be.a('function')
   })
 
   it('should send proper request', async () => {
-    await api.listTransfers('testToken', 'testWalletId', 20, 'npt')
+    await bitcoinApi.listTransfers('testToken', 'testWalletId', 20, 'npt')
 
     const [url, params] = mockImplementation.mock.calls[0]
     expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/transfer?limit=20&nextPageToken=npt`)
@@ -517,11 +518,11 @@ describe('list chain transfers', () => {
 
 describe('find chain transfer by tx hash', () => {
   it('should exist', () => {
-    expect(api.findTransferByTxHash).to.be.a('function')
+    expect(bitcoinApi.findTransferByTxHash).to.be.a('function')
   })
 
   it('should send proper request', async () => {
-    await api.findTransferByTxHash('testToken', 'testWalletId', '0x20')
+    await bitcoinApi.findTransferByTxHash('testToken', 'testWalletId', '0x20')
 
     const [url, params] = mockImplementation.mock.calls[0]
     expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/transfer/0x20`)

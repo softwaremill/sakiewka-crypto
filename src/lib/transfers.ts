@@ -1,4 +1,5 @@
-import { BaseBackendApi, CurrencyBackendApi } from './backend-api'
+import { CoreBackendApi } from './backend-api'
+import { BitcoinBackendApi } from './bitcoin/bitcoin-backend-api'
 import { ListTransfersBackendResponse, MontlySummaryBackendResponse, TransferItemBackendResponse } from '../types/response';
 
 export interface TransfersApi {
@@ -6,7 +7,7 @@ export interface TransfersApi {
   listTransfers(token: string, limit: number, nextPageToken?: string): Promise<ListTransfersBackendResponse>
 }
 
-export const transfersApiFactory = (backend: BaseBackendApi): TransfersApi => {
+export const transfersApiFactory = (backend: CoreBackendApi): TransfersApi => {
 
   const monthlySummary = (token: string, month: number, year: number, fiatCurrency: string): Promise<MontlySummaryBackendResponse> => {
     return backend.monthlySummary(token, month, year, fiatCurrency)
@@ -27,7 +28,7 @@ export interface ChainTransfersApi {
   findTransferByTxHash(token: string, walletId: string, txHash: string): Promise<TransferItemBackendResponse>
 }
 
-export const chainTransfersApiFactory = (backend: CurrencyBackendApi): ChainTransfersApi => {
+export const chainTransfersApiFactory = (backend: BitcoinBackendApi): ChainTransfersApi => {
 
   const listTransfers = async (token: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListTransfersBackendResponse> => {
     return backend.listTransfers(token, walletId, limit, nextPageToken)

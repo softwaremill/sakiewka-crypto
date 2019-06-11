@@ -1,9 +1,9 @@
 import { expect } from 'chai'
 import ethUtil from 'ethereumjs-util'
 
-import transactionFactory from '../transaction-eth'
-import * as backendApi from '../zlevator'
-import ethereumFactory from '../ethereum'
+import transactionFactory from '../../eth/eth-transaction'
+import * as backendApi from '../../eth/zlevator'
+import ethereumFactory from '../../eth/ethereum'
 
 import { v4 as uuid } from 'uuid';
 import { fail } from 'assert';
