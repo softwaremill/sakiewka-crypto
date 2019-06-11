@@ -77,13 +77,17 @@ interface WalletBackendResponse {
   keys: Key[]
 }
 
-export interface CreateWalletBackendResponse extends WalletBackendResponse {
+export interface CreateBitcoinWalletBackendResponse extends WalletBackendResponse {
   servicePubKey: string,
   initialAddress: {
     address: string,
     path: Path
   }
 }
+
+export interface CreateEosWalletBackendResponse extends WalletBackendResponse {
+}
+
 
 export interface GetWalletBackendResponse extends WalletBackendResponse {
   name: string,
@@ -95,7 +99,7 @@ export interface GetWalletBackendResponse extends WalletBackendResponse {
   }
 }
 
-export interface CreateNewAddressBackendResponse {
+export interface CreateNewBitcoinAddressBackendResponse {
   address: string,
   path: {
     cosignerIndex: string,
@@ -104,7 +108,17 @@ export interface CreateNewAddressBackendResponse {
   }
 }
 
-export interface GetAddressBackendResponse {
+export interface CreateNewEosAddressBackendResponse {
+  address: string
+}
+
+export interface GetEosAddressBackendResponse {
+  address: string,
+  name: string,
+  created: string,
+}
+
+export interface GetBitcoinAddressBackendResponse {
   address: string,
   path: {
     cosignerIndex: string,
@@ -188,9 +202,13 @@ export interface ErrorDetails {
   code: string
 }
 
-export interface MaxTransferAmountParams {
+export interface MaxTransferAmountBitcoinParams {
   recipient: string,
   feeRate: number
+}
+
+export interface MaxTransferAmountEosParams {
+  recipient: string
 }
 
 export interface MaxTransferAmountResponse {

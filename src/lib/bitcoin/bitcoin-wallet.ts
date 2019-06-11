@@ -1,9 +1,9 @@
-import { Recipient, WalletParams } from '../types/domain'
-import { ROOT_DERIVATION_PATH } from './constants'
+import { Recipient, WalletParams } from '../../types/domain'
+import { ROOT_DERIVATION_PATH } from '../constants'
 import {
   CreateWalletBackendParams,
   GetUtxosBackendParams,
-  MaxTransferAmountParams,
+  MaxTransferAmountBitcoinParams,
   ReceipientsBackend,
   MaxTransferAmountResponse,
   ListUnspentsBackendResponse,
@@ -11,9 +11,9 @@ import {
   GetWalletBackendResponse,
   ListPoliciesForWalletResponse, ListUtxosByAddressBackendResponse,
 } from 'response'
-import { generatePdf } from './keycard-pdf'
-import { KeyModule } from './key'
-import { CurrencyBackendApi } from './backend-api'
+import { generatePdf } from './bitcoin-keycard-pdf'
+import { KeyModule } from './bitcoin-key'
+import { BitcoinBackendApi } from './bitcoin-backend-api'
 
 export interface WalletApi {
   createWallet(userToken: string, params: WalletParams): Promise<any>
@@ -26,7 +26,7 @@ export interface WalletApi {
 
 }
 
-export const walletApiFactory = (backendApi: CurrencyBackendApi, keyModule: KeyModule): WalletApi => {
+export const walletApiFactory = (backendApi: BitcoinBackendApi, keyModule: KeyModule): WalletApi => {
 
   const createWallet = async (userToken: string, params: WalletParams): Promise<any> => {
     const userKeyPair = params.userPubKey ?
@@ -76,7 +76,7 @@ export const walletApiFactory = (backendApi: CurrencyBackendApi, keyModule: KeyM
   }
 
   const maxTransferAmount = (token: string, walletId: string, feeRate: number, recipient: string): Promise<MaxTransferAmountResponse> => {
-    const params: MaxTransferAmountParams = {
+    const params: MaxTransferAmountBitcoinParams = {
       recipient,
       feeRate
     }

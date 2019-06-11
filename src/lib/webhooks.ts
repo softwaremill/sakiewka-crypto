@@ -1,4 +1,4 @@
-import { CurrencyBackendApi } from './backend-api'
+import { BitcoinBackendApi } from './bitcoin/bitcoin-backend-api'
 
 import { CreateWebhookResponse, DeleteWebhookResponse, GetWebhooksResponse, ListWebhooksResponse } from '../types/response'
 
@@ -8,7 +8,7 @@ export interface WebhooksApi {
   getWebhook(token: string, walletId: string, webhookId: string): Promise<GetWebhooksResponse>
   deleteWebhook(token: string, walletId: string, webhookId: string): Promise<DeleteWebhookResponse>
 }
-export const webhooksApiFactory = (backend: CurrencyBackendApi): WebhooksApi => {
+export const webhooksApiFactory = (backend: BitcoinBackendApi): WebhooksApi => {
   const getWebhook = (userToken: string, walletId: string, webhookId: string) =>
     backend.getWebhook(userToken, walletId, webhookId)
 

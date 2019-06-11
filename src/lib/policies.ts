@@ -1,6 +1,6 @@
 import { PolicySettings } from '../types/domain'
 import { ListPoliciesResponse, ListWalletsForPolicyResponse } from 'response'
-import { CurrencyBackendApi } from './backend-api';
+import { BitcoinBackendApi } from './bitcoin/bitcoin-backend-api';
 
 export interface PolicyApi {
     createPolicy(token: string, name: string, policy: PolicySettings): Promise<any>
@@ -9,7 +9,7 @@ export interface PolicyApi {
     assignPolicy(token: string, policyId: string, walletId: string): Promise<any>
 }
 
-export const policyApiFactory = (backendApi: CurrencyBackendApi): PolicyApi => {
+export const policyApiFactory = (backendApi: BitcoinBackendApi): PolicyApi => {
     const createPolicy = (token: string, name: string, policySettings: PolicySettings): Promise<any> =>
         backendApi.createPolicy(token, { name, settings: policySettings })
 

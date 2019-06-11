@@ -3,7 +3,7 @@ import {
   SendETHResponse,
   SendTokensResponse
 } from 'response'
-import request from './utils/request'
+import request from '../utils/request'
 
 const getZlevatorUrl = () => process.env.ZLEVATOR_URL
 

@@ -1,4 +1,4 @@
-import { BaseBackendApi } from './backend-api'
+import { CoreBackendApi } from './backend-api'
 import { hashPassword } from './crypto'
 import { LoginBackendResponse, RegisterBackendResponse, SetupPasswordBackendResponse, Init2faBackendResponse, Confirm2faBackendResponse, Disable2faBackendResponse, InfoBackendResponse, BalanceBackendResponse } from 'response'
 
@@ -13,7 +13,7 @@ export interface UserApi {
   balance(token: string, fiatCurrency: string): Promise<BalanceBackendResponse>
 }
 
-export const userApiFactory = (backend: BaseBackendApi): UserApi => {
+export const userApiFactory = (backend: CoreBackendApi): UserApi => {
 
   const login = (login: string, password: string, code?: number) => {
     return backend.login(login, hashPassword(password), code)

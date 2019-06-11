@@ -1,9 +1,9 @@
 import * as btgLib from 'bgoldjs-lib'
 import { Transaction, TransactionBuilder, ECPair } from "bgoldjs-lib";
 import { BitcoinOperations } from "./bitcoin-operations";
-import { btcToSatoshi } from "./utils/helpers";
+import { btcToSatoshi } from "../utils/helpers";
 import BigNumber from "bignumber.js";
-import { Currency } from '../types/domain';
+import { Currency } from '../../types/domain';
 
 export default class BtgOperations extends BitcoinOperations {
   protected bitcoinLib = btgLib

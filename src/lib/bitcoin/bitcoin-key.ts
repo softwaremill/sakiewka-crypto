@@ -1,7 +1,7 @@
-import { KeyPair } from '../types/domain'
-import { getRandomBytes, encrypt, decrypt } from './crypto'
+import { KeyPair } from '../../types/domain'
+import { getRandomBytes, encrypt, decrypt } from '../crypto'
 import { HDNode } from 'bitcoinjs-lib'
-import { CurrencyBackendApi } from './backend-api';
+import { BitcoinBackendApi } from './bitcoin-backend-api';
 import { BitcoinOperations } from './bitcoin-operations';
 import { GetKeyBackendResponse } from 'response';
 
@@ -76,7 +76,7 @@ export const keyModuleFactory = (bitcoin: BitcoinOperations): KeyModule => {
   return { generateNewKeyPair, encryptKeyPair, deriveKeyPair, deriveKey, decryptKeyPair }
 }
 
-export const keyApiFactory = (backendApi: CurrencyBackendApi): KeyApi => {
+export const keyApiFactory = (backendApi: BitcoinBackendApi): KeyApi => {
   const getKey = (
     userToken: string,
     keyId: string,

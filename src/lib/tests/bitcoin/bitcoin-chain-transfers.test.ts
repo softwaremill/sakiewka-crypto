@@ -1,8 +1,8 @@
 import { expect } from 'chai'
 
-import * as backendApiFactory from '../backend-api'
-import { chainTransfersApiFactory } from '../transfers';
-import { currency } from './helpers';
+import * as backendApiFactory from '../../bitcoin/bitcoin-backend-api'
+import { chainTransfersApiFactory } from '../../transfers';
+import { currency } from '../helpers';
 
 const backendApi = backendApiFactory.withCurrency("http://backendApiUrl", currency)
 const chainTransfersApi = chainTransfersApiFactory(backendApi)

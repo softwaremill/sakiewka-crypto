@@ -1,8 +1,8 @@
-import { currency } from './helpers'
-import { keyModuleFactory } from '../key'
-import { addressModuleFactory } from '../address'
-import bitoinFactory from '../bitcoin'
-import * as constants from '../constants'
+import { currency } from '../helpers'
+import { keyModuleFactory } from '../../bitcoin/bitcoin-key'
+import { addressModuleFactory } from '../../bitcoin/bitcoin-address'
+import bitoinFactory from '../../bitcoin/bitcoin'
+import * as constants from '../../constants'
 
 const bitcoin = bitoinFactory(currency, 'testnet')
 const key = keyModuleFactory(bitcoin)

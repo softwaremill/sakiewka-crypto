@@ -1,7 +1,7 @@
 import { expect, use } from 'chai'
 
 import { currency } from './helpers'
-import * as backendApiFactory from '../backend-api'
+import * as backendApiFactory from '../bitcoin/bitcoin-backend-api'
 import BigNumber from 'bignumber.js'
 import chaiBigNumber from 'chai-bignumber'
 import { webhooksApiFactory } from '../webhooks'
