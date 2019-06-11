@@ -33,7 +33,8 @@ import {
   AssignPolicyBackendParams,
   ListWalletsForPolicyResponse,
   PolicyCreateRequest,
-  ListUtxosByAddressBackendResponse
+  ListUtxosByAddressBackendResponse,
+  BalanceBackendResponse
 } from 'response'
 import request from './utils/request'
 import { Currency } from '../types/domain'
@@ -66,6 +67,7 @@ export interface BaseBackendApi {
   monthlySummary(token: string, month: number, year: number, fiatCurrency: string): Promise<MontlySummaryBackendResponse>
   listTransfers(token: string, limit: number, nextPageToken?: string): Promise<ListTransfersBackendResponse>
   chainNetworkType(): Promise<ChainModeResponse>
+  balance(fiatCurrency: string): Promise<BalanceBackendResponse>
 }
 
 export const create = (backendApiUrl: string): BaseBackendApi => {
@@ -192,6 +194,15 @@ export const create = (backendApiUrl: string): BaseBackendApi => {
     return response.data
   }
 
+  const balance = async (fiatCurrency: string): Promise<BalanceBackendResponse> => {
+    const options = {
+      method: 'GET',
+      body: JSON.stringify({ fiatCurrency })
+    }
+    const response = await request(`${backendApiUrl}/user/balance`, options)
+    return response.data
+  }
+
   return {
     login,
     init2fa,
@@ -202,7 +213,8 @@ export const create = (backendApiUrl: string): BaseBackendApi => {
     info,
     monthlySummary,
     listTransfers,
-    chainNetworkType
+    chainNetworkType,
+    balance
   }
 }
 

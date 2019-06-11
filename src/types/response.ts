@@ -224,3 +224,12 @@ export interface AssignPolicyBackendParams {
 }
 
 export interface ListWalletsForPolicyResponse { }
+
+export interface BalanceBackendResponse {
+  chain: string
+  available: string
+  locked: string
+  total: string
+  totalInFiat: string
+  fiatCurrency: string
+}
