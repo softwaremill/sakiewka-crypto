@@ -8,6 +8,7 @@ export interface RegisterBackendResponse {
 }
 
 export interface SetupPasswordBackendResponse {
+  token: string
 }
 
 export interface InfoBackendResponse {
