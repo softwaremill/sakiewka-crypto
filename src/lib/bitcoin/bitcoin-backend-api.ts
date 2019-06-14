@@ -38,7 +38,7 @@ export interface BitcoinBackendApi {
   getWallet(token: string, walletId: string): Promise<GetWalletBackendResponse>,
   listAddresses(token: string, walletId: string, limit: number, nextPageToken?: string): Promise<ListAddressesBackendResponse>,
   listUnspents(token: string, walletId: string, params: GetUtxosBackendParams): Promise<ListUnspentsBackendResponse>,
-  listWallets(token: string, limit: number, nextPageToken?: string): Promise<ListWalletsBackendResponse>,
+  listWallets(token: string, limit: number, searchPhrase?:string, nextPageToken?: string): Promise<ListWalletsBackendResponse>,
   sendTransaction(token: string, walletId: string, txHex: string): Promise<any>,
   getFeesRates(): Promise<GetFeesRates>,
   maxTransferAmount(token: string, walletId: string, params: MaxTransferAmountBitcoinParams): Promise<MaxTransferAmountResponse>

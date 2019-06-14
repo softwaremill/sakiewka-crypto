@@ -15,7 +15,7 @@ export interface WalletApi {
 
   getWallet(userToken: string, walletId: string): Promise<GetWalletBackendResponse>
 
-  listWallets(userToken: string, limit: number, nextPageToken?: string): Promise<ListWalletsBackendResponse>
+  listWallets(userToken: string, limit: number, searchPhrase?:string, nextPageToken?: string): Promise<ListWalletsBackendResponse>
 
   maxTransferAmount(token: string, walletId: string, feeRate: number, recipient: string): Promise<MaxTransferAmountResponse>
 
@@ -50,7 +50,7 @@ export const walletApiFactory = (backendApi: EosBackendApi, keyModule: KeyModule
 
   const getWallet = (userToken: string, walletId: string): Promise<GetWalletBackendResponse> => backendApi.getWallet(userToken, walletId)
 
-  const listWallets = (userToken: string, limit: number, nextPageToken?: string): Promise<ListWalletsBackendResponse> => backendApi.listWallets(userToken, limit, nextPageToken)
+  const listWallets = (userToken: string, limit: number, searchPhrase?:string, nextPageToken?: string): Promise<ListWalletsBackendResponse> => backendApi.listWallets(userToken, limit, searchPhrase, nextPageToken)
 
   const maxTransferAmount = (token: string, walletId: string, feeRate: number, recipient: string): Promise<MaxTransferAmountResponse> => {
     const params: MaxTransferAmountEosParams = {

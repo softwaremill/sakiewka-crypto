@@ -34,6 +34,18 @@ const checkStatus = async (response: Response): Promise<Response> => {
   throw <ErrorResponse>{ errors: errors, code: response.status }
 }
 
+export interface OptionalQueryParam {
+  key: string,
+  value?: string | number | boolean
+}
+
+export const buildQueryParamString = (params : OptionalQueryParam[]) => {
+  return params
+    .filter(param => param.value)
+    .map((param,index) => (index == 0 ? '?' : '&') + `${param.key}=${param.value}`)
+    .join('')
+}
+
 export default function request(url: string, options: object): Promise<any> {
   return crossFetch(url, options)
     .then(checkStatus)
