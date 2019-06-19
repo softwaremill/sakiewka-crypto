@@ -1,6 +1,6 @@
 import { CoreBackendApi } from './backend-api'
-import { hashPassword } from './crypto';
-import { LoginBackendResponse, RegisterBackendResponse, SetupPasswordBackendResponse, Init2faBackendResponse, Confirm2faBackendResponse, Disable2faBackendResponse, InfoBackendResponse } from 'response';
+import { hashPassword } from './crypto'
+import { LoginBackendResponse, RegisterBackendResponse, SetupPasswordBackendResponse, Init2faBackendResponse, Confirm2faBackendResponse, Disable2faBackendResponse, InfoBackendResponse, BalanceBackendResponse } from 'response'
 
 export interface UserApi {
   login(login: string, password: string, code?: number): Promise<LoginBackendResponse>
@@ -10,6 +10,7 @@ export interface UserApi {
   confirm2fa(token: string, password: string, code: number): Promise<Confirm2faBackendResponse>
   disable2fa(token: string, password: string, code: number): Promise<Disable2faBackendResponse>
   info(token: string): Promise<InfoBackendResponse>
+  balance(token: string, fiatCurrency: string): Promise<BalanceBackendResponse>
 }
 
 export const userApiFactory = (backend: CoreBackendApi): UserApi => {
@@ -42,6 +43,10 @@ export const userApiFactory = (backend: CoreBackendApi): UserApi => {
     return backend.disable2fa(token, hashPassword(password), code)
   }
 
+  const balance = (token: string, fiatCurrency: string) => {
+    return backend.balance(token, fiatCurrency)
+  }
+
   return {
     login,
     register,
@@ -49,6 +54,7 @@ export const userApiFactory = (backend: CoreBackendApi): UserApi => {
     info,
     init2fa,
     confirm2fa,
-    disable2fa
+    disable2fa,
+    balance
   }
 }

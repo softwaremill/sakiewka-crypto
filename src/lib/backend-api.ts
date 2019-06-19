@@ -1,5 +1,4 @@
 import {
-  AssignPolicyBackendParams,
   ChainInfoResponse as ChainModeResponse,
   Confirm2faBackendResponse,
   CreateWalletBackendParams,
@@ -12,18 +11,20 @@ import {
   InfoBackendResponse,
   Init2faBackendResponse,
   ListAddressesBackendResponse,
-  ListPoliciesForWalletResponse,
-  ListPoliciesResponse,
   ListTransfersBackendResponse,
   ListWalletsBackendResponse,
-  ListWalletsForPolicyResponse,
   ListWebhooksResponse,
   LoginBackendResponse,
   MontlySummaryBackendResponse,
-  PolicyCreateRequest,
   RegisterBackendResponse,
   SetupPasswordBackendResponse,
-  TransferItemBackendResponse
+  TransferItemBackendResponse,
+  ListPoliciesForWalletResponse,
+  ListPoliciesResponse,
+  AssignPolicyBackendParams,
+  ListWalletsForPolicyResponse,
+  PolicyCreateRequest,
+  BalanceBackendResponse
 } from 'response'
 import request, { buildQueryParamString } from './utils/request'
 import { Currency } from '../types/domain'
@@ -57,6 +58,7 @@ export interface CoreBackendApi {
   monthlySummary(token: string, month: number, year: number, fiatCurrency: string): Promise<MontlySummaryBackendResponse>
   listTransfers(token: string, limit: number, nextPageToken?: string): Promise<ListTransfersBackendResponse>
   chainNetworkType(): Promise<ChainModeResponse>
+  balance(token: string, fiatCurrency: string): Promise<BalanceBackendResponse>
 }
 
 export const create = (backendApiUrl: string): CoreBackendApi => {
@@ -186,6 +188,18 @@ export const create = (backendApiUrl: string): CoreBackendApi => {
     return response.data
   }
 
+  const balance = async (token: string, fiatCurrency: string): Promise<BalanceBackendResponse> => {
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: token
+      },
+      body: JSON.stringify({ fiatCurrency })
+    }
+    const response = await request(`${backendApiUrl}/user/balance`, options)
+    return response.data
+  }
+
   return {
     login,
     init2fa,
@@ -196,7 +210,8 @@ export const create = (backendApiUrl: string): CoreBackendApi => {
     info,
     monthlySummary,
     listTransfers,
-    chainNetworkType
+    chainNetworkType,
+    balance
   }
 }
 

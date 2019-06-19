@@ -530,3 +530,23 @@ describe('find chain transfer by tx hash', () => {
     expect(params.headers.Authorization).to.eq('testToken')
   })
 })
+
+describe('balance', () => {
+  it('should exist', () => {
+    expect(baseApi.balance).to.be.a('function')
+  })
+
+  it('should send proper request', async () => {
+    const currency = 'USD'
+
+    await baseApi.balance('testToken', currency)
+
+    const [url, params] = mockImplementation.mock.calls[0]
+    const reqBody = JSON.parse(params.body)
+
+    expect(url).to.eq('backurl/api/v1/user/balance')
+    expect(params.method).to.eq('GET')
+    expect(params.headers.Authorization).to.eq('testToken')
+    expect(reqBody.fiatCurrency).to.eq(currency)
+  })
+})

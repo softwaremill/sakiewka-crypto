@@ -2,7 +2,7 @@ import { expect } from 'chai'
 
 import { userApiFactory } from '../user'
 import * as backendApiFactory from '../backend-api'
-import { hashPassword } from '../crypto';
+import { hashPassword } from '../crypto'
 
 const api = backendApiFactory.create("http://backendApiUrl")
 const user = userApiFactory(api)
@@ -168,6 +168,27 @@ describe('info', () => {
 
     const [token] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
+    expect(res).to.eq('backend response')
+  })
+})
+
+describe('balance', () => {
+  it('should exist', () => {
+    expect(user.register).to.be.a('function')
+  })
+
+  it('should pass proper arguments to backend-api method and return result of its call', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    user.balance = mockImplementation
+
+    const currency = 'USD'
+    const res = await user.balance('testToken', currency)
+    const [token, fiatCurrency] = mockImplementation.mock.calls[0]
+
+    expect(token).to.eq('testToken')
+    expect(fiatCurrency).to.eq(currency)
     expect(res).to.eq('backend response')
   })
 })
