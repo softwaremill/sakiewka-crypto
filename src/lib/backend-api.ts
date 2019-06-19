@@ -193,10 +193,13 @@ export const create = (backendApiUrl: string): CoreBackendApi => {
       method: 'GET',
       headers: {
         Authorization: token
-      },
-      body: JSON.stringify({ fiatCurrency })
+      }
     }
-    const response = await request(`${backendApiUrl}/user/balance`, options)
+    const queryParams = [
+      { key: 'fiatCurrency', value: fiatCurrency}
+    ]
+    const queryString = buildQueryParamString(queryParams)
+    const response = await request(`${backendApiUrl}/user/balance${queryString}`, options)
     return response.data
   }
 

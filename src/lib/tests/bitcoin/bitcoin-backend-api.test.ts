@@ -542,11 +542,9 @@ describe('balance', () => {
     await baseApi.balance('testToken', currency)
 
     const [url, params] = mockImplementation.mock.calls[0]
-    const reqBody = JSON.parse(params.body)
 
-    expect(url).to.eq('backurl/api/v1/user/balance')
+    expect(url).to.eq(`backurl/api/v1/user/balance?fiatCurrency=${currency}`)
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
-    expect(reqBody.fiatCurrency).to.eq(currency)
   })
 })
