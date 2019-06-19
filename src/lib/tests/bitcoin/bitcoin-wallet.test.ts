@@ -8,6 +8,7 @@ import chaiBigNumber from 'chai-bignumber'
 import * as pdfGen from '../../bitcoin/bitcoin-keycard-pdf'
 import { keyModuleFactory } from '../../bitcoin/bitcoin-key'
 import bitcoinFactory from '../../bitcoin/bitcoin'
+
 const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency)
 
 const bitcoinOperation = bitcoinFactory(currency, 'mainnet')
@@ -91,11 +92,12 @@ describe('listWallets', () => {
     // @ts-ignore
     backendApi.listWallets = mockImplementation
 
-    const res = await wallet.listWallets('testToken', 10, 'nextPageToken')
+    const res = await wallet.listWallets('testToken', 10, 'wallet3', 'nextPageToken')
 
-    const [token, limit, nextPageToken] = mockImplementation.mock.calls[0]
+    const [token, limit, searchPhrase, nextPageToken] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
     expect(limit).to.eq(10)
+    expect(searchPhrase).to.eq('wallet3')
     expect(nextPageToken).to.eq('nextPageToken')
     expect(res).to.eq('backend response')
   })
@@ -181,7 +183,7 @@ describe('list utxos by address', () => {
     // @ts-ignore
     backendApi.listUtxosByAddress = mockImplementation
 
-    const res = await wallet.listUtxosByAddress('testToken', '11','some-address',11,'nextpagetoken')
+    const res = await wallet.listUtxosByAddress('testToken', '11', 'some-address', 11, 'nextpagetoken')
 
     const [token, walletId, address, limit, nextPageToken] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')

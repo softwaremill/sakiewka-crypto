@@ -193,11 +193,11 @@ describe('listWallets', () => {
   })
 
   it('should send proper request with nextPageToken', async () => {
-    await bitcoinApi.listWallets('testToken', 10, 'abcd')
+    await bitcoinApi.listWallets('testToken', 10, 'searchPhrase','abcd')
 
     const [url, params] = mockImplementation.mock.calls[0]
 
-    expect(url).to.eq(`backurl/api/v1/${currency}/wallet?limit=10&nextPageToken=abcd`)
+    expect(url).to.eq(`backurl/api/v1/${currency}/wallet?limit=10&searchPhrase=searchPhrase&nextPageToken=abcd`)
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })

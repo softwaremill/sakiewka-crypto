@@ -25,7 +25,7 @@ import {
   SetupPasswordBackendResponse,
   TransferItemBackendResponse
 } from 'response'
-import request from './utils/request'
+import request, { buildQueryParamString } from './utils/request'
 import { Currency } from '../types/domain'
 import * as bitcoinBackendFactory from './bitcoin/bitcoin-backend-api';
 
@@ -162,17 +162,20 @@ export const create = (backendApiUrl: string): CoreBackendApi => {
   }
 
   const listTransfers = async (token: string,
-    limit: number,
-    nextPageToken?: string): Promise<ListTransfersBackendResponse> => {
+                               limit: number,
+                               nextPageToken?: string): Promise<ListTransfersBackendResponse> => {
     const options = {
       method: 'GET',
       headers: {
         Authorization: token
       }
     }
-    const nextPageParam = nextPageToken ? `&nextPageToken=${nextPageToken}` : ''
-    const queryString = `?limit=${limit}${nextPageParam}`
 
+    const queryParams = [
+      { key: 'limit', value: limit },
+      { key: 'nextPageToken', value: nextPageToken }
+    ]
+    const queryString = buildQueryParamString(queryParams)
     const response = await request(`${backendApiUrl}/transfer${queryString}`, options)
     return response.data
   }
@@ -236,6 +239,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
   const listWallets = async (
     token: string,
     limit: number,
+    searchPhrase?: string,
     nextPageToken?: string
   ): Promise<ListWalletsBackendResponse> => {
     const options = {
@@ -245,9 +249,14 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
       }
     }
 
-    const queryString = `limit=${limit}${nextPageToken ? `&nextPageToken=${nextPageToken}` : ''}`
+    const queryParams = [
+      { key: 'limit', value: limit },
+      { key: 'searchPhrase', value: searchPhrase },
+      { key: 'nextPageToken', value: nextPageToken }
+    ]
+    const queryString = buildQueryParamString(queryParams)
 
-    const response = await request(`${backendApiUrl}/${currency}/wallet?${queryString}`, options)
+    const response = await request(`${backendApiUrl}/${currency}/wallet${queryString}`, options)
     return response.data
   }
 
@@ -264,8 +273,12 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
         Authorization: token
       }
     }
-    const queryString = `limit=${limit}${nextPageToken ? `&nextPageToken=${nextPageToken}` : ''}`
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks?${queryString}`, options)
+    const queryParams = [
+      { key: 'limit', value: limit },
+      { key: 'nextPageToken', value: nextPageToken }
+    ]
+    const queryString = buildQueryParamString(queryParams)
+    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks${queryString}`, options)
     return response.data
   }
 
@@ -342,9 +355,12 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
       }
     }
 
-    const queryString = `limit=${limit}${nextPageToken ? `&nextPageToken=${nextPageToken}` : ''}`
-
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/address?${queryString}`, options)
+    const queryParams = [
+      { key: 'limit', value: limit },
+      { key: 'nextPageToken', value: nextPageToken }
+    ]
+    const queryString = buildQueryParamString(queryParams)
+    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/address${queryString}`, options)
     return response.data
   }
 
@@ -360,7 +376,8 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
       }
     }
 
-    const response = await request(`${backendApiUrl}/${currency}/key/${keyId}${includePrivate ? `?includePrivate=${includePrivate}` : ''}`, options)
+    const queryString = buildQueryParamString([{ key: 'includePrivate', value: includePrivate }])
+    const response = await request(`${backendApiUrl}/${currency}/key/${keyId}${queryString}`, options)
     return response.data
   }
 
@@ -396,9 +413,12 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
         Authorization: token
       }
     }
-    const nextPageParam = nextPageToken ? `&nextPageToken=${nextPageToken}` : ''
-    const queryString = `?limit=${limit}${nextPageParam}`
 
+    const queryParams = [
+      { key: 'limit', value: limit },
+      { key: 'nextPageToken', value: nextPageToken }
+    ]
+    const queryString = buildQueryParamString(queryParams)
     const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/transfer${queryString}`, options)
     return response.data
   }
@@ -421,9 +441,11 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
         Authorization: token
       }
     }
-    const nextPageParam = nextPageToken ? `&nextPageToken=${nextPageToken}` : ''
-    const queryString = `?limit=${limit}${nextPageParam}`
-
+    const queryParams = [
+      { key: 'limit', value: limit },
+      { key: 'nextPageToken', value: nextPageToken }
+    ]
+    const queryString = buildQueryParamString(queryParams)
     const response = await request(`${backendApiUrl}/${currency}/policy${queryString}`, options)
     return response.data
   }

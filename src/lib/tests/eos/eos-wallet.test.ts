@@ -70,11 +70,12 @@ describe('listWallets', () => {
     // @ts-ignore
     backendApi.listWallets = mockImplementation
 
-    const res = await wallet.listWallets('testToken', 10, 'nextPageToken')
+    const res = await wallet.listWallets('testToken', 10, 'searchPhrase', 'nextPageToken')
 
-    const [token, limit, nextPageToken] = mockImplementation.mock.calls[0]
+    const [token, limit, searchPhrase, nextPageToken] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
     expect(limit).to.eq(10)
+    expect(searchPhrase).to.eq('searchPhrase')
     expect(nextPageToken).to.eq('nextPageToken')
     expect(res).to.eq('backend response')
   })

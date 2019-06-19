@@ -14,7 +14,7 @@ import request from "../utils/request";
 export interface EosBackendApi {
   createWallet(token: string, params: CreateWalletBackendParams): Promise<CreateEosWalletBackendResponse>,
   getWallet(token: string, walletId: string): Promise<GetWalletBackendResponse>,
-  listWallets(token: string, limit: number, nextPageToken?: string): Promise<ListWalletsBackendResponse>,
+  listWallets(token: string, limit: number, searchPhrase?:string, nextPageToken?: string): Promise<ListWalletsBackendResponse>,
   maxTransferAmount(token: string, walletId: string, params: MaxTransferAmountEosParams): Promise<MaxTransferAmountResponse>
   listPoliciesForWallet(token: string, walletId: string): Promise<ListPoliciesForWalletResponse>
 }
