@@ -1,6 +1,6 @@
 import { CoreBackendApi } from './backend-api'
 import { hashPassword } from './crypto'
-import { LoginBackendResponse, RegisterBackendResponse, SetupPasswordBackendResponse, Init2faBackendResponse, Confirm2faBackendResponse, Disable2faBackendResponse, InfoBackendResponse, BalanceBackendResponse } from 'response'
+import { LoginBackendResponse, RegisterBackendResponse, SetupPasswordBackendResponse, Init2faBackendResponse, Confirm2faBackendResponse, Disable2faBackendResponse, InfoBackendResponse, BalanceBackendResponse, CreateAuthTokenBackendResponse, DeleteAuthTokenBackendResponse } from 'response'
 
 export interface UserApi {
   login(login: string, password: string, code?: number): Promise<LoginBackendResponse>
@@ -11,6 +11,8 @@ export interface UserApi {
   disable2fa(token: string, password: string, code: number): Promise<Disable2faBackendResponse>
   info(token: string): Promise<InfoBackendResponse>
   balance(token: string, fiatCurrency: string): Promise<BalanceBackendResponse>
+  createAuthToken(token: string, duration?: string, ip?: string, scope?: string[]): Promise<CreateAuthTokenBackendResponse>
+  deleteAuthToken(token: string): Promise<DeleteAuthTokenBackendResponse>
 }
 
 export const userApiFactory = (backend: CoreBackendApi): UserApi => {
@@ -47,6 +49,14 @@ export const userApiFactory = (backend: CoreBackendApi): UserApi => {
     return backend.balance(token, fiatCurrency)
   }
 
+  const createAuthToken = (token: string, duration?: string, ip?: string, scope?: string[]) => {
+    return backend.createAuthToken(token, duration, ip, scope)
+  }
+
+  const deleteAuthToken = (token: string) => {
+    return backend.deleteAuthToken(token)
+  }
+
   return {
     login,
     register,
@@ -55,6 +65,8 @@ export const userApiFactory = (backend: CoreBackendApi): UserApi => {
     init2fa,
     confirm2fa,
     disable2fa,
-    balance
+    balance,
+    createAuthToken,
+    deleteAuthToken
   }
 }

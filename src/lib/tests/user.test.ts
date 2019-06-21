@@ -192,3 +192,25 @@ describe('balance', () => {
     expect(res).to.eq('backend response')
   })
 })
+
+describe('createAuthToken', () => {
+  it('should exist', () => {
+    expect(user.createAuthToken).to.be.a('function')
+  })
+
+  it('should pass proper arguments to backend-api method and return result of its call', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => 'backend response')
+    // @ts-ignore
+    user.createAuthToken = mockImplementation
+
+    const res = await user.createAuthToken('testToken', '1 minute', '0.0.0.0', ['all'])
+    const [token, duration, ip, scope] = mockImplementation.mock.calls[0]
+
+    expect(token).to.eq('testToken')
+    expect(duration).to.eq('1 minute')
+    expect(ip).to.eq('0.0.0.0')
+    expect(scope).to.eql(['all'])
+    expect(res).to.eq('backend response')
+  })
+})
