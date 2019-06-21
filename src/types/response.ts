@@ -251,3 +251,9 @@ export interface BalanceBackendResponse {
   totalInFiat: string
   fiatCurrency: string
 }
+
+export interface CreateAuthTokenBackendResponse {
+  token: string
+}
+
+export interface DeleteAuthTokenBackendResponse { }

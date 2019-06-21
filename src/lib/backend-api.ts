@@ -24,7 +24,9 @@ import {
   AssignPolicyBackendParams,
   ListWalletsForPolicyResponse,
   PolicyCreateRequest,
-  BalanceBackendResponse
+  BalanceBackendResponse,
+  CreateAuthTokenBackendResponse,
+  DeleteAuthTokenBackendResponse
 } from 'response'
 import request, { buildQueryParamString } from './utils/request'
 import { Currency } from '../types/domain'
@@ -59,6 +61,8 @@ export interface CoreBackendApi {
   listTransfers(token: string, limit: number, nextPageToken?: string): Promise<ListTransfersBackendResponse>
   chainNetworkType(): Promise<ChainModeResponse>
   balance(token: string, fiatCurrency: string): Promise<BalanceBackendResponse>
+  createAuthToken(token: string, duration?: string, ip?: string, scope?: string[]): Promise<CreateAuthTokenBackendResponse>
+  deleteAuthToken(token: string): Promise<DeleteAuthTokenBackendResponse>
 }
 
 export const create = (backendApiUrl: string): CoreBackendApi => {
@@ -188,6 +192,33 @@ export const create = (backendApiUrl: string): CoreBackendApi => {
     return response.data
   }
 
+  const createAuthToken = async (token: string, duration?: string, ip?: string, scope?: string[]): Promise<CreateAuthTokenBackendResponse> => {
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: token
+      },
+      body: JSON.stringify({
+        duration,
+        ip,
+        scope
+      })
+    }
+    const response = await request(`${backendApiUrl}/user/auth-token`, options)
+    return response.data
+  }
+
+  const deleteAuthToken = async (token: string): Promise<DeleteAuthTokenBackendResponse> => {
+    const options = {
+      method: 'DELETE',
+      headers: {
+        Authorization: token
+      }
+    }
+    const response = await request(`${backendApiUrl}/user/auth-token`, options)
+    return response.data
+  }
+
   const balance = async (token: string, fiatCurrency: string): Promise<BalanceBackendResponse> => {
     const options = {
       method: 'GET',
@@ -214,7 +245,9 @@ export const create = (backendApiUrl: string): CoreBackendApi => {
     monthlySummary,
     listTransfers,
     chainNetworkType,
-    balance
+    balance,
+    createAuthToken,
+    deleteAuthToken
   }
 }
 
