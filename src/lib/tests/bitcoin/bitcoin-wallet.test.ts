@@ -61,6 +61,22 @@ describe('createWallet', () => {
   })
 })
 
+describe('editWallet', () => {
+  it('should pass proper arguments to backend-api method and return result of its call', async () => {
+    // @ts-ignore
+    const mockImplementation = jest.fn(() => ({ }))
+    // @ts-ignore
+    backendApi.editWallet = mockImplementation
+
+    await wallet.editWallet('token', 'walletId','newWalletName')
+    const [token, walletId,newWalletName] = mockImplementation.mock.calls[0]
+
+    expect(token).to.eq('token')
+    expect(walletId).to.eq('walletId')
+    expect(newWalletName).to.eq('newWalletName')
+  })
+})
+
 describe('getWallet', () => {
   it('should exist', () => {
     expect(wallet.getWallet).to.be.a('function')

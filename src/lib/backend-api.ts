@@ -272,6 +272,21 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
     return response.data
   }
 
+  const editWallet = async <T>(token: string, walletId:string, name:string): Promise<T> => {
+    const options = {
+      method: 'PATCH',
+      headers: {
+        Authorization: token
+      },
+      body: JSON.stringify({
+        name:name
+      })
+    }
+
+    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}`, options)
+    return response.data
+  }
+
   const getWallet = async (
     token: string,
     walletId: string
@@ -527,6 +542,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
 
   return {
     createWallet,
+    editWallet,
     getAddress,
     getKey,
     getWallet,

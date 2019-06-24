@@ -17,12 +17,13 @@ import { BitcoinBackendApi } from './bitcoin-backend-api'
 
 export interface WalletApi {
   createWallet(userToken: string, params: WalletParams): Promise<any>
+  editWallet(userToken: string, walletId: string, newName: string): Promise<any>
   getWallet(userToken: string, walletId: string): Promise<GetWalletBackendResponse>
-  listWallets(userToken: string, limit: number, searchPhrase?:string, nextPageToken?: string): Promise<ListWalletsBackendResponse>
+  listWallets(userToken: string, limit: number, searchPhrase?: string, nextPageToken?: string): Promise<ListWalletsBackendResponse>
   listUnspents(token: string, walletId: string, recipients: Recipient[], feeRate?: number): Promise<ListUnspentsBackendResponse>
   maxTransferAmount(token: string, walletId: string, feeRate: number, recipient: string): Promise<MaxTransferAmountResponse>
   listPoliciesForWallet(token: string, walletId: string): Promise<ListPoliciesForWalletResponse>
-  listUtxosByAddress(token: string, walletId: string, address:string, limit: number, nextPageToken?: string): Promise<ListUtxosByAddressBackendResponse>
+  listUtxosByAddress(token: string, walletId: string, address: string, limit: number, nextPageToken?: string): Promise<ListUtxosByAddressBackendResponse>
 
 }
 
@@ -58,9 +59,13 @@ export const walletApiFactory = (backendApi: BitcoinBackendApi, keyModule: KeyMo
     return { ...response, pdf }
   }
 
+  const editWallet = (userToken: string, walletId: string, newName: string): Promise<any> => {
+    return backendApi.editWallet(userToken, walletId, newName)
+  }
+
   const getWallet = (userToken: string, walletId: string): Promise<GetWalletBackendResponse> => backendApi.getWallet(userToken, walletId)
 
-  const listWallets = (userToken: string, limit: number, searchPhrase?:string, nextPageToken?: string): Promise<ListWalletsBackendResponse> => backendApi.listWallets(userToken, limit, searchPhrase, nextPageToken)
+  const listWallets = (userToken: string, limit: number, searchPhrase?: string, nextPageToken?: string): Promise<ListWalletsBackendResponse> => backendApi.listWallets(userToken, limit, searchPhrase, nextPageToken)
 
   const listUnspents = (
     token: string, walletId: string, recipients: Recipient[], feeRate?: number
@@ -87,12 +92,13 @@ export const walletApiFactory = (backendApi: BitcoinBackendApi, keyModule: KeyMo
     return backendApi.listPoliciesForWallet(token, walletId)
   }
 
-  const listUtxosByAddress = (token: string, walletId: string, address:string, limit: number, nextPageToken?: string): Promise<ListUtxosByAddressBackendResponse> => {
-    return backendApi.listUtxosByAddress(token, walletId, address,limit,nextPageToken)
+  const listUtxosByAddress = (token: string, walletId: string, address: string, limit: number, nextPageToken?: string): Promise<ListUtxosByAddressBackendResponse> => {
+    return backendApi.listUtxosByAddress(token, walletId, address, limit, nextPageToken)
   }
 
   return {
     createWallet,
+    editWallet,
     getWallet,
     listUnspents,
     listWallets,

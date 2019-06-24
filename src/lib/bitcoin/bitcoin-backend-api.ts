@@ -33,6 +33,7 @@ import { Currency } from '../../types/domain'
 export interface BitcoinBackendApi {
   createNewAddress(token: string, walletId: string, change: boolean, name?: string): Promise<CreateNewBitcoinAddressBackendResponse>,
   createWallet(token: string, params: CreateWalletBackendParams): Promise<CreateBitcoinWalletBackendResponse>,
+  editWallet(token: string, walleetId: string, name:string): Promise<any>,
   getAddress(token: string, walletId: string, address: string): Promise<GetBitcoinAddressBackendResponse>,
   getKey(token: string, keyId: string, includePrivate?: boolean): Promise<GetKeyBackendResponse>,
   getWallet(token: string, walletId: string): Promise<GetWalletBackendResponse>,
@@ -144,6 +145,7 @@ export const withCurrency = (backendApiUrl: string, currency: Currency): Bitcoin
   return {
     createNewAddress,
     createWallet: currencyApi.createWallet,
+    editWallet: currencyApi.editWallet,
     getAddress: currencyApi.getAddress,
     getKey: currencyApi.getKey,
     getWallet: currencyApi.getWallet,

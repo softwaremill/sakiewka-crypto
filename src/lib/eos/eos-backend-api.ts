@@ -13,6 +13,7 @@ import request from "../utils/request";
 
 export interface EosBackendApi {
   createWallet(token: string, params: CreateWalletBackendParams): Promise<CreateEosWalletBackendResponse>,
+  editWallet(token: string, walletId: string, name:string): Promise<any>,
   getWallet(token: string, walletId: string): Promise<GetWalletBackendResponse>,
   listWallets(token: string, limit: number, searchPhrase?:string, nextPageToken?: string): Promise<ListWalletsBackendResponse>,
   maxTransferAmount(token: string, walletId: string, params: MaxTransferAmountEosParams): Promise<MaxTransferAmountResponse>
@@ -37,6 +38,7 @@ export const create = (backendApiUrl: string): EosBackendApi => {
 
   return {
     createWallet: baseCurrencyApi.createWallet,
+    editWallet: baseCurrencyApi.editWallet,
     getWallet: baseCurrencyApi.getWallet,
     listWallets: baseCurrencyApi.listWallets,
     maxTransferAmount: maxTransferAmount,
