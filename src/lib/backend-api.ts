@@ -69,6 +69,12 @@ export interface CoreBackendApiSession {
   correlationId(): string
 }
 
+export class EmptyCoreBackendApiSession implements CoreBackendApiSession {
+  correlationId(): string {
+    return "";
+  }
+}
+
 export const create = (backendApiUrl: string, session: CoreBackendApiSession): CoreBackendApi => {
   // BTC
   // user

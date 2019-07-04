@@ -2,8 +2,9 @@ import { expect } from 'chai'
 
 import * as backendApiFactory from '../backend-api'
 import { transfersApiFactory } from '../transfers';
+import { EmptyCoreBackendApiSession } from '../backend-api';
 
-const backendApi = backendApiFactory.create("http://backendApiUrl")
+const backendApi = backendApiFactory.create("http://backendApiUrl", new EmptyCoreBackendApiSession())
 const transfersApi = transfersApiFactory(backendApi)
 
 beforeEach(() => {
@@ -45,10 +46,10 @@ describe('transfers - monthly summary', () => {
     it('should exist', () => {
       expect(transfersApi.monthlySummary).to.be.a('function')
     })
-  
+
     it('should pass proper arguments to backend',async () => {
       const result = await transfersApi.monthlySummary('testToken', 5, 1999, 'pln')
-  
+
       expect(result).to.be.eq('backend response')
       // @ts-ignore
       const [token, month, year, fiatCurrency] = backendApi.monthlySummary.mock.calls[0]
