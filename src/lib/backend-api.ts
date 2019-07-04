@@ -75,6 +75,8 @@ export const create = (backendApiUrl: string, getCorrelationId: () => string): C
   const login = async (login: string, password: string, codeIn?: number): Promise<LoginBackendResponse> => {
     console.log('====== getCorrelationId-2 ======');
     console.log(getCorrelationId);
+    console.log('====== getCorrelationId-3 ======');
+    console.log(getCorrelationId());
     const options = {
       method: 'POST',
       headers: {
