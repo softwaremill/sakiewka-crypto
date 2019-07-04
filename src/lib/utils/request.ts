@@ -22,7 +22,7 @@ const parseError = async (response: Response): Promise<ApiErrorDetails[]> => {
     const text = await response.text()
     return [<ApiErrorDetails>({ message: text, code: INTERNAL_ERROR_CODE })]
   }
-  return [<ApiErrorDetails>({ message: response.statusText, code: "SC-Unknown" })]
+  return [<ApiErrorDetails>({ message: response.statusText, code: 'SC-Unknown' })]
 }
 
 const checkStatus = async (response: Response): Promise<Response> => {
@@ -39,10 +39,10 @@ export interface OptionalQueryParam {
   value?: string | number | boolean
 }
 
-export const buildQueryParamString = (params : OptionalQueryParam[]) => {
+export const buildQueryParamString = (params: OptionalQueryParam[]) => {
   return params
     .filter(param => param.value)
-    .map((param,index) => (index == 0 ? '?' : '&') + `${param.key}=${param.value}`)
+    .map((param, index) => (index == 0 ? '?' : '&') + `${param.key}=${param.value}`)
     .join('')
 }
 
@@ -52,7 +52,13 @@ export default function request(url: string, options: object): Promise<any> {
     .then(parseResponse)
 }
 
-export function requestWithCorrelationId(url: string, options: object, correlationId: string): Promise<any> {
-  options.headers['X-Correlation-Id'] = correlationId
-  return request(url, options)
+export function requestWithCorrelationId(url: string, options: any, correlationId: string): Promise<any> {
+  const richOptions = {
+    ...options,
+    headers: {
+      ...options.headers,
+      'X-Correlation-Id': correlationId
+    }
+  }
+  return request(url, richOptions)
 }
