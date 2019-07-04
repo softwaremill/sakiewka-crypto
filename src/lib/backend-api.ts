@@ -29,7 +29,7 @@ import {
   DeleteAuthTokenBackendResponse
 } from 'response'
 import request, { buildQueryParamString } from './utils/request'
-import { Currency } from '../types/domain'
+import { Currency } from '..'
 import * as bitcoinBackendFactory from './bitcoin/bitcoin-backend-api';
 
 export interface SakiewkaBackend {
@@ -38,8 +38,8 @@ export interface SakiewkaBackend {
   [Currency.BTG]: bitcoinBackendFactory.BitcoinBackendApi
 }
 
-export const backendFactory = (backendApiUrl: string): SakiewkaBackend => {
-  const backendApi = create(backendApiUrl)
+export const backendFactory = (backendApiUrl: string, session: CoreBackendApiSession): SakiewkaBackend => {
+  const backendApi = create(backendApiUrl, session)
   const btcBackendApi = bitcoinBackendFactory.withCurrency(backendApiUrl, Currency.BTC)
   const btgBackendApi = bitcoinBackendFactory.withCurrency(backendApiUrl, Currency.BTG)
   return {
@@ -65,12 +65,19 @@ export interface CoreBackendApi {
   deleteAuthToken(token: string): Promise<DeleteAuthTokenBackendResponse>
 }
 
-export const create = (backendApiUrl: string): CoreBackendApi => {
+export interface CoreBackendApiSession {
+  correlationId(): string
+}
+
+export const create = (backendApiUrl: string, session: CoreBackendApiSession): CoreBackendApi => {
   // BTC
   // user
   const login = async (login: string, password: string, codeIn?: number): Promise<LoginBackendResponse> => {
     const options = {
       method: 'POST',
+      headers: {
+        Authorization: session.correlationId()
+      },
       body: JSON.stringify({
         password,
         email: login,
