@@ -2,9 +2,8 @@ import { expect } from 'chai'
 
 import * as backendApiFactory from '../backend-api'
 import { transfersApiFactory } from '../transfers';
-import { EmptyCoreBackendApiSession } from '../backend-api';
 
-const backendApi = backendApiFactory.create("http://backendApiUrl", new EmptyCoreBackendApiSession())
+const backendApi = backendApiFactory.create("http://backendApiUrl", () => "")
 const transfersApi = transfersApiFactory(backendApi)
 
 beforeEach(() => {

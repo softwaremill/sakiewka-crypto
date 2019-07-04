@@ -38,8 +38,8 @@ export interface SakiewkaBackend {
   [Currency.BTG]: bitcoinBackendFactory.BitcoinBackendApi
 }
 
-export const backendFactory = (backendApiUrl: string, session: CoreBackendApiSession): SakiewkaBackend => {
-  const backendApi = create(backendApiUrl, session)
+export const backendFactory = (backendApiUrl: string, getCorrelationId: () => string): SakiewkaBackend => {
+  const backendApi = create(backendApiUrl, getCorrelationId)
   const btcBackendApi = bitcoinBackendFactory.withCurrency(backendApiUrl, Currency.BTC)
   const btgBackendApi = bitcoinBackendFactory.withCurrency(backendApiUrl, Currency.BTG)
   return {
@@ -65,24 +65,14 @@ export interface CoreBackendApi {
   deleteAuthToken(token: string): Promise<DeleteAuthTokenBackendResponse>
 }
 
-export interface CoreBackendApiSession {
-  correlationId: () => string;
-  bartek: string
-}
-
-export class EmptyCoreBackendApiSession implements CoreBackendApiSession {
-  correlationId: () => ""
-  bartek: "bartek"
-}
-
-export const create = (backendApiUrl: string, session: CoreBackendApiSession): CoreBackendApi => {
+export const create = (backendApiUrl: string, getCorrelationId: () => string): CoreBackendApi => {
   // BTC
   // user
   const login = async (login: string, password: string, codeIn?: number): Promise<LoginBackendResponse> => {
     const options = {
       method: 'POST',
       headers: {
-        Authorization: session.correlationId()
+        'X-Correlation-Id': getCorrelationId()
       },
       body: JSON.stringify({
         password,

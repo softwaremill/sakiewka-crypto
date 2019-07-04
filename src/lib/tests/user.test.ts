@@ -3,9 +3,8 @@ import { expect } from 'chai'
 import { userApiFactory } from '../user'
 import * as backendApiFactory from '../backend-api'
 import { hashPassword } from '../crypto'
-import { EmptyCoreBackendApiSession } from '../backend-api';
 
-const api = backendApiFactory.create("http://backendApiUrl", new EmptyCoreBackendApiSession())
+const api = backendApiFactory.create("http://backendApiUrl", () => "")
 const user = userApiFactory(api)
 
 describe('login', () => {
