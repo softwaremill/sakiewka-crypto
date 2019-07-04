@@ -38,12 +38,12 @@ export interface SakiewkaBackend {
   [Currency.BTG]: bitcoinBackendFactory.BitcoinBackendApi
 }
 
-type CorrelationIdGetter = () => string
+export type CorrelationIdGetter = () => string
 
 export const backendFactory = (backendApiUrl: string, getCorrelationId: CorrelationIdGetter): SakiewkaBackend => {
   const backendApi = create(backendApiUrl, getCorrelationId)
-  const btcBackendApi = bitcoinBackendFactory.withCurrency(backendApiUrl, Currency.BTC)
-  const btgBackendApi = bitcoinBackendFactory.withCurrency(backendApiUrl, Currency.BTG)
+  const btcBackendApi = bitcoinBackendFactory.withCurrency(backendApiUrl, Currency.BTC, getCorrelationId)
+  const btgBackendApi = bitcoinBackendFactory.withCurrency(backendApiUrl, Currency.BTG, getCorrelationId)
   return {
     core: backendApi,
     [Currency.BTC]: btcBackendApi,

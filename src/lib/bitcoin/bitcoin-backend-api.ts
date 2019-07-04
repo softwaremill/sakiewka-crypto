@@ -28,7 +28,8 @@ import {
 } from 'response'
 import request from '../utils/request'
 import * as backendApi from '../backend-api'
-import { Currency } from '../../types/domain'
+import { Currency } from '../..'
+import { CorrelationIdGetter } from '../backend-api';
 
 export interface BitcoinBackendApi {
   createNewAddress(token: string, walletId: string, change: boolean, name?: string): Promise<CreateNewBitcoinAddressBackendResponse>,
@@ -57,9 +58,9 @@ export interface BitcoinBackendApi {
   listWalletsForPolicy(token: string, policyId: string): Promise<ListWalletsForPolicyResponse>
 }
 
-export const withCurrency = (backendApiUrl: string, currency: Currency): BitcoinBackendApi => {
+export const withCurrency = (backendApiUrl: string, currency: Currency, getCorrelationId: CorrelationIdGetter): BitcoinBackendApi => {
 
-  const currencyApi = backendApi.currencyApi(backendApiUrl, currency)
+  const currencyApi = backendApi.currencyApi(backendApiUrl, currency, getCorrelationId)
 
   const listUtxosByAddress = async (token: string,
                                     walletId: string,

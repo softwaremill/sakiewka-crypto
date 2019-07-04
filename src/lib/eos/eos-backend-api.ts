@@ -7,9 +7,10 @@ import {
   MaxTransferAmountEosParams,
   MaxTransferAmountResponse
 } from 'response'
-import { Currency } from '../../types/domain'
+import { Currency } from '../..'
 import * as backendApi from "../backend-api";
 import request from "../utils/request";
+import { CorrelationIdGetter } from '../backend-api';
 
 export interface EosBackendApi {
   createWallet(token: string, params: CreateWalletBackendParams): Promise<CreateEosWalletBackendResponse>,
@@ -20,9 +21,9 @@ export interface EosBackendApi {
   listPoliciesForWallet(token: string, walletId: string): Promise<ListPoliciesForWalletResponse>
 }
 
-export const create = (backendApiUrl: string): EosBackendApi => {
+export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGetter): EosBackendApi => {
 
-  const baseCurrencyApi = backendApi.currencyApi(backendApiUrl, Currency.EOS)
+  const baseCurrencyApi = backendApi.currencyApi(backendApiUrl, Currency.EOS, getCorrelationId)
 
   const maxTransferAmount = async (token: string, walletId: string, params: MaxTransferAmountEosParams): Promise<MaxTransferAmountResponse> => {
     const options = {
