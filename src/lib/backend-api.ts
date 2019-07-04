@@ -66,13 +66,13 @@ export interface CoreBackendApi {
 }
 
 export interface CoreBackendApiSession {
-  correlationId(): string
+  correlationId: () => string;
+  bartek: string
 }
 
 export class EmptyCoreBackendApiSession implements CoreBackendApiSession {
-  correlationId(): string {
-    return "";
-  }
+  correlationId: () => ""
+  bartek: "bartek"
 }
 
 export const create = (backendApiUrl: string, session: CoreBackendApiSession): CoreBackendApi => {
