@@ -51,3 +51,8 @@ export default function request(url: string, options: object): Promise<any> {
     .then(checkStatus)
     .then(parseResponse)
 }
+
+export function requestWithCorrelationId(url: string, options: object, correlationId: string): Promise<any> {
+  options.headers['X-Correlation-Id'] = correlationId
+  return request(url, options)
+}

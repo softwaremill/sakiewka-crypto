@@ -28,7 +28,7 @@ import {
   CreateAuthTokenBackendResponse,
   DeleteAuthTokenBackendResponse
 } from 'response'
-import request, { buildQueryParamString } from './utils/request'
+import request, { buildQueryParamString, requestWithCorrelationId } from './utils/request'
 import { Currency } from '..'
 import * as bitcoinBackendFactory from './bitcoin/bitcoin-backend-api';
 
@@ -73,16 +73,13 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
   const login = async (login: string, password: string, codeIn?: number): Promise<LoginBackendResponse> => {
     const options = {
       method: 'POST',
-      headers: {
-        'X-Correlation-Id': getCorrelationId()
-      },
       body: JSON.stringify({
         password,
         email: login,
         code: codeIn
       })
     }
-    const response = await request(`${backendApiUrl}/user/login`, options)
+    const response = await requestWithCorrelationId(`${backendApiUrl}/user/login`, options, getCorrelationId())
     return response.data
   }
 
@@ -275,7 +272,7 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
 }
 
 
-export const currencyApi = (backendApiUrl: string, currency: Currency) => {
+export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrelationId: CorrelationIdGetter) => {
   // wallet
   const createWallet = async <T>(
     token: string,
@@ -284,7 +281,8 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       },
       body: JSON.stringify({
         ...params
@@ -299,7 +297,8 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
     const options = {
       method: 'PATCH',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       },
       body: JSON.stringify({
         name:name
@@ -317,7 +316,8 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       }
     }
 
@@ -334,7 +334,8 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       }
     }
 
@@ -359,7 +360,8 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       }
     }
     const queryParams = [
@@ -379,7 +381,8 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       }
     }
     const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks/${webhookId}`, options)
@@ -395,7 +398,8 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       },
       body: JSON.stringify({ callbackUrl, settings })
     }
@@ -411,7 +415,8 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
     const options = {
       method: 'DELETE',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       }
     }
     const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks/${webhookId}`, options)
@@ -423,7 +428,8 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       }
     }
 
@@ -440,7 +446,8 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       }
     }
 
@@ -461,7 +468,8 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       }
     }
 
@@ -474,7 +482,8 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       },
       body: JSON.stringify(params)
     }
@@ -487,7 +496,8 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       }
     }
 
@@ -499,7 +509,8 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       }
     }
 
@@ -516,7 +527,8 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       }
     }
     const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/transfer/${txHash}`, options)
