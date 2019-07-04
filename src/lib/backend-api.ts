@@ -90,7 +90,8 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       },
       body: JSON.stringify({ password })
     }
@@ -102,7 +103,8 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       },
       body: JSON.stringify({ password, code })
     }
@@ -114,7 +116,8 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       },
       body: JSON.stringify({ password, code })
     }
@@ -125,6 +128,9 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
   const register = async (login: string): Promise<RegisterBackendResponse> => {
     const options = {
       method: 'POST',
+      headers: {
+        'X-Correlation-Id': getCorrelationId()
+      },
       body: JSON.stringify({
         email: login
       })
@@ -138,7 +144,8 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       },
       body: JSON.stringify({
         password
@@ -152,7 +159,8 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       }
     }
 
@@ -164,7 +172,8 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       }
     }
 
@@ -178,7 +187,8 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       }
     }
 
@@ -192,7 +202,12 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
   }
 
   const chainNetworkType = async (): Promise<ChainModeResponse> => {
-    const options = { method: 'GET' }
+    const options = {
+      method: 'GET',
+      headers: {
+        'X-Correlation-Id': getCorrelationId()
+      }
+    }
     const response = await request(`${backendApiUrl}/chain-network-type`, options)
     return response.data
   }
@@ -201,7 +216,8 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       },
       body: JSON.stringify({
         duration,
@@ -217,7 +233,8 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
     const options = {
       method: 'DELETE',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       }
     }
     const response = await request(`${backendApiUrl}/user/auth-token`, options)
@@ -228,7 +245,8 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
+        Authorization: token,
+        'X-Correlation-Id': getCorrelationId()
       }
     }
     const queryParams = [
