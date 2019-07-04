@@ -8,15 +8,15 @@ import {
   MaxTransferAmountResponse
 } from 'response'
 import { Currency } from '../..'
-import * as backendApi from "../backend-api";
-import request from "../utils/request";
-import { CorrelationIdGetter } from '../backend-api';
+import * as backendApi from '../backend-api'
+import { CorrelationIdGetter } from '../backend-api'
+import { requestWithCorrelationId } from '../utils/request'
 
 export interface EosBackendApi {
   createWallet(token: string, params: CreateWalletBackendParams): Promise<CreateEosWalletBackendResponse>,
-  editWallet(token: string, walletId: string, name:string): Promise<any>,
+  editWallet(token: string, walletId: string, name: string): Promise<any>,
   getWallet(token: string, walletId: string): Promise<GetWalletBackendResponse>,
-  listWallets(token: string, limit: number, searchPhrase?:string, nextPageToken?: string): Promise<ListWalletsBackendResponse>,
+  listWallets(token: string, limit: number, searchPhrase?: string, nextPageToken?: string): Promise<ListWalletsBackendResponse>,
   maxTransferAmount(token: string, walletId: string, params: MaxTransferAmountEosParams): Promise<MaxTransferAmountResponse>
   listPoliciesForWallet(token: string, walletId: string): Promise<ListPoliciesForWalletResponse>
 }
@@ -33,7 +33,7 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
       }
     }
 
-    const response = await request(`${backendApiUrl}/eos/wallet/${walletId}/max-transfer-amount?recipient=${params.recipient}`, options)
+    const response = await requestWithCorrelationId(`${backendApiUrl}/eos/wallet/${walletId}/max-transfer-amount?recipient=${params.recipient}`, options, getCorrelationId())
     return response.data
   }
 
