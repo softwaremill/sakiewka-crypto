@@ -39,6 +39,8 @@ export interface SakiewkaBackend {
 }
 
 export const backendFactory = (backendApiUrl: string, getCorrelationId: () => string): SakiewkaBackend => {
+  console.log('====== getCorrelationId-0 ======');
+  console.log(getCorrelationId);
   const backendApi = create(backendApiUrl, getCorrelationId)
   const btcBackendApi = bitcoinBackendFactory.withCurrency(backendApiUrl, Currency.BTC)
   const btgBackendApi = bitcoinBackendFactory.withCurrency(backendApiUrl, Currency.BTG)
@@ -68,7 +70,11 @@ export interface CoreBackendApi {
 export const create = (backendApiUrl: string, getCorrelationId: () => string): CoreBackendApi => {
   // BTC
   // user
+  console.log('====== getCorrelationId-1 ======');
+  console.log(getCorrelationId);
   const login = async (login: string, password: string, codeIn?: number): Promise<LoginBackendResponse> => {
+    console.log('====== getCorrelationId-2 ======');
+    console.log(getCorrelationId);
     const options = {
       method: 'POST',
       headers: {
