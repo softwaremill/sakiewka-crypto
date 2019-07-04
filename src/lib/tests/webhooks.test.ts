@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js'
 import chaiBigNumber from 'chai-bignumber'
 import { webhooksApiFactory } from '../webhooks'
 
-const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency)
+const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency, () => '')
 
 const webhooks = webhooksApiFactory(backendApi)
 

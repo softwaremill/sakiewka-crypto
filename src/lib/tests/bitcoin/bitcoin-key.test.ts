@@ -5,7 +5,7 @@ import * as backendApiFactory from '../../bitcoin/bitcoin-backend-api'
 import { keyApiFactory, keyModuleFactory } from '../../bitcoin/bitcoin-key'
 import bitoinFactory from '../../bitcoin/bitcoin'
 
-const backendApi = backendApiFactory.withCurrency("http://backendApiUrl", currency)
+const backendApi = backendApiFactory.withCurrency("http://backendApiUrl", currency, () => '')
 // @ts-ignore
 backendApi.createWallet = jest.fn(() => {
   return Promise.resolve({

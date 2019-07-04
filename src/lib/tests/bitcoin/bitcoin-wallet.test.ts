@@ -9,7 +9,7 @@ import * as pdfGen from '../../bitcoin/bitcoin-keycard-pdf'
 import { keyModuleFactory } from '../../bitcoin/bitcoin-key'
 import bitcoinFactory from '../../bitcoin/bitcoin'
 
-const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency)
+const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency, () => '')
 
 const bitcoinOperation = bitcoinFactory(currency, 'mainnet')
 const keyModule = keyModuleFactory(bitcoinOperation)

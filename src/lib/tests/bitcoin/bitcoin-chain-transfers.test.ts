@@ -4,7 +4,7 @@ import * as backendApiFactory from '../../bitcoin/bitcoin-backend-api'
 import { chainTransfersApiFactory } from '../../transfers';
 import { currency } from '../helpers';
 
-const backendApi = backendApiFactory.withCurrency("http://backendApiUrl", currency)
+const backendApi = backendApiFactory.withCurrency("http://backendApiUrl", currency, () => '')
 const chainTransfersApi = chainTransfersApiFactory(backendApi)
 
 beforeEach(() => {
@@ -48,10 +48,10 @@ describe('transfers - findTransferByTxHash', () => {
     it('should exist', () => {
       expect(chainTransfersApi.findTransferByTxHash).to.be.a('function')
     })
-  
+
     it('should pass proper arguments to backend',async () => {
       const result = await chainTransfersApi.findTransferByTxHash('testToken', 'walletId', 'txHash')
-  
+
       expect(result).to.be.eq('backend response')
       // @ts-ignore
       const [token, walletId, txHash] = backendApi.findTransferByTxHash.mock.calls[0]

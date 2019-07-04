@@ -39,7 +39,7 @@ beforeEach(() => {
 })
 
 describe('sendCoins', () => {
-  const backend = backendFactory.withCurrency("http://backendApiUrl", currency)
+  const backend = backendFactory.withCurrency("http://backendApiUrl", currency, () => '')
   stubCreateAddress(backend, changeAddress)
   const bitcoinModule = bitcoinModuleFactory(currency, 'mainnet')
   const keyModule = keyModuleFactory(bitcoinModule)
@@ -419,7 +419,7 @@ describe('sendCoins', () => {
 })
 
 describe('sendCoins to multiple outputs', () => {
-  const backend = backendFactory.withCurrency("http://backendApiUrl", currency)
+  const backend = backendFactory.withCurrency("http://backendApiUrl", currency, () => '')
   const bitcoinModule = bitcoinModuleFactory(currency, 'mainnet')
   const keyModule = keyModuleFactory(bitcoinModule)
   const walletApi = walletApiFactory(backend, keyModule)
@@ -493,7 +493,7 @@ describe('sendCoins to multiple outputs', () => {
 })
 
 describe('decodeTransaction', () => {
-  const backend = backendFactory.withCurrency("http://backendApiUrl", currency)
+  const backend = backendFactory.withCurrency("http://backendApiUrl", currency, () => '')
   const bitcoinModule = bitcoinModuleFactory(currency, 'mainnet')
   const keyModule = keyModuleFactory(bitcoinModule)
   const transactionModule = transactionModuleFactory(keyModule, bitcoinModule)
@@ -533,7 +533,7 @@ describe('decodeTransaction', () => {
 })
 
 describe('signTransaction', () => {
-  const backend = backendFactory.withCurrency("http://backendApiUrl", currency)
+  const backend = backendFactory.withCurrency("http://backendApiUrl", currency, () => '')
   const bitcoinModule = bitcoinModuleFactory(currency, 'mainnet')
   const keyModule = keyModuleFactory(bitcoinModule)
   const transactionModule = transactionModuleFactory(keyModule, bitcoinModule)
@@ -571,7 +571,7 @@ describe('signTransaction', () => {
 })
 
 describe('testnet transactions', () => {
-  const backend = backendFactory.withCurrency("http://backendApiUrl", currency)
+  const backend = backendFactory.withCurrency("http://backendApiUrl", currency, () => '')
   const bitcoinModule = bitcoinModuleFactory(currency, 'testnet')
   const keyModule = keyModuleFactory(bitcoinModule)
   const walletApi = walletApiFactory(backend, keyModule)

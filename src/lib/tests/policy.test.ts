@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js'
 import chaiBigNumber from 'chai-bignumber'
 import { DailyAmountPolicy } from '../../types/domain'
 import { policyApiFactory } from '../policies';
-const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency)
+const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency, () => '')
 
 const policy = policyApiFactory(backendApi)
 

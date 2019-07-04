@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js'
 import chaiBigNumber from 'chai-bignumber'
 import { keyModuleFactory } from '../../eos/eos-key'
 
-const backendApi = backendApiFactory.create('http://backendApiUrl')
+const backendApi = backendApiFactory.create('http://backendApiUrl', () => '')
 const keyModule = keyModuleFactory()
 const wallet = walletApiFactory(backendApi, keyModule)
 

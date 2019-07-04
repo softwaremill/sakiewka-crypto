@@ -4,7 +4,7 @@ import { currency } from '../helpers'
 import * as backendApiFactory from '../../bitcoin/bitcoin-backend-api'
 import { feeRatesApiFactory } from '../../bitcoin/bitcoin-fee-rates';
 
-const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency)
+const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency, () => '')
 // @ts-ignore
 backendApi.getFeesRates = jest.fn(() => {
   return Promise.resolve({
