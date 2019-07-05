@@ -191,8 +191,7 @@ export const create = (backendApiUrl: string, httpClient: HttpClient): CoreBacke
 
   const chainNetworkType = async (): Promise<ChainModeResponse> => {
     const options = {
-      method: 'GET',
-      headers: {}
+      method: 'GET'
     }
     const response = await httpClient.request(`${backendApiUrl}/chain-network-type`, options)
     return response.data

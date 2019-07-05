@@ -65,7 +65,5 @@ export const createHttpClient = (getCorrelationId: CorrelationIdGetter): HttpCli
       .then(parseResponse)
   }
 
-  return {
-    request
-  }
+  return { request }
 }
