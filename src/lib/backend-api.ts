@@ -28,7 +28,7 @@ import {
   CreateAuthTokenBackendResponse,
   DeleteAuthTokenBackendResponse
 } from 'response'
-import { buildQueryParamString, requestWithCorrelationId } from './utils/request'
+import { buildQueryParamString, createHttpClient, HttpClient } from './utils/httpClient'
 import { Currency } from '..'
 import * as bitcoinBackendFactory from './bitcoin/bitcoin-backend-api'
 
@@ -41,9 +41,10 @@ export interface SakiewkaBackend {
 export type CorrelationIdGetter = () => string
 
 export const backendFactory = (backendApiUrl: string, getCorrelationId: CorrelationIdGetter): SakiewkaBackend => {
-  const backendApi = create(backendApiUrl, getCorrelationId)
-  const btcBackendApi = bitcoinBackendFactory.withCurrency(backendApiUrl, Currency.BTC, getCorrelationId)
-  const btgBackendApi = bitcoinBackendFactory.withCurrency(backendApiUrl, Currency.BTG, getCorrelationId)
+  const httpClient = createHttpClient(getCorrelationId)
+  const backendApi = create(backendApiUrl, httpClient)
+  const btcBackendApi = bitcoinBackendFactory.withCurrency(backendApiUrl, Currency.BTC, httpClient)
+  const btgBackendApi = bitcoinBackendFactory.withCurrency(backendApiUrl, Currency.BTG, httpClient)
   return {
     core: backendApi,
     [Currency.BTC]: btcBackendApi,
@@ -67,7 +68,7 @@ export interface CoreBackendApi {
   deleteAuthToken(token: string): Promise<DeleteAuthTokenBackendResponse>
 }
 
-export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGetter): CoreBackendApi => {
+export const create = (backendApiUrl: string, httpClient: HttpClient): CoreBackendApi => {
   // BTC
   // user
   const login = async (login: string, password: string, codeIn?: number): Promise<LoginBackendResponse> => {
@@ -79,7 +80,8 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
         code: codeIn
       })
     }
-    const response = await requestWithCorrelationId(`${backendApiUrl}/user/login`, options, getCorrelationId())
+
+    const response = await httpClient.request(`${backendApiUrl}/user/login`, options)
     return response.data
   }
 
@@ -91,7 +93,7 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
       },
       body: JSON.stringify({ password })
     }
-    const response = await requestWithCorrelationId(`${backendApiUrl}/user/2fa/init`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/user/2fa/init`, options)
     return response.data
   }
 
@@ -103,7 +105,7 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
       },
       body: JSON.stringify({ password, code })
     }
-    const response = await requestWithCorrelationId(`${backendApiUrl}/user/2fa/confirm`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/user/2fa/confirm`, options)
     return response.data
   }
 
@@ -111,27 +113,23 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token,
-        'X-Correlation-Id': getCorrelationId()
+        Authorization: token
       },
       body: JSON.stringify({ password, code })
     }
-    const response = await requestWithCorrelationId(`${backendApiUrl}/user/2fa/disable`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/user/2fa/disable`, options)
     return response.data
   }
 
   const register = async (login: string): Promise<RegisterBackendResponse> => {
     const options = {
       method: 'POST',
-      headers: {
-        'X-Correlation-Id': getCorrelationId()
-      },
       body: JSON.stringify({
         email: login
       })
     }
 
-    const response = await requestWithCorrelationId(`${backendApiUrl}/user/register`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/user/register`, options)
     return response.data
   }
 
@@ -139,14 +137,13 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token,
-        'X-Correlation-Id': getCorrelationId()
+        Authorization: token
       },
       body: JSON.stringify({
         password
       })
     }
-    const response = await requestWithCorrelationId(`${backendApiUrl}/user/setup-password`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/user/setup-password`, options)
     return response.data
   }
 
@@ -154,12 +151,11 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token,
-        'X-Correlation-Id': getCorrelationId()
+        Authorization: token
       }
     }
 
-    const response = await requestWithCorrelationId(`${backendApiUrl}/user/info`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/user/info`, options)
     return response.data
   }
 
@@ -167,12 +163,11 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token,
-        'X-Correlation-Id': getCorrelationId()
+        Authorization: token
       }
     }
 
-    const response = await requestWithCorrelationId(`${backendApiUrl}/transfer/monthly-summary/${month}/${year}/${fiatCurrency}`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/transfer/monthly-summary/${month}/${year}/${fiatCurrency}`, options)
     return response.data
   }
 
@@ -182,8 +177,7 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token,
-        'X-Correlation-Id': getCorrelationId()
+        Authorization: token
       }
     }
 
@@ -192,18 +186,16 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
       { key: 'nextPageToken', value: nextPageToken }
     ]
     const queryString = buildQueryParamString(queryParams)
-    const response = await requestWithCorrelationId(`${backendApiUrl}/transfer${queryString}`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/transfer${queryString}`, options)
     return response.data
   }
 
   const chainNetworkType = async (): Promise<ChainModeResponse> => {
     const options = {
       method: 'GET',
-      headers: {
-        'X-Correlation-Id': getCorrelationId()
-      }
+      headers: {}
     }
-    const response = await requestWithCorrelationId(`${backendApiUrl}/chain-network-type`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/chain-network-type`, options)
     return response.data
   }
 
@@ -211,8 +203,7 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token,
-        'X-Correlation-Id': getCorrelationId()
+        Authorization: token
       },
       body: JSON.stringify({
         duration,
@@ -220,7 +211,7 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
         scope
       })
     }
-    const response = await requestWithCorrelationId(`${backendApiUrl}/user/auth-token`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/user/auth-token`, options)
     return response.data
   }
 
@@ -228,11 +219,10 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
     const options = {
       method: 'DELETE',
       headers: {
-        Authorization: token,
-        'X-Correlation-Id': getCorrelationId()
+        Authorization: token
       }
     }
-    const response = await requestWithCorrelationId(`${backendApiUrl}/user/auth-token`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/user/auth-token`, options)
     return response.data
   }
 
@@ -240,15 +230,14 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token,
-        'X-Correlation-Id': getCorrelationId()
+        Authorization: token
       }
     }
     const queryParams = [
       { key: 'fiatCurrency', value: fiatCurrency }
     ]
     const queryString = buildQueryParamString(queryParams)
-    const response = await requestWithCorrelationId(`${backendApiUrl}/user/balance${queryString}`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/user/balance${queryString}`, options)
     return response.data
   }
 
@@ -270,7 +259,7 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
 }
 
 
-export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrelationId: CorrelationIdGetter) => {
+export const currencyApi = (backendApiUrl: string, currency: Currency, httpClient: HttpClient) => {
   // wallet
   const createWallet = async <T>(
     token: string,
@@ -279,15 +268,14 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrel
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token,
-        'X-Correlation-Id': getCorrelationId()
+        Authorization: token
       },
       body: JSON.stringify({
         ...params
       })
     }
 
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/wallet`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet`, options)
     return response.data
   }
 
@@ -295,15 +283,14 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrel
     const options = {
       method: 'PATCH',
       headers: {
-        Authorization: token,
-        'X-Correlation-Id': getCorrelationId()
+        Authorization: token
       },
       body: JSON.stringify({
         name: name
       })
     }
 
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/wallet/${walletId}`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}`, options)
     return response.data
   }
 
@@ -314,12 +301,11 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrel
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token,
-        'X-Correlation-Id': getCorrelationId()
+        Authorization: token
       }
     }
 
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/wallet/${walletId}`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}`, options)
     return response.data
   }
 
@@ -332,8 +318,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrel
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token,
-        'X-Correlation-Id': getCorrelationId()
+        Authorization: token
       }
     }
 
@@ -344,7 +329,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrel
     ]
     const queryString = buildQueryParamString(queryParams)
 
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/wallet${queryString}`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet${queryString}`, options)
     return response.data
   }
 
@@ -358,8 +343,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrel
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token,
-        'X-Correlation-Id': getCorrelationId()
+        Authorization: token
       }
     }
     const queryParams = [
@@ -367,7 +351,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrel
       { key: 'nextPageToken', value: nextPageToken }
     ]
     const queryString = buildQueryParamString(queryParams)
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks${queryString}`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks${queryString}`, options)
     return response.data
   }
 
@@ -379,11 +363,10 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrel
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token,
-        'X-Correlation-Id': getCorrelationId()
+        Authorization: token
       }
     }
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks/${webhookId}`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks/${webhookId}`, options)
     return response.data
   }
 
@@ -396,12 +379,11 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrel
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token,
-        'X-Correlation-Id': getCorrelationId()
+        Authorization: token
       },
       body: JSON.stringify({ callbackUrl, settings })
     }
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks`, options)
     return response.data
   }
 
@@ -413,11 +395,10 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrel
     const options = {
       method: 'DELETE',
       headers: {
-        Authorization: token,
-        'X-Correlation-Id': getCorrelationId()
+        Authorization: token
       }
     }
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks/${webhookId}`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks/${webhookId}`, options)
     return response.data
   }
 
@@ -426,12 +407,11 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrel
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token,
-        'X-Correlation-Id': getCorrelationId()
+        Authorization: token
       }
     }
 
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/wallet/${walletId}/address/${address}`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/address/${address}`, options)
     return response.data
   }
 
@@ -444,8 +424,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrel
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token,
-        'X-Correlation-Id': getCorrelationId()
+        Authorization: token
       }
     }
 
@@ -454,7 +433,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrel
       { key: 'nextPageToken', value: nextPageToken }
     ]
     const queryString = buildQueryParamString(queryParams)
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/wallet/${walletId}/address${queryString}`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/address${queryString}`, options)
     return response.data
   }
 
@@ -466,13 +445,12 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrel
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token,
-        'X-Correlation-Id': getCorrelationId()
+        Authorization: token
       }
     }
 
     const queryString = buildQueryParamString([{ key: 'includePrivate', value: includePrivate }])
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/key/${keyId}${queryString}`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/key/${keyId}${queryString}`, options)
     return response.data
   }
 
@@ -480,13 +458,12 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrel
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token,
-        'X-Correlation-Id': getCorrelationId()
+        Authorization: token
       },
       body: JSON.stringify(params)
     }
 
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/policy`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/policy`, options)
     return response.data
   }
 
@@ -494,12 +471,11 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrel
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token,
-        'X-Correlation-Id': getCorrelationId()
+        Authorization: token
       }
     }
 
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/wallet/${walletId}/policy`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/policy`, options)
     return response.data
   }
 
@@ -507,8 +483,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrel
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token,
-        'X-Correlation-Id': getCorrelationId()
+        Authorization: token
       }
     }
 
@@ -517,7 +492,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrel
       { key: 'nextPageToken', value: nextPageToken }
     ]
     const queryString = buildQueryParamString(queryParams)
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/wallet/${walletId}/transfer${queryString}`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/transfer${queryString}`, options)
     return response.data
   }
 
@@ -525,11 +500,10 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrel
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token,
-        'X-Correlation-Id': getCorrelationId()
+        Authorization: token
       }
     }
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/wallet/${walletId}/transfer/${txHash}`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/transfer/${txHash}`, options)
     return response.data
   }
 
@@ -545,7 +519,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrel
       { key: 'nextPageToken', value: nextPageToken }
     ]
     const queryString = buildQueryParamString(queryParams)
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/policy${queryString}`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/policy${queryString}`, options)
     return response.data
   }
 
@@ -558,7 +532,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrel
       body: JSON.stringify(assignParams)
     }
 
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/policy/${policyId}/assign`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/policy/${policyId}/assign`, options)
     return response.data
   }
 
@@ -569,7 +543,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, getCorrel
         Authorization: token
       }
     }
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/policy/${policyId}/wallet`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/policy/${policyId}/wallet`, options)
     return response.data
   }
 

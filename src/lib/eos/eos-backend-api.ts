@@ -1,16 +1,7 @@
-import {
-  CreateEosWalletBackendResponse,
-  CreateWalletBackendParams,
-  GetWalletBackendResponse,
-  ListPoliciesForWalletResponse,
-  ListWalletsBackendResponse,
-  MaxTransferAmountEosParams,
-  MaxTransferAmountResponse
-} from 'response'
+import { CreateEosWalletBackendResponse, CreateWalletBackendParams, GetWalletBackendResponse, ListPoliciesForWalletResponse, ListWalletsBackendResponse, MaxTransferAmountEosParams, MaxTransferAmountResponse } from 'response'
 import { Currency } from '../..'
 import * as backendApi from '../backend-api'
-import { CorrelationIdGetter } from '../backend-api'
-import { requestWithCorrelationId } from '../utils/request'
+import { HttpClient } from '../utils/httpClient'
 
 export interface EosBackendApi {
   createWallet(token: string, params: CreateWalletBackendParams): Promise<CreateEosWalletBackendResponse>,
@@ -21,9 +12,9 @@ export interface EosBackendApi {
   listPoliciesForWallet(token: string, walletId: string): Promise<ListPoliciesForWalletResponse>
 }
 
-export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGetter): EosBackendApi => {
+export const create = (backendApiUrl: string, httpClient: HttpClient): EosBackendApi => {
 
-  const baseCurrencyApi = backendApi.currencyApi(backendApiUrl, Currency.EOS, getCorrelationId)
+  const baseCurrencyApi = backendApi.currencyApi(backendApiUrl, Currency.EOS, httpClient)
 
   const maxTransferAmount = async (token: string, walletId: string, params: MaxTransferAmountEosParams): Promise<MaxTransferAmountResponse> => {
     const options = {
@@ -33,7 +24,7 @@ export const create = (backendApiUrl: string, getCorrelationId: CorrelationIdGet
       }
     }
 
-    const response = await requestWithCorrelationId(`${backendApiUrl}/eos/wallet/${walletId}/max-transfer-amount?recipient=${params.recipient}`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/eos/wallet/${walletId}/max-transfer-amount?recipient=${params.recipient}`, options)
     return response.data
   }
 

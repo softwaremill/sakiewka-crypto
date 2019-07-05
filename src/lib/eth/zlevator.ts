@@ -3,9 +3,11 @@ import {
   SendETHResponse,
   SendTokensResponse
 } from 'response'
-import request from '../utils/request'
+import { createHttpClient } from '../utils/httpClient'
 
 const getZlevatorUrl = () => process.env.ZLEVATOR_URL
+
+export const httpClient = createHttpClient(() => "")
 
 // ETH
 // transaction
@@ -14,7 +16,7 @@ export const getNextNonce = async (): Promise<EthGetTransactionParamsResponse> =
     method: 'GET'
   }
 
-  return await request(`${getZlevatorUrl()}/withdraw/new`, options)
+  return await httpClient.request(`${getZlevatorUrl()}/withdraw/new`, options)
 }
 
 export const sendETH = async (
@@ -34,7 +36,7 @@ export const sendETH = async (
     })
   }
 
-  return await request(`${getZlevatorUrl()}/withdraw/eth`, options)
+  return await httpClient.request(`${getZlevatorUrl()}/withdraw/eth`, options)
 }
 
 export const sendTokens = async (
@@ -53,5 +55,5 @@ export const sendTokens = async (
       value
     })
   }
-  return await request(`${getZlevatorUrl()}/withdraw/tokens`, options)
+  return await httpClient.request(`${getZlevatorUrl()}/withdraw/tokens`, options)
 }

@@ -26,10 +26,9 @@ import {
   PolicyCreateRequest,
   TransferItemBackendResponse
 } from 'response'
-import { requestWithCorrelationId } from '../utils/request'
+import { HttpClient } from '../utils/httpClient'
 import * as backendApi from '../backend-api'
 import { Currency } from '../..'
-import { CorrelationIdGetter } from '../backend-api'
 
 export interface BitcoinBackendApi {
   createNewAddress(token: string, walletId: string, change: boolean, name?: string): Promise<CreateNewBitcoinAddressBackendResponse>,
@@ -58,9 +57,9 @@ export interface BitcoinBackendApi {
   listWalletsForPolicy(token: string, policyId: string): Promise<ListWalletsForPolicyResponse>
 }
 
-export const withCurrency = (backendApiUrl: string, currency: Currency, getCorrelationId: CorrelationIdGetter): BitcoinBackendApi => {
+export const withCurrency = (backendApiUrl: string, currency: Currency, httpClient: HttpClient): BitcoinBackendApi => {
 
-  const currencyApi = backendApi.currencyApi(backendApiUrl, currency, getCorrelationId)
+  const currencyApi = backendApi.currencyApi(backendApiUrl, currency, httpClient)
 
   const listUtxosByAddress = async (token: string,
                                     walletId: string,
@@ -74,7 +73,7 @@ export const withCurrency = (backendApiUrl: string, currency: Currency, getCorre
       }
     }
     const queryString = `limit=${limit}${nextPageToken ? `&nextPageToken=${nextPageToken}` : ''}`
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/wallet/${walletId}/${address}/utxo?${queryString}`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/${address}/utxo?${queryString}`, options)
     return response.data
   }
 
@@ -91,7 +90,7 @@ export const withCurrency = (backendApiUrl: string, currency: Currency, getCorre
       })
     }
 
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/wallet/${walletId}/address`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/address`, options)
     return response.data
   }
 
@@ -106,7 +105,7 @@ export const withCurrency = (backendApiUrl: string, currency: Currency, getCorre
       })
     }
 
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/wallet/${walletId}/utxo`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/utxo`, options)
     return response.data
   }
 
@@ -122,7 +121,7 @@ export const withCurrency = (backendApiUrl: string, currency: Currency, getCorre
       })
     }
 
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/wallet/${walletId}/send`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/send`, options)
     return response.data
   }
 
@@ -134,12 +133,12 @@ export const withCurrency = (backendApiUrl: string, currency: Currency, getCorre
       }
     }
 
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/wallet/${walletId}/max-transfer-amount?recipient=${params.recipient}&feeRate=${params.feeRate}`, options, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/max-transfer-amount?recipient=${params.recipient}&feeRate=${params.feeRate}`, options)
     return response.data
   }
 
   const getFeesRates = async (): Promise<GetFeesRates> => {
-    const response = await requestWithCorrelationId(`${backendApiUrl}/${currency}/fees`, { method: 'GET' }, getCorrelationId())
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/fees`, { method: 'GET' })
     return response.data
   }
 
