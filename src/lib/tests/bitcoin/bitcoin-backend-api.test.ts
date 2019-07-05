@@ -3,16 +3,17 @@ import { expect } from 'chai'
 import { currency } from '../helpers'
 import * as apiFactory from '../../backend-api'
 import * as bitcoinApiFactory from '../../bitcoin/bitcoin-backend-api'
-const baseApi = apiFactory.create('backurl/api/v1', () => "")
-const bitcoinApi = bitcoinApiFactory.withCurrency('backurl/api/v1', currency, () => '')
 import * as request from '../../utils/request'
 import { MaxTransferAmountBitcoinParams } from 'response'
-import { PolicySettings, DailyAmountPolicy, PolicyKind } from '../../../types/domain'
+import { DailyAmountPolicy, PolicyKind, PolicySettings } from '../../../types/domain'
+
+const baseApi = apiFactory.create('backurl/api/v1', () => "")
+const bitcoinApi = bitcoinApiFactory.withCurrency('backurl/api/v1', currency, () => '')
 
 // @ts-ignore
 const mockImplementation = jest.fn(() => ({ data: 'testToken' }))
 // @ts-ignore
-request.default = mockImplementation
+request.requestWithCorrelationId = mockImplementation
 
 beforeEach(() => {
   // @ts-ignore
