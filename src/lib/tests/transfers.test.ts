@@ -2,8 +2,9 @@ import { expect } from 'chai'
 
 import * as backendApiFactory from '../backend-api'
 import { transfersApiFactory } from '../transfers';
+import { createHttpClient } from '../utils/httpClient';
 
-const backendApi = backendApiFactory.create("http://backendApiUrl", () => "")
+const backendApi = backendApiFactory.create("http://backendApiUrl", createHttpClient(() => ''))
 const transfersApi = transfersApiFactory(backendApi)
 
 beforeEach(() => {

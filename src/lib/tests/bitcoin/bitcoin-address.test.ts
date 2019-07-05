@@ -6,8 +6,9 @@ import * as backendFactory from '../../bitcoin/bitcoin-backend-api'
 import { keyModuleFactory } from '../../bitcoin/bitcoin-key'
 import bitcoinFactory from '../../bitcoin/bitcoin'
 import { Currency } from '../../..';
+import { createHttpClient } from '../../utils/httpClient';
 
-const backendApi = backendFactory.withCurrency('https://backendApiUrl', currency, () => '')
+const backendApi = backendFactory.withCurrency('https://backendApiUrl', currency, createHttpClient(() => ''))
 describe('generateNewMultisigAddress', () => {
   it('should exist', () => {
     const bitcoin = bitcoinFactory(currency, 'mainnet')
