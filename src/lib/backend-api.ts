@@ -80,7 +80,6 @@ export const create = (backendApiUrl: string, httpClient: HttpClient): CoreBacke
         code: codeIn
       })
     }
-
     const response = await httpClient.request(`${backendApiUrl}/user/login`, options)
     return response.data
   }
