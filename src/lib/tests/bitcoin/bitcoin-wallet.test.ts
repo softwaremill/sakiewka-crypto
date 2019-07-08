@@ -8,8 +8,9 @@ import chaiBigNumber from 'chai-bignumber'
 import * as pdfGen from '../../bitcoin/bitcoin-keycard-pdf'
 import { keyModuleFactory } from '../../bitcoin/bitcoin-key'
 import bitcoinFactory from '../../bitcoin/bitcoin'
+import { createHttpClient } from '../../utils/httpClient';
 
-const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency)
+const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency, createHttpClient(() => ''))
 
 const bitcoinOperation = bitcoinFactory(currency, 'mainnet')
 const keyModule = keyModuleFactory(bitcoinOperation)

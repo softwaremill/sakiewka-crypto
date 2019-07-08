@@ -1,4 +1,4 @@
-import { Currency } from "../../types/domain";
+import { Currency } from '../..';
 
 const currencyUnderTest = process.env.CURRENCY_UNDER_TEST || ''
 export const currency = Currency[currencyUnderTest]
