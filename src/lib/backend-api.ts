@@ -66,6 +66,7 @@ export interface CoreBackendApi {
   balance(token: string, fiatCurrency: string): Promise<BalanceBackendResponse>
   createAuthToken(token: string, duration?: string, ip?: string, scope?: string[]): Promise<CreateAuthTokenBackendResponse>
   deleteAuthToken(token: string): Promise<DeleteAuthTokenBackendResponse>
+  addUserSupportSubmission(token:string, subject:string, content:string): Promise<any>
 }
 
 export const create = (backendApiUrl: string, httpClient: HttpClient): CoreBackendApi => {
@@ -239,6 +240,20 @@ export const create = (backendApiUrl: string, httpClient: HttpClient): CoreBacke
     return response.data
   }
 
+  const addUserSupportSubmission = async (token:string, subject:string, content:string): Promise<any> => {
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: token
+      },
+      body: JSON.stringify({
+        subject,
+        content,
+      })
+    }
+    return await httpClient.request(`${backendApiUrl}/user/support`, options)
+  }
+
   return {
     login,
     init2fa,
@@ -252,7 +267,8 @@ export const create = (backendApiUrl: string, httpClient: HttpClient): CoreBacke
     chainNetworkType,
     balance,
     createAuthToken,
-    deleteAuthToken
+    deleteAuthToken,
+    addUserSupportSubmission
   }
 }
 
