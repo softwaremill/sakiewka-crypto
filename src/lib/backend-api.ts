@@ -251,8 +251,7 @@ export const create = (backendApiUrl: string, httpClient: HttpClient): CoreBacke
         content,
       })
     }
-    const response = await httpClient.request(`${backendApiUrl}/user/support`, options)
-    return response.data
+    return await httpClient.request(`${backendApiUrl}/user/support`, options)
   }
 
   return {
@@ -305,7 +304,8 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, httpClien
       })
     }
 
-    return await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}`, options)
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}`, options)
+    return response.data
   }
 
   const getWallet = async (
