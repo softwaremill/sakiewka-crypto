@@ -12,7 +12,8 @@ export interface UserApi {
   info(token: string): Promise<InfoBackendResponse>
   balance(token: string, fiatCurrency: string): Promise<BalanceBackendResponse>
   createAuthToken(token: string, duration?: string, ip?: string, scope?: string[]): Promise<CreateAuthTokenBackendResponse>
-  deleteAuthToken(token: string): Promise<DeleteAuthTokenBackendResponse>
+  deleteAuthToken(token: string): Promise<DeleteAuthTokenBackendResponse>,
+  addSupportSubmission(token:string, subject:string, content: string) : Promise<any>
 }
 
 export const userApiFactory = (backend: CoreBackendApi): UserApi => {
@@ -57,6 +58,10 @@ export const userApiFactory = (backend: CoreBackendApi): UserApi => {
     return backend.deleteAuthToken(token)
   }
 
+  const addSupportSubmission = (token:string, subject:string, content: string) => {
+    return backend.addUserSupportSubmission(token, subject, content)
+  }
+
   return {
     login,
     register,
@@ -67,6 +72,7 @@ export const userApiFactory = (backend: CoreBackendApi): UserApi => {
     disable2fa,
     balance,
     createAuthToken,
-    deleteAuthToken
+    deleteAuthToken,
+    addSupportSubmission
   }
 }
