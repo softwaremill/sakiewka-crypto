@@ -305,8 +305,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, httpClien
       })
     }
 
-    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}`, options)
-    return response.data
+    return await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}`, options)
   }
 
   const getWallet = async (
