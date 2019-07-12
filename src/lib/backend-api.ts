@@ -28,9 +28,9 @@ import {
   CreateAuthTokenBackendResponse,
   DeleteAuthTokenBackendResponse
 } from 'response'
-import request, { buildQueryParamString } from './utils/request'
-import { Currency } from '../types/domain'
-import * as bitcoinBackendFactory from './bitcoin/bitcoin-backend-api';
+import { buildQueryParamString, createHttpClient, HttpClient } from './utils/httpClient'
+import { Currency } from '..'
+import * as bitcoinBackendFactory from './bitcoin/bitcoin-backend-api'
 
 export interface SakiewkaBackend {
   core: CoreBackendApi,
@@ -38,10 +38,13 @@ export interface SakiewkaBackend {
   [Currency.BTG]: bitcoinBackendFactory.BitcoinBackendApi
 }
 
-export const backendFactory = (backendApiUrl: string): SakiewkaBackend => {
-  const backendApi = create(backendApiUrl)
-  const btcBackendApi = bitcoinBackendFactory.withCurrency(backendApiUrl, Currency.BTC)
-  const btgBackendApi = bitcoinBackendFactory.withCurrency(backendApiUrl, Currency.BTG)
+export type CorrelationIdGetter = () => string
+
+export const backendFactory = (backendApiUrl: string, getCorrelationId: CorrelationIdGetter): SakiewkaBackend => {
+  const httpClient = createHttpClient(getCorrelationId)
+  const backendApi = create(backendApiUrl, httpClient)
+  const btcBackendApi = bitcoinBackendFactory.withCurrency(backendApiUrl, Currency.BTC, httpClient)
+  const btgBackendApi = bitcoinBackendFactory.withCurrency(backendApiUrl, Currency.BTG, httpClient)
   return {
     core: backendApi,
     [Currency.BTC]: btcBackendApi,
@@ -66,7 +69,7 @@ export interface CoreBackendApi {
   addUserSupportSubmission(token:string, subject:string, content:string): Promise<any>
 }
 
-export const create = (backendApiUrl: string): CoreBackendApi => {
+export const create = (backendApiUrl: string, httpClient: HttpClient): CoreBackendApi => {
   // BTC
   // user
   const login = async (login: string, password: string, codeIn?: number): Promise<LoginBackendResponse> => {
@@ -78,7 +81,7 @@ export const create = (backendApiUrl: string): CoreBackendApi => {
         code: codeIn
       })
     }
-    const response = await request(`${backendApiUrl}/user/login`, options)
+    const response = await httpClient.request(`${backendApiUrl}/user/login`, options)
     return response.data
   }
 
@@ -90,7 +93,7 @@ export const create = (backendApiUrl: string): CoreBackendApi => {
       },
       body: JSON.stringify({ password })
     }
-    const response = await request(`${backendApiUrl}/user/2fa/init`, options)
+    const response = await httpClient.request(`${backendApiUrl}/user/2fa/init`, options)
     return response.data
   }
 
@@ -102,7 +105,7 @@ export const create = (backendApiUrl: string): CoreBackendApi => {
       },
       body: JSON.stringify({ password, code })
     }
-    const response = await request(`${backendApiUrl}/user/2fa/confirm`, options)
+    const response = await httpClient.request(`${backendApiUrl}/user/2fa/confirm`, options)
     return response.data
   }
 
@@ -114,7 +117,7 @@ export const create = (backendApiUrl: string): CoreBackendApi => {
       },
       body: JSON.stringify({ password, code })
     }
-    const response = await request(`${backendApiUrl}/user/2fa/disable`, options)
+    const response = await httpClient.request(`${backendApiUrl}/user/2fa/disable`, options)
     return response.data
   }
 
@@ -126,7 +129,7 @@ export const create = (backendApiUrl: string): CoreBackendApi => {
       })
     }
 
-    const response = await request(`${backendApiUrl}/user/register`, options)
+    const response = await httpClient.request(`${backendApiUrl}/user/register`, options)
     return response.data
   }
 
@@ -140,7 +143,7 @@ export const create = (backendApiUrl: string): CoreBackendApi => {
         password
       })
     }
-    const response = await request(`${backendApiUrl}/user/setup-password`, options)
+    const response = await httpClient.request(`${backendApiUrl}/user/setup-password`, options)
     return response.data
   }
 
@@ -152,7 +155,7 @@ export const create = (backendApiUrl: string): CoreBackendApi => {
       }
     }
 
-    const response = await request(`${backendApiUrl}/user/info`, options)
+    const response = await httpClient.request(`${backendApiUrl}/user/info`, options)
     return response.data
   }
 
@@ -164,7 +167,7 @@ export const create = (backendApiUrl: string): CoreBackendApi => {
       }
     }
 
-    const response = await request(`${backendApiUrl}/transfer/monthly-summary/${month}/${year}/${fiatCurrency}`, options)
+    const response = await httpClient.request(`${backendApiUrl}/transfer/monthly-summary/${month}/${year}/${fiatCurrency}`, options)
     return response.data
   }
 
@@ -183,13 +186,15 @@ export const create = (backendApiUrl: string): CoreBackendApi => {
       { key: 'nextPageToken', value: nextPageToken }
     ]
     const queryString = buildQueryParamString(queryParams)
-    const response = await request(`${backendApiUrl}/transfer${queryString}`, options)
+    const response = await httpClient.request(`${backendApiUrl}/transfer${queryString}`, options)
     return response.data
   }
 
   const chainNetworkType = async (): Promise<ChainModeResponse> => {
-    const options = { method: 'GET' }
-    const response = await request(`${backendApiUrl}/chain-network-type`, options)
+    const options = {
+      method: 'GET'
+    }
+    const response = await httpClient.request(`${backendApiUrl}/chain-network-type`, options)
     return response.data
   }
 
@@ -205,7 +210,7 @@ export const create = (backendApiUrl: string): CoreBackendApi => {
         scope
       })
     }
-    const response = await request(`${backendApiUrl}/user/auth-token`, options)
+    const response = await httpClient.request(`${backendApiUrl}/user/auth-token`, options)
     return response.data
   }
 
@@ -216,7 +221,7 @@ export const create = (backendApiUrl: string): CoreBackendApi => {
         Authorization: token
       }
     }
-    const response = await request(`${backendApiUrl}/user/auth-token`, options)
+    const response = await httpClient.request(`${backendApiUrl}/user/auth-token`, options)
     return response.data
   }
 
@@ -228,10 +233,10 @@ export const create = (backendApiUrl: string): CoreBackendApi => {
       }
     }
     const queryParams = [
-      { key: 'fiatCurrency', value: fiatCurrency}
+      { key: 'fiatCurrency', value: fiatCurrency }
     ]
     const queryString = buildQueryParamString(queryParams)
-    const response = await request(`${backendApiUrl}/user/balance${queryString}`, options)
+    const response = await httpClient.request(`${backendApiUrl}/user/balance${queryString}`, options)
     return response.data
   }
 
@@ -246,7 +251,7 @@ export const create = (backendApiUrl: string): CoreBackendApi => {
         content,
       })
     }
-    const response = await request(`${backendApiUrl}/user/support`, options)
+    const response = await httpClient.request(`${backendApiUrl}/user/support`, options)
     return response.data
   }
 
@@ -269,7 +274,7 @@ export const create = (backendApiUrl: string): CoreBackendApi => {
 }
 
 
-export const currencyApi = (backendApiUrl: string, currency: Currency) => {
+export const currencyApi = (backendApiUrl: string, currency: Currency, httpClient: HttpClient) => {
   // wallet
   const createWallet = async <T>(
     token: string,
@@ -285,22 +290,22 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
       })
     }
 
-    const response = await request(`${backendApiUrl}/${currency}/wallet`, options)
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet`, options)
     return response.data
   }
 
-  const editWallet = async <T>(token: string, walletId:string, name:string): Promise<T> => {
+  const editWallet = async <T>(token: string, walletId: string, name: string): Promise<T> => {
     const options = {
       method: 'PATCH',
       headers: {
         Authorization: token
       },
       body: JSON.stringify({
-        name:name
+        name: name
       })
     }
 
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}`, options)
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}`, options)
     return response.data
   }
 
@@ -315,7 +320,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
       }
     }
 
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}`, options)
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}`, options)
     return response.data
   }
 
@@ -339,7 +344,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
     ]
     const queryString = buildQueryParamString(queryParams)
 
-    const response = await request(`${backendApiUrl}/${currency}/wallet${queryString}`, options)
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet${queryString}`, options)
     return response.data
   }
 
@@ -361,7 +366,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
       { key: 'nextPageToken', value: nextPageToken }
     ]
     const queryString = buildQueryParamString(queryParams)
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks${queryString}`, options)
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks${queryString}`, options)
     return response.data
   }
 
@@ -376,7 +381,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
         Authorization: token
       }
     }
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks/${webhookId}`, options)
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks/${webhookId}`, options)
     return response.data
   }
 
@@ -393,7 +398,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
       },
       body: JSON.stringify({ callbackUrl, settings })
     }
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks`, options)
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks`, options)
     return response.data
   }
 
@@ -408,7 +413,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
         Authorization: token
       }
     }
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks/${webhookId}`, options)
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks/${webhookId}`, options)
     return response.data
   }
 
@@ -421,7 +426,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
       }
     }
 
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/address/${address}`, options)
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/address/${address}`, options)
     return response.data
   }
 
@@ -443,7 +448,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
       { key: 'nextPageToken', value: nextPageToken }
     ]
     const queryString = buildQueryParamString(queryParams)
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/address${queryString}`, options)
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/address${queryString}`, options)
     return response.data
   }
 
@@ -460,7 +465,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
     }
 
     const queryString = buildQueryParamString([{ key: 'includePrivate', value: includePrivate }])
-    const response = await request(`${backendApiUrl}/${currency}/key/${keyId}${queryString}`, options)
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/key/${keyId}${queryString}`, options)
     return response.data
   }
 
@@ -473,7 +478,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
       body: JSON.stringify(params)
     }
 
-    const response = await request(`${backendApiUrl}/${currency}/policy`, options)
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/policy`, options)
     return response.data
   }
 
@@ -485,7 +490,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
       }
     }
 
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/policy`, options)
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/policy`, options)
     return response.data
   }
 
@@ -502,7 +507,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
       { key: 'nextPageToken', value: nextPageToken }
     ]
     const queryString = buildQueryParamString(queryParams)
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/transfer${queryString}`, options)
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/transfer${queryString}`, options)
     return response.data
   }
 
@@ -513,7 +518,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
         Authorization: token
       }
     }
-    const response = await request(`${backendApiUrl}/${currency}/wallet/${walletId}/transfer/${txHash}`, options)
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/transfer/${txHash}`, options)
     return response.data
   }
 
@@ -529,7 +534,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
       { key: 'nextPageToken', value: nextPageToken }
     ]
     const queryString = buildQueryParamString(queryParams)
-    const response = await request(`${backendApiUrl}/${currency}/policy${queryString}`, options)
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/policy${queryString}`, options)
     return response.data
   }
 
@@ -542,7 +547,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
       body: JSON.stringify(assignParams)
     }
 
-    const response = await request(`${backendApiUrl}/${currency}/policy/${policyId}/assign`, options)
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/policy/${policyId}/assign`, options)
     return response.data
   }
 
@@ -553,7 +558,7 @@ export const currencyApi = (backendApiUrl: string, currency: Currency) => {
         Authorization: token
       }
     }
-    const response = await request(`${backendApiUrl}/${currency}/policy/${policyId}/wallet`, options)
+    const response = await httpClient.request(`${backendApiUrl}/${currency}/policy/${policyId}/wallet`, options)
     return response.data
   }
 

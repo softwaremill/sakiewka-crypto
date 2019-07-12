@@ -4,15 +4,16 @@ jest.mock('cross-fetch')
 import crossFetch from 'cross-fetch'
 import { expect } from 'chai'
 
-import request from '../request'
+import { createHttpClient } from '../httpClient'
 import { fail } from 'assert';
 
 // @ts-ignore
 const { Response, Headers } = jest.requireActual('cross-fetch')
+const httpClient = createHttpClient(() => '')
 
 describe('request', () => {
   it('should exist', () => {
-    expect(request).to.be.a('function')
+    expect(httpClient.request).to.be.a('function')
   })
 
   it('should return proper error message when server returns internal error', async () => {
@@ -31,7 +32,7 @@ describe('request', () => {
       }
     }
     try {
-      await request(`http://localhost:8081/api/v1/x`, options)
+      await httpClient.request(`http://localhost:8081/api/v1/x`, options)
       fail("Error was not thrown")
     } catch (err) {
       expect(err.errors[0].message).to.eq('test error')
@@ -53,7 +54,7 @@ describe('request', () => {
       }
     }
     try {
-      await request(`http://localhost:8081/api/v1/x`, options)
+      await httpClient.request(`http://localhost:8081/api/v1/x`, options)
       fail("Error was not thrown")
     } catch (err) {
       expect(err.errors[0].message).to.eq('BadRequest')
@@ -74,7 +75,7 @@ describe('request', () => {
       }
     }
     try {
-      await request(`http://localhost:8081/api/v1/x`, options)
+      await httpClient.request(`http://localhost:8081/api/v1/x`, options)
       fail("Error was not thrown")
     } catch (err) {
       expect(err.errors[0].message).to.eq('Something went wrong')

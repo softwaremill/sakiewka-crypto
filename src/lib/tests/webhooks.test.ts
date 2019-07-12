@@ -5,8 +5,9 @@ import * as backendApiFactory from '../bitcoin/bitcoin-backend-api'
 import BigNumber from 'bignumber.js'
 import chaiBigNumber from 'chai-bignumber'
 import { webhooksApiFactory } from '../webhooks'
+import { createHttpClient } from '../utils/httpClient';
 
-const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency)
+const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency, createHttpClient(() => ''))
 
 const webhooks = webhooksApiFactory(backendApi)
 

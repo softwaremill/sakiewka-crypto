@@ -2,6 +2,7 @@ import crossFetch from 'cross-fetch'
 import { ApiError, ApiErrorDetails } from '../../types/api'
 import { ErrorResponse } from 'response';
 import { INTERNAL_ERROR_CODE } from '../constants';
+import { CorrelationIdGetter } from '../backend-api';
 
 const parseResponse = async (response: Response): Promise<any> => {
   const contentType = response.headers.get('content-type')
@@ -22,7 +23,7 @@ const parseError = async (response: Response): Promise<ApiErrorDetails[]> => {
     const text = await response.text()
     return [<ApiErrorDetails>({ message: text, code: INTERNAL_ERROR_CODE })]
   }
-  return [<ApiErrorDetails>({ message: response.statusText, code: "SC-Unknown" })]
+  return [<ApiErrorDetails>({ message: response.statusText, code: 'SC-Unknown' })]
 }
 
 const checkStatus = async (response: Response): Promise<Response> => {
@@ -39,15 +40,30 @@ export interface OptionalQueryParam {
   value?: string | number | boolean
 }
 
-export const buildQueryParamString = (params : OptionalQueryParam[]) => {
+export const buildQueryParamString = (params: OptionalQueryParam[]) => {
   return params
     .filter(param => param.value)
-    .map((param,index) => (index == 0 ? '?' : '&') + `${param.key}=${param.value}`)
+    .map((param, index) => (index == 0 ? '?' : '&') + `${param.key}=${param.value}`)
     .join('')
 }
 
-export default function request(url: string, options: object): Promise<any> {
-  return crossFetch(url, options)
-    .then(checkStatus)
-    .then(parseResponse)
+export interface HttpClient {
+  request(url: string, options: any): Promise<any>
+}
+
+export const createHttpClient = (getCorrelationId: CorrelationIdGetter): HttpClient => {
+  const request = async (url: string, options: any): Promise<any> => {
+    const richOptions = {
+      ...options,
+      headers: {
+        ...options.headers,
+        'X-Correlation-Id': getCorrelationId()
+      }
+    }
+    return crossFetch(url, richOptions)
+      .then(checkStatus)
+      .then(parseResponse)
+  }
+
+  return { request }
 }
