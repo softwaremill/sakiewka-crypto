@@ -97,6 +97,7 @@ export interface GetWalletBackendResponse extends WalletBackendResponse {
     available: string,
     locked: string
   }
+  canSendFundsUsingPassword : boolean
 }
 
 export interface CreateNewBitcoinAddressBackendResponse {
