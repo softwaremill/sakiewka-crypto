@@ -79,6 +79,7 @@ export const sakiewkaModule = (currency: Currency, btcNetwork: string): Sakiewka
   }
 }
 
+export { ApiError, ApiErrorDetails, RequestModel } from './types/api'
 export { Currency } from './types/domain'
 export { constants }
 export { crypto }
