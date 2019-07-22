@@ -27,7 +27,7 @@ import {
   BalanceBackendResponse,
   CreateAuthTokenBackendResponse,
   DeleteAuthTokenBackendResponse
-} from 'response'
+} from '../types/response'
 import { buildQueryParamString, createHttpClient, HttpClient } from './utils/httpClient'
 import { Currency } from '..'
 import * as bitcoinBackendFactory from './bitcoin/bitcoin-backend-api'
