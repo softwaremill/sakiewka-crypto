@@ -1,6 +1,6 @@
 export interface ApiError {
   errors: ApiErrorDetails[],
-  code?: string,
+  code?: number,
 }
 
 export interface ApiErrorDetails {
