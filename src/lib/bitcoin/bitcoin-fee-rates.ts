@@ -1,5 +1,5 @@
 import { BitcoinBackendApi } from './bitcoin-backend-api'
-import { GetFeesRates } from 'response'
+import { GetFeesRates } from '../../types/response'
 
 export interface FeeRatesApi {
   getFeeRate(): Promise<GetFeesRates>

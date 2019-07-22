@@ -2,7 +2,7 @@ import {
   EthGetTransactionParamsResponse,
   SendETHResponse,
   SendTokensResponse
-} from 'response'
+} from '../../types/response'
 import { createHttpClient } from '../utils/httpClient'
 
 const getZlevatorUrl = () => process.env.ZLEVATOR_URL

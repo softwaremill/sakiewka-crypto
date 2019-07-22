@@ -1,7 +1,7 @@
 import { KeyModule } from './bitcoin-key'
 import { BitcoinBackendApi } from './bitcoin-backend-api';
 import { BitcoinOperations } from './bitcoin-operations';
-import { CreateNewBitcoinAddressBackendResponse, GetBitcoinAddressBackendResponse, ListAddressesBackendResponse } from 'response';
+import { CreateNewBitcoinAddressBackendResponse, GetBitcoinAddressBackendResponse, ListAddressesBackendResponse } from '../../types/response';
 
 export interface AddressApi {
   createNewAddress(userToken: string, walletId: string, name?: string): Promise<CreateNewBitcoinAddressBackendResponse>

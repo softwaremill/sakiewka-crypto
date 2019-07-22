@@ -10,7 +10,7 @@ import {
   ListWalletsBackendResponse,
   GetWalletBackendResponse,
   ListPoliciesForWalletResponse, ListUtxosByAddressBackendResponse,
-} from 'response'
+} from '../../types/response'
 import { generatePdf } from './bitcoin-keycard-pdf'
 import { KeyModule } from './bitcoin-key'
 import { BitcoinBackendApi } from './bitcoin-backend-api'
