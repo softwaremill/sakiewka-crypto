@@ -1,5 +1,6 @@
 export interface ApiError {
-  errors: ApiErrorDetails[]
+  errors: ApiErrorDetails[],
+  code?: number,
 }
 
 export interface ApiErrorDetails {

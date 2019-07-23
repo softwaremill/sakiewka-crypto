@@ -1,6 +1,6 @@
 import { CoreBackendApi } from './backend-api'
 import { hashPassword } from './crypto'
-import { LoginBackendResponse, RegisterBackendResponse, SetupPasswordBackendResponse, Init2faBackendResponse, Confirm2faBackendResponse, Disable2faBackendResponse, InfoBackendResponse, BalanceBackendResponse, CreateAuthTokenBackendResponse, DeleteAuthTokenBackendResponse } from 'response'
+import { LoginBackendResponse, RegisterBackendResponse, SetupPasswordBackendResponse, Init2faBackendResponse, Confirm2faBackendResponse, Disable2faBackendResponse, InfoBackendResponse, BalanceBackendResponse, CreateAuthTokenBackendResponse, DeleteAuthTokenBackendResponse } from '../types/response'
 
 export interface UserApi {
   login(login: string, password: string, code?: number): Promise<LoginBackendResponse>

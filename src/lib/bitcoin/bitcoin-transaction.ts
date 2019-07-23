@@ -1,6 +1,6 @@
 import { DecodedTx, Key, KeyType, Path, Recipient, TxOut, UTXO } from '../../types/domain'
 import { TransactionBuilder } from 'bgoldjs-lib'
-import { GetKeyBackendResponse, GetWalletBackendResponse, ListUnspentsBackendResponse } from 'response'
+import { GetKeyBackendResponse, GetWalletBackendResponse, ListUnspentsBackendResponse } from '../../types/response'
 import BigNumber from 'bignumber.js'
 import { btcToSatoshi, satoshiToBtc } from '../utils/helpers'
 import { decrypt } from '../crypto'

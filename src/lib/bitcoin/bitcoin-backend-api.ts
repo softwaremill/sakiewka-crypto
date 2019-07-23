@@ -25,7 +25,7 @@ import {
   PolicyCreatedResponse,
   PolicyCreateRequest,
   TransferItemBackendResponse
-} from 'response'
+} from '../../types/response'
 import { HttpClient } from '../utils/httpClient'
 import * as backendApi from '../backend-api'
 import { Currency } from '../..'

@@ -1,5 +1,5 @@
 import { PolicySettings } from '../types/domain'
-import { ListPoliciesResponse, ListWalletsForPolicyResponse } from 'response'
+import { ListPoliciesResponse, ListWalletsForPolicyResponse } from '../types/response'
 import { BitcoinBackendApi } from './bitcoin/bitcoin-backend-api';
 
 export interface PolicyApi {

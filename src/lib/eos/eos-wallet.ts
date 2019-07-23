@@ -6,7 +6,7 @@ import {
   ListWalletsBackendResponse,
   MaxTransferAmountEosParams,
   MaxTransferAmountResponse
-} from 'response'
+} from '../../types/response'
 import { KeyModule } from './eos-key'
 import { EosBackendApi } from "./eos-backend-api";
 
