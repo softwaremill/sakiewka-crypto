@@ -9,9 +9,21 @@ export default class BtgOperations extends BitcoinOperations {
   protected bitcoinLib = btgLib
   protected currency: Currency = Currency.BTG
 
-  sign = (txb: TransactionBuilder, idx: number, signingKey: ECPair, amount?: BigNumber, redeemScript?: Buffer): void => {
+  sign = (
+    txb: TransactionBuilder,
+    idx: number,
+    signingKey: ECPair,
+    amount?: BigNumber,
+    redeemScript?: Buffer,
+  ): void => {
     const hashType = Transaction.SIGHASH_ALL | Transaction.SIGHASH_FORKID
-    txb.sign(idx, signingKey, redeemScript, hashType, btcToSatoshi(amount).toNumber())
+    txb.sign(
+      idx,
+      signingKey,
+      redeemScript,
+      hashType,
+      btcToSatoshi(amount).toNumber(),
+    )
   }
 
   initializeTxBuilder = (): TransactionBuilder => {

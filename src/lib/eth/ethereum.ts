@@ -10,7 +10,11 @@ export default (btcNetwork: string) => {
   const OnlyDigits = /^[1-9]+\d*$/
 
   const createETHOperationHash = (
-    address: string, value: string, data: string, expireBlock: number, contractNonce: number,
+    address: string,
+    value: string,
+    data: string,
+    expireBlock: number,
+    contractNonce: number,
   ) => {
     if (!OnlyDigits.test(value)) {
       throw new Error('Value was not an integer!')
@@ -31,7 +35,11 @@ export default (btcNetwork: string) => {
   }
 
   const createTokenOperationHash = (
-    address: string, value: string, contractAddress: string, expireBlock: number, contractNonce: number,
+    address: string,
+    value: string,
+    contractAddress: string,
+    expireBlock: number,
+    contractNonce: number,
   ) => {
     if (!OnlyDigits.test(value)) {
       throw new Error('Value was not an integer!')
@@ -51,9 +59,7 @@ export default (btcNetwork: string) => {
     )
   }
 
-  const createGenericOperationHash = (
-    types: string[], values: any[],
-  ) => {
+  const createGenericOperationHash = (types: string[], values: any[]) => {
     return ethUtil.bufferToHex(
       ethAbi.soliditySHA3(
         types,

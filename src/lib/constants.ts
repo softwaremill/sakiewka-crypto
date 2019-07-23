@@ -1,7 +1,7 @@
 import { networks } from 'bgoldjs-lib'
 import { Currency, SupportedNetworks } from '../types/domain'
 
-export const ROOT_DERIVATION_PATH = 'm/45\''
+export const ROOT_DERIVATION_PATH = "m/45'"
 
 export const BASE_API_PATH = 'api/v1.0'
 
@@ -20,16 +20,18 @@ export const API_ERROR = {
     errors: [{ message: 'Malformed request', code: INTERNAL_ERROR_CODE }],
     code: 400,
   },
-  XPRIV_OR_PASSWORD_REQUIRED:{
-    errors: [{ message: 'Password or xprv has to be specified!', code: 'SKC4' }],
+  XPRIV_OR_PASSWORD_REQUIRED: {
+    errors: [
+      { message: 'Password or xprv has to be specified!', code: 'SKC4' },
+    ],
     code: 400,
   },
-  INCORRECT_PASSPHRASE:{
+  INCORRECT_PASSPHRASE: {
     errors: [{ message: 'Incorrect passphrase', code: 'SKC5' }],
     code: 400,
   },
   NO_PRIV_KEY_ON_SERVER: {
-    errors :[{ message : 'There is no private key on server!', code: 'SKC6' }],
+    errors: [{ message: 'There is no private key on server!', code: 'SKC6' }],
     code: 400,
   },
 }

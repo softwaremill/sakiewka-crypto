@@ -5,12 +5,20 @@ import * as apiFactory from '../../backend-api'
 import * as bitcoinApiFactory from '../../bitcoin/bitcoin-backend-api'
 import { createHttpClient } from '../../utils/httpClient'
 import { MaxTransferAmountBitcoinParams } from '../../../types/response'
-import { DailyAmountPolicy, PolicyKind, PolicySettings } from '../../../types/domain'
+import {
+  DailyAmountPolicy,
+  PolicyKind,
+  PolicySettings,
+} from '../../../types/domain'
 
 const httpClient = createHttpClient(() => '')
 
 const baseApi = apiFactory.create('backurl/api/v1', httpClient)
-const bitcoinApi = bitcoinApiFactory.withCurrency('backurl/api/v1', currency, httpClient)
+const bitcoinApi = bitcoinApiFactory.withCurrency(
+  'backurl/api/v1',
+  currency,
+  httpClient,
+)
 
 // @ts-ignore
 const mockImplementation = jest.fn(() => ({ data: 'testToken' }))
@@ -200,7 +208,9 @@ describe('listWallets', () => {
 
     const [url, params] = mockImplementation.mock.calls[0]
 
-    expect(url).to.eq(`backurl/api/v1/${currency}/wallet?limit=10&searchPhrase=searchPhrase&nextPageToken=abcd`)
+    expect(url).to.eq(
+      `backurl/api/v1/${currency}/wallet?limit=10&searchPhrase=searchPhrase&nextPageToken=abcd`,
+    )
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
@@ -238,7 +248,12 @@ describe('createNewAddress', () => {
   })
 
   it('should send proper request with name param', async () => {
-    await bitcoinApi.createNewAddress('testToken', 'walletId', false, 'testName')
+    await bitcoinApi.createNewAddress(
+      'testToken',
+      'walletId',
+      false,
+      'testName',
+    )
 
     const [url, params] = mockImplementation.mock.calls[0]
     const reqBody = JSON.parse(params.body)
@@ -261,7 +276,9 @@ describe('getAddress', () => {
 
     const [url, params] = mockImplementation.mock.calls[0]
 
-    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/address/addressValue`)
+    expect(url).to.eq(
+      `backurl/api/v1/${currency}/wallet/testWalletId/address/addressValue`,
+    )
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
@@ -277,7 +294,9 @@ describe('listAddresses', () => {
 
     const [url, params] = mockImplementation.mock.calls[0]
 
-    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/address?limit=10`)
+    expect(url).to.eq(
+      `backurl/api/v1/${currency}/wallet/testWalletId/address?limit=10`,
+    )
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
@@ -287,7 +306,9 @@ describe('listAddresses', () => {
 
     const [url, params] = mockImplementation.mock.calls[0]
 
-    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/address?limit=10&nextPageToken=abcd`)
+    expect(url).to.eq(
+      `backurl/api/v1/${currency}/wallet/testWalletId/address?limit=10&nextPageToken=abcd`,
+    )
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
@@ -342,7 +363,9 @@ describe('getKey', () => {
 
     const [url, params] = mockImplementation.mock.calls[0]
 
-    expect(url).to.eq(`backurl/api/v1/${currency}/key/testKeyId?includePrivate=true`)
+    expect(url).to.eq(
+      `backurl/api/v1/${currency}/key/testKeyId?includePrivate=true`,
+    )
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
@@ -361,7 +384,9 @@ describe('maxTransferAmount', () => {
     await bitcoinApi.maxTransferAmount('testToken', 'testWalletId', data)
 
     const [url, params] = mockImplementation.mock.calls[0]
-    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/max-transfer-amount?recipient=0x0&feeRate=22`)
+    expect(url).to.eq(
+      `backurl/api/v1/${currency}/wallet/testWalletId/max-transfer-amount?recipient=0x0&feeRate=22`,
+    )
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
@@ -421,7 +446,9 @@ describe('listPolicies', () => {
     await bitcoinApi.listPolicies('testToken', 10, '123')
 
     const [url, params] = mockImplementation.mock.calls[0]
-    expect(url).to.eq(`backurl/api/v1/${currency}/policy?limit=10&nextPageToken=123`)
+    expect(url).to.eq(
+      `backurl/api/v1/${currency}/policy?limit=10&nextPageToken=123`,
+    )
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
@@ -513,7 +540,9 @@ describe('list chain transfers', () => {
     await bitcoinApi.listTransfers('testToken', 'testWalletId', 20, 'npt')
 
     const [url, params] = mockImplementation.mock.calls[0]
-    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/transfer?limit=20&nextPageToken=npt`)
+    expect(url).to.eq(
+      `backurl/api/v1/${currency}/wallet/testWalletId/transfer?limit=20&nextPageToken=npt`,
+    )
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })
@@ -528,7 +557,9 @@ describe('find chain transfer by tx hash', () => {
     await bitcoinApi.findTransferByTxHash('testToken', 'testWalletId', '0x20')
 
     const [url, params] = mockImplementation.mock.calls[0]
-    expect(url).to.eq(`backurl/api/v1/${currency}/wallet/testWalletId/transfer/0x20`)
+    expect(url).to.eq(
+      `backurl/api/v1/${currency}/wallet/testWalletId/transfer/0x20`,
+    )
     expect(params.method).to.eq('GET')
     expect(params.headers.Authorization).to.eq('testToken')
   })

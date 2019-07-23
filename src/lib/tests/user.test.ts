@@ -5,7 +5,10 @@ import * as backendApiFactory from '../backend-api'
 import { hashPassword } from '../crypto'
 import { createHttpClient } from '../utils/httpClient'
 
-const api = backendApiFactory.create('http://backendApiUrl', createHttpClient(() => ''))
+const api = backendApiFactory.create(
+  'http://backendApiUrl',
+  createHttpClient(() => ''),
+)
 const user = userApiFactory(api)
 
 describe('login', () => {
@@ -204,7 +207,9 @@ describe('createAuthToken', () => {
     // @ts-ignore
     user.createAuthToken = mockImplementation
 
-    const res = await user.createAuthToken('testToken', '1 minute', '0.0.0.0', ['all'])
+    const res = await user.createAuthToken('testToken', '1 minute', '0.0.0.0', [
+      'all',
+    ])
     const [token, duration, ip, scope] = mockImplementation.mock.calls[0]
 
     expect(token).to.eq('testToken')
@@ -215,14 +220,18 @@ describe('createAuthToken', () => {
   })
 })
 
-describe('userSupport',  ()  => {
+describe('userSupport', () => {
   it('should pass proper arguments to backend-api method and return result of its call', async () => {
     // @ts-ignore
     const mockImplementation = jest.fn(() => 'backend response')
     // @ts-ignore
     api.addUserSupportSubmission = mockImplementation
 
-    const res = await user.addSupportSubmission('testToken', 'subject', 'content')
+    const res = await user.addSupportSubmission(
+      'testToken',
+      'subject',
+      'content',
+    )
 
     const [token, subject, content] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')

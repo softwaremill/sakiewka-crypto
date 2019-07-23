@@ -7,7 +7,10 @@ import chaiBigNumber from 'chai-bignumber'
 import { keyModuleFactory } from '../../eos/eos-key'
 import { createHttpClient } from '../../utils/httpClient'
 
-const backendApi = backendApiFactory.create('http://backendApiUrl', createHttpClient(() => ''))
+const backendApi = backendApiFactory.create(
+  'http://backendApiUrl',
+  createHttpClient(() => ''),
+)
 const keyModule = keyModuleFactory()
 const wallet = walletApiFactory(backendApi, keyModule)
 
@@ -39,8 +42,12 @@ describe('createWallet', () => {
     expect(result.servicePubKey).to.eq('pubKey')
 
     // check if sending encrypted xprvs
-    expect(JSON.parse(backendRequestParams.userPrvKey)).to.haveOwnProperty('ct')
-    expect(JSON.parse(backendRequestParams.backupPrvKey)).to.haveOwnProperty('ct')
+    expect(JSON.parse(backendRequestParams.userPrvKey)).to.haveOwnProperty(
+      'ct',
+    )
+    expect(JSON.parse(backendRequestParams.backupPrvKey)).to.haveOwnProperty(
+      'ct',
+    )
 
     // check if really sending xpubs
     expect(backendRequestParams.userPubKey.slice(0, 3)).to.be.eq('EOS')
@@ -71,9 +78,19 @@ describe('listWallets', () => {
     // @ts-ignore
     backendApi.listWallets = mockImplementation
 
-    const res = await wallet.listWallets('testToken', 10, 'searchPhrase', 'nextPageToken')
+    const res = await wallet.listWallets(
+      'testToken',
+      10,
+      'searchPhrase',
+      'nextPageToken',
+    )
 
-    const [token, limit, searchPhrase, nextPageToken] = mockImplementation.mock.calls[0]
+    const [
+      token,
+      limit,
+      searchPhrase,
+      nextPageToken,
+    ] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
     expect(limit).to.eq(10)
     expect(searchPhrase).to.eq('searchPhrase')

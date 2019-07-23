@@ -6,7 +6,11 @@ import { keyApiFactory, keyModuleFactory } from '../../bitcoin/bitcoin-key'
 import bitoinFactory from '../../bitcoin/bitcoin'
 import { createHttpClient } from '../../utils/httpClient'
 
-const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency, createHttpClient(() => ''))
+const backendApi = backendApiFactory.withCurrency(
+  'http://backendApiUrl',
+  currency,
+  createHttpClient(() => ''),
+)
 // @ts-ignore
 backendApi.createWallet = jest.fn(() => {
   return Promise.resolve({
@@ -15,7 +19,6 @@ backendApi.createWallet = jest.fn(() => {
 })
 
 describe('generateNewKeyPair', () => {
-
   it('should exist', () => {
     const bitcoin = bitoinFactory(currency, 'mainnet')
     const keyModule = keyModuleFactory(bitcoin)
@@ -120,7 +123,8 @@ describe('deriveKey', () => {
     const basePath = "m/45'/0"
     const relativePath = '0/0'
 
-    const rootPrvKey = 'xprv9s21ZrQH143K27LPi9gM65jmXFuBfiY7S5HReQarD7dTX9svAXQmQYsqxVqMcbtRWxDwBkdRxSxhfPBX4Vt7Juc9CqY4i3AaPNwCeM1w1Ym'
+    const rootPrvKey =
+      'xprv9s21ZrQH143K27LPi9gM65jmXFuBfiY7S5HReQarD7dTX9svAXQmQYsqxVqMcbtRWxDwBkdRxSxhfPBX4Vt7Juc9CqY4i3AaPNwCeM1w1Ym'
 
     const partialResult = keyModule.deriveKey(rootPrvKey, basePath)
     const partialPrvKey = partialResult.toBase58()
@@ -130,11 +134,17 @@ describe('deriveKey', () => {
     const relativePrvKey = relativeResult.toBase58()
     const relativePubKey = relativeResult.neutered().toBase58()
 
-    const absoluteResult = keyModule.deriveKey(rootPrvKey, `${basePath}/${relativePath}`)
+    const absoluteResult = keyModule.deriveKey(
+      rootPrvKey,
+      `${basePath}/${relativePath}`,
+    )
     const absolutePrvKey = absoluteResult.toBase58()
     const absolutePubKey = absoluteResult.neutered().toBase58()
 
-    const relativeResultFromPublic = keyModule.deriveKey(partialPubKey, relativePath)
+    const relativeResultFromPublic = keyModule.deriveKey(
+      partialPubKey,
+      relativePath,
+    )
     const relativePubKeyFromPublic = relativeResultFromPublic.toBase58()
 
     expect(relativePrvKey).to.eq(absolutePrvKey)

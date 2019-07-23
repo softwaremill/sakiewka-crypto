@@ -5,7 +5,11 @@ import * as backendApiFactory from '../../bitcoin/bitcoin-backend-api'
 import { feeRatesApiFactory } from '../../bitcoin/bitcoin-fee-rates'
 import { createHttpClient } from '../../utils/httpClient'
 
-const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency, createHttpClient(() => ''))
+const backendApi = backendApiFactory.withCurrency(
+  'http://backendApiUrl',
+  currency,
+  createHttpClient(() => ''),
+)
 // @ts-ignore
 backendApi.getFeesRates = jest.fn(() => {
   return Promise.resolve({

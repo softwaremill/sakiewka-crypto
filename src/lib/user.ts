@@ -1,23 +1,57 @@
 import { CoreBackendApi } from './backend-api'
 import { hashPassword } from './crypto'
-import { LoginBackendResponse, RegisterBackendResponse, SetupPasswordBackendResponse, Init2faBackendResponse, Confirm2faBackendResponse, Disable2faBackendResponse, InfoBackendResponse, BalanceBackendResponse, CreateAuthTokenBackendResponse, DeleteAuthTokenBackendResponse } from '../types/response'
+import {
+  LoginBackendResponse,
+  RegisterBackendResponse,
+  SetupPasswordBackendResponse,
+  Init2faBackendResponse,
+  Confirm2faBackendResponse,
+  Disable2faBackendResponse,
+  InfoBackendResponse,
+  BalanceBackendResponse,
+  CreateAuthTokenBackendResponse,
+  DeleteAuthTokenBackendResponse,
+} from '../types/response'
 
 export interface UserApi {
-  login(login: string, password: string, code?: number): Promise<LoginBackendResponse>
+  login(
+    login: string,
+    password: string,
+    code?: number,
+  ): Promise<LoginBackendResponse>
   register(login: string): Promise<RegisterBackendResponse>
-  setupPassword(token: string, password: string): Promise<SetupPasswordBackendResponse>
+  setupPassword(
+    token: string,
+    password: string,
+  ): Promise<SetupPasswordBackendResponse>
   init2fa(token: string, password: string): Promise<Init2faBackendResponse>
-  confirm2fa(token: string, password: string, code: number): Promise<Confirm2faBackendResponse>
-  disable2fa(token: string, password: string, code: number): Promise<Disable2faBackendResponse>
+  confirm2fa(
+    token: string,
+    password: string,
+    code: number,
+  ): Promise<Confirm2faBackendResponse>
+  disable2fa(
+    token: string,
+    password: string,
+    code: number,
+  ): Promise<Disable2faBackendResponse>
   info(token: string): Promise<InfoBackendResponse>
   balance(token: string, fiatCurrency: string): Promise<BalanceBackendResponse>
-  createAuthToken(token: string, duration?: string, ip?: string, scope?: string[]): Promise<CreateAuthTokenBackendResponse>
-  deleteAuthToken(token: string): Promise<DeleteAuthTokenBackendResponse>,
-  addSupportSubmission(token:string, subject:string, content: string) : Promise<any>
+  createAuthToken(
+    token: string,
+    duration?: string,
+    ip?: string,
+    scope?: string[],
+  ): Promise<CreateAuthTokenBackendResponse>
+  deleteAuthToken(token: string): Promise<DeleteAuthTokenBackendResponse>
+  addSupportSubmission(
+    token: string,
+    subject: string,
+    content: string,
+  ): Promise<any>
 }
 
 export const userApiFactory = (backend: CoreBackendApi): UserApi => {
-
   const login = (login: string, password: string, code?: number) => {
     return backend.login(login, hashPassword(password), code)
   }
@@ -50,7 +84,12 @@ export const userApiFactory = (backend: CoreBackendApi): UserApi => {
     return backend.balance(token, fiatCurrency)
   }
 
-  const createAuthToken = (token: string, duration?: string, ip?: string, scope?: string[]) => {
+  const createAuthToken = (
+    token: string,
+    duration?: string,
+    ip?: string,
+    scope?: string[],
+  ) => {
     return backend.createAuthToken(token, duration, ip, scope)
   }
 
@@ -58,7 +97,11 @@ export const userApiFactory = (backend: CoreBackendApi): UserApi => {
     return backend.deleteAuthToken(token)
   }
 
-  const addSupportSubmission = (token:string, subject:string, content: string) => {
+  const addSupportSubmission = (
+    token: string,
+    subject: string,
+    content: string,
+  ) => {
     return backend.addUserSupportSubmission(token, subject, content)
   }
 

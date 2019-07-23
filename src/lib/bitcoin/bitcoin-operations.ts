@@ -29,26 +29,31 @@ const utxoToBtcJS = (input: UTXO): UTXO_btcjs => {
 }
 
 interface UTXO_btcjs {
-  txId: string,
-  vout: number,
-  amount?: BigNumber,
+  txId: string
+  vout: number
+  amount?: BigNumber
   path?: Path
 }
 
 export class BitcoinOperations {
   protected bitcoinLib: any
-  protected network : any
+  protected network: any
 
   constructor(network: any) {
     this.network = network
   }
 
   private base58ToKeyBuffer = (key: string): Buffer => {
-    return this.bitcoinLib.HDNode.fromBase58(key, this.network).getPublicKeyBuffer()
+    return this.bitcoinLib.HDNode.fromBase58(
+      key,
+      this.network,
+    ).getPublicKeyBuffer()
   }
 
   createMultisigRedeemScript = (base58Keys: string[]): Buffer => {
-    const keyBuffers = base58Keys.sort().map((key: string) => this.base58ToKeyBuffer(key))
+    const keyBuffers = base58Keys
+      .sort()
+      .map((key: string) => this.base58ToKeyBuffer(key))
     return this.bitcoinLib.script.multisig.output.encode(2, keyBuffers)
   }
 
@@ -106,8 +111,7 @@ export class BitcoinOperations {
   })
 
   sortUnspents = (inputs: UTXO[]): UTXO[] => {
-    return bip69.sortInputs(inputs.map(utxoToBtcJS))
-      .map(btcjsToUtxo)
+    return bip69.sortInputs(inputs.map(utxoToBtcJS)).map(btcjsToUtxo)
   }
 
   recipientToTxOut = (recipient: Recipient): TxOut => {
@@ -118,7 +122,10 @@ export class BitcoinOperations {
   }
 
   sortTxOuts = (outputs: TxOut[]): TxOut[] => {
-    return bip69.sortOutputs(outputs.map(tx => ({ script: tx.script, value: tx.value.toNumber() })))
+    return bip69
+      .sortOutputs(
+        outputs.map(tx => ({ script: tx.script, value: tx.value.toNumber() })),
+      )
       .map(tx => ({ script: tx.script, value: new BigNumber(tx.value) }))
   }
 
@@ -126,5 +133,11 @@ export class BitcoinOperations {
 
   txBuilderFromTx: (tx: Transaction) => TransactionBuilder
 
-  sign: (txb: TransactionBuilder, idx: number, signingKey: ECPair, amount?: BigNumber, redeemScript?: Buffer) => void
+  sign: (
+    txb: TransactionBuilder,
+    idx: number,
+    signingKey: ECPair,
+    amount?: BigNumber,
+    redeemScript?: Buffer,
+  ) => void
 }

@@ -4,107 +4,102 @@ export interface LoginBackendResponse {
   token: string
 }
 
-export interface RegisterBackendResponse {
-}
+export interface RegisterBackendResponse {}
 
-export interface SetupPasswordBackendResponse {
-}
+export interface SetupPasswordBackendResponse {}
 
-export interface InfoBackendResponse {
-}
+export interface InfoBackendResponse {}
 
 export interface MontlySummaryBackendResponse {
-  spentBTC: string,
-  spentFiat: string,
-  serviceFeeBTC: string,
+  spentBTC: string
+  spentFiat: string
+  serviceFeeBTC: string
   serviceFeeFiat: string
 }
 
 export interface ListTransfersBackendResponse {
-  transfers: TransferItemBackendResponse[],
+  transfers: TransferItemBackendResponse[]
   nextPageToken?: string
 }
 
 export interface ListUtxosByAddressBackendResponse {
-  transfers: UTXO[],
+  transfers: UTXO[]
   nextPageToken?: string
 }
 
 export interface TransferItemBackendResponse {
-  chain: string,
+  chain: string
   wallet: TransferItemWallet
-  timestamp: string,
-  transaction: TransferItemTransaction,
+  timestamp: string
+  transaction: TransferItemTransaction
   block?: TransferItemBlock
 }
 
-export interface TransferItemWallet { }
+export interface TransferItemWallet {}
 
-export interface TransferItemBlock { }
+export interface TransferItemBlock {}
 
-export interface TransferItemTransaction { }
+export interface TransferItemTransaction {}
 
 export interface Init2faBackendResponse {
   qrCodeUrl: string
 }
 
-export interface Confirm2faBackendResponse {
-}
+export interface Confirm2faBackendResponse {}
 
-export interface Disable2faBackendResponse {
-}
+export interface Disable2faBackendResponse {}
 
 export interface CreateWalletBackendParams {
-  name: string,
-  userPubKey: string,
-  userPrvKey?: string,
-  backupPubKey: string,
+  name: string
+  userPubKey: string
+  userPrvKey?: string
+  backupPubKey: string
   backupPrvKey?: string
 }
 
 export interface GetUtxosBackendParams {
-  feeRate?: number,
+  feeRate?: number
   recipients: ReceipientsBackend[]
 }
 
 export interface ReceipientsBackend {
-  address: string,
+  address: string
   amount: string
 }
 
 interface WalletBackendResponse {
-  id: string,
+  id: string
   keys: Key[]
 }
 
-export interface CreateBitcoinWalletBackendResponse extends WalletBackendResponse {
-  servicePubKey: string,
+export interface CreateBitcoinWalletBackendResponse
+  extends WalletBackendResponse {
+  servicePubKey: string
   initialAddress: {
-    address: string,
-    path: Path,
+    address: string;
+    path: Path;
   }
 }
 
-export interface CreateEosWalletBackendResponse extends WalletBackendResponse {
-}
+export interface CreateEosWalletBackendResponse extends WalletBackendResponse {}
 
 export interface GetWalletBackendResponse extends WalletBackendResponse {
-  name: string,
-  currency: string,
-  created: string,
+  name: string
+  currency: string
+  created: string
   balance: {
-    available: string,
-    locked: string,
+    available: string;
+    locked: string;
   }
-  canSendFundsUsingPassword : boolean
+  canSendFundsUsingPassword: boolean
 }
 
 export interface CreateNewBitcoinAddressBackendResponse {
-  address: string,
+  address: string
   path: {
-    cosignerIndex: string,
-    change: string,
-    addressIndex: string,
+    cosignerIndex: string;
+    change: string;
+    addressIndex: string;
   }
 }
 
@@ -113,33 +108,33 @@ export interface CreateNewEosAddressBackendResponse {
 }
 
 export interface GetEosAddressBackendResponse {
-  address: string,
-  name: string,
-  created: string,
-}
-
-export interface GetBitcoinAddressBackendResponse {
-  address: string,
-  path: {
-    cosignerIndex: string,
-    change: string,
-    addressIndex: string,
-  },
-  name: string,
+  address: string
+  name: string
   created: string
 }
 
-export interface ListAddressesBackendResponse { }
+export interface GetBitcoinAddressBackendResponse {
+  address: string
+  path: {
+    cosignerIndex: string;
+    change: string;
+    addressIndex: string;
+  }
+  name: string
+  created: string
+}
+
+export interface ListAddressesBackendResponse {}
 
 export interface ListWalletsBackendResponse {
-  wallets: GetWalletBackendResponse[],
+  wallets: GetWalletBackendResponse[]
   nextPageToken?: string
 }
 
 export interface GetWebhooksResponse {
-  id: string,
-  walletId: string,
-  callbackUrl: string,
+  id: string
+  walletId: string
+  callbackUrl: string
   settings: any
 }
 
@@ -147,22 +142,22 @@ export interface ListWebhooksResponse {
   webhooks: GetWebhooksResponse[]
 }
 
-export interface DeleteWebhookResponse { }
+export interface DeleteWebhookResponse {}
 
 export interface CreateWebhookResponse {
   id: string
 }
 
 export interface ListUnspentsBackendResponse {
-  outputs: UTXO[],
-  amount: string,
-  change: string,
-  fee: string,
+  outputs: UTXO[]
+  amount: string
+  change: string
+  fee: string
   serviceFee?: ServiceFee
 }
 
 export interface ServiceFee {
-  amount: string,
+  amount: string
   address: string
 }
 
@@ -176,7 +171,7 @@ export interface GetKeyBackendResponse {
 
 // eth
 export interface EthGetTransactionParamsResponse {
-  contractNonce: string,
+  contractNonce: string
   currentBlock: string
 }
 
@@ -193,17 +188,17 @@ export interface GetFeesRates {
 }
 
 export interface ErrorResponse {
-  errors: ErrorDetails[],
+  errors: ErrorDetails[]
   code: number
 }
 
 export interface ErrorDetails {
-  message: string,
+  message: string
   code: string
 }
 
 export interface MaxTransferAmountBitcoinParams {
-  recipient: string,
+  recipient: string
   feeRate: number
 }
 
@@ -224,7 +219,7 @@ export interface ListPoliciesForWalletResponse {
 }
 
 export interface PolicyCreateRequest {
-  name: string,
+  name: string
   settings: PolicySettings
 }
 
@@ -234,19 +229,19 @@ export interface PolicyCreatedResponse {
 
 export interface ListPoliciesResponse {
   policies: Policy[]
-  nextPageToken?: string,
+  nextPageToken?: string
 }
 
 export interface AssignPolicyBackendParams {
   walletId: string
 }
 
-export interface ListWalletsForPolicyResponse { }
+export interface ListWalletsForPolicyResponse {}
 
 export interface BalanceBackendResponse {
   chain: string
   available: string
-  locked: string
+  locked: string
   total: string
   totalInFiat: string
   fiatCurrency: string
@@ -256,4 +251,4 @@ export interface CreateAuthTokenBackendResponse {
   token: string
 }
 
-export interface DeleteAuthTokenBackendResponse { }
+export interface DeleteAuthTokenBackendResponse {}

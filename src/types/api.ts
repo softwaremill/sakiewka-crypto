@@ -1,14 +1,14 @@
 export interface ApiError {
-  errors: ApiErrorDetails[],
-  code?: number,
+  errors: ApiErrorDetails[]
+  code?: number
 }
 
 export interface ApiErrorDetails {
-  message: string,
+  message: string
   code: string
 }
 
 export interface RequestModel {
-  fields: object,
+  fields: object
   headers: String[]
 }

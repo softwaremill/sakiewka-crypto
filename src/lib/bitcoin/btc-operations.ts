@@ -8,7 +8,13 @@ export default class BtcOperations extends BitcoinOperations {
   protected bitcoinLib = btcLib
   protected currency: Currency = Currency.BTC
 
-  sign = (txb: TransactionBuilder, idx: number, signingKey: ECPair, amount?: BigNumber, redeemScript?: Buffer): void => {
+  sign = (
+    txb: TransactionBuilder,
+    idx: number,
+    signingKey: ECPair,
+    amount?: BigNumber,
+    redeemScript?: Buffer,
+  ): void => {
     txb.sign(idx, signingKey, redeemScript)
   }
 

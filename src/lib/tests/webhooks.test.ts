@@ -7,7 +7,11 @@ import chaiBigNumber from 'chai-bignumber'
 import { webhooksApiFactory } from '../webhooks'
 import { createHttpClient } from '../utils/httpClient'
 
-const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency, createHttpClient(() => ''))
+const backendApi = backendApiFactory.withCurrency(
+  'http://backendApiUrl',
+  currency,
+  createHttpClient(() => ''),
+)
 
 const webhooks = webhooksApiFactory(backendApi)
 
@@ -35,7 +39,12 @@ describe('createWebhook', () => {
       },
     )
 
-    const [token, walletId, callbackUrl, settings] = mockImplementation.mock.calls[0]
+    const [
+      token,
+      walletId,
+      callbackUrl,
+      settings,
+    ] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
     expect(walletId).to.eq('testWalletId')
     expect(callbackUrl).to.eq('http://test.callback.com')
@@ -53,17 +62,14 @@ describe('getWebhook', () => {
 
   it('should pass proper arguments to backend-api method and return result of its call', async () => {
     // @ts-ignore
-    const mockImplementation = jest.fn(() => (
-    {
+    const mockImplementation = jest.fn(() => ({
       id: 'id123',
       walletId: 'walletId345',
       callbackUrl: 'http://test.callbackurl.com',
       settings: {
         type: 'transfer',
       },
-    }
-      ),
-    )
+    }))
     // @ts-ignore
     backendApi.getWebhook = mockImplementation
 
@@ -95,19 +101,16 @@ describe('listWebhooks', () => {
 
   it('should pass proper arguments to backend-api method and return result of its call', async () => {
     // @ts-ignore
-    const mockImplementation = jest.fn(() => (
-    [
+    const mockImplementation = jest.fn(() => [
       {
         id: 'id123',
         walletId: 'walletId345',
         callbackUrl: 'http://test.callbackurl.com',
         settings: {
-              type: 'transfer',
-            },
+          type: 'transfer',
+        },
       },
-    ]
-      ),
-    )
+    ])
     // @ts-ignore
     backendApi.listWebhooks = mockImplementation
 
@@ -118,7 +121,12 @@ describe('listWebhooks', () => {
       '4',
     )
 
-    const [token, walletId, limit, nextPageToken] = mockImplementation.mock.calls[0]
+    const [
+      token,
+      walletId,
+      limit,
+      nextPageToken,
+    ] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
     expect(walletId).to.eq('testWalletId')
     expect(limit).to.eq(10)

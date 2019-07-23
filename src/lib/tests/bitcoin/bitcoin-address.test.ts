@@ -1,14 +1,21 @@
 import { expect } from 'chai'
 
 import { currency } from '../helpers'
-import { addressModuleFactory, addressApiFactory } from '../../bitcoin/bitcoin-address'
+import {
+  addressModuleFactory,
+  addressApiFactory,
+} from '../../bitcoin/bitcoin-address'
 import * as backendFactory from '../../bitcoin/bitcoin-backend-api'
 import { keyModuleFactory } from '../../bitcoin/bitcoin-key'
 import bitcoinFactory from '../../bitcoin/bitcoin'
 import { Currency } from '../../..'
 import { createHttpClient } from '../../utils/httpClient'
 
-const backendApi = backendFactory.withCurrency('https://backendApiUrl', currency, createHttpClient(() => ''))
+const backendApi = backendFactory.withCurrency(
+  'https://backendApiUrl',
+  currency,
+  createHttpClient(() => ''),
+)
 describe('generateNewMultisigAddress', () => {
   it('should exist', () => {
     const bitcoin = bitcoinFactory(currency, 'mainnet')
@@ -30,9 +37,14 @@ describe('generateNewMultisigAddress', () => {
 
     const { address, redeemScript } = addressModule.generateNewMultisigAddress(
       pubKeys,
-      '0/23')
+      '0/23',
+    )
 
-    expect(address).to.be.equal(currency == Currency.BTG ? 'AMjMb4MM1tRBprrFtgQY3pwrxsV9tXfdPM' : '37eVs6zAEe5R74LhT8QoKa3hdnrB8yRqY9')
+    expect(address).to.be.equal(
+      currency == Currency.BTG
+        ? 'AMjMb4MM1tRBprrFtgQY3pwrxsV9tXfdPM'
+        : '37eVs6zAEe5R74LhT8QoKa3hdnrB8yRqY9',
+    )
     expect(redeemScript).to.be.an('Uint8Array')
   })
 
@@ -48,7 +60,8 @@ describe('generateNewMultisigAddress', () => {
 
     const { address, redeemScript } = addressModule.generateNewMultisigAddress(
       pubKeys,
-      '0/23')
+      '0/23',
+    )
 
     expect(address).to.be.equal('2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi')
     expect(redeemScript).to.be.an('Uint8Array')
@@ -83,7 +96,11 @@ describe('createNewAddress', () => {
     // @ts-ignore
     backendApi.createNewAddress = mockImplementation
 
-    const res = await addressApi.createNewAddress('testToken', 'abcd', 'testName')
+    const res = await addressApi.createNewAddress(
+      'testToken',
+      'abcd',
+      'testName',
+    )
 
     const [token, walletId, isChange, name] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
@@ -107,7 +124,11 @@ describe('getAddress', () => {
     // @ts-ignore
     backendApi.getAddress = mockImplementation
 
-    const res = await addressModule.getAddress('testToken', 'abcd', 'testAddress')
+    const res = await addressModule.getAddress(
+      'testToken',
+      'abcd',
+      'testAddress',
+    )
 
     const [token, walletId, address] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
@@ -130,9 +151,19 @@ describe('listAddresses', () => {
     // @ts-ignore
     backendApi.listAddresses = mockImplementation
 
-    const res = await addressModule.listAddresses('testToken', 'testWalletId', 101, 'testNextPageToken')
+    const res = await addressModule.listAddresses(
+      'testToken',
+      'testWalletId',
+      101,
+      'testNextPageToken',
+    )
 
-    const [token, walletId, limit, nextPageToken] = mockImplementation.mock.calls[0]
+    const [
+      token,
+      walletId,
+      limit,
+      nextPageToken,
+    ] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
     expect(walletId).to.eq('testWalletId')
     expect(limit).to.eq(101)

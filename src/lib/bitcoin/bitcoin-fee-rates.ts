@@ -5,7 +5,9 @@ export interface FeeRatesApi {
   getFeeRate(): Promise<GetFeesRates>
 }
 
-export const feeRatesApiFactory = (backendApi: BitcoinBackendApi): FeeRatesApi => {
+export const feeRatesApiFactory = (
+  backendApi: BitcoinBackendApi,
+): FeeRatesApi => {
   const getFeeRate = (): Promise<GetFeesRates> => backendApi.getFeesRates()
   return { getFeeRate }
 }

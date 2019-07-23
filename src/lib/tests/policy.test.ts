@@ -7,7 +7,11 @@ import chaiBigNumber from 'chai-bignumber'
 import { DailyAmountPolicy } from '../../types/domain'
 import { policyApiFactory } from '../policies'
 import { createHttpClient } from '../utils/httpClient'
-const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency, createHttpClient(() => ''))
+const backendApi = backendApiFactory.withCurrency(
+  'http://backendApiUrl',
+  currency,
+  createHttpClient(() => ''),
+)
 
 const policy = policyApiFactory(backendApi)
 
@@ -26,7 +30,11 @@ describe('addPolicy', () => {
     // @ts-ignore
     backendApi.createPolicy = mockImplementation
 
-    const res = await policy.createPolicy('testToken', 'name', new DailyAmountPolicy('11'))
+    const res = await policy.createPolicy(
+      'testToken',
+      'name',
+      new DailyAmountPolicy('11'),
+    )
 
     const [token, { name, settings }] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')

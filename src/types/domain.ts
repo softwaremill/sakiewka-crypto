@@ -2,20 +2,20 @@ import { Network } from 'bitcoinjs-lib'
 import { BigNumber } from 'bignumber.js'
 
 export interface WalletParams {
-  passphrase: string,
-  name: string,
-  userPubKey?: string,
+  passphrase: string
+  name: string
+  userPubKey?: string
   backupPubKey?: string
 }
 
 export interface KeyPair {
-  pubKey: string,
+  pubKey: string
   prvKey?: string
 }
 
 export interface Key {
-  id: string,
-  pubKey: string,
+  id: string
+  pubKey: string
   type: KeyType
 }
 
@@ -38,25 +38,25 @@ export enum Currency {
 }
 
 export interface UTXO {
-  txHash: string,
-  n: number,
-  amount?: BigNumber,
+  txHash: string
+  n: number
+  amount?: BigNumber
   path?: Path
 }
 
 export interface Recipient {
-  address: string,
+  address: string
   amount: BigNumber
 }
 
 export interface DecodedTx {
-  outputs: Recipient[],
+  outputs: Recipient[]
   inputs: UTXO[]
 }
 
 export interface Path {
-  cosignerIndex: number,
-  change: number,
+  cosignerIndex: number
+  change: number
   addressIndex: number
 }
 
@@ -67,21 +67,21 @@ export interface Signature {
 }
 
 export interface TxOut {
-  script: Buffer,
+  script: Buffer
   value: BigNumber
 }
 
 export interface SupportedNetworks {
   btc: {
-    mainnet: Network,
-    testnet: Network,
-    regtest: Network,
-  },
+    mainnet: Network;
+    testnet: Network;
+    regtest: Network;
+  }
   btg: {
-    mainnet: Network,
-    testnet: Network,
-    regtest: Network,
-  },
+    mainnet: Network;
+    testnet: Network;
+    regtest: Network;
+  }
 }
 
 export interface PolicySettings {
@@ -112,8 +112,8 @@ export class WhitelistPolicy implements PolicySettings {
 }
 
 export interface Policy {
-  id: string,
-  created: string,
-  name: string,
+  id: string
+  created: string
+  name: string
   settings: PolicySettings
 }

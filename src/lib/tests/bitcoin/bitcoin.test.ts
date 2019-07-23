@@ -3,7 +3,13 @@ import bitcoinFactory from '../../bitcoin/bitcoin'
 import { Currency } from '../../..'
 
 describe('btc redeem script', () => {
-  const test = (currency: Currency, key1: string, key2: string, key3: string, expectedResult: string) => {
+  const test = (
+    currency: Currency,
+    key1: string,
+    key2: string,
+    key3: string,
+    expectedResult: string,
+  ) => {
     it(`should create same ${currency} script regardless of public keys order`, () => {
       const bitcoin = bitcoinFactory(Currency.BTC, 'mainnet')
       const result1 = bitcoin.createMultisigRedeemScript([key1, key2, key3])
@@ -13,7 +19,13 @@ describe('btc redeem script', () => {
       const result5 = bitcoin.createMultisigRedeemScript([key3, key1, key2])
       const result6 = bitcoin.createMultisigRedeemScript([key3, key2, key1])
 
-      const results = Array.from(new Set([result1, result2, result3, result4, result5, result6].map(r => r.toString('hex'))))
+      const results = Array.from(
+        new Set(
+          [result1, result2, result3, result4, result5, result6].map(r =>
+            r.toString('hex'),
+          ),
+        ),
+      )
       expect(results).to.have.lengthOf(1)
       expect(results[0]).to.eq(expectedResult)
     })
