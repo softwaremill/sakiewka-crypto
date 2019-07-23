@@ -4,13 +4,13 @@ import { currency } from '../helpers'
 import * as backendApiFactory from '../../bitcoin/bitcoin-backend-api'
 import { keyApiFactory, keyModuleFactory } from '../../bitcoin/bitcoin-key'
 import bitoinFactory from '../../bitcoin/bitcoin'
-import { createHttpClient } from '../../utils/httpClient';
+import { createHttpClient } from '../../utils/httpClient'
 
-const backendApi = backendApiFactory.withCurrency("http://backendApiUrl", currency, createHttpClient(() => ''))
+const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency, createHttpClient(() => ''))
 // @ts-ignore
 backendApi.createWallet = jest.fn(() => {
   return Promise.resolve({
-    id: '123'
+    id: '123',
   })
 })
 
@@ -71,7 +71,7 @@ describe('encrypt/decrypt KeyPair', () => {
   })
 
   it('should encryp/decrypt keyPair', () => {
-    const keyPair = { pubKey: 'abc', prvKey: 'bcd' };
+    const keyPair = { pubKey: 'abc', prvKey: 'bcd' }
     const encryptedResults = keyModule.encryptKeyPair(keyPair, 'pass')
 
     expect(encryptedResults).to.haveOwnProperty('pubKey')
@@ -94,7 +94,7 @@ describe('deriveKey', () => {
   it('should create new hardened key for a given path', () => {
     const bitcoin = bitoinFactory(currency, 'mainnet')
     const keyModule = keyModuleFactory(bitcoin)
-    const path = `0'`
+    const path = "0'"
     const keyPair = keyModule.generateNewKeyPair()
 
     const result = keyModule.deriveKey(keyPair.prvKey!, path)
@@ -105,7 +105,7 @@ describe('deriveKey', () => {
   it('should create new normal key for a given path', () => {
     const bitcoin = bitoinFactory(currency, 'mainnet')
     const keyModule = keyModuleFactory(bitcoin)
-    const path = `11/20/15`
+    const path = '11/20/15'
     const keyPair = keyModule.generateNewKeyPair()
 
     const result = keyModule.deriveKey(keyPair.pubKey, path)
@@ -117,7 +117,7 @@ describe('deriveKey', () => {
   it('should work the same for relative and absolute paths', () => {
     const bitcoin = bitoinFactory(currency, 'mainnet')
     const keyModule = keyModuleFactory(bitcoin)
-    const basePath = `m/45'/0`
+    const basePath = "m/45'/0"
     const relativePath = '0/0'
 
     const rootPrvKey = 'xprv9s21ZrQH143K27LPi9gM65jmXFuBfiY7S5HReQarD7dTX9svAXQmQYsqxVqMcbtRWxDwBkdRxSxhfPBX4Vt7Juc9CqY4i3AaPNwCeM1w1Ym'
@@ -145,7 +145,7 @@ describe('deriveKey', () => {
   it('should create testnet key', () => {
     const bitcoin = bitoinFactory(currency, 'testnet')
     const keyModule = keyModuleFactory(bitcoin)
-    const path = `11/20/15`
+    const path = '11/20/15'
     const keyPair = keyModule.generateNewKeyPair()
 
     const result = keyModule.deriveKey(keyPair.pubKey, path)
@@ -163,7 +163,7 @@ describe('deriveKeyPair', () => {
   })
 
   it('should create new keyPair with derived pubKey', () => {
-    const path = `0'`
+    const path = "0'"
     const rootKeyPair = keyModule.generateNewKeyPair()
 
     const derivedKeyPair = keyModule.deriveKeyPair(rootKeyPair, path)

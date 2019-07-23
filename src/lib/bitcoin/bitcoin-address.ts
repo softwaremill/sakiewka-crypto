@@ -1,7 +1,7 @@
 import { KeyModule } from './bitcoin-key'
-import { BitcoinBackendApi } from './bitcoin-backend-api';
-import { BitcoinOperations } from './bitcoin-operations';
-import { CreateNewBitcoinAddressBackendResponse, GetBitcoinAddressBackendResponse, ListAddressesBackendResponse } from '../../types/response';
+import { BitcoinBackendApi } from './bitcoin-backend-api'
+import { BitcoinOperations } from './bitcoin-operations'
+import { CreateNewBitcoinAddressBackendResponse, GetBitcoinAddressBackendResponse, ListAddressesBackendResponse } from '../../types/response'
 
 export interface AddressApi {
   createNewAddress(userToken: string, walletId: string, name?: string): Promise<CreateNewBitcoinAddressBackendResponse>
@@ -15,20 +15,20 @@ export const addressApiFactory = (backendApi: BitcoinBackendApi): AddressApi => 
   const createNewAddress = (
     userToken: string,
     walletId: string,
-    name?: string
+    name?: string,
   ) => backendApi.createNewAddress(userToken, walletId, false, name)
 
   const getAddress = (
     userToken: string,
     walletId: string,
-    address: string
+    address: string,
   ) => backendApi.getAddress(userToken, walletId, address)
 
   const listAddresses = (
     userToken: string,
     walletId: string,
     limit: number,
-    nextPageToken?: string
+    nextPageToken?: string,
   ) => backendApi.listAddresses(userToken, walletId, limit, nextPageToken)
   return { createNewAddress, getAddress, listAddresses }
 

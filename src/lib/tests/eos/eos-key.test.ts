@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 
 import { keyModuleFactory } from '../../eos/eos-key'
-import { PrivateKey } from 'eosjs-ecc';
+import { PrivateKey } from 'eosjs-ecc'
 
 const keyModule = keyModuleFactory()
 
@@ -12,7 +12,6 @@ describe('deriveKeyPair', () => {
     expect(result.toPublic().toString()).to.eq('EOS611o2E8845Qsew3xmPAnH5MCz7B3TWZaSVMD6BTsyYaobybxB8')
   })
 })
-
 
 describe('generateNewKey', () => {
   it('should return new key', async () => {
@@ -27,7 +26,7 @@ describe('generateNewKey', () => {
 describe('encrypt/decrypt Key', () => {
 
   it('should encryp/decrypt keyPair', () => {
-    let keyAsString = '5Jf4zZa4MAF8StLxc4VvLGHruum48pYufUbVYgZfLmWZK4nCERE';
+    const keyAsString = '5Jf4zZa4MAF8StLxc4VvLGHruum48pYufUbVYgZfLmWZK4nCERE'
     const key = PrivateKey(keyAsString)
     const encryptedResults = keyModule.encryptKey(key, 'pass')
 

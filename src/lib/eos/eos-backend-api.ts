@@ -20,8 +20,8 @@ export const create = (backendApiUrl: string, httpClient: HttpClient): EosBacken
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
-      }
+        Authorization: token,
+      },
     }
 
     const response = await httpClient.request(`${backendApiUrl}/eos/wallet/${walletId}/max-transfer-amount?recipient=${params.recipient}`, options)
@@ -33,7 +33,7 @@ export const create = (backendApiUrl: string, httpClient: HttpClient): EosBacken
     editWallet: baseCurrencyApi.editWallet,
     getWallet: baseCurrencyApi.getWallet,
     listWallets: baseCurrencyApi.listWallets,
-    maxTransferAmount: maxTransferAmount,
-    listPoliciesForWallet: baseCurrencyApi.listPoliciesForWallet
+    maxTransferAmount,
+    listPoliciesForWallet: baseCurrencyApi.listPoliciesForWallet,
   }
 }

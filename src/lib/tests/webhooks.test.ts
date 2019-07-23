@@ -5,7 +5,7 @@ import * as backendApiFactory from '../bitcoin/bitcoin-backend-api'
 import BigNumber from 'bignumber.js'
 import chaiBigNumber from 'chai-bignumber'
 import { webhooksApiFactory } from '../webhooks'
-import { createHttpClient } from '../utils/httpClient';
+import { createHttpClient } from '../utils/httpClient'
 
 const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency, createHttpClient(() => ''))
 
@@ -31,8 +31,8 @@ describe('createWebhook', () => {
       'testWalletId',
       'http://test.callback.com',
       {
-        'type': 'transfer'
-      }
+        type: 'transfer',
+      },
     )
 
     const [token, walletId, callbackUrl, settings] = mockImplementation.mock.calls[0]
@@ -40,7 +40,7 @@ describe('createWebhook', () => {
     expect(walletId).to.eq('testWalletId')
     expect(callbackUrl).to.eq('http://test.callback.com')
     expect(settings).to.be.deep.eq({
-      'type': 'transfer'
+      type: 'transfer',
     })
     expect(res).to.be.a('object').that.is.empty
   })
@@ -54,15 +54,15 @@ describe('getWebhook', () => {
   it('should pass proper arguments to backend-api method and return result of its call', async () => {
     // @ts-ignore
     const mockImplementation = jest.fn(() => (
-        {
-          id: 'id123',
-          walletId: 'walletId345',
-          callbackUrl: 'http://test.callbackurl.com',
-          settings: {
-            type: 'transfer'
-          }
-        }
-      )
+    {
+      id: 'id123',
+      walletId: 'walletId345',
+      callbackUrl: 'http://test.callbackurl.com',
+      settings: {
+        type: 'transfer',
+      },
+    }
+      ),
     )
     // @ts-ignore
     backendApi.getWebhook = mockImplementation
@@ -70,7 +70,7 @@ describe('getWebhook', () => {
     const res = await webhooks.getWebhook(
       'testToken',
       'testWalletId',
-      'testWebhookId'
+      'testWebhookId',
     )
 
     const [token, walletId, webhookId] = mockImplementation.mock.calls[0]
@@ -82,8 +82,8 @@ describe('getWebhook', () => {
       walletId: 'walletId345',
       callbackUrl: 'http://test.callbackurl.com',
       settings: {
-        type: 'transfer'
-      }
+        type: 'transfer',
+      },
     })
   })
 })
@@ -96,17 +96,17 @@ describe('listWebhooks', () => {
   it('should pass proper arguments to backend-api method and return result of its call', async () => {
     // @ts-ignore
     const mockImplementation = jest.fn(() => (
-        [
-          {
-            id: 'id123',
-            walletId: 'walletId345',
-            callbackUrl: 'http://test.callbackurl.com',
-            settings: {
-              type: 'transfer'
-            }
-          }
-        ]
-      )
+    [
+      {
+        id: 'id123',
+        walletId: 'walletId345',
+        callbackUrl: 'http://test.callbackurl.com',
+        settings: {
+              type: 'transfer',
+            },
+      },
+    ]
+      ),
     )
     // @ts-ignore
     backendApi.listWebhooks = mockImplementation
@@ -115,7 +115,7 @@ describe('listWebhooks', () => {
       'testToken',
       'testWalletId',
       10,
-      '4'
+      '4',
     )
 
     const [token, walletId, limit, nextPageToken] = mockImplementation.mock.calls[0]
@@ -129,9 +129,9 @@ describe('listWebhooks', () => {
         walletId: 'walletId345',
         callbackUrl: 'http://test.callbackurl.com',
         settings: {
-          type: 'transfer'
-        }
-      }
+          type: 'transfer',
+        },
+      },
     ])
   })
 })
@@ -150,7 +150,7 @@ describe('deleteWebhook', () => {
     const res = await webhooks.deleteWebhook(
       'testToken',
       'testWalletId',
-      'testWebhookId'
+      'testWebhookId',
     )
 
     const [token, walletId, webhookId] = mockImplementation.mock.calls[0]

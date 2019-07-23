@@ -8,14 +8,14 @@ import {
 } from 'bitcoinjs-lib'
 import bip69 from 'bip69'
 import { UTXO, Recipient, Path, TxOut } from '../../types/domain'
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from 'bignumber.js'
 
 const btcjsToUtxo = (input: UTXO_btcjs): UTXO => {
   return {
     txHash: input.txId,
     n: input.vout,
     amount: input.amount,
-    path: input.path
+    path: input.path,
   }
 }
 
@@ -24,7 +24,7 @@ const utxoToBtcJS = (input: UTXO): UTXO_btcjs => {
     txId: input.txHash,
     vout: input.n,
     amount: input.amount,
-    path: input.path
+    path: input.path,
   }
 }
 
@@ -44,7 +44,7 @@ export class BitcoinOperations {
   }
 
   private base58ToKeyBuffer = (key: string): Buffer => {
-    return this.bitcoinLib.HDNode.fromBase58(key, this.network ).getPublicKeyBuffer()
+    return this.bitcoinLib.HDNode.fromBase58(key, this.network).getPublicKeyBuffer()
   }
 
   createMultisigRedeemScript = (base58Keys: string[]): Buffer => {
@@ -54,7 +54,7 @@ export class BitcoinOperations {
 
   multisigRedeemScriptToScriptPubKey = (redeemScript: Buffer): Buffer => {
     return this.bitcoinLib.script.scriptHash.output.encode(
-      this.bitcoinLib.crypto.hash160(redeemScript)
+      this.bitcoinLib.crypto.hash160(redeemScript),
     )
   }
 
@@ -97,12 +97,12 @@ export class BitcoinOperations {
 
   decodeTxOutput = (output: Out): Recipient => ({
     amount: new BigNumber(output.value),
-    address: this.outputScriptToAddress(output.script)
+    address: this.outputScriptToAddress(output.script),
   })
 
   decodeTxInput = (input: In): UTXO => ({
     txHash: (input.hash.reverse() as Buffer).toString('hex'),
-    n: input.index
+    n: input.index,
   })
 
   sortUnspents = (inputs: UTXO[]): UTXO[] => {
@@ -113,7 +113,7 @@ export class BitcoinOperations {
   recipientToTxOut = (recipient: Recipient): TxOut => {
     return {
       script: this.addressToOutputScript(recipient.address),
-      value: recipient.amount
+      value: recipient.amount,
     }
   }
 

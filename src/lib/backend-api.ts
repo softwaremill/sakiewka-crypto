@@ -26,7 +26,7 @@ import {
   PolicyCreateRequest,
   BalanceBackendResponse,
   CreateAuthTokenBackendResponse,
-  DeleteAuthTokenBackendResponse
+  DeleteAuthTokenBackendResponse,
 } from '../types/response'
 import { buildQueryParamString, createHttpClient, HttpClient } from './utils/httpClient'
 import { Currency } from '..'
@@ -48,7 +48,7 @@ export const backendFactory = (backendApiUrl: string, getCorrelationId: Correlat
   return {
     core: backendApi,
     [Currency.BTC]: btcBackendApi,
-    [Currency.BTG]: btgBackendApi
+    [Currency.BTG]: btgBackendApi,
   }
 }
 
@@ -78,8 +78,8 @@ export const create = (backendApiUrl: string, httpClient: HttpClient): CoreBacke
       body: JSON.stringify({
         password,
         email: login,
-        code: codeIn
-      })
+        code: codeIn,
+      }),
     }
     const response = await httpClient.request(`${backendApiUrl}/user/login`, options)
     return response.data
@@ -89,9 +89,9 @@ export const create = (backendApiUrl: string, httpClient: HttpClient): CoreBacke
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token
+        Authorization: token,
       },
-      body: JSON.stringify({ password })
+      body: JSON.stringify({ password }),
     }
     const response = await httpClient.request(`${backendApiUrl}/user/2fa/init`, options)
     return response.data
@@ -101,9 +101,9 @@ export const create = (backendApiUrl: string, httpClient: HttpClient): CoreBacke
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token
+        Authorization: token,
       },
-      body: JSON.stringify({ password, code })
+      body: JSON.stringify({ password, code }),
     }
     const response = await httpClient.request(`${backendApiUrl}/user/2fa/confirm`, options)
     return response.data
@@ -113,9 +113,9 @@ export const create = (backendApiUrl: string, httpClient: HttpClient): CoreBacke
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token
+        Authorization: token,
       },
-      body: JSON.stringify({ password, code })
+      body: JSON.stringify({ password, code }),
     }
     const response = await httpClient.request(`${backendApiUrl}/user/2fa/disable`, options)
     return response.data
@@ -125,8 +125,8 @@ export const create = (backendApiUrl: string, httpClient: HttpClient): CoreBacke
     const options = {
       method: 'POST',
       body: JSON.stringify({
-        email: login
-      })
+        email: login,
+      }),
     }
 
     const response = await httpClient.request(`${backendApiUrl}/user/register`, options)
@@ -137,11 +137,11 @@ export const create = (backendApiUrl: string, httpClient: HttpClient): CoreBacke
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token
+        Authorization: token,
       },
       body: JSON.stringify({
-        password
-      })
+        password,
+      }),
     }
     const response = await httpClient.request(`${backendApiUrl}/user/setup-password`, options)
     return response.data
@@ -151,8 +151,8 @@ export const create = (backendApiUrl: string, httpClient: HttpClient): CoreBacke
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
-      }
+        Authorization: token,
+      },
     }
 
     const response = await httpClient.request(`${backendApiUrl}/user/info`, options)
@@ -163,8 +163,8 @@ export const create = (backendApiUrl: string, httpClient: HttpClient): CoreBacke
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
-      }
+        Authorization: token,
+      },
     }
 
     const response = await httpClient.request(`${backendApiUrl}/transfer/monthly-summary/${month}/${year}/${fiatCurrency}`, options)
@@ -177,13 +177,13 @@ export const create = (backendApiUrl: string, httpClient: HttpClient): CoreBacke
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
-      }
+        Authorization: token,
+      },
     }
 
     const queryParams = [
       { key: 'limit', value: limit },
-      { key: 'nextPageToken', value: nextPageToken }
+      { key: 'nextPageToken', value: nextPageToken },
     ]
     const queryString = buildQueryParamString(queryParams)
     const response = await httpClient.request(`${backendApiUrl}/transfer${queryString}`, options)
@@ -192,7 +192,7 @@ export const create = (backendApiUrl: string, httpClient: HttpClient): CoreBacke
 
   const chainNetworkType = async (): Promise<ChainModeResponse> => {
     const options = {
-      method: 'GET'
+      method: 'GET',
     }
     const response = await httpClient.request(`${backendApiUrl}/chain-network-type`, options)
     return response.data
@@ -202,13 +202,13 @@ export const create = (backendApiUrl: string, httpClient: HttpClient): CoreBacke
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token
+        Authorization: token,
       },
       body: JSON.stringify({
         duration,
         ip,
-        scope
-      })
+        scope,
+      }),
     }
     const response = await httpClient.request(`${backendApiUrl}/user/auth-token`, options)
     return response.data
@@ -218,8 +218,8 @@ export const create = (backendApiUrl: string, httpClient: HttpClient): CoreBacke
     const options = {
       method: 'DELETE',
       headers: {
-        Authorization: token
-      }
+        Authorization: token,
+      },
     }
     const response = await httpClient.request(`${backendApiUrl}/user/auth-token`, options)
     return response.data
@@ -229,11 +229,11 @@ export const create = (backendApiUrl: string, httpClient: HttpClient): CoreBacke
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
-      }
+        Authorization: token,
+      },
     }
     const queryParams = [
-      { key: 'fiatCurrency', value: fiatCurrency }
+      { key: 'fiatCurrency', value: fiatCurrency },
     ]
     const queryString = buildQueryParamString(queryParams)
     const response = await httpClient.request(`${backendApiUrl}/user/balance${queryString}`, options)
@@ -244,12 +244,12 @@ export const create = (backendApiUrl: string, httpClient: HttpClient): CoreBacke
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token
+        Authorization: token,
       },
       body: JSON.stringify({
         subject,
         content,
-      })
+      }),
     }
     return await httpClient.request(`${backendApiUrl}/user/support`, options)
   }
@@ -268,25 +268,24 @@ export const create = (backendApiUrl: string, httpClient: HttpClient): CoreBacke
     balance,
     createAuthToken,
     deleteAuthToken,
-    addUserSupportSubmission
+    addUserSupportSubmission,
   }
 }
-
 
 export const currencyApi = (backendApiUrl: string, currency: Currency, httpClient: HttpClient) => {
   // wallet
   const createWallet = async <T>(
     token: string,
-    params: CreateWalletBackendParams
+    params: CreateWalletBackendParams,
   ): Promise<T> => {
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token
+        Authorization: token,
       },
       body: JSON.stringify({
-        ...params
-      })
+        ...params,
+      }),
     }
 
     const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet`, options)
@@ -297,11 +296,11 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, httpClien
     const options = {
       method: 'PATCH',
       headers: {
-        Authorization: token
+        Authorization: token,
       },
       body: JSON.stringify({
-        name: name
-      })
+        name,
+      }),
     }
 
     const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}`, options)
@@ -310,13 +309,13 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, httpClien
 
   const getWallet = async (
     token: string,
-    walletId: string
+    walletId: string,
   ): Promise<GetWalletBackendResponse> => {
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
-      }
+        Authorization: token,
+      },
     }
 
     const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}`, options)
@@ -327,19 +326,19 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, httpClien
     token: string,
     limit: number,
     searchPhrase?: string,
-    nextPageToken?: string
+    nextPageToken?: string,
   ): Promise<ListWalletsBackendResponse> => {
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
-      }
+        Authorization: token,
+      },
     }
 
     const queryParams = [
       { key: 'limit', value: limit },
       { key: 'searchPhrase', value: searchPhrase },
-      { key: 'nextPageToken', value: nextPageToken }
+      { key: 'nextPageToken', value: nextPageToken },
     ]
     const queryString = buildQueryParamString(queryParams)
 
@@ -347,22 +346,21 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, httpClien
     return response.data
   }
 
-
   const listWebhooks = async (
     token: string,
     walletId: string,
     limit: number,
-    nextPageToken?: string
+    nextPageToken?: string,
   ): Promise<ListWebhooksResponse> => {
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
-      }
+        Authorization: token,
+      },
     }
     const queryParams = [
       { key: 'limit', value: limit },
-      { key: 'nextPageToken', value: nextPageToken }
+      { key: 'nextPageToken', value: nextPageToken },
     ]
     const queryString = buildQueryParamString(queryParams)
     const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks${queryString}`, options)
@@ -372,13 +370,13 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, httpClien
   const getWebhook = async (
     token: string,
     walletId: string,
-    webhookId: string
+    webhookId: string,
   ): Promise<GetWebhooksResponse> => {
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
-      }
+        Authorization: token,
+      },
     }
     const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks/${webhookId}`, options)
     return response.data
@@ -388,14 +386,14 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, httpClien
     token: string,
     walletId: string,
     callbackUrl: string,
-    settings: Object
+    settings: Object,
   ): Promise<CreateWebhookResponse> => {
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token
+        Authorization: token,
       },
-      body: JSON.stringify({ callbackUrl, settings })
+      body: JSON.stringify({ callbackUrl, settings }),
     }
     const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks`, options)
     return response.data
@@ -404,25 +402,24 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, httpClien
   const deleteWebhook = async (
     token: string,
     walletId: string,
-    webhookId: string
+    webhookId: string,
   ): Promise<DeleteWebhookResponse> => {
     const options = {
       method: 'DELETE',
       headers: {
-        Authorization: token
-      }
+        Authorization: token,
+      },
     }
     const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/webhooks/${webhookId}`, options)
     return response.data
   }
 
-
   const getAddress = async <T>(token: string, walletId: string, address: string): Promise<T> => {
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
-      }
+        Authorization: token,
+      },
     }
 
     const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/address/${address}`, options)
@@ -433,18 +430,18 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, httpClien
     token: string,
     walletId: string,
     limit: number,
-    nextPageToken?: string
+    nextPageToken?: string,
   ): Promise<ListAddressesBackendResponse> => {
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
-      }
+        Authorization: token,
+      },
     }
 
     const queryParams = [
       { key: 'limit', value: limit },
-      { key: 'nextPageToken', value: nextPageToken }
+      { key: 'nextPageToken', value: nextPageToken },
     ]
     const queryString = buildQueryParamString(queryParams)
     const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/address${queryString}`, options)
@@ -454,13 +451,13 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, httpClien
   const getKey = async (
     token: string,
     keyId: string,
-    includePrivate?: boolean
+    includePrivate?: boolean,
   ): Promise<GetKeyBackendResponse> => {
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
-      }
+        Authorization: token,
+      },
     }
 
     const queryString = buildQueryParamString([{ key: 'includePrivate', value: includePrivate }])
@@ -472,9 +469,9 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, httpClien
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token
+        Authorization: token,
       },
-      body: JSON.stringify(params)
+      body: JSON.stringify(params),
     }
 
     const response = await httpClient.request(`${backendApiUrl}/${currency}/policy`, options)
@@ -485,8 +482,8 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, httpClien
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
-      }
+        Authorization: token,
+      },
     }
 
     const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/policy`, options)
@@ -497,13 +494,13 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, httpClien
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
-      }
+        Authorization: token,
+      },
     }
 
     const queryParams = [
       { key: 'limit', value: limit },
-      { key: 'nextPageToken', value: nextPageToken }
+      { key: 'nextPageToken', value: nextPageToken },
     ]
     const queryString = buildQueryParamString(queryParams)
     const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/transfer${queryString}`, options)
@@ -514,8 +511,8 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, httpClien
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
-      }
+        Authorization: token,
+      },
     }
     const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/transfer/${txHash}`, options)
     return response.data
@@ -525,12 +522,12 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, httpClien
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
-      }
+        Authorization: token,
+      },
     }
     const queryParams = [
       { key: 'limit', value: limit },
-      { key: 'nextPageToken', value: nextPageToken }
+      { key: 'nextPageToken', value: nextPageToken },
     ]
     const queryString = buildQueryParamString(queryParams)
     const response = await httpClient.request(`${backendApiUrl}/${currency}/policy${queryString}`, options)
@@ -541,9 +538,9 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, httpClien
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token
+        Authorization: token,
       },
-      body: JSON.stringify(assignParams)
+      body: JSON.stringify(assignParams),
     }
 
     const response = await httpClient.request(`${backendApiUrl}/${currency}/policy/${policyId}/assign`, options)
@@ -554,8 +551,8 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, httpClien
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
-      }
+        Authorization: token,
+      },
     }
     const response = await httpClient.request(`${backendApiUrl}/${currency}/policy/${policyId}/wallet`, options)
     return response.data
@@ -579,6 +576,6 @@ export const currencyApi = (backendApiUrl: string, currency: Currency, httpClien
     listPoliciesForWallet,
     listPolicies,
     assignPolicy,
-    listWalletsForPolicy
+    listWalletsForPolicy,
   }
 }

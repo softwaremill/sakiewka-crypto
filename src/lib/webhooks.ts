@@ -25,6 +25,6 @@ export const webhooksApiFactory = (backend: BitcoinBackendApi): WebhooksApi => {
     getWebhook,
     listWebhooks,
     createWebhook,
-    deleteWebhook
+    deleteWebhook,
   }
 }

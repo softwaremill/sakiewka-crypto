@@ -5,8 +5,8 @@ import * as backendApiFactory from '../bitcoin/bitcoin-backend-api'
 import BigNumber from 'bignumber.js'
 import chaiBigNumber from 'chai-bignumber'
 import { DailyAmountPolicy } from '../../types/domain'
-import { policyApiFactory } from '../policies';
-import { createHttpClient } from '../utils/httpClient';
+import { policyApiFactory } from '../policies'
+import { createHttpClient } from '../utils/httpClient'
 const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency, createHttpClient(() => ''))
 
 const policy = policyApiFactory(backendApi)

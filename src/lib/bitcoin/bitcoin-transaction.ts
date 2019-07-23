@@ -74,7 +74,7 @@ export const transactionApiFactory = (backendApi: BitcoinBackendApi, keyModule: 
     const changeRecipient: Recipient = { address: changeAddres, amount: new BigNumber(change) }
     const serviceRecipient = serviceFee ? [{
       address: serviceFee.address,
-      amount: new BigNumber(serviceFee.amount)
+      amount: new BigNumber(serviceFee.amount),
     }] : []
     const txOuts = recipients.concat(changeRecipient)
       .concat(serviceRecipient)
@@ -131,7 +131,7 @@ export const transactionModuleFactory = (keyModule: KeyModule, bitcoin: BitcoinO
 
     return {
       txHex: builtTx.toHex(),
-      txHash: builtTx.getId()
+      txHash: builtTx.getId(),
     }
   }
 

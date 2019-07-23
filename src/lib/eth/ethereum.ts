@@ -10,10 +10,10 @@ export default (btcNetwork: string) => {
   const OnlyDigits = /^[1-9]+\d*$/
 
   const createETHOperationHash = (
-    address: string, value: string, data: string, expireBlock: number, contractNonce: number
+    address: string, value: string, data: string, expireBlock: number, contractNonce: number,
   ) => {
     if (!OnlyDigits.test(value)) {
-      throw new Error("Value was not an integer!")
+      throw new Error('Value was not an integer!')
     }
     return ethUtil.bufferToHex(
       ethAbi.soliditySHA3(
@@ -24,17 +24,17 @@ export default (btcNetwork: string) => {
           value,
           data,
           expireBlock,
-          contractNonce
-        ]
-      )
+          contractNonce,
+        ],
+      ),
     )
   }
 
   const createTokenOperationHash = (
-    address: string, value: string, contractAddress: string, expireBlock: number, contractNonce: number
+    address: string, value: string, contractAddress: string, expireBlock: number, contractNonce: number,
   ) => {
     if (!OnlyDigits.test(value)) {
-      throw new Error("Value was not an integer!")
+      throw new Error('Value was not an integer!')
     }
     return ethUtil.bufferToHex(
       ethAbi.soliditySHA3(
@@ -45,14 +45,14 @@ export default (btcNetwork: string) => {
           value,
           new ethUtil.BN(contractAddress, 16),
           expireBlock,
-          contractNonce
-        ]
-      )
+          contractNonce,
+        ],
+      ),
     )
   }
 
   const createGenericOperationHash = (
-    types: string[], values: any[]
+    types: string[], values: any[],
   ) => {
     return ethUtil.bufferToHex(
       ethAbi.soliditySHA3(
@@ -61,15 +61,15 @@ export default (btcNetwork: string) => {
           if (types[index] === 'address') {
             return new ethUtil.BN(elem.toString(), 16)
           } else return elem
-        })
-      )
+        }),
+      ),
     )
   }
 
   const createSignature = (operationHash: string, prvKey: string) => {
     const signatureInParts = ethUtil.ecsign(
       new Buffer(ethUtil.stripHexPrefix(operationHash), 'hex'),
-      new Buffer(prvKey, 'hex')
+      new Buffer(prvKey, 'hex'),
     )
 
     const r = ethUtil.setLengthLeft(signatureInParts.r, 32).toString('hex')
@@ -90,7 +90,6 @@ export default (btcNetwork: string) => {
     xprvToEthPrivateKey,
     createGenericOperationHash,
     createTokenOperationHash,
-    createETHOperationHash
+    createETHOperationHash,
   }
 }
-

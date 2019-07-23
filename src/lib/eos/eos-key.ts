@@ -11,7 +11,7 @@ export interface KeyModule {
 export const keyModuleFactory = (): KeyModule => {
 
   const generateNewKey = async (): Promise<PrivateKey> => {
-    return PrivateKey.randomKey();
+    return PrivateKey.randomKey()
   }
 
   const encryptKey = (privateKey: PrivateKey, passPhrase: string): string => {

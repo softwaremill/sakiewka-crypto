@@ -5,8 +5,8 @@ import { addressModuleFactory, addressApiFactory } from '../../bitcoin/bitcoin-a
 import * as backendFactory from '../../bitcoin/bitcoin-backend-api'
 import { keyModuleFactory } from '../../bitcoin/bitcoin-key'
 import bitcoinFactory from '../../bitcoin/bitcoin'
-import { Currency } from '../../..';
-import { createHttpClient } from '../../utils/httpClient';
+import { Currency } from '../../..'
+import { createHttpClient } from '../../utils/httpClient'
 
 const backendApi = backendFactory.withCurrency('https://backendApiUrl', currency, createHttpClient(() => ''))
 describe('generateNewMultisigAddress', () => {
@@ -25,7 +25,7 @@ describe('generateNewMultisigAddress', () => {
     const pubKeys = [
       'xpub661MyMwAqRbcEbQrpBDMTDgW5Hjg5BFxoJD2SnzTmTASPxD4i4j1xMCKojYwgaRXXBRAHB7WPECxA2aQVfL61G4mWjnHMj6BJtAQKMVAiYs',
       'xpub661MyMwAqRbcGukLdXtbs5TTqkddNUYzdWAmZ3mQTRZgtaySzU9ePfVEZWtQJBZGbfKfhPZfG74z6TXkeEx2atofMhn2n4bHLzjDWHREM5u',
-      'xpub661MyMwAqRbcGQQ9zYBFdkPxFBryTQwXCEr2zKsm2YBkeDFWbkKBUAWeRUaaseSmTWaat8npZ6nfyYqe1joSH6jsQdhK4W5fia35LgZfwVF'
+      'xpub661MyMwAqRbcGQQ9zYBFdkPxFBryTQwXCEr2zKsm2YBkeDFWbkKBUAWeRUaaseSmTWaat8npZ6nfyYqe1joSH6jsQdhK4W5fia35LgZfwVF',
     ]
 
     const { address, redeemScript } = addressModule.generateNewMultisigAddress(
@@ -43,7 +43,7 @@ describe('generateNewMultisigAddress', () => {
     const pubKeys = [
       'tpubD6NzVbkrYhZ4YLQpJAWwxCiNVAH13QSiFHWWTRmocy5zCMN6Nr8fbLVN38Y5nu7KwZ24ux74qotyyNkeF9KN52Gawcjr4ujHkQUDTBmw8Bu',
       'tpubD6NzVbkrYhZ4YWW2LBu48ZLMDtU6YZNug3dArpmhCZVCeRduVLF9FRNaLbwkND5Twf4DS1aXuFqvYd1S4BBTFGwjDM7iy1CK8vuwJHYqpdd',
-      'tpubD6NzVbkrYhZ4YjDKW7sGf2uqBaCPzstZwrEAXSNhWKze43HqujV38SeGLAtjq4XPts9D5Fb4dWbiP9DtuZPt75DQSeU5U9QLzoMtCtsf92b'
+      'tpubD6NzVbkrYhZ4YjDKW7sGf2uqBaCPzstZwrEAXSNhWKze43HqujV38SeGLAtjq4XPts9D5Fb4dWbiP9DtuZPt75DQSeU5U9QLzoMtCtsf92b',
     ]
 
     const { address, redeemScript } = addressModule.generateNewMultisigAddress(

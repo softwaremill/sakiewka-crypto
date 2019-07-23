@@ -1,7 +1,5 @@
 {
-  "extends": [
-    "tslint-config-airbnb"
-  ],
+  "extends": ["tslint-config-airbnb"],
   "rules": {
     "mocha-no-side-effect-code": false,
     "missing-jsdoc": false,
@@ -17,7 +15,7 @@
     "trailing-comma": [
       true,
       {
-        "multiline": "never",
+        "multiline": "always",
         "singleline": "never"
       }
     ],
@@ -28,9 +26,6 @@
       "property-declaration",
       "member-variable-declaration"
     ],
-    "semicolon": [
-      true,
-      "never"
-    ]
+    "semicolon": [true, "never"]
   }
 }

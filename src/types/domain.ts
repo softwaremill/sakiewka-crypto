@@ -22,19 +22,19 @@ export interface Key {
 export enum KeyType {
   USER = 'user',
   SERVICE = 'service',
-  BACKUP = 'backup'
+  BACKUP = 'backup',
 }
 
 export enum TransferType {
   INCOMING = 'incoming',
   OUTGOING = 'outgoing',
-  OUTGOING_EXTERNAL = 'outgoing_external'
+  OUTGOING_EXTERNAL = 'outgoing_external',
 }
 
 export enum Currency {
   BTC = 'btc',
   BTG = 'btg',
-  EOS = 'eos'
+  EOS = 'eos',
 }
 
 export interface UTXO {
@@ -75,12 +75,12 @@ export interface SupportedNetworks {
   btc: {
     mainnet: Network,
     testnet: Network,
-    regtest: Network
+    regtest: Network,
   },
   btg: {
     mainnet: Network,
     testnet: Network,
-    regtest: Network
+    regtest: Network,
   },
 }
 
@@ -89,8 +89,8 @@ export interface PolicySettings {
 }
 
 export enum PolicyKind {
-  MaxDailyAmount = "maxDailyAmount",
-  Whitelist = "whitelist"
+  MaxDailyAmount = 'maxDailyAmount',
+  Whitelist = 'whitelist',
 }
 
 export class DailyAmountPolicy implements PolicySettings {

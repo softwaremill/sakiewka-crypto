@@ -81,13 +81,12 @@ export interface CreateBitcoinWalletBackendResponse extends WalletBackendRespons
   servicePubKey: string,
   initialAddress: {
     address: string,
-    path: Path
+    path: Path,
   }
 }
 
 export interface CreateEosWalletBackendResponse extends WalletBackendResponse {
 }
-
 
 export interface GetWalletBackendResponse extends WalletBackendResponse {
   name: string,
@@ -95,7 +94,7 @@ export interface GetWalletBackendResponse extends WalletBackendResponse {
   created: string,
   balance: {
     available: string,
-    locked: string
+    locked: string,
   }
   canSendFundsUsingPassword : boolean
 }
@@ -105,7 +104,7 @@ export interface CreateNewBitcoinAddressBackendResponse {
   path: {
     cosignerIndex: string,
     change: string,
-    addressIndex: string
+    addressIndex: string,
   }
 }
 
@@ -124,7 +123,7 @@ export interface GetBitcoinAddressBackendResponse {
   path: {
     cosignerIndex: string,
     change: string,
-    addressIndex: string
+    addressIndex: string,
   },
   name: string,
   created: string

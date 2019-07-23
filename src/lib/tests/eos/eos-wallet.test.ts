@@ -5,7 +5,7 @@ import * as backendApiFactory from '../../eos/eos-backend-api'
 import BigNumber from 'bignumber.js'
 import chaiBigNumber from 'chai-bignumber'
 import { keyModuleFactory } from '../../eos/eos-key'
-import { createHttpClient } from '../../utils/httpClient';
+import { createHttpClient } from '../../utils/httpClient'
 
 const backendApi = backendApiFactory.create('http://backendApiUrl', createHttpClient(() => ''))
 const keyModule = keyModuleFactory()
@@ -24,7 +24,7 @@ describe('createWallet', () => {
 
     const params = {
       passphrase: 'abcd',
-      name: 'testLabel'
+      name: 'testLabel',
     }
 
     const result = await wallet.createWallet('abcd', params)

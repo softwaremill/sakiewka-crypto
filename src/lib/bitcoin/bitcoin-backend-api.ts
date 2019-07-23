@@ -24,7 +24,7 @@ import {
   MaxTransferAmountResponse,
   PolicyCreatedResponse,
   PolicyCreateRequest,
-  TransferItemBackendResponse
+  TransferItemBackendResponse,
 } from '../../types/response'
 import { HttpClient } from '../utils/httpClient'
 import * as backendApi from '../backend-api'
@@ -69,25 +69,25 @@ export const withCurrency = (backendApiUrl: string, currency: Currency, httpClie
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
-      }
+        Authorization: token,
+      },
     }
     const queryString = `limit=${limit}${nextPageToken ? `&nextPageToken=${nextPageToken}` : ''}`
     const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/${address}/utxo?${queryString}`, options)
     return response.data
   }
 
-  const createNewAddress = async <CreateNewBitcoinAddressBackendResponse>(token: string, walletId: string, isChange: boolean = false, name?: string
+  const createNewAddress = async <CreateNewBitcoinAddressBackendResponse>(token: string, walletId: string, isChange: boolean = false, name?: string,
   ): Promise<CreateNewBitcoinAddressBackendResponse> => {
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token
+        Authorization: token,
       },
       body: JSON.stringify({
         name,
-        isChange
-      })
+        isChange,
+      }),
     }
 
     const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/address`, options)
@@ -98,11 +98,11 @@ export const withCurrency = (backendApiUrl: string, currency: Currency, httpClie
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token
+        Authorization: token,
       },
       body: JSON.stringify({
-        ...params
-      })
+        ...params,
+      }),
     }
 
     const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/utxo`, options)
@@ -114,11 +114,11 @@ export const withCurrency = (backendApiUrl: string, currency: Currency, httpClie
     const options = {
       method: 'POST',
       headers: {
-        Authorization: token
+        Authorization: token,
       },
       body: JSON.stringify({
-        txHex
-      })
+        txHex,
+      }),
     }
 
     const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/send`, options)
@@ -129,8 +129,8 @@ export const withCurrency = (backendApiUrl: string, currency: Currency, httpClie
     const options = {
       method: 'GET',
       headers: {
-        Authorization: token
-      }
+        Authorization: token,
+      },
     }
 
     const response = await httpClient.request(`${backendApiUrl}/${currency}/wallet/${walletId}/max-transfer-amount?recipient=${params.recipient}&feeRate=${params.feeRate}`, options)
@@ -166,6 +166,6 @@ export const withCurrency = (backendApiUrl: string, currency: Currency, httpClie
     listPoliciesForWallet: currencyApi.listPoliciesForWallet,
     listPolicies: currencyApi.listPolicies,
     assignPolicy: currencyApi.assignPolicy,
-    listWalletsForPolicy: currencyApi.listWalletsForPolicy
+    listWalletsForPolicy: currencyApi.listWalletsForPolicy,
   }
 }

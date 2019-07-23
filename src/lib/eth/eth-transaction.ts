@@ -1,7 +1,7 @@
 import {
   getNextNonce,
   sendETH as sendETHApi,
-  sendTokens as sendTokensApi
+  sendTokens as sendTokensApi,
 } from './zlevator'
 import { Signature } from '../../types/domain'
 import { hourFromNow } from '../utils/helpers'
@@ -12,7 +12,7 @@ export default (btcNetwork: string) => {
   const ethereum = ethereumFactory(btcNetwork)
 
   const sendETH = async (
-    prvKey: string, toAddress: string, value: string, data: string, withdrawalId: string
+    prvKey: string, toAddress: string, value: string, data: string, withdrawalId: string,
   ) => {
     const { contractNonce, currentBlock } = await getNextNonce()
     const expireBlock = hourFromNow(currentBlock)
@@ -22,7 +22,7 @@ export default (btcNetwork: string) => {
   }
 
   const sendTokens = async (
-    prvKey: string, toAddress: string, contractAddress: string, value: string, withdrawalId: string
+    prvKey: string, toAddress: string, contractAddress: string, value: string, withdrawalId: string,
   ) => {
     const { contractNonce, currentBlock } = await getNextNonce()
     const expireBlock = hourFromNow(currentBlock)
@@ -33,27 +33,27 @@ export default (btcNetwork: string) => {
 
   const signTokenTransaction = (
     toAddress: string, value: string, contractAddress: string, expiryDate: number,
-    contractNonce: number, ethPrvKey: string
+    contractNonce: number, ethPrvKey: string,
   ): Signature => {
     const operationHash = ethereum.createTokenOperationHash(toAddress, value, contractAddress, expiryDate, contractNonce)
 
     return {
       operationHash,
       contractNonce,
-      signature: ethereum.createSignature(operationHash, ethPrvKey)
+      signature: ethereum.createSignature(operationHash, ethPrvKey),
     }
   }
 
   const signETHTransaction = (
     toAddress: string, value: string, data: string, expiryDate: number,
-    contractNonce: number, ethPrvKey: string
+    contractNonce: number, ethPrvKey: string,
   ): Signature => {
     const operationHash = ethereum.createETHOperationHash(toAddress, value, data, expiryDate, contractNonce)
 
     return {
       operationHash,
       contractNonce,
-      signature: ethereum.createSignature(operationHash, ethPrvKey)
+      signature: ethereum.createSignature(operationHash, ethPrvKey),
     }
   }
 
@@ -61,6 +61,6 @@ export default (btcNetwork: string) => {
     sendETH,
     sendTokens,
     signTokenTransaction,
-    signETHTransaction
+    signETHTransaction,
   }
 }

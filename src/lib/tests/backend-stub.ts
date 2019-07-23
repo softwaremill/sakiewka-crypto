@@ -1,6 +1,6 @@
-import { KeyPair, KeyType } from '../../types/domain';
-import { GetKeyBackendResponse } from '../../types/response';
-import { BitcoinBackendApi } from '../bitcoin/bitcoin-backend-api';
+import { KeyPair, KeyType } from '../../types/domain'
+import { GetKeyBackendResponse } from '../../types/response'
+import { BitcoinBackendApi } from '../bitcoin/bitcoin-backend-api'
 
 export const stubGetWallet = (backendApi: BitcoinBackendApi, userKeyPair: KeyPair, backupKeyPair: KeyPair, serviceKeyPair: KeyPair) => {
   // @ts-ignore
@@ -9,8 +9,8 @@ export const stubGetWallet = (backendApi: BitcoinBackendApi, userKeyPair: KeyPai
       keys: [
         { pubKey: userKeyPair.pubKey, type: KeyType.USER },
         { pubKey: backupKeyPair.pubKey, type: KeyType.BACKUP },
-        { pubKey: serviceKeyPair.pubKey, type: KeyType.SERVICE }
-      ]
+        { pubKey: serviceKeyPair.pubKey, type: KeyType.SERVICE },
+      ],
     })
   })
 }
@@ -38,8 +38,8 @@ export const stubSendTx = (backendApi: BitcoinBackendApi) => {
 export const createPath = (cosigner: number, change: number, address: number) => {
   return {
     cosignerIndex: cosigner,
-    change: change,
-    addressIndex: address
+    change,
+    addressIndex: address,
   }
 }
 
@@ -47,7 +47,7 @@ export const stubCreateAddress = (backendApi: BitcoinBackendApi, address: string
   // @ts-ignore
   backendApi.createNewAddress = jest.fn(() => {
     return Promise.resolve({
-      address: address
+      address,
     })
   })
 }
@@ -55,7 +55,7 @@ export const stubCreateAddress = (backendApi: BitcoinBackendApi, address: string
 export const stubFeesRates = (backendApi: BitcoinBackendApi, recommended: number) => {
   // @ts-ignore
   backendApi.getFeesRates = jest.fn(() => {
-    return Promise.resolve({ recommended: recommended })
+    return Promise.resolve({ recommended })
   })
 }
 

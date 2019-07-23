@@ -5,10 +5,10 @@ import {
   ListPoliciesForWalletResponse,
   ListWalletsBackendResponse,
   MaxTransferAmountEosParams,
-  MaxTransferAmountResponse
+  MaxTransferAmountResponse,
 } from '../../types/response'
 import { KeyModule } from './eos-key'
-import { EosBackendApi } from "./eos-backend-api";
+import { EosBackendApi } from './eos-backend-api'
 
 export interface WalletApi {
   createWallet(userToken: string, params: WalletParams): Promise<any>
@@ -34,7 +34,7 @@ export const walletApiFactory = (backendApi: EosBackendApi, keyModule: KeyModule
     const userKey = await (params.userPubKey ? { pubKey: params.userPubKey, prvKey: undefined } : generateKeyPair())
     const backupKey = await (params.backupPubKey ? {
       pubKey: params.backupPubKey,
-      prvKey: undefined
+      prvKey: undefined,
     } : generateKeyPair())
 
     const backendRequestParams = {
@@ -42,7 +42,7 @@ export const walletApiFactory = (backendApi: EosBackendApi, keyModule: KeyModule
       userPubKey: userKey.pubKey,
       userPrvKey: userKey.prvKey,
       backupPubKey: backupKey.pubKey,
-      backupPrvKey: backupKey.prvKey
+      backupPrvKey: backupKey.prvKey,
     }
     const response = await backendApi.createWallet(userToken, <CreateWalletBackendParams>backendRequestParams)
     return { ...response }
@@ -54,7 +54,7 @@ export const walletApiFactory = (backendApi: EosBackendApi, keyModule: KeyModule
 
   const maxTransferAmount = (token: string, walletId: string, feeRate: number, recipient: string): Promise<MaxTransferAmountResponse> => {
     const params: MaxTransferAmountEosParams = {
-      recipient
+      recipient,
     }
     return backendApi.maxTransferAmount(token, walletId, params)
   }

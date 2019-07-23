@@ -47,7 +47,7 @@ export const sakiewkaApi = (sakiewkaBackend: SakiewkaBackend, chainInfo: string)
       webhooks: webhooksApiFactory(backendApi[currency]),
       policy: policyApiFactory(backendApi[currency]),
       transfers: chainTransfersApiFactory(backendApi[currency]),
-      feeRates: feeRatesApiFactory(backendApi[currency])
+      feeRates: feeRatesApiFactory(backendApi[currency]),
     }
   }
 
@@ -55,7 +55,7 @@ export const sakiewkaApi = (sakiewkaBackend: SakiewkaBackend, chainInfo: string)
     user: userApiFactory(sakiewkaBackend.core),
     transfers: transfersApiFactory(sakiewkaBackend.core),
     [Currency.BTC]: createCurrencyApi(sakiewkaBackend, Currency.BTC),
-    [Currency.BTG]: createCurrencyApi(sakiewkaBackend, Currency.BTG)
+    [Currency.BTG]: createCurrencyApi(sakiewkaBackend, Currency.BTG),
   }
 }
 
@@ -75,7 +75,7 @@ export const sakiewkaModule = (currency: Currency, btcNetwork: string): Sakiewka
     transaction: transactionModule,
     address: addressModule,
     key: keyModule,
-    bitcoin: bitcoinOperations
+    bitcoin: bitcoinOperations,
   }
 }
 

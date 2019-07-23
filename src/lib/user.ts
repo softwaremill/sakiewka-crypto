@@ -73,6 +73,6 @@ export const userApiFactory = (backend: CoreBackendApi): UserApi => {
     balance,
     createAuthToken,
     deleteAuthToken,
-    addSupportSubmission
+    addSupportSubmission,
   }
 }

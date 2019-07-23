@@ -1,15 +1,15 @@
 import crossFetch from 'cross-fetch'
 import { ApiError, ApiErrorDetails } from '../../types/api'
-import { ErrorResponse } from '../../types/response';
-import { INTERNAL_ERROR_CODE } from '../constants';
-import { CorrelationIdGetter } from '../backend-api';
+import { ErrorResponse } from '../../types/response'
+import { INTERNAL_ERROR_CODE } from '../constants'
+import { CorrelationIdGetter } from '../backend-api'
 
 const parseResponse = async (response: Response): Promise<any> => {
   const contentType = response.headers.get('content-type')
   if (contentType && contentType.includes('json')) {
     return response.json()
   }
-  return new Promise<any>((resolve) => (resolve(null)));
+  return new Promise<any>((resolve) => (resolve(null)))
 }
 
 const parseError = async (response: Response): Promise<ApiErrorDetails[]> => {
@@ -32,7 +32,7 @@ const checkStatus = async (response: Response): Promise<Response> => {
   }
 
   const errors = await parseError(response)
-  throw <ErrorResponse>{ errors: errors, code: response.status }
+  throw <ErrorResponse>{ errors, code: response.status }
 }
 
 export interface OptionalQueryParam {
@@ -57,8 +57,8 @@ export const createHttpClient = (getCorrelationId: CorrelationIdGetter): HttpCli
       ...options,
       headers: {
         ...options.headers,
-        'X-Correlation-Id': getCorrelationId()
-      }
+        'X-Correlation-Id': getCorrelationId(),
+      },
     }
     return crossFetch(url, richOptions)
       .then(checkStatus)

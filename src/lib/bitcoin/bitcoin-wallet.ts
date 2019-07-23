@@ -46,14 +46,14 @@ export const walletApiFactory = (backendApi: BitcoinBackendApi, keyModule: KeyMo
       userPubKey: encryptedUserKeyPair.pubKey,
       userPrvKey: encryptedUserKeyPair.prvKey,
       backupPubKey: encryptedBackupKeyPair.pubKey,
-      backupPrvKey: encryptedBackupKeyPair.prvKey
+      backupPrvKey: encryptedBackupKeyPair.prvKey,
     }
     const response = await backendApi.createWallet(userToken, <CreateWalletBackendParams>backendRequestParams)
     const pdf = await generatePdf(
       params.name,
       response.servicePubKey,
       backendRequestParams.userPrvKey,
-      backendRequestParams.backupPrvKey
+      backendRequestParams.backupPrvKey,
     )
 
     return { ...response, pdf }
@@ -68,14 +68,14 @@ export const walletApiFactory = (backendApi: BitcoinBackendApi, keyModule: KeyMo
   const listWallets = (userToken: string, limit: number, searchPhrase?: string, nextPageToken?: string): Promise<ListWalletsBackendResponse> => backendApi.listWallets(userToken, limit, searchPhrase, nextPageToken)
 
   const listUnspents = (
-    token: string, walletId: string, recipients: Recipient[], feeRate?: number
+    token: string, walletId: string, recipients: Recipient[], feeRate?: number,
   ): Promise<ListUnspentsBackendResponse> => {
     const params = {
       feeRate,
       recipients: recipients.map((r: Recipient) => <ReceipientsBackend>({
         address: r.address,
-        amount: r.amount.toString()
-      }))
+        amount: r.amount.toString(),
+      })),
     }
     return backendApi.listUnspents(token, walletId, <GetUtxosBackendParams>params)
   }
@@ -83,7 +83,7 @@ export const walletApiFactory = (backendApi: BitcoinBackendApi, keyModule: KeyMo
   const maxTransferAmount = (token: string, walletId: string, feeRate: number, recipient: string): Promise<MaxTransferAmountResponse> => {
     const params: MaxTransferAmountBitcoinParams = {
       recipient,
-      feeRate
+      feeRate,
     }
     return backendApi.maxTransferAmount(token, walletId, params)
   }
@@ -104,6 +104,6 @@ export const walletApiFactory = (backendApi: BitcoinBackendApi, keyModule: KeyMo
     listWallets,
     maxTransferAmount,
     listPoliciesForWallet,
-    listUtxosByAddress: listUtxosByAddress
+    listUtxosByAddress,
   }
 }

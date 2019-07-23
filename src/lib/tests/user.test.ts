@@ -3,9 +3,9 @@ import { expect } from 'chai'
 import { userApiFactory } from '../user'
 import * as backendApiFactory from '../backend-api'
 import { hashPassword } from '../crypto'
-import { createHttpClient } from '../utils/httpClient';
+import { createHttpClient } from '../utils/httpClient'
 
-const api = backendApiFactory.create("http://backendApiUrl", createHttpClient(() => ''))
+const api = backendApiFactory.create('http://backendApiUrl', createHttpClient(() => ''))
 const user = userApiFactory(api)
 
 describe('login', () => {
@@ -132,7 +132,6 @@ describe('register', () => {
   })
 })
 
-
 describe('setupPassword', () => {
   it('should exist', () => {
     expect(user.register).to.be.a('function')
@@ -223,7 +222,7 @@ describe('userSupport',  ()  => {
     // @ts-ignore
     api.addUserSupportSubmission = mockImplementation
 
-    const res = await user.addSupportSubmission('testToken', 'subject','content')
+    const res = await user.addSupportSubmission('testToken', 'subject', 'content')
 
     const [token, subject, content] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
@@ -231,4 +230,4 @@ describe('userSupport',  ()  => {
     expect(content).to.eq('content')
     expect(res).to.eq('backend response')
   })
-});
+})

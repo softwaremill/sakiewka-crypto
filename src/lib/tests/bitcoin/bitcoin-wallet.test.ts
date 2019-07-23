@@ -8,7 +8,7 @@ import chaiBigNumber from 'chai-bignumber'
 import * as pdfGen from '../../bitcoin/bitcoin-keycard-pdf'
 import { keyModuleFactory } from '../../bitcoin/bitcoin-key'
 import bitcoinFactory from '../../bitcoin/bitcoin'
-import { createHttpClient } from '../../utils/httpClient';
+import { createHttpClient } from '../../utils/httpClient'
 
 const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency, createHttpClient(() => ''))
 
@@ -37,7 +37,7 @@ describe('createWallet', () => {
 
     const params = {
       passphrase: 'abcd',
-      name: 'testLabel'
+      name: 'testLabel',
     }
 
     const result = await wallet.createWallet('abcd', params)
@@ -69,8 +69,8 @@ describe('editWallet', () => {
     // @ts-ignore
     backendApi.editWallet = mockImplementation
 
-    await wallet.editWallet('token', 'walletId','newWalletName')
-    const [token, walletId,newWalletName] = mockImplementation.mock.calls[0]
+    await wallet.editWallet('token', 'walletId', 'newWalletName')
+    const [token, walletId, newWalletName] = mockImplementation.mock.calls[0]
 
     expect(token).to.eq('token')
     expect(walletId).to.eq('walletId')
@@ -133,7 +133,7 @@ describe('listUnspents', () => {
 
     const res = await wallet.listUnspents('testToken', 'walletId', [{
       address: '0x1',
-      amount: new BigNumber('0.00000123')
+      amount: new BigNumber('0.00000123'),
     }], 2)
 
     const [token, walletId, { feeRate, recipients }] = mockImplementation.mock.calls[0]

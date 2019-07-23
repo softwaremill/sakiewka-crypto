@@ -17,7 +17,6 @@ const mockImplementation = jest.fn(() => ({ data: 'testToken' }))
 // @ts-ignore
 httpClient.request = mockImplementation
 
-
 beforeEach(() => {
   // @ts-ignore
   mockImplementation.mockClear()
@@ -150,7 +149,7 @@ describe('createWallet', () => {
     const data = {
       name: 'testName',
       userPubKey: '123',
-      backupPubKey: '456'
+      backupPubKey: '456',
     }
     await bitcoinApi.createWallet('testToken', data)
 
@@ -197,7 +196,7 @@ describe('listWallets', () => {
   })
 
   it('should send proper request with nextPageToken', async () => {
-    await bitcoinApi.listWallets('testToken', 10, 'searchPhrase','abcd')
+    await bitcoinApi.listWallets('testToken', 10, 'searchPhrase', 'abcd')
 
     const [url, params] = mockImplementation.mock.calls[0]
 
@@ -302,7 +301,7 @@ describe('listUnspents', () => {
   it('should send proper request', async () => {
     const data = {
       feeRate: 22,
-      recipients: [{ address: '0x0', amount: '888' }]
+      recipients: [{ address: '0x0', amount: '888' }],
     }
     await bitcoinApi.listUnspents('testToken', 'testWalletId', data)
 
@@ -357,7 +356,7 @@ describe('maxTransferAmount', () => {
   it('should send proper request', async () => {
     const data: MaxTransferAmountBitcoinParams = {
       recipient: '0x0',
-      feeRate: 22
+      feeRate: 22,
     }
     await bitcoinApi.maxTransferAmount('testToken', 'testWalletId', data)
 
