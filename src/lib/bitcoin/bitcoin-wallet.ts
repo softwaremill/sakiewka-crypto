@@ -1,4 +1,6 @@
-import { Recipient, WalletParams } from '../../types/domain'
+import { Recipient } from '../../types/domain'
+import { CreateWalletParams } from '../../types/domain-types/wallet'
+import { CreateWalletResponse } from 'api-types/wallet'
 import { ROOT_DERIVATION_PATH } from '../constants'
 import {
   CreateWalletBackendParams,
@@ -17,7 +19,10 @@ import { KeyModule } from './bitcoin-key'
 import { BitcoinBackendApi } from './bitcoin-backend-api'
 
 export interface WalletApi {
-  createWallet(userToken: string, params: WalletParams): Promise<any>
+  createWallet(
+    userToken: string,
+    params: CreateWalletParams,
+  ): Promise<CreateWalletResponse>
   editWallet(
     userToken: string,
     walletId: string,
@@ -64,8 +69,8 @@ export const walletApiFactory = (
 ): WalletApi => {
   const createWallet = async (
     userToken: string,
-    params: WalletParams,
-  ): Promise<any> => {
+    params: CreateWalletParams,
+  ): Promise<CreateWalletResponse> => {
     const userKeyPair = params.userPubKey
       ? { pubKey: params.userPubKey }
       : keyModule.deriveKeyPair(
@@ -89,24 +94,26 @@ export const walletApiFactory = (
       params.passphrase,
     )
 
-    const backendRequestParams = {
+    const backendRequestParams: CreateWalletBackendParams = {
       name: params.name,
       userPubKey: encryptedUserKeyPair.pubKey,
       userPrvKey: encryptedUserKeyPair.prvKey,
       backupPubKey: encryptedBackupKeyPair.pubKey,
       backupPrvKey: encryptedBackupKeyPair.prvKey,
     }
-    const response = await backendApi.createWallet(userToken, <
-      CreateWalletBackendParams
-    >backendRequestParams)
+    const { id, keys, servicePubKey } = await backendApi.createWallet(
+      userToken,
+      backendRequestParams,
+    )
+
     const pdf = await generatePdf(
       params.name,
-      response.servicePubKey,
+      servicePubKey,
       backendRequestParams.userPrvKey,
       backendRequestParams.backupPrvKey,
     )
 
-    return { ...response, pdf }
+    return { id, keys, pdf }
   }
 
   const editWallet = (

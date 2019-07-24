@@ -207,7 +207,8 @@ const addLogo = (
 const addParagraph = (
   doc: PDFKit.PDFDocument,
   title: string,
-  ...contents: string[],
+  // tslint:disable-next-line
+  ...contents: string[]
 ) => {
   doc
     .fontSize(fontSizes.HEADER_4)

@@ -115,11 +115,7 @@ export interface GetEosAddressBackendResponse {
 
 export interface GetBitcoinAddressBackendResponse {
   address: string
-  path: {
-    cosignerIndex: string;
-    change: string;
-    addressIndex: string;
-  }
+  path: Path
   name: string
   created: string
 }

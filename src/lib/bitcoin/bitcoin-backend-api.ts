@@ -1,6 +1,5 @@
 import {
   AssignPolicyBackendParams,
-  CreateBitcoinWalletBackendResponse,
   CreateNewBitcoinAddressBackendResponse,
   CreateWalletBackendParams,
   CreateWebhookResponse,
@@ -26,6 +25,7 @@ import {
   PolicyCreateRequest,
   TransferItemBackendResponse,
 } from '../../types/response'
+import { CreateBitcoinWalletBackendResponse } from '../../types/api-types/wallet'
 import { HttpClient } from '../utils/httpClient'
 import * as backendApi from '../backend-api'
 import { Currency } from '../..'
@@ -257,7 +257,9 @@ export const withCurrency = (
     }
 
     const response = await httpClient.request(
-      `${backendApiUrl}/${currency}/wallet/${walletId}/max-transfer-amount?recipient=${params.recipient}&feeRate=${params.feeRate}`,
+      `${backendApiUrl}/${currency}/wallet/${walletId}/max-transfer-amount?recipient=${
+        params.recipient
+      }&feeRate=${params.feeRate}`,
       options,
     )
     return response.data
