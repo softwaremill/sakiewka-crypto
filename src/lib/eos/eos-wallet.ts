@@ -1,12 +1,14 @@
 import { WalletParams } from '../../types/domain'
 import {
-  CreateWalletBackendParams,
-  GetWalletBackendResponse,
   ListPoliciesForWalletResponse,
-  ListWalletsBackendResponse,
   MaxTransferAmountEosParams,
   MaxTransferAmountResponse,
 } from '../../types/response'
+import {
+  CreateWalletBackendParams,
+  ListWalletsBackendResponse,
+  GetWalletBackendResponse,
+} from '../../types/api-types/wallet'
 import { KeyModule } from './eos-key'
 import { EosBackendApi } from './eos-backend-api'
 

@@ -3,7 +3,7 @@ import { getRandomBytes, encrypt, decrypt } from '../crypto'
 import { HDNode } from 'bitcoinjs-lib'
 import { BitcoinBackendApi } from './bitcoin-backend-api'
 import { BitcoinOperations } from './bitcoin-operations'
-import { GetKeyResponse } from '../../types/api-types/key'
+import { GetKeyResponse } from '../../types/response-types/key'
 
 export interface KeyModule {
   generateNewKeyPair(path?: string): KeyPair

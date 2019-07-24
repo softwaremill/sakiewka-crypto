@@ -1,7 +1,6 @@
 import {
   ChainInfoResponse as ChainModeResponse,
   Confirm2faBackendResponse,
-  CreateWalletBackendParams,
   CreateWebhookResponse,
   DeleteWebhookResponse,
   Disable2faBackendResponse,
@@ -27,6 +26,7 @@ import {
 } from '../types/response'
 import { GetKeyBackendResponse } from '../types/api-types/key'
 import {
+  CreateWalletBackendParams,
   GetWalletBackendResponse,
   ListWalletsBackendResponse,
 } from '../types/api-types/wallet'

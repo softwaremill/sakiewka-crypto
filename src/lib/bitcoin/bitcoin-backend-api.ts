@@ -1,7 +1,6 @@
 import {
   AssignPolicyBackendParams,
   CreateNewBitcoinAddressBackendResponse,
-  CreateWalletBackendParams,
   CreateWebhookResponse,
   DeleteWebhookResponse,
   GetBitcoinAddressBackendResponse,
@@ -23,6 +22,7 @@ import {
 } from '../../types/response'
 import { GetKeyBackendResponse } from '../../types/api-types/key'
 import {
+  CreateWalletBackendParams,
   CreateBitcoinWalletBackendResponse,
   GetWalletBackendResponse,
   ListWalletsBackendResponse,

@@ -5,10 +5,9 @@ import {
   GetWalletResponse,
   ListWalletsResponse,
   ListUnspentsResponse,
-} from '../../types/api-types/wallet'
+} from '../../types/response-types/wallet'
 import { ROOT_DERIVATION_PATH } from '../constants'
 import {
-  CreateWalletBackendParams,
   GetUtxosBackendParams,
   MaxTransferAmountBitcoinParams,
   ReceipientsBackend,
@@ -16,6 +15,7 @@ import {
   ListPoliciesForWalletResponse,
   ListUtxosByAddressBackendResponse,
 } from '../../types/response'
+import { CreateWalletBackendParams } from '../../types/api-types/wallet'
 import { generatePdf } from './bitcoin-keycard-pdf'
 import { KeyModule } from './bitcoin-key'
 import { BitcoinBackendApi } from './bitcoin-backend-api'
@@ -25,11 +25,7 @@ export interface WalletApi {
     userToken: string,
     params: CreateWalletParams,
   ): Promise<CreateWalletResponse>
-  editWallet(
-    userToken: string,
-    walletId: string,
-    newName: string,
-  ): Promise<{}>
+  editWallet(userToken: string, walletId: string, newName: string): Promise<{}>
   getWallet(userToken: string, walletId: string): Promise<GetWalletResponse>
   listWallets(
     userToken: string,
