@@ -6,7 +6,6 @@ import {
   DeleteWebhookResponse,
   GetBitcoinAddressBackendResponse,
   GetFeesRates,
-  GetKeyBackendResponse,
   GetUtxosBackendParams,
   GetWebhooksResponse,
   ListAddressesBackendResponse,
@@ -22,6 +21,7 @@ import {
   PolicyCreateRequest,
   TransferItemBackendResponse,
 } from '../../types/response'
+import { GetKeyBackendResponse } from '../../types/api-types/key'
 import {
   CreateBitcoinWalletBackendResponse,
   GetWalletBackendResponse,

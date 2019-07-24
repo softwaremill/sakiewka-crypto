@@ -3,7 +3,7 @@ import { getRandomBytes, encrypt, decrypt } from '../crypto'
 import { HDNode } from 'bitcoinjs-lib'
 import { BitcoinBackendApi } from './bitcoin-backend-api'
 import { BitcoinOperations } from './bitcoin-operations'
-import { GetKeyBackendResponse } from '../../types/response'
+import { GetKeyResponse } from '../../types/api-types/key'
 
 export interface KeyModule {
   generateNewKeyPair(path?: string): KeyPair
@@ -18,7 +18,7 @@ export interface KeyApi {
     userToken: string,
     keyId: string,
     includePrivate?: boolean,
-  ): Promise<GetKeyBackendResponse>
+  ): Promise<GetKeyResponse>
 }
 
 export const keyModuleFactory = (bitcoin: BitcoinOperations): KeyModule => {
@@ -87,7 +87,7 @@ export const keyApiFactory = (backendApi: BitcoinBackendApi): KeyApi => {
     userToken: string,
     keyId: string,
     includePrivate?: boolean,
-  ): Promise<GetKeyBackendResponse> =>
+  ): Promise<GetKeyResponse> =>
     backendApi.getKey(userToken, keyId, includePrivate)
   return { getKey }
 }

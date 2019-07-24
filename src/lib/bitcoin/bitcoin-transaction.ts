@@ -8,7 +8,7 @@ import {
   UTXO,
 } from '../../types/domain'
 import { TransactionBuilder } from 'bgoldjs-lib'
-import { GetKeyBackendResponse } from '../../types/response'
+import { GetKeyBackendResponse } from '../../types/api-types/key'
 import { WalletDetails, Unspents } from '../../types/domain-types/wallet'
 import BigNumber from 'bignumber.js'
 import { btcToSatoshi, satoshiToBtc } from '../utils/helpers'
@@ -118,14 +118,15 @@ export const transactionApiFactory = (
     userToken: string,
     password: string,
   ): Promise<string> => {
-    const keyId: string = wallet.keys.find(key => key.type === KeyType.USER)!
-      .id
-    const key: GetKeyBackendResponse = await backendApi.getKey(
+    const keyId: string = wallet.keys.find(
+      (key: Key) => key.type === KeyType.USER,
+    )!.id
+    const { prvKey }: GetKeyBackendResponse = await backendApi.getKey(
       userToken,
       keyId,
       true,
     )
-    const prvKey = key.prvKey
+
     if (prvKey) {
       try {
         return decrypt(password, prvKey)

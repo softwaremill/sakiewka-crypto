@@ -5,7 +5,6 @@ import {
   CreateWebhookResponse,
   DeleteWebhookResponse,
   Disable2faBackendResponse,
-  GetKeyBackendResponse,
   GetWebhooksResponse,
   InfoBackendResponse,
   Init2faBackendResponse,
@@ -26,6 +25,7 @@ import {
   CreateAuthTokenBackendResponse,
   DeleteAuthTokenBackendResponse,
 } from '../types/response'
+import { GetKeyBackendResponse } from '../types/api-types/key'
 import {
   GetWalletBackendResponse,
   ListWalletsBackendResponse,
