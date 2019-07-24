@@ -6,13 +6,11 @@ import {
   DeleteWebhookResponse,
   Disable2faBackendResponse,
   GetKeyBackendResponse,
-  GetWalletBackendResponse,
   GetWebhooksResponse,
   InfoBackendResponse,
   Init2faBackendResponse,
   ListAddressesBackendResponse,
   ListTransfersBackendResponse,
-  ListWalletsBackendResponse,
   ListWebhooksResponse,
   LoginBackendResponse,
   MontlySummaryBackendResponse,
@@ -28,6 +26,10 @@ import {
   CreateAuthTokenBackendResponse,
   DeleteAuthTokenBackendResponse,
 } from '../types/response'
+import {
+  GetWalletBackendResponse,
+  ListWalletsBackendResponse,
+} from '../types/api-types/wallet'
 import {
   buildQueryParamString,
   createHttpClient,

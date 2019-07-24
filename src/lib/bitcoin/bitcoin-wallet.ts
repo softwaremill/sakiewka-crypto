@@ -1,6 +1,10 @@
 import { Recipient } from '../../types/domain'
 import { CreateWalletParams } from '../../types/domain-types/wallet'
-import { CreateWalletResponse } from 'api-types/wallet'
+import {
+  CreateWalletResponse,
+  GetWalletResponse,
+  ListWalletsResponse,
+} from '../../types/api-types/wallet'
 import { ROOT_DERIVATION_PATH } from '../constants'
 import {
   CreateWalletBackendParams,
@@ -9,8 +13,6 @@ import {
   ReceipientsBackend,
   MaxTransferAmountResponse,
   ListUnspentsBackendResponse,
-  ListWalletsBackendResponse,
-  GetWalletBackendResponse,
   ListPoliciesForWalletResponse,
   ListUtxosByAddressBackendResponse,
 } from '../../types/response'
@@ -27,17 +29,14 @@ export interface WalletApi {
     userToken: string,
     walletId: string,
     newName: string,
-  ): Promise<any>
-  getWallet(
-    userToken: string,
-    walletId: string,
-  ): Promise<GetWalletBackendResponse>
+  ): Promise<{}>
+  getWallet(userToken: string, walletId: string): Promise<GetWalletResponse>
   listWallets(
     userToken: string,
     limit: number,
     searchPhrase?: string,
     nextPageToken?: string,
-  ): Promise<ListWalletsBackendResponse>
+  ): Promise<ListWalletsResponse>
   listUnspents(
     token: string,
     walletId: string,
@@ -120,22 +119,19 @@ export const walletApiFactory = (
     userToken: string,
     walletId: string,
     newName: string,
-  ): Promise<any> => {
-    return backendApi.editWallet(userToken, walletId, newName)
-  }
+  ): Promise<{}> => backendApi.editWallet(userToken, walletId, newName)
 
   const getWallet = (
     userToken: string,
     walletId: string,
-  ): Promise<GetWalletBackendResponse> =>
-    backendApi.getWallet(userToken, walletId)
+  ): Promise<GetWalletResponse> => backendApi.getWallet(userToken, walletId)
 
   const listWallets = (
     userToken: string,
     limit: number,
     searchPhrase?: string,
     nextPageToken?: string,
-  ): Promise<ListWalletsBackendResponse> =>
+  ): Promise<ListWalletsResponse> =>
     backendApi.listWallets(userToken, limit, searchPhrase, nextPageToken)
 
   const listUnspents = (

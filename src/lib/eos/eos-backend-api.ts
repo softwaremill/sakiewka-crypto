@@ -1,12 +1,14 @@
 import {
-  CreateEosWalletBackendResponse,
   CreateWalletBackendParams,
-  GetWalletBackendResponse,
   ListPoliciesForWalletResponse,
-  ListWalletsBackendResponse,
   MaxTransferAmountEosParams,
   MaxTransferAmountResponse,
 } from '../../types/response'
+import {
+  CreateEosWalletBackendResponse,
+  GetWalletBackendResponse,
+  ListWalletsBackendResponse,
+} from '../../types/api-types/wallet'
 import { Currency } from '../..'
 import * as backendApi from '../backend-api'
 import { HttpClient } from '../utils/httpClient'

@@ -8,7 +8,6 @@ import {
   GetFeesRates,
   GetKeyBackendResponse,
   GetUtxosBackendParams,
-  GetWalletBackendResponse,
   GetWebhooksResponse,
   ListAddressesBackendResponse,
   ListPoliciesForWalletResponse,
@@ -16,7 +15,6 @@ import {
   ListTransfersBackendResponse,
   ListUnspentsBackendResponse,
   ListUtxosByAddressBackendResponse,
-  ListWalletsBackendResponse,
   ListWalletsForPolicyResponse,
   ListWebhooksResponse,
   MaxTransferAmountBitcoinParams,
@@ -25,7 +23,11 @@ import {
   PolicyCreateRequest,
   TransferItemBackendResponse,
 } from '../../types/response'
-import { CreateBitcoinWalletBackendResponse } from '../../types/api-types/wallet'
+import {
+  CreateBitcoinWalletBackendResponse,
+  GetWalletBackendResponse,
+  ListWalletsBackendResponse,
+} from '../../types/api-types/wallet'
 import { HttpClient } from '../utils/httpClient'
 import * as backendApi from '../backend-api'
 import { Currency } from '../..'

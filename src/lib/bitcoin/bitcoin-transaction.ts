@@ -5,7 +5,7 @@ import {
   Path,
   Recipient,
   TxOut,
-  UTXO
+  UTXO,
 } from '../../types/domain'
 import { TransactionBuilder } from 'bgoldjs-lib'
 import {
@@ -103,7 +103,7 @@ export const transactionApiFactory = (
     userToken: string,
     wallet: GetWalletBackendResponse,
     xprv?: string,
-    passphrase?: string
+    passphrase?: string,
   ): Promise<string> => {
     if (xprv) {
       return xprv
@@ -117,14 +117,14 @@ export const transactionApiFactory = (
   const getUserXprvFromServer = async (
     wallet: GetWalletBackendResponse,
     userToken: string,
-    password: string
+    password: string,
   ): Promise<string> => {
     const keyId: string = wallet.keys.find(key => key.type === KeyType.USER)!
       .id
     const key: GetKeyBackendResponse = await backendApi.getKey(
       userToken,
       keyId,
-      true
+      true,
     )
     const prvKey = key.prvKey
     if (prvKey) {
@@ -141,19 +141,19 @@ export const transactionApiFactory = (
   const createOutputs = (
     unspentsResponse: ListUnspentsBackendResponse,
     recipients: Recipient[],
-    changeAddres: string
+    changeAddres: string,
   ): TxOut[] => {
     const { change, serviceFee } = unspentsResponse
     const changeRecipient: Recipient = {
       address: changeAddres,
-      amount: new BigNumber(change)
+      amount: new BigNumber(change),
     }
     const serviceRecipient = serviceFee
       ? [
         {
           address: serviceFee.address,
-          amount: new BigNumber(serviceFee.amount)
-        }
+          amount: new BigNumber(serviceFee.amount),
+        },
       ]
       : []
     const txOuts = recipients
@@ -167,7 +167,7 @@ export const transactionApiFactory = (
     unspents: UTXO[],
     xprv: string,
     pubKeys: string[],
-    txb: TransactionBuilder
+    txb: TransactionBuilder,
   ) => {
     unspents.forEach((uns: UTXO, idx: number) => {
       const signingKey = keyModule.deriveKey(xprv, joinPath(uns.path!)).keyPair
@@ -175,7 +175,7 @@ export const transactionApiFactory = (
         keyModule
           .deriveKey(key, joinPath(uns.path!))
           .neutered()
-          .toBase58()
+          .toBase58(),
       )
       const redeemScript = bitcoin.createMultisigRedeemScript(derivedPubKeys)
       // @ts-ignore
@@ -184,7 +184,7 @@ export const transactionApiFactory = (
         idx,
         signingKey,
         new BigNumber(uns.amount || 0),
-        redeemScript
+        redeemScript,
       )
     })
   }
@@ -196,13 +196,13 @@ export interface TransactionModule {
   signTransaction(
     xprv: string,
     txHex: string,
-    unspents: UTXO[]
+    unspents: UTXO[],
   ): { txHex: string; txHash: string }
 }
 
 export const transactionModuleFactory = (
   keyModule: KeyModule,
-  bitcoin: BitcoinOperations
+  bitcoin: BitcoinOperations,
 ): TransactionModule => {
   const decodeTransaction = (txHex: string): DecodedTx => {
     const tx = bitcoin.txFromHex(txHex)
@@ -234,7 +234,7 @@ export const transactionModuleFactory = (
 
     return {
       txHex: builtTx.toHex(),
-      txHash: builtTx.getId()
+      txHash: builtTx.getId(),
     }
   }
 
