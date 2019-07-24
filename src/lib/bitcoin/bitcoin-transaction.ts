@@ -8,11 +8,8 @@ import {
   UTXO,
 } from '../../types/domain'
 import { TransactionBuilder } from 'bgoldjs-lib'
-import {
-  GetKeyBackendResponse,
-  GetWalletBackendResponse,
-  ListUnspentsBackendResponse,
-} from '../../types/response'
+import { GetKeyBackendResponse } from '../../types/response'
+import { WalletDetails, Unspents } from '../../types/domain-types/wallet'
 import BigNumber from 'bignumber.js'
 import { btcToSatoshi, satoshiToBtc } from '../utils/helpers'
 import { decrypt } from '../crypto'
@@ -47,7 +44,7 @@ export const transactionApiFactory = (
     passphrase?: string,
     userProvidedFeeRate?: number,
   ): Promise<string> => {
-    const unspentsResponse = await walletApi.listUnspents(
+    const unspents = await walletApi.listUnspents(
       userToken,
       walletId,
       recipients,
@@ -67,7 +64,7 @@ export const transactionApiFactory = (
       passphrase,
     )
     const txHex = buildTxHex(
-      unspentsResponse,
+      unspents,
       recipients,
       userXprv,
       changeAddresResponse.address,
@@ -77,19 +74,19 @@ export const transactionApiFactory = (
   }
 
   const buildTxHex = (
-    unspentsResponse: ListUnspentsBackendResponse,
+    unspents: Unspents,
     recipients: Recipient[],
     xprv: string,
     changeAddres: string,
     pubKeys: string[],
   ): string => {
     const txb = bitcoin.initializeTxBuilder()
-    const inputs = bitcoin.sortUnspents(unspentsResponse.outputs)
+    const inputs = bitcoin.sortUnspents(unspents.outputs)
     inputs.forEach((uns: UTXO) => {
       txb.addInput(uns.txHash, uns.n)
     })
 
-    const outputs = createOutputs(unspentsResponse, recipients, changeAddres)
+    const outputs = createOutputs(unspents, recipients, changeAddres)
     outputs.forEach((out: TxOut) => {
       txb.addOutput(out.script, btcToSatoshi(out.value).toNumber())
     })
@@ -101,21 +98,23 @@ export const transactionApiFactory = (
 
   const xprivOrGetFromServer = async (
     userToken: string,
-    wallet: GetWalletBackendResponse,
+    wallet: WalletDetails,
     xprv?: string,
     passphrase?: string,
   ): Promise<string> => {
     if (xprv) {
       return xprv
-    } else if (passphrase) {
-      return await getUserXprvFromServer(wallet, userToken, passphrase)
-    } else {
-      throw API_ERROR.XPRIV_OR_PASSWORD_REQUIRED
     }
+
+    if (passphrase) {
+      return await getUserXprvFromServer(wallet, userToken, passphrase)
+    }
+
+    throw API_ERROR.XPRIV_OR_PASSWORD_REQUIRED
   }
 
   const getUserXprvFromServer = async (
-    wallet: GetWalletBackendResponse,
+    wallet: WalletDetails,
     userToken: string,
     password: string,
   ): Promise<string> => {
@@ -139,11 +138,11 @@ export const transactionApiFactory = (
   }
 
   const createOutputs = (
-    unspentsResponse: ListUnspentsBackendResponse,
+    unspents: Unspents,
     recipients: Recipient[],
     changeAddres: string,
   ): TxOut[] => {
-    const { change, serviceFee } = unspentsResponse
+    const { change, serviceFee } = unspents
     const changeRecipient: Recipient = {
       address: changeAddres,
       amount: new BigNumber(change),

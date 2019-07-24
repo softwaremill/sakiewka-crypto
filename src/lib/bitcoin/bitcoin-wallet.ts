@@ -4,6 +4,7 @@ import {
   CreateWalletResponse,
   GetWalletResponse,
   ListWalletsResponse,
+  ListUnspentsResponse,
 } from '../../types/api-types/wallet'
 import { ROOT_DERIVATION_PATH } from '../constants'
 import {
@@ -12,7 +13,6 @@ import {
   MaxTransferAmountBitcoinParams,
   ReceipientsBackend,
   MaxTransferAmountResponse,
-  ListUnspentsBackendResponse,
   ListPoliciesForWalletResponse,
   ListUtxosByAddressBackendResponse,
 } from '../../types/response'
@@ -42,7 +42,7 @@ export interface WalletApi {
     walletId: string,
     recipients: Recipient[],
     feeRate?: number,
-  ): Promise<ListUnspentsBackendResponse>
+  ): Promise<ListUnspentsResponse>
   maxTransferAmount(
     token: string,
     walletId: string,
@@ -139,7 +139,7 @@ export const walletApiFactory = (
     walletId: string,
     recipients: Recipient[],
     feeRate?: number,
-  ): Promise<ListUnspentsBackendResponse> => {
+  ): Promise<ListUnspentsResponse> => {
     const params = {
       feeRate,
       recipients: recipients.map(

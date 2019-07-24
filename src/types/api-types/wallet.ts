@@ -1,5 +1,5 @@
 import { Path, Key } from '../domain'
-import { Wallet, WalletDetails } from '../domain-types/wallet'
+import { Wallet, WalletDetails, Unspents } from '../domain-types/wallet'
 
 export interface CreateWalletBackendResponse {
   id: string
@@ -23,9 +23,12 @@ export interface ListWalletsBackendResponse {
   wallets: Wallet[]
 }
 
+export interface ListUnspentsBackendResponse extends Unspents {}
+
 export interface CreateWalletResponse extends CreateWalletBackendResponse {
   pdf: string
 }
 
 export interface GetWalletResponse extends GetWalletBackendResponse {}
 export interface ListWalletsResponse extends ListWalletsBackendResponse {}
+export interface ListUnspentsResponse extends ListUnspentsBackendResponse {}

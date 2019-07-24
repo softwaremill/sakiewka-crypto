@@ -1,5 +1,5 @@
 import { Balance } from './balance'
-import { Key } from '../domain'
+import { Key, UTXO } from '../domain'
 
 export interface CreateWalletParams {
   passphrase: string
@@ -19,4 +19,17 @@ export interface Wallet {
 export interface WalletDetails extends Wallet {
   canSendFundsUsingPassword: boolean
   keys: Key[]
+}
+
+export interface ServiceFee {
+  amount: string
+  address: string
+}
+
+export interface Unspents {
+  outputs: UTXO[]
+  amount: string
+  change: string
+  fee: string
+  serviceFee?: ServiceFee
 }

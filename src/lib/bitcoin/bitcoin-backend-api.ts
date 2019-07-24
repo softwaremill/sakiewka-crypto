@@ -13,7 +13,6 @@ import {
   ListPoliciesForWalletResponse,
   ListPoliciesResponse,
   ListTransfersBackendResponse,
-  ListUnspentsBackendResponse,
   ListUtxosByAddressBackendResponse,
   ListWalletsForPolicyResponse,
   ListWebhooksResponse,
@@ -27,6 +26,7 @@ import {
   CreateBitcoinWalletBackendResponse,
   GetWalletBackendResponse,
   ListWalletsBackendResponse,
+  ListUnspentsBackendResponse,
 } from '../../types/api-types/wallet'
 import { HttpClient } from '../utils/httpClient'
 import * as backendApi from '../backend-api'
