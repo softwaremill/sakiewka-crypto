@@ -1,29 +1,31 @@
 import {
   ChainInfoResponse as ChainModeResponse,
-  Confirm2faBackendResponse,
   CreateWebhookResponse,
   DeleteWebhookResponse,
-  Disable2faBackendResponse,
   GetWebhooksResponse,
-  InfoBackendResponse,
-  Init2faBackendResponse,
   ListTransfersBackendResponse,
   ListWebhooksResponse,
-  LoginBackendResponse,
   MontlySummaryBackendResponse,
-  RegisterBackendResponse,
-  SetupPasswordBackendResponse,
   TransferItemBackendResponse,
   ListPoliciesForWalletResponse,
   ListPoliciesResponse,
   AssignPolicyBackendParams,
   ListWalletsForPolicyResponse,
   PolicyCreateRequest,
+} from '../types/response'
+import { GetKeyBackendResponse } from '../types/api-types/key'
+import {
+  InfoBackendResponse,
+  LoginBackendResponse,
+  RegisterBackendResponse,
+  SetupPasswordBackendResponse,
+  Confirm2faBackendResponse,
+  Disable2faBackendResponse,
+  Init2faBackendResponse,
   BalanceBackendResponse,
   CreateAuthTokenBackendResponse,
   DeleteAuthTokenBackendResponse,
-} from '../types/response'
-import { GetKeyBackendResponse } from '../types/api-types/key'
+} from '../types/api-types/user'
 import {
   CreateWalletBackendParams,
   GetWalletBackendResponse,

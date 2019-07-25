@@ -1,6 +1,7 @@
 import { CreateWalletParams, Receipient } from '../../types/domain-types/wallet'
 import {
   CreateWalletResponse,
+  EditWalletResponse,
   GetWalletResponse,
   ListWalletsResponse,
   ListUnspentsResponse,
@@ -23,7 +24,7 @@ export interface WalletApi {
     userToken: string,
     params: CreateWalletParams,
   ): Promise<CreateWalletResponse>
-  editWallet(userToken: string, walletId: string, newName: string): Promise<{}>
+  editWallet(userToken: string, walletId: string, newName: string): Promise<EditWalletResponse>
   getWallet(userToken: string, walletId: string): Promise<GetWalletResponse>
   listWallets(
     userToken: string,
@@ -113,7 +114,7 @@ export const walletApiFactory = (
     userToken: string,
     walletId: string,
     newName: string,
-  ): Promise<{}> => backendApi.editWallet(userToken, walletId, newName)
+  ): Promise<EditWalletResponse> => backendApi.editWallet(userToken, walletId, newName)
 
   const getWallet = (
     userToken: string,

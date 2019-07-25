@@ -1,5 +1,6 @@
 import {
   CreateWalletBackendResponse,
+  EditWalletBackendResponse,
   GetWalletBackendResponse,
   ListWalletsBackendResponse,
   ListUnspentsBackendResponse,
@@ -11,6 +12,8 @@ import {
 export interface CreateWalletResponse extends CreateWalletBackendResponse {
   pdf: string
 }
+export interface EditWalletResponse extends EditWalletBackendResponse {}
+
 export interface GetWalletResponse extends GetWalletBackendResponse {}
 
 export interface ListWalletsResponse extends ListWalletsBackendResponse {}

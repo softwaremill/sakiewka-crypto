@@ -43,6 +43,8 @@ export interface CreateBitcoinWalletBackendResponse
 export interface CreateEosWalletBackendResponse
   extends CreateWalletBackendResponse {}
 
+export interface EditWalletBackendResponse {}
+
 export interface GetWalletBackendResponse extends WalletDetails {}
 
 export interface ListWalletsBackendResponse {

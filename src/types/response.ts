@@ -1,15 +1,5 @@
 import { UTXO, Path, Policy, PolicySettings } from './domain'
-import { Key, KeyType } from './domain-types/key'
-
-export interface LoginBackendResponse {
-  token: string
-}
-
-export interface RegisterBackendResponse {}
-
-export interface SetupPasswordBackendResponse {}
-
-export interface InfoBackendResponse {}
+import { Key } from './domain-types/key'
 
 export interface MontlySummaryBackendResponse {
   spentBTC: string
@@ -41,22 +31,6 @@ export interface TransferItemWallet {}
 export interface TransferItemBlock {}
 
 export interface TransferItemTransaction {}
-
-export interface Init2faBackendResponse {
-  qrCodeUrl: string
-}
-
-export interface Confirm2faBackendResponse {}
-
-export interface Disable2faBackendResponse {}
-
-export interface CreateWalletBackendParams {
-  name: string
-  userPubKey: string
-  userPrvKey?: string
-  backupPubKey: string
-  backupPrvKey?: string
-}
 
 export interface GetUtxosBackendParams {
   feeRate?: number
@@ -99,8 +73,6 @@ export interface GetBitcoinAddressBackendResponse {
   created: string
 }
 
-export interface ListAddressesBackendResponse {}
-
 export interface GetWebhooksResponse {
   id: string
   walletId: string
@@ -118,25 +90,9 @@ export interface CreateWebhookResponse {
   id: string
 }
 
-export interface ListUnspentsBackendResponse {
-  outputs: UTXO[]
-  amount: string
-  change: string
-  fee: string
-  serviceFee?: ServiceFee
-}
-
 export interface ServiceFee {
   amount: string
   address: string
-}
-
-export interface GetKeyBackendResponse {
-  id: string
-  pubKey: string
-  prvKey?: string
-  keyType: KeyType
-  created: string
 }
 
 // eth
@@ -202,18 +158,3 @@ export interface AssignPolicyBackendParams {
 }
 
 export interface ListWalletsForPolicyResponse {}
-
-export interface BalanceBackendResponse {
-  chain: string
-  available: string
-  locked: string
-  total: string
-  totalInFiat: string
-  fiatCurrency: string
-}
-
-export interface CreateAuthTokenBackendResponse {
-  token: string
-}
-
-export interface DeleteAuthTokenBackendResponse {}
