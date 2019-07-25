@@ -1,5 +1,4 @@
-import { UTXO, Path, Policy, PolicySettings } from './domain'
-import { Key } from './domain-types/key'
+import { Policy, PolicySettings } from './domain'
 
 export interface MontlySummaryBackendResponse {
   spentBTC: string
@@ -10,11 +9,6 @@ export interface MontlySummaryBackendResponse {
 
 export interface ListTransfersBackendResponse {
   transfers: TransferItemBackendResponse[]
-  nextPageToken?: string
-}
-
-export interface ListUtxosByAddressBackendResponse {
-  transfers: UTXO[]
   nextPageToken?: string
 }
 
@@ -32,52 +26,6 @@ export interface TransferItemBlock {}
 
 export interface TransferItemTransaction {}
 
-export interface GetUtxosBackendParams {
-  feeRate?: number
-  recipients: ReceipientsBackend[]
-}
-
-export interface ReceipientsBackend {
-  address: string
-  amount: string
-}
-
-interface WalletBackendResponse {
-  id: string
-  keys: Key[]
-}
-
-export interface CreateBitcoinWalletBackendResponse
-  extends WalletBackendResponse {
-  servicePubKey: string
-  initialAddress: {
-    address: string;
-    path: Path;
-  }
-}
-
-export interface CreateNewEosAddressBackendResponse {
-  address: string
-}
-
-export interface GetEosAddressBackendResponse {
-  address: string
-  name: string
-  created: string
-}
-
-export interface GetBitcoinAddressBackendResponse {
-  address: string
-  path: Path
-  name: string
-  created: string
-}
-
-export interface ServiceFee {
-  amount: string
-  address: string
-}
-
 // eth
 export interface EthGetTransactionParamsResponse {
   contractNonce: string
@@ -90,28 +38,6 @@ export interface SendETHResponse {
 
 export interface SendTokensResponse {
   tx: string
-}
-
-export interface GetFeeRates {
-  recommended: number
-}
-
-export interface ErrorResponse {
-  errors: ErrorDetails[]
-  code: number
-}
-
-export interface ErrorDetails {
-  message: string
-  code: string
-}
-
-export interface MaxTransferAmountEosParams {
-  recipient: string
-}
-
-export interface MaxTransferAmountResponse {
-  amount: string
 }
 
 export interface ChainInfoResponse {
