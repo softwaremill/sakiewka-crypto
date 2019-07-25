@@ -1,4 +1,5 @@
-import { UTXO, Key, Path, KeyType, Policy, PolicySettings } from './domain'
+import { UTXO, Path, Policy, PolicySettings } from './domain'
+import { Key, KeyType } from './domain-types/key'
 
 export interface LoginBackendResponse {
   token: string
@@ -72,7 +73,8 @@ interface WalletBackendResponse {
   keys: Key[]
 }
 
-export interface CreateBitcoinWalletBackendResponse extends WalletBackendResponse {
+export interface CreateBitcoinWalletBackendResponse
+  extends WalletBackendResponse {
   servicePubKey: string
   initialAddress: {
     address: string;

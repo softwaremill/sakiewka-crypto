@@ -9,7 +9,7 @@ const parseResponse = async (response: Response): Promise<any> => {
   if (contentType && contentType.includes('json')) {
     return response.json()
   }
-  return new Promise<any>(resolve => resolve(null))
+  return new Promise<any>((resolve: (value: any) => void) => resolve(null))
 }
 
 const parseError = async (response: Response): Promise<ApiErrorDetails[]> => {
@@ -42,15 +42,14 @@ export interface OptionalQueryParam {
   value?: string | number | boolean
 }
 
-export const buildQueryParamString = (params: OptionalQueryParam[]) => {
-  return params
+export const buildQueryParamString = (params: OptionalQueryParam[]) =>
+  params
     .filter((param: OptionalQueryParam) => param.value)
     .map(
       (param: OptionalQueryParam, index: number) =>
         `${index === 0 ? '?' : '&'}${param.key}=${param.value}`,
     )
     .join('')
-}
 
 export interface HttpClient {
   request(url: string, options: any): Promise<any>

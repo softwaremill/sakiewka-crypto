@@ -1,15 +1,8 @@
-import {
-  DecodedTx,
-  Key,
-  KeyType,
-  Path,
-  Recipient,
-  TxOut,
-  UTXO,
-} from '../../types/domain'
+import { DecodedTx, Path, Recipient, TxOut, UTXO } from '../../types/domain'
 import { TransactionBuilder } from 'bgoldjs-lib'
 import { GetKeyBackendResponse } from '../../types/api-types/key'
 import { WalletDetails, Unspents } from '../../types/domain-types/wallet'
+import { Key, KeyType } from '../../types/domain-types/key'
 import BigNumber from 'bignumber.js'
 import { btcToSatoshi, satoshiToBtc } from '../utils/helpers'
 import { decrypt } from '../crypto'
@@ -208,7 +201,7 @@ export const transactionModuleFactory = (
     const tx = bitcoin.txFromHex(txHex)
     const outputs: Recipient[] = tx.outs
       .map(bitcoin.decodeTxOutput)
-      .map(o => ({ ...o, amount: satoshiToBtc(o.amount) }))
+      .map((out: Recipient) => ({ ...out, amount: satoshiToBtc(out.amount) }))
 
     const inputs: UTXO[] = tx.ins.map(bitcoin.decodeTxInput)
 
