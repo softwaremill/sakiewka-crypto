@@ -1,10 +1,6 @@
 import {
   ChainInfoResponse as ChainModeResponse,
-  CreateWebhookResponse,
-  DeleteWebhookResponse,
-  GetWebhooksResponse,
   ListTransfersBackendResponse,
-  ListWebhooksResponse,
   MontlySummaryBackendResponse,
   TransferItemBackendResponse,
   ListPoliciesForWalletResponse,
@@ -13,6 +9,12 @@ import {
   ListWalletsForPolicyResponse,
   PolicyCreateRequest,
 } from '../types/response'
+import {
+  CreateWebhookBackendResponse,
+  DeleteWebhookBackendResponse,
+  GetWebhookBackendResponse,
+  ListWebhooksBackendResponse,
+} from '../types/api-types/webhook'
 import { GetKeyBackendResponse } from '../types/api-types/key'
 import {
   InfoBackendResponse,
@@ -501,7 +503,7 @@ export const currencyApi = (
     walletId: string,
     limit: number,
     nextPageToken?: string,
-  ): Promise<ListWebhooksResponse> => {
+  ): Promise<ListWebhooksBackendResponse> => {
     const options = {
       method: 'GET',
       headers: {
@@ -524,7 +526,7 @@ export const currencyApi = (
     token: string,
     walletId: string,
     webhookId: string,
-  ): Promise<GetWebhooksResponse> => {
+  ): Promise<GetWebhookBackendResponse> => {
     const options = {
       method: 'GET',
       headers: {
@@ -543,7 +545,7 @@ export const currencyApi = (
     walletId: string,
     callbackUrl: string,
     settings: Object,
-  ): Promise<CreateWebhookResponse> => {
+  ): Promise<CreateWebhookBackendResponse> => {
     const options = {
       method: 'POST',
       headers: {
@@ -562,7 +564,7 @@ export const currencyApi = (
     token: string,
     walletId: string,
     webhookId: string,
-  ): Promise<DeleteWebhookResponse> => {
+  ): Promise<DeleteWebhookBackendResponse> => {
     const options = {
       method: 'DELETE',
       headers: {

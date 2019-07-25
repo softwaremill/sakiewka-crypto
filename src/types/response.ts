@@ -73,23 +73,6 @@ export interface GetBitcoinAddressBackendResponse {
   created: string
 }
 
-export interface GetWebhooksResponse {
-  id: string
-  walletId: string
-  callbackUrl: string
-  settings: any
-}
-
-export interface ListWebhooksResponse {
-  webhooks: GetWebhooksResponse[]
-}
-
-export interface DeleteWebhookResponse {}
-
-export interface CreateWebhookResponse {
-  id: string
-}
-
 export interface ServiceFee {
   amount: string
   address: string

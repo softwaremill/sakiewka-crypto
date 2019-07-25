@@ -118,9 +118,9 @@ export const sakiewkaModule = (
   }
 }
 
-export * from './types/response'
-export * from './types/domain'
-export * from './types/api'
+export * from './types/response-types'
+export * from './types/domain-types'
+
 export { constants }
 export { crypto }
 export { backendFactory, SakiewkaBackend }

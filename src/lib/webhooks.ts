@@ -3,9 +3,9 @@ import { BitcoinBackendApi } from './bitcoin/bitcoin-backend-api'
 import {
   CreateWebhookResponse,
   DeleteWebhookResponse,
-  GetWebhooksResponse,
+  GetWebhookResponse,
   ListWebhooksResponse,
-} from '../types/response'
+} from '../types/response-types/webhook'
 
 export interface WebhooksApi {
   createWebhook(
@@ -24,7 +24,7 @@ export interface WebhooksApi {
     token: string,
     walletId: string,
     webhookId: string,
-  ): Promise<GetWebhooksResponse>
+  ): Promise<GetWebhookResponse>
   deleteWebhook(
     token: string,
     walletId: string,
@@ -32,7 +32,11 @@ export interface WebhooksApi {
   ): Promise<DeleteWebhookResponse>
 }
 export const webhooksApiFactory = (backend: BitcoinBackendApi): WebhooksApi => {
-  const getWebhook = (userToken: string, walletId: string, webhookId: string) =>
+  const getWebhook = (
+    userToken: string,
+    walletId: string,
+    webhookId: string,
+  ): Promise<GetWebhookResponse> =>
     backend.getWebhook(userToken, walletId, webhookId)
 
   const listWebhooks = (
@@ -40,20 +44,23 @@ export const webhooksApiFactory = (backend: BitcoinBackendApi): WebhooksApi => {
     walletId: string,
     limit: number,
     nextPageToken?: string,
-  ) => backend.listWebhooks(userToken, walletId, limit, nextPageToken)
+  ): Promise<ListWebhooksResponse> =>
+    backend.listWebhooks(userToken, walletId, limit, nextPageToken)
 
   const createWebhook = (
     userToken: string,
     walletId: string,
     callbackUrl: string,
     settings: Object,
-  ) => backend.createWebhook(userToken, walletId, callbackUrl, settings)
+  ): Promise<CreateWebhookResponse> =>
+    backend.createWebhook(userToken, walletId, callbackUrl, settings)
 
   const deleteWebhook = (
     userToken: string,
     walletId: string,
     webhookId: string,
-  ) => backend.deleteWebhook(userToken, walletId, webhookId)
+  ): Promise<DeleteWebhookResponse> =>
+    backend.deleteWebhook(userToken, walletId, webhookId)
 
   return {
     getWebhook,

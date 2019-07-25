@@ -1,16 +1,18 @@
 import {
   AssignPolicyBackendParams,
-  CreateWebhookResponse,
-  DeleteWebhookResponse,
-  GetWebhooksResponse,
   ListPoliciesResponse,
   ListTransfersBackendResponse,
   ListWalletsForPolicyResponse,
-  ListWebhooksResponse,
   PolicyCreatedResponse,
   PolicyCreateRequest,
   TransferItemBackendResponse,
 } from '../../types/response'
+import {
+  CreateWebhookBackendResponse,
+  DeleteWebhookBackendResponse,
+  GetWebhookBackendResponse,
+  ListWebhooksBackendResponse,
+} from '../../types/api-types/webhook'
 import { GetKeyBackendResponse } from '../../types/api-types/key'
 import { GetFeeRatesBackendResponse } from '../../types/api-types/feeRates'
 import {
@@ -86,7 +88,7 @@ export interface BitcoinBackendApi {
     walletId: string,
     callbackUrl: string,
     settings: Object,
-  ): Promise<CreateWebhookResponse>
+  ): Promise<CreateWebhookBackendResponse>
   listUtxosByAddress(
     token: string,
     walletId: string,
@@ -99,17 +101,17 @@ export interface BitcoinBackendApi {
     walletId: string,
     limit: number,
     nextPageToken?: string,
-  ): Promise<ListWebhooksResponse>
+  ): Promise<ListWebhooksBackendResponse>
   getWebhook(
     token: string,
     walletId: string,
     webhookId: string,
-  ): Promise<GetWebhooksResponse>
+  ): Promise<GetWebhookBackendResponse>
   deleteWebhook(
     token: string,
     walletId: string,
     webhookId: string,
-  ): Promise<DeleteWebhookResponse>
+  ): Promise<DeleteWebhookBackendResponse>
   listTransfers(
     token: string,
     walletId: string,
