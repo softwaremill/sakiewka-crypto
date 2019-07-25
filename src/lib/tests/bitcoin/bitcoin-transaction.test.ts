@@ -19,7 +19,7 @@
 //   createPath,
 //   stubSendTx,
 //   stubCreateAddress,
-//   stubFeesRates,
+//   stubFeeRates,
 //   stubGetKey,
 // } from '../backend-stub'
 // import { Currency, KeyType, UTXO } from '../../../types/domain'
@@ -68,7 +68,7 @@
 //   )
 //   const addressModule = addressModuleFactory(bitcoinModule, keyModule)
 
-//   stubFeesRates(backend, 5)
+//   stubFeeRates(backend, 5)
 //   it('should exist', () => {
 //     expect(transactionApi.send).to.be.a('function')
 //   })
@@ -507,7 +507,7 @@
 //   )
 //   const addressModule = addressModuleFactory(bitcoinModule, keyModule)
 
-//   stubFeesRates(backend, 5)
+//   stubFeeRates(backend, 5)
 //   stubCreateAddress(backend, changeAddress)
 //   it('should exist', () => {
 //     expect(transactionApi.send).to.be.a('function')
@@ -583,7 +583,7 @@
 //   const keyModule = keyModuleFactory(bitcoinModule)
 //   const transactionModule = transactionModuleFactory(keyModule, bitcoinModule)
 
-//   stubFeesRates(backend, 5)
+//   stubFeeRates(backend, 5)
 
 //   it('shoud exist', () => {
 //     expect(transactionModule.decodeTransaction).to.be.a('function')
@@ -629,7 +629,7 @@
 //   const keyModule = keyModuleFactory(bitcoinModule)
 //   const transactionModule = transactionModuleFactory(keyModule, bitcoinModule)
 
-//   stubFeesRates(backend, 5)
+//   stubFeeRates(backend, 5)
 
 //   it('shoud exist', () => {
 //     expect(transactionModule.signTransaction).to.be.a('function')
@@ -682,7 +682,7 @@
 //   )
 //   const addressModule = addressModuleFactory(bitcoinModule, keyModule)
 //   const transactionModule = transactionModuleFactory(keyModule, bitcoinModule)
-//   stubFeesRates(backend, 5)
+//   stubFeeRates(backend, 5)
 
 //   it('should send coins to testnet and signTransaction', async () => {
 //     stubCreateAddress(backend, testnetChangeAddress)

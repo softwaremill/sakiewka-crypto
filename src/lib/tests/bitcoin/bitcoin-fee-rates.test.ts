@@ -11,7 +11,7 @@ const backendApi = backendApiFactory.withCurrency(
   createHttpClient(() => ''),
 )
 // @ts-ignore
-backendApi.getFeesRates = jest.fn(() => {
+backendApi.getFeeRates = jest.fn(() => {
   return Promise.resolve({
     recommended: 123,
   })

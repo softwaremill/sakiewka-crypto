@@ -64,12 +64,12 @@ export const stubCreateAddress = (
   })
 }
 
-export const stubFeesRates = (
+export const stubFeeRates = (
   backendApi: BitcoinBackendApi,
   recommended: number,
 ) => {
   // @ts-ignore
-  backendApi.getFeesRates = jest.fn(() => {
+  backendApi.getFeeRates = jest.fn(() => {
     return Promise.resolve({ recommended })
   })
 }

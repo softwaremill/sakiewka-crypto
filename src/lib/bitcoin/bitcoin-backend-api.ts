@@ -3,7 +3,6 @@ import {
   CreateNewBitcoinAddressBackendResponse,
   CreateWebhookResponse,
   DeleteWebhookResponse,
-  GetFeesRates,
   GetWebhooksResponse,
   ListPoliciesResponse,
   ListTransfersBackendResponse,
@@ -14,6 +13,7 @@ import {
   TransferItemBackendResponse,
 } from '../../types/response'
 import { GetKeyBackendResponse } from '../../types/api-types/key'
+import { GetFeeRatesBackendResponse } from '../../types/api-types/feeRates'
 import {
   GetBitcoinAddressBackendResponse,
   ListBitcoinAddressesBackendResponse,
@@ -75,7 +75,7 @@ export interface BitcoinBackendApi {
     nextPageToken?: string,
   ): Promise<ListWalletsBackendResponse>
   sendTransaction(token: string, walletId: string, txHex: string): Promise<any>
-  getFeesRates(): Promise<GetFeesRates>
+  getFeeRates(): Promise<GetFeeRatesBackendResponse>
   maxTransferAmount(
     token: string,
     walletId: string,
@@ -269,7 +269,7 @@ export const withCurrency = (
     return response.data
   }
 
-  const getFeesRates = async (): Promise<GetFeesRates> => {
+  const getFeeRates = async (): Promise<GetFeeRatesBackendResponse> => {
     const response = await httpClient.request(
       `${backendApiUrl}/${currency}/fees`,
       { method: 'GET' },
@@ -288,7 +288,7 @@ export const withCurrency = (
     listUnspents,
     listWallets: currencyApi.listWallets,
     sendTransaction,
-    getFeesRates,
+    getFeeRates,
     maxTransferAmount,
     listUtxosByAddress,
     listWebhooks: currencyApi.listWebhooks,
