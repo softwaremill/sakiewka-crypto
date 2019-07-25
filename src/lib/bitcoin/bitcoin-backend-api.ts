@@ -8,14 +8,11 @@ import {
   GetUtxosBackendParams,
   GetWebhooksResponse,
   ListAddressesBackendResponse,
-  ListPoliciesForWalletResponse,
   ListPoliciesResponse,
   ListTransfersBackendResponse,
   ListUtxosByAddressBackendResponse,
   ListWalletsForPolicyResponse,
   ListWebhooksResponse,
-  MaxTransferAmountBitcoinParams,
-  MaxTransferAmountResponse,
   PolicyCreatedResponse,
   PolicyCreateRequest,
   TransferItemBackendResponse,
@@ -23,10 +20,13 @@ import {
 import { GetKeyBackendResponse } from '../../types/api-types/key'
 import {
   CreateWalletBackendParams,
+  MaxTransferAmountBitcoinBackendParams,
   CreateBitcoinWalletBackendResponse,
   GetWalletBackendResponse,
   ListWalletsBackendResponse,
   ListUnspentsBackendResponse,
+  MaxTransferAmountBackendResponse,
+  ListPoliciesForWalletBackendResponse,
 } from '../../types/api-types/wallet'
 import { HttpClient } from '../utils/httpClient'
 import * as backendApi from '../backend-api'
@@ -77,8 +77,8 @@ export interface BitcoinBackendApi {
   maxTransferAmount(
     token: string,
     walletId: string,
-    params: MaxTransferAmountBitcoinParams,
-  ): Promise<MaxTransferAmountResponse>
+    params: MaxTransferAmountBitcoinBackendParams,
+  ): Promise<MaxTransferAmountBackendResponse>
   createWebhook(
     token: string,
     walletId: string,
@@ -126,7 +126,7 @@ export interface BitcoinBackendApi {
   listPoliciesForWallet(
     token: string,
     walletId: string,
-  ): Promise<ListPoliciesForWalletResponse>
+  ): Promise<ListPoliciesForWalletBackendResponse>
   listPolicies(
     token: string,
     limit: number,
@@ -249,8 +249,8 @@ export const withCurrency = (
   const maxTransferAmount = async (
     token: string,
     walletId: string,
-    params: MaxTransferAmountBitcoinParams,
-  ): Promise<MaxTransferAmountResponse> => {
+    params: MaxTransferAmountBitcoinBackendParams,
+  ): Promise<MaxTransferAmountBackendResponse> => {
     const options = {
       method: 'GET',
       headers: {

@@ -1,13 +1,11 @@
 import {
   CreateWalletBackendParams,
-  ListPoliciesForWalletResponse,
-  MaxTransferAmountEosParams,
-  MaxTransferAmountResponse,
-} from '../../types/response'
-import {
+  MaxTransferAmountEosBackendParams,
   CreateEosWalletBackendResponse,
   GetWalletBackendResponse,
   ListWalletsBackendResponse,
+  MaxTransferAmountBackendResponse,
+  ListPoliciesForWalletBackendResponse,
 } from '../../types/api-types/wallet'
 import { Currency } from '../..'
 import * as backendApi from '../backend-api'
@@ -29,12 +27,12 @@ export interface EosBackendApi {
   maxTransferAmount(
     token: string,
     walletId: string,
-    params: MaxTransferAmountEosParams,
-  ): Promise<MaxTransferAmountResponse>
+    params: MaxTransferAmountEosBackendParams,
+  ): Promise<MaxTransferAmountBackendResponse>
   listPoliciesForWallet(
     token: string,
     walletId: string,
-  ): Promise<ListPoliciesForWalletResponse>
+  ): Promise<ListPoliciesForWalletBackendResponse>
 }
 
 export const create = (
@@ -50,8 +48,8 @@ export const create = (
   const maxTransferAmount = async (
     token: string,
     walletId: string,
-    params: MaxTransferAmountEosParams,
-  ): Promise<MaxTransferAmountResponse> => {
+    params: MaxTransferAmountEosBackendParams,
+  ): Promise<MaxTransferAmountBackendResponse> => {
     const options = {
       method: 'GET',
       headers: {

@@ -1,31 +1,28 @@
-import { WalletParams } from '../../types/domain'
+import { CreateWalletParams } from '../../types/domain'
 import {
   ListPoliciesForWalletResponse,
-  MaxTransferAmountEosParams,
+  ListWalletsResponse,
+  GetWalletResponse,
   MaxTransferAmountResponse,
-} from '../../types/response'
+} from '../../types/response-types/wallet'
 import {
   CreateWalletBackendParams,
-  ListWalletsBackendResponse,
-  GetWalletBackendResponse,
+  MaxTransferAmountEosBackendParams,
 } from '../../types/api-types/wallet'
 import { KeyModule } from './eos-key'
 import { EosBackendApi } from './eos-backend-api'
 
 export interface WalletApi {
-  createWallet(userToken: string, params: WalletParams): Promise<any>
+  createWallet(userToken: string, params: CreateWalletParams): Promise<any>
 
-  getWallet(
-    userToken: string,
-    walletId: string,
-  ): Promise<GetWalletBackendResponse>
+  getWallet(userToken: string, walletId: string): Promise<GetWalletResponse>
 
   listWallets(
     userToken: string,
     limit: number,
     searchPhrase?: string,
     nextPageToken?: string,
-  ): Promise<ListWalletsBackendResponse>
+  ): Promise<ListWalletsResponse>
 
   maxTransferAmount(
     token: string,
@@ -46,7 +43,7 @@ export const walletApiFactory = (
 ): WalletApi => {
   const createWallet = async (
     userToken: string,
-    params: WalletParams,
+    params: CreateWalletParams,
   ): Promise<any> => {
     const generateKeyPair = async (): Promise<{
       pubKey: string;
@@ -71,31 +68,31 @@ export const walletApiFactory = (
       }
       : generateKeyPair())
 
-    const backendRequestParams = {
+    const backendRequestParams: CreateWalletBackendParams = {
       name: params.name,
       userPubKey: userKey.pubKey,
       userPrvKey: userKey.prvKey,
       backupPubKey: backupKey.pubKey,
       backupPrvKey: backupKey.prvKey,
     }
-    const response = await backendApi.createWallet(userToken, <
-      CreateWalletBackendParams
-    >backendRequestParams)
+    const response = await backendApi.createWallet(
+      userToken,
+      backendRequestParams,
+    )
     return { ...response }
   }
 
   const getWallet = (
     userToken: string,
     walletId: string,
-  ): Promise<GetWalletBackendResponse> =>
-    backendApi.getWallet(userToken, walletId)
+  ): Promise<GetWalletResponse> => backendApi.getWallet(userToken, walletId)
 
   const listWallets = (
     userToken: string,
     limit: number,
     searchPhrase?: string,
     nextPageToken?: string,
-  ): Promise<ListWalletsBackendResponse> =>
+  ): Promise<ListWalletsResponse> =>
     backendApi.listWallets(userToken, limit, searchPhrase, nextPageToken)
 
   const maxTransferAmount = (
@@ -104,7 +101,7 @@ export const walletApiFactory = (
     feeRate: number,
     recipient: string,
   ): Promise<MaxTransferAmountResponse> => {
-    const params: MaxTransferAmountEosParams = {
+    const params: MaxTransferAmountEosBackendParams = {
       recipient,
     }
     return backendApi.maxTransferAmount(token, walletId, params)

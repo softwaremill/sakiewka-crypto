@@ -1,4 +1,4 @@
-import { Path, Key } from '../domain'
+import { Path, Key, Policy } from '../domain'
 import { Wallet, WalletDetails, Unspents } from '../domain-types/wallet'
 
 export interface CreateWalletBackendParams {
@@ -7,6 +7,15 @@ export interface CreateWalletBackendParams {
   userPrvKey?: string
   backupPubKey: string
   backupPrvKey?: string
+}
+
+export interface MaxTransferAmountBitcoinBackendParams {
+  recipient: string
+  feeRate: number
+}
+
+export interface MaxTransferAmountEosBackendParams {
+  recipient: string
 }
 
 export interface CreateWalletBackendResponse {
@@ -33,3 +42,11 @@ export interface ListWalletsBackendResponse {
 }
 
 export interface ListUnspentsBackendResponse extends Unspents {}
+
+export interface MaxTransferAmountBackendResponse {
+  amount: string
+}
+
+export interface ListPoliciesForWalletBackendResponse {
+  policies: Policy[]
+}

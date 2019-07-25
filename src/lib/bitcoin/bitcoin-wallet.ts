@@ -5,17 +5,19 @@ import {
   GetWalletResponse,
   ListWalletsResponse,
   ListUnspentsResponse,
+  MaxTransferAmountResponse,
+  ListPoliciesForWalletResponse,
 } from '../../types/response-types/wallet'
 import { ROOT_DERIVATION_PATH } from '../constants'
 import {
   GetUtxosBackendParams,
-  MaxTransferAmountBitcoinParams,
   ReceipientsBackend,
-  MaxTransferAmountResponse,
-  ListPoliciesForWalletResponse,
   ListUtxosByAddressBackendResponse,
 } from '../../types/response'
-import { CreateWalletBackendParams } from '../../types/api-types/wallet'
+import {
+  CreateWalletBackendParams,
+  MaxTransferAmountBitcoinBackendParams,
+} from '../../types/api-types/wallet'
 import { generatePdf } from './bitcoin-keycard-pdf'
 import { KeyModule } from './bitcoin-key'
 import { BitcoinBackendApi } from './bitcoin-backend-api'
@@ -136,19 +138,14 @@ export const walletApiFactory = (
     recipients: Recipient[],
     feeRate?: number,
   ): Promise<ListUnspentsResponse> => {
-    const params = {
+    const params: GetUtxosBackendParams = {
       feeRate,
-      recipients: recipients.map(
-        (r: Recipient) =>
-          <ReceipientsBackend>{
-            address: r.address,
-            amount: r.amount.toString(),
-          },
-      ),
+      recipients: recipients.map((r: Recipient) => ({
+        address: r.address,
+        amount: r.amount.toString(),
+      })),
     }
-    return backendApi.listUnspents(token, walletId, <GetUtxosBackendParams>(
-      params
-    ))
+    return backendApi.listUnspents(token, walletId, params)
   }
 
   const maxTransferAmount = (
@@ -157,7 +154,7 @@ export const walletApiFactory = (
     feeRate: number,
     recipient: string,
   ): Promise<MaxTransferAmountResponse> => {
-    const params: MaxTransferAmountBitcoinParams = {
+    const params: MaxTransferAmountBitcoinBackendParams = {
       recipient,
       feeRate,
     }

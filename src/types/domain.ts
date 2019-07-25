@@ -1,7 +1,7 @@
 import { Network } from 'bitcoinjs-lib'
 import { BigNumber } from 'bignumber.js'
 
-export interface WalletParams {
+export interface CreateWalletParams {
   passphrase: string
   name: string
   userPubKey?: string
