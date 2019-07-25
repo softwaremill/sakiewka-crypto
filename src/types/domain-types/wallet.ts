@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js'
 import { Balance } from './balance'
 import { Key, UTXO } from '../domain'
 
@@ -32,4 +33,9 @@ export interface Unspents {
   change: string
   fee: string
   serviceFee?: ServiceFee
+}
+
+export interface Receipient {
+  address: string
+  amount: BigNumber
 }

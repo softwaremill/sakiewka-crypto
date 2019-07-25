@@ -7,14 +7,11 @@ import {
   ListUnspentsResponse,
   MaxTransferAmountResponse,
   ListPoliciesForWalletResponse,
+  ListUtxosByAddressResponse,
 } from '../../types/response-types/wallet'
 import { ROOT_DERIVATION_PATH } from '../constants'
 import {
   GetUtxosBackendParams,
-  ReceipientsBackend,
-  ListUtxosByAddressBackendResponse,
-} from '../../types/response'
-import {
   CreateWalletBackendParams,
   MaxTransferAmountBitcoinBackendParams,
 } from '../../types/api-types/wallet'
@@ -57,7 +54,7 @@ export interface WalletApi {
     address: string,
     limit: number,
     nextPageToken?: string,
-  ): Promise<ListUtxosByAddressBackendResponse>
+  ): Promise<ListUtxosByAddressResponse>
 }
 
 export const walletApiFactory = (
@@ -174,7 +171,7 @@ export const walletApiFactory = (
     address: string,
     limit: number,
     nextPageToken?: string,
-  ): Promise<ListUtxosByAddressBackendResponse> => {
+  ): Promise<ListUtxosByAddressResponse> => {
     return backendApi.listUtxosByAddress(
       token,
       walletId,

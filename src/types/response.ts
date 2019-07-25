@@ -72,8 +72,7 @@ interface WalletBackendResponse {
   keys: Key[]
 }
 
-export interface CreateBitcoinWalletBackendResponse
-  extends WalletBackendResponse {
+export interface CreateBitcoinWalletBackendResponse extends WalletBackendResponse {
   servicePubKey: string
   initialAddress: {
     address: string;

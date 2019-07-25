@@ -5,6 +5,7 @@ import {
   ListUnspentsBackendResponse,
   MaxTransferAmountBackendResponse,
   ListPoliciesForWalletBackendResponse,
+  ListUtxosByAddressBackendResponse,
 } from '../api-types/wallet'
 
 export interface CreateWalletResponse extends CreateWalletBackendResponse {
@@ -17,3 +18,5 @@ export interface MaxTransferAmountResponse
   extends MaxTransferAmountBackendResponse {}
 export interface ListPoliciesForWalletResponse
   extends ListPoliciesForWalletBackendResponse {}
+export interface ListUtxosByAddressResponse
+  extends ListUtxosByAddressBackendResponse {}
