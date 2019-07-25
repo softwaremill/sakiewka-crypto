@@ -4,7 +4,7 @@ import { currency } from '../helpers'
 import * as apiFactory from '../../backend-api'
 import * as bitcoinApiFactory from '../../bitcoin/bitcoin-backend-api'
 import { createHttpClient } from '../../utils/httpClient'
-import { MaxTransferAmountBitcoinParams } from '../../../types/response'
+import { MaxTransferAmountBitcoinBackendParams } from '../../../types/api-types/wallet'
 import {
   DailyAmountPolicy,
   PolicyKind,
@@ -377,7 +377,7 @@ describe('maxTransferAmount', () => {
   })
 
   it('should send proper request', async () => {
-    const data: MaxTransferAmountBitcoinParams = {
+    const data: MaxTransferAmountBitcoinBackendParams = {
       recipient: '0x0',
       feeRate: 22,
     }

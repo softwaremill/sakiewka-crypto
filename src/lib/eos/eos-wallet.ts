@@ -1,4 +1,4 @@
-import { CreateWalletParams } from '../../types/domain'
+import { CreateWalletParams } from '../../types/domain-types/wallet'
 import {
   ListPoliciesForWalletResponse,
   ListWalletsResponse,

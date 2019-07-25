@@ -1,4 +1,4 @@
-import { Currency } from '../../types/domain'
+import { Currency } from '../../types/domain-types/currency'
 import BtgOperations from './btg-operations'
 import BtcOperations from './btc-operations'
 import { BitcoinOperations } from './bitcoin-operations'

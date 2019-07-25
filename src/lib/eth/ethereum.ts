@@ -2,12 +2,12 @@ import ethAbi from 'ethereumjs-abi'
 import ethUtil from 'ethereumjs-util'
 
 import bitcoin from '../bitcoin/bitcoin'
-import { Currency } from '../../types/domain'
+import { Currency } from '../../types/domain-types/currency'
 
 export default (btcNetwork: string) => {
   const { base58ToHDNode } = bitcoin(Currency.BTC, btcNetwork)
 
-  const OnlyDigits = /^[1-9]+\d*$/
+  const onlyDigits = /^[1-9]+\d*$/
 
   const createETHOperationHash = (
     address: string,
@@ -16,7 +16,7 @@ export default (btcNetwork: string) => {
     expireBlock: number,
     contractNonce: number,
   ) => {
-    if (!OnlyDigits.test(value)) {
+    if (!onlyDigits.test(value)) {
       throw new Error('Value was not an integer!')
     }
     return ethUtil.bufferToHex(
@@ -41,7 +41,7 @@ export default (btcNetwork: string) => {
     expireBlock: number,
     contractNonce: number,
   ) => {
-    if (!OnlyDigits.test(value)) {
+    if (!onlyDigits.test(value)) {
       throw new Error('Value was not an integer!')
     }
     return ethUtil.bufferToHex(
@@ -63,11 +63,11 @@ export default (btcNetwork: string) => {
     return ethUtil.bufferToHex(
       ethAbi.soliditySHA3(
         types,
-        values.map((elem: any, index: number) => {
-          if (types[index] === 'address') {
-            return new ethUtil.BN(elem.toString(), 16)
-          } else return elem
-        }),
+        values.map((elem: any, index: number) =>
+          types[index] === 'address'
+            ? new ethUtil.BN(elem.toString(), 16)
+            : elem,
+        ),
       ),
     )
   }

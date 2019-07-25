@@ -1,3 +1,8 @@
+export interface ErrorDetails {
+  message: string
+  code: string
+}
+
 export interface ApiError {
   errors: ApiErrorDetails[]
   code?: number

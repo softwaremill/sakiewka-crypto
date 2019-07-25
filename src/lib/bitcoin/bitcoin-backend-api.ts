@@ -1,6 +1,5 @@
 import {
   AssignPolicyBackendParams,
-  CreateNewBitcoinAddressBackendResponse,
   CreateWebhookResponse,
   DeleteWebhookResponse,
   GetWebhooksResponse,
@@ -15,6 +14,7 @@ import {
 import { GetKeyBackendResponse } from '../../types/api-types/key'
 import { GetFeeRatesBackendResponse } from '../../types/api-types/feeRates'
 import {
+  CreateNewBitcoinAddressBackendResponse,
   GetBitcoinAddressBackendResponse,
   ListBitcoinAddressesBackendResponse,
 } from '../../types/api-types/address'

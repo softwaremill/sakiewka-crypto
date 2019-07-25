@@ -82,28 +82,6 @@ export interface CreateBitcoinWalletBackendResponse
   }
 }
 
-export interface CreateEosWalletBackendResponse extends WalletBackendResponse {}
-
-export interface GetWalletBackendResponse extends WalletBackendResponse {
-  name: string
-  currency: string
-  created: string
-  balance: {
-    available: string;
-    locked: string;
-  }
-  canSendFundsUsingPassword: boolean
-}
-
-export interface CreateNewBitcoinAddressBackendResponse {
-  address: string
-  path: {
-    cosignerIndex: string;
-    change: string;
-    addressIndex: string;
-  }
-}
-
 export interface CreateNewEosAddressBackendResponse {
   address: string
 }
@@ -122,11 +100,6 @@ export interface GetBitcoinAddressBackendResponse {
 }
 
 export interface ListAddressesBackendResponse {}
-
-export interface ListWalletsBackendResponse {
-  wallets: GetWalletBackendResponse[]
-  nextPageToken?: string
-}
 
 export interface GetWebhooksResponse {
   id: string
@@ -192,11 +165,6 @@ export interface ErrorResponse {
 export interface ErrorDetails {
   message: string
   code: string
-}
-
-export interface MaxTransferAmountBitcoinParams {
-  recipient: string
-  feeRate: number
 }
 
 export interface MaxTransferAmountEosParams {

@@ -1,5 +1,4 @@
-import { Recipient } from '../../types/domain'
-import { CreateWalletParams } from '../../types/domain-types/wallet'
+import { CreateWalletParams, Receipient } from '../../types/domain-types/wallet'
 import {
   CreateWalletResponse,
   GetWalletResponse,
@@ -35,7 +34,7 @@ export interface WalletApi {
   listUnspents(
     token: string,
     walletId: string,
-    recipients: Recipient[],
+    recipients: Receipient[],
     feeRate?: number,
   ): Promise<ListUnspentsResponse>
   maxTransferAmount(
@@ -132,12 +131,12 @@ export const walletApiFactory = (
   const listUnspents = (
     token: string,
     walletId: string,
-    recipients: Recipient[],
+    recipients: Receipient[],
     feeRate?: number,
   ): Promise<ListUnspentsResponse> => {
     const params: GetUtxosBackendParams = {
       feeRate,
-      recipients: recipients.map((r: Recipient) => ({
+      recipients: recipients.map((r: Receipient) => ({
         address: r.address,
         amount: r.amount.toString(),
       })),
