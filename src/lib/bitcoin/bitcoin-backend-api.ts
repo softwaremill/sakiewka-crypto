@@ -3,10 +3,8 @@ import {
   CreateNewBitcoinAddressBackendResponse,
   CreateWebhookResponse,
   DeleteWebhookResponse,
-  GetBitcoinAddressBackendResponse,
   GetFeesRates,
   GetWebhooksResponse,
-  ListAddressesBackendResponse,
   ListPoliciesResponse,
   ListTransfersBackendResponse,
   ListWalletsForPolicyResponse,
@@ -16,6 +14,10 @@ import {
   TransferItemBackendResponse,
 } from '../../types/response'
 import { GetKeyBackendResponse } from '../../types/api-types/key'
+import {
+  GetBitcoinAddressBackendResponse,
+  ListBitcoinAddressesBackendResponse,
+} from '../../types/api-types/address'
 import {
   CreateWalletBackendParams,
   MaxTransferAmountBitcoinBackendParams,
@@ -60,7 +62,7 @@ export interface BitcoinBackendApi {
     walletId: string,
     limit: number,
     nextPageToken?: string,
-  ): Promise<ListAddressesBackendResponse>
+  ): Promise<ListBitcoinAddressesBackendResponse>
   listUnspents(
     token: string,
     walletId: string,

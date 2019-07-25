@@ -1,9 +1,5 @@
 import { Path, Key, Policy, UTXO } from '../domain'
-import {
-  Wallet,
-  WalletDetails,
-  Unspents,
-} from '../domain-types/wallet'
+import { Wallet, WalletDetails, Unspents } from '../domain-types/wallet'
 
 export interface CreateWalletBackendParams {
   name: string
@@ -17,7 +13,6 @@ export interface MaxTransferAmountBitcoinBackendParams {
   recipient: string
   feeRate: number
 }
-
 export interface MaxTransferAmountEosBackendParams {
   recipient: string
 }
@@ -36,7 +31,6 @@ export interface CreateWalletBackendResponse {
   id: string
   keys: Key[]
 }
-
 export interface CreateBitcoinWalletBackendResponse
   extends CreateWalletBackendResponse {
   servicePubKey: string
@@ -45,7 +39,6 @@ export interface CreateBitcoinWalletBackendResponse
     path: Path;
   }
 }
-
 export interface CreateEosWalletBackendResponse
   extends CreateWalletBackendResponse {}
 
@@ -53,6 +46,7 @@ export interface GetWalletBackendResponse extends WalletDetails {}
 
 export interface ListWalletsBackendResponse {
   wallets: Wallet[]
+  nextPageToken?: string
 }
 
 export interface ListUnspentsBackendResponse extends Unspents {}

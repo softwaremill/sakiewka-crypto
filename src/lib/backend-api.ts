@@ -7,7 +7,6 @@ import {
   GetWebhooksResponse,
   InfoBackendResponse,
   Init2faBackendResponse,
-  ListAddressesBackendResponse,
   ListTransfersBackendResponse,
   ListWebhooksResponse,
   LoginBackendResponse,
@@ -594,12 +593,12 @@ export const currencyApi = (
     return response.data
   }
 
-  const listAddresses = async (
+  const listAddresses = async <T>(
     token: string,
     walletId: string,
     limit: number,
     nextPageToken?: string,
-  ): Promise<ListAddressesBackendResponse> => {
+  ): Promise<T> => {
     const options = {
       method: 'GET',
       headers: {

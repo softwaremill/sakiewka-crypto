@@ -44,9 +44,10 @@ export interface OptionalQueryParam {
 
 export const buildQueryParamString = (params: OptionalQueryParam[]) => {
   return params
-    .filter(param => param.value)
+    .filter((param: OptionalQueryParam) => param.value)
     .map(
-      (param, index) => (index == 0 ? '?' : '&') + `${param.key}=${param.value}`,
+      (param: OptionalQueryParam, index: number) =>
+        `${index === 0 ? '?' : '&'}${param.key}=${param.value}`,
     )
     .join('')
 }
