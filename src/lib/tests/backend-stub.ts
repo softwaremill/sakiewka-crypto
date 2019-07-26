@@ -1,5 +1,5 @@
-import { KeyPair, KeyType } from '../../types/domain-types/key'
-import { GetKeyBackendResponse } from '../../types/api-types/key'
+import { KeyPair, KeyType } from '../../types/domain/key'
+import { GetKeyBackendResponse } from '../../types/api/key'
 import { BitcoinBackendApi } from '../bitcoin/bitcoin-backend-api'
 
 export const stubGetWallet = (

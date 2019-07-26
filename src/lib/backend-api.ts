@@ -6,20 +6,20 @@ import {
   ListWalletsForPolicyBackendResponse,
   CreatePolicyBackendParams,
   CreatePolicyBackendResponse,
-} from '../types/api-types/policy'
-import { ChainNetworkTypeBackendResponse } from '../types/api-types/chain'
+} from '../types/api/policy'
+import { ChainNetworkTypeBackendResponse } from '../types/api/chain'
 import {
   ListTransfersBackendResponse,
   MonthlySummaryBackendResponse,
   FindTransferByTxHashBackendResponse,
-} from './../types/api-types/transfer'
+} from './../types/api/transfer'
 import {
   CreateWebhookBackendResponse,
   DeleteWebhookBackendResponse,
   GetWebhookBackendResponse,
   ListWebhooksBackendResponse,
-} from '../types/api-types/webhook'
-import { GetKeyBackendResponse } from '../types/api-types/key'
+} from '../types/api/webhook'
+import { GetKeyBackendResponse } from '../types/api/key'
 import {
   InfoBackendResponse,
   LoginBackendResponse,
@@ -31,12 +31,12 @@ import {
   BalanceBackendResponse,
   CreateAuthTokenBackendResponse,
   DeleteAuthTokenBackendResponse,
-} from '../types/api-types/user'
+} from '../types/api/user'
 import {
   CreateWalletBackendParams,
   GetWalletBackendResponse,
   ListWalletsBackendResponse,
-} from '../types/api-types/wallet'
+} from '../types/api/wallet'
 import {
   buildQueryParamString,
   createHttpClient,

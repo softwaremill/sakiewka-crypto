@@ -4,7 +4,7 @@ import {
   ListWalletsForPolicyBackendResponse,
   CreatePolicyBackendResponse,
   AssignPolicyBackendResponse,
-} from '../api-types/policy'
+} from '../api/policy'
 
 export type ListPoliciesResponse = ListPoliciesBackendResponse
 export type ListPoliciesForWalletResponse = ListPoliciesForWalletBackendResponse

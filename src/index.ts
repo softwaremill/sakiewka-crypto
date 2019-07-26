@@ -27,7 +27,7 @@ import {
   chainTransfersApiFactory,
   ChainTransfersApi,
 } from './lib/transfers'
-import { Currency } from './types/domain-types/currency'
+import { Currency } from './types/domain/currency'
 import bitcoinOps from './lib/bitcoin/bitcoin'
 import { BitcoinOperations } from './lib/bitcoin/bitcoin-operations'
 import { WebhooksApi, webhooksApiFactory } from './lib/webhooks'
@@ -118,9 +118,9 @@ export const sakiewkaModule = (
   }
 }
 
-export * from './types/api-types'
-export * from './types/response-types'
-export * from './types/domain-types'
+export * from './types/api'
+export * from './types/response'
+export * from './types/domain'
 
 export { constants }
 export { crypto }

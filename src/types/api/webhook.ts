@@ -1,5 +1,5 @@
-import { Webhook } from '../domain-types/webhook'
-import { NextPageToken } from '../domain-types/api'
+import { Webhook } from '../domain/webhook'
+import { NextPageToken } from '../domain/api'
 
 export type GetWebhookBackendResponse = Webhook
 export interface ListWebhooksBackendResponse {

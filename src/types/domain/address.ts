@@ -1,4 +1,4 @@
-import { Path } from '../domain-types/transaction'
+import { Path } from './transaction'
 
 export interface Address {
   id: string

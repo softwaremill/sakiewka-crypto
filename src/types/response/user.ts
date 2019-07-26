@@ -10,7 +10,7 @@ import {
   CreateAuthTokenBackendResponse,
   DeleteAuthTokenBackendResponse,
   AddSupportSubmissionBackendResponse,
-} from '../api-types/user'
+} from '../api/user'
 
 export type LoginResponse = LoginBackendResponse
 export type RegisterResponse = RegisterBackendResponse

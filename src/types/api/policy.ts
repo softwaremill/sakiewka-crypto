@@ -1,5 +1,5 @@
-import { Policy, PolicySettings } from '../domain-types/policy'
-import { NextPageToken } from '../domain-types/api'
+import { Policy, PolicySettings } from '../domain/policy'
+import { NextPageToken } from '../domain/api'
 
 export interface ListPoliciesForWalletBackendResponse {
   policies: Policy[]

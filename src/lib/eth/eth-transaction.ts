@@ -3,7 +3,7 @@ import {
   sendETH as sendETHApi,
   sendTokens as sendTokensApi,
 } from './zlevator'
-import { Signature } from '../../types/domain-types/transaction'
+import { Signature } from '../../types/domain/transaction'
 import { hourFromNow } from '../utils/helpers'
 import ethereumFactory from './ethereum'
 

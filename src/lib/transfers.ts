@@ -4,7 +4,7 @@ import {
   ListTransfersResponse,
   MonthlySummaryResponse,
   FindTransferByTxHashResponse,
-} from '../types/response-types/transfer'
+} from '../types/response/transfer'
 
 export interface TransfersApi {
   monthlySummary(

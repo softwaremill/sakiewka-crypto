@@ -7,7 +7,7 @@ import {
   ListAddressesBackendResponse,
   ListBitcoinAddressesBackendResponse,
   ListEosAddressesBackendResponse,
-} from '../api-types/address'
+} from '../api/address'
 
 export type CreateNewAddressResponse = CreateNewAddressBackendResponse
 export type CreateNewBitcoinAddressResponse = CreateNewBitcoinAddressBackendResponse

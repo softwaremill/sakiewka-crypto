@@ -1,5 +1,5 @@
 import { networks } from 'bgoldjs-lib'
-import { Currency, SupportedNetworks } from '../types/domain-types/currency'
+import { Currency, SupportedNetworks } from '../types/domain/currency'
 
 export const ROOT_DERIVATION_PATH = "m/45'"
 

@@ -12,7 +12,7 @@ import {
   CreateAuthTokenResponse,
   DeleteAuthTokenResponse,
   AddSupportSubmissionResponse,
-} from '../types/response-types/user'
+} from '../types/response/user'
 
 export interface UserApi {
   login(login: string, password: string, code?: number): Promise<LoginResponse>

@@ -5,8 +5,8 @@ import {
   CreateNewAddressResponse,
   GetAddressResponse,
   ListAddressesResponse,
-} from '../../types/response-types/address'
-import { Address, AddressBitcoin } from '../../types/domain-types/address'
+} from '../../types/response/address'
+import { Address, AddressBitcoin } from '../../types/domain/address'
 
 export interface AddressApi {
   createNewAddress(

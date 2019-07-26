@@ -1,6 +1,6 @@
 import crossFetch from 'cross-fetch'
-import { ApiError, ApiErrorDetails } from '../../types/domain-types/error'
-import { ErrorResponse } from '../../types/response-types/error'
+import { ApiError, ApiErrorDetails } from '../../types/domain/error'
+import { ErrorResponse } from '../../types/response/error'
 import { INTERNAL_ERROR_CODE } from '../constants'
 import { CorrelationIdGetter } from '../backend-api'
 

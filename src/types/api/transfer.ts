@@ -2,7 +2,7 @@ import {
   Transfer,
   TransferDetails,
   MonthlySummary,
-} from '../domain-types/transfer'
+} from '../domain/transfer'
 
 export type ListTransfersBackendResponse = {
   transfers: Transfer[];

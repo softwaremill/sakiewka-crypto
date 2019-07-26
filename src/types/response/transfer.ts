@@ -2,7 +2,7 @@ import {
   FindTransferByTxHashBackendResponse,
   ListTransfersBackendResponse,
   MonthlySummaryBackendResponse,
-} from '../api-types/transfer'
+} from '../api/transfer'
 
 export type FindTransferByTxHashResponse = FindTransferByTxHashBackendResponse
 export type ListTransfersResponse = ListTransfersBackendResponse

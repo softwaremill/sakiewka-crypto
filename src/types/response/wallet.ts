@@ -6,7 +6,7 @@ import {
   ListUnspentsBackendResponse,
   MaxTransferAmountBackendResponse,
   ListUtxosByAddressBackendResponse,
-} from '../api-types/wallet'
+} from '../api/wallet'
 
 export interface CreateWalletResponse extends CreateWalletBackendResponse {
   pdf: string

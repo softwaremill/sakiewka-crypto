@@ -1,4 +1,4 @@
-import { FeeRate } from '../domain-types/feeRates'
+import { FeeRate } from '../domain/feeRates'
 
 export interface GetFeeRatesBackendResponse {
   recommended: FeeRate

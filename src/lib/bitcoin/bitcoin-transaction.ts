@@ -4,12 +4,12 @@ import {
   Receipient,
   TxOut,
   UTXO,
-} from '../../types/domain-types/transaction'
+} from '../../types/domain/transaction'
 import { TransactionBuilder } from 'bgoldjs-lib'
-import { GetKeyBackendResponse } from '../../types/api-types/key'
-import { SendResponse } from '../../types/response-types/transaction'
-import { WalletDetails, Unspents } from '../../types/domain-types/wallet'
-import { Key, KeyType } from '../../types/domain-types/key'
+import { GetKeyBackendResponse } from '../../types/api/key'
+import { SendResponse } from '../../types/response/transaction'
+import { WalletDetails, Unspents } from '../../types/domain/wallet'
+import { Key, KeyType } from '../../types/domain/key'
 import BigNumber from 'bignumber.js'
 import { btcToSatoshi, satoshiToBtc } from '../utils/helpers'
 import { decrypt } from '../crypto'

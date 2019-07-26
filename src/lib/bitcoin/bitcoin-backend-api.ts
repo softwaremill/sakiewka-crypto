@@ -6,25 +6,25 @@ import {
   CreatePolicyBackendResponse,
   CreatePolicyBackendParams,
   ListPoliciesForWalletBackendResponse,
-} from '../../types/api-types/policy'
+} from '../../types/api/policy'
 import {
   FindTransferByTxHashBackendResponse,
   ListTransfersBackendResponse,
-} from '../../types/api-types/transfer'
-import { SendBackendResponse } from '../../types/api-types/transaction'
+} from '../../types/api/transfer'
+import { SendBackendResponse } from '../../types/api/transaction'
 import {
   CreateWebhookBackendResponse,
   DeleteWebhookBackendResponse,
   GetWebhookBackendResponse,
   ListWebhooksBackendResponse,
-} from '../../types/api-types/webhook'
-import { GetKeyBackendResponse } from '../../types/api-types/key'
-import { GetFeeRatesBackendResponse } from '../../types/api-types/feeRates'
+} from '../../types/api/webhook'
+import { GetKeyBackendResponse } from '../../types/api/key'
+import { GetFeeRatesBackendResponse } from '../../types/api/feeRates'
 import {
   CreateNewBitcoinAddressBackendResponse,
   GetBitcoinAddressBackendResponse,
   ListBitcoinAddressesBackendResponse,
-} from '../../types/api-types/address'
+} from '../../types/api/address'
 import {
   CreateWalletBackendParams,
   MaxTransferAmountBitcoinBackendParams,
@@ -35,10 +35,10 @@ import {
   ListUnspentsBackendResponse,
   MaxTransferAmountBackendResponse,
   ListUtxosByAddressBackendResponse,
-} from '../../types/api-types/wallet'
+} from '../../types/api/wallet'
 import { HttpClient } from '../utils/httpClient'
 import * as backendApi from '../backend-api'
-import { Currency } from '../../types/domain-types/currency'
+import { Currency } from '../../types/domain/currency'
 
 export interface BitcoinBackendApi {
   createNewAddress(

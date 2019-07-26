@@ -5,7 +5,7 @@ import {
   DeleteWebhookResponse,
   GetWebhookResponse,
   ListWebhooksResponse,
-} from '../types/response-types/webhook'
+} from '../types/response/webhook'
 
 export interface WebhooksApi {
   createWebhook(

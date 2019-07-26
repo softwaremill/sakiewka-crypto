@@ -1,9 +1,9 @@
-import { KeyPair } from '../../types/domain-types/key'
+import { KeyPair } from '../../types/domain/key'
 import { getRandomBytes, encrypt, decrypt } from '../crypto'
 import { HDNode } from 'bitcoinjs-lib'
 import { BitcoinBackendApi } from './bitcoin-backend-api'
 import { BitcoinOperations } from './bitcoin-operations'
-import { GetKeyResponse } from '../../types/response-types/key'
+import { GetKeyResponse } from '../../types/response/key'
 
 export interface KeyModule {
   generateNewKeyPair(path?: string): KeyPair

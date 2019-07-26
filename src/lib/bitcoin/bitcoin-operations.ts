@@ -12,7 +12,7 @@ import {
   Receipient,
   Path,
   TxOut,
-} from '../../types/domain-types/transaction'
+} from '../../types/domain/transaction'
 import { BigNumber } from 'bignumber.js'
 
 const btcjsToUtxo = (input: UTXO_btcjs): UTXO => {

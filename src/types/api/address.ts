@@ -1,5 +1,5 @@
-import { Address, AddressEos, AddressBitcoin } from '../domain-types/address'
-import { NextPageToken } from '../domain-types/api'
+import { Address, AddressEos, AddressBitcoin } from '../domain/address'
+import { NextPageToken } from '../domain/api'
 export interface PathBitcoin {
   cosignerIndex: string
   change: string

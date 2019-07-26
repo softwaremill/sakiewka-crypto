@@ -4,12 +4,12 @@ import { currency } from '../helpers'
 import * as apiFactory from '../../backend-api'
 import * as bitcoinApiFactory from '../../bitcoin/bitcoin-backend-api'
 import { createHttpClient } from '../../utils/httpClient'
-import { MaxTransferAmountBitcoinBackendParams } from '../../../types/api-types/wallet'
+import { MaxTransferAmountBitcoinBackendParams } from '../../../types/api/wallet'
 import {
   DailyAmountPolicy,
   PolicyKind,
   PolicySettings,
-} from '../../../types/domain-types/policy'
+} from '../../../types/domain/policy'
 
 const httpClient = createHttpClient(() => '')
 

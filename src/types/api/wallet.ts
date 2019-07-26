@@ -1,6 +1,6 @@
-import { Path, UTXO } from '../domain-types/transaction'
-import { Wallet, WalletDetails, Unspents } from '../domain-types/wallet'
-import { Key } from '..//domain-types/key'
+import { Path, UTXO } from '../domain/transaction'
+import { Wallet, WalletDetails, Unspents } from '../domain/wallet'
+import { Key } from '..//domain/key'
 
 export interface CreateWalletBackendParams {
   name: string

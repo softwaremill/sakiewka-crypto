@@ -1,7 +1,7 @@
 import {
   CreateWalletParams,
   Receipient,
-} from '../../types/domain-types/wallet'
+} from '../../types/domain/wallet'
 import {
   CreateWalletResponse,
   EditWalletResponse,
@@ -10,14 +10,14 @@ import {
   ListUnspentsResponse,
   MaxTransferAmountResponse,
   ListUtxosByAddressResponse,
-} from '../../types/response-types/wallet'
-import { ListPoliciesForWalletResponse } from '../../types/response-types/policy'
+} from '../../types/response/wallet'
+import { ListPoliciesForWalletResponse } from '../../types/response/policy'
 import { ROOT_DERIVATION_PATH } from '../constants'
 import {
   GetUtxosBackendParams,
   CreateWalletBackendParams,
   MaxTransferAmountBitcoinBackendParams,
-} from '../../types/api-types/wallet'
+} from '../../types/api/wallet'
 import { generatePdf } from './bitcoin-keycard-pdf'
 import { KeyModule } from './bitcoin-key'
 import { BitcoinBackendApi } from './bitcoin-backend-api'

@@ -1,5 +1,5 @@
-import { BalanceDetails } from '../domain-types/balance'
-import { UserInfo } from '../domain-types/user'
+import { BalanceDetails } from '../domain/balance'
+import { UserInfo } from '../domain/user'
 
 export interface LoginBackendResponse {
   token: string

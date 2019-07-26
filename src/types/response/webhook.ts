@@ -3,7 +3,7 @@ import {
   GetWebhookBackendResponse,
   CreateWebhookBackendResponse,
   DeleteWebhookBackendResponse,
-} from '../api-types/webhook'
+} from '../api/webhook'
 
 export type ListWebhooksResponse = ListWebhooksBackendResponse
 export type GetWebhookResponse = GetWebhookBackendResponse

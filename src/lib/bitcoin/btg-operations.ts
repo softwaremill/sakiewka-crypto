@@ -3,7 +3,7 @@ import { Transaction, TransactionBuilder, ECPair } from 'bgoldjs-lib'
 import { BitcoinOperations } from './bitcoin-operations'
 import { btcToSatoshi } from '../utils/helpers'
 import BigNumber from 'bignumber.js'
-import { Currency } from '../../types/domain-types/currency'
+import { Currency } from '../../types/domain/currency'
 
 export default class BtgOperations extends BitcoinOperations {
   protected bitcoinLib = btgLib

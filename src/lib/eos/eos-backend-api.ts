@@ -5,8 +5,8 @@ import {
   GetWalletBackendResponse,
   ListWalletsBackendResponse,
   MaxTransferAmountBackendResponse,
-} from '../../types/api-types/wallet'
-import { ListPoliciesForWalletBackendResponse } from '../../types/api-types/policy'
+} from '../../types/api/wallet'
+import { ListPoliciesForWalletBackendResponse } from '../../types/api/policy'
 
 import { Currency } from '../..'
 import * as backendApi from '../backend-api'

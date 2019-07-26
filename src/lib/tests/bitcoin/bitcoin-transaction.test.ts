@@ -22,9 +22,9 @@
 //   stubFeeRates,
 //   stubGetKey,
 // } from '../backend-stub'
-// import { UTXO } from '../../../types/domain-types/transaction'
-// import { Currency } from '../../../types/domain-types/currency'
-// import { KeyType } from '../../../types/domain-types/key'
+// import { UTXO } from '../../../types/domain/transaction'
+// import { Currency } from '../../../types/domain/currency'
+// import { KeyType } from '../../../types/domain/key'
 // import { currency } from '../helpers'
 // import { Transaction } from 'bitcoinjs-lib'
 // import { walletApiFactory } from '../../bitcoin/bitcoin-wallet'
