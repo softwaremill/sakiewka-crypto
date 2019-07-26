@@ -10,3 +10,5 @@ export interface Address {
 export interface AddressBitcoin extends Address {
   path: Path
 }
+
+export interface AddressEos extends Address {}

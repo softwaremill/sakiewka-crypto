@@ -1,4 +1,3 @@
-export interface NextPageToken {
-  id: string
-  orderingValue: number
-}
+export type NextPageToken = string
+
+export interface EmptyResponse {}

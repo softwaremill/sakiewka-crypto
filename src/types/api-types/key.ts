@@ -7,5 +7,3 @@ export interface GetKeyBackendResponse {
   keyType: KeyType
   created: string
 }
-
-export interface GetKeyResponse extends GetKeyBackendResponse {}

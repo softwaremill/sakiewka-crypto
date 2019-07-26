@@ -1,5 +1,5 @@
-import { Address, AddressBitcoin } from '../domain-types/address'
-
+import { Address, AddressEos, AddressBitcoin } from '../domain-types/address'
+import { NextPageToken } from '../domain-types/api'
 export interface PathBitcoin {
   cosignerIndex: string
   change: string
@@ -9,19 +9,24 @@ export interface PathBitcoin {
 export interface CreateNewAddressBackendResponse {
   address: string
 }
-export interface CreateNewBitcoinAddressBackendResponse extends CreateNewAddressBackendResponse {
+export interface CreateNewBitcoinAddressBackendResponse
+  extends CreateNewAddressBackendResponse {
   path: PathBitcoin
 }
 
-export interface GetAddressBackendResponse extends Address {}
-export interface GetEosAddressBackendResponse extends GetAddressBackendResponse {}
-export interface GetBitcoinAddressBackendResponse extends AddressBitcoin {}
+export type GetAddressBackendResponse = Address
+export type GetEosAddressBackendResponse = AddressEos
+export type GetBitcoinAddressBackendResponse = AddressBitcoin
 
 export interface ListAddressesBackendResponse {
   addresses: Address[]
-  nextPageToken?: string
+  nextPageToken?: NextPageToken
 }
-export interface ListBitcoinAddressesBackendResponse extends ListAddressesBackendResponse {
+export interface ListBitcoinAddressesBackendResponse
+  extends ListAddressesBackendResponse {
   addresses: AddressBitcoin[]
 }
-export interface ListEosAddressesBackendResponse extends ListAddressesBackendResponse {}
+export interface ListEosAddressesBackendResponse
+  extends ListAddressesBackendResponse {
+  addresses: AddressEos[]
+}

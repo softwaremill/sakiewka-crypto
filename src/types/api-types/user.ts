@@ -1,4 +1,5 @@
-import { BalanceWithChain } from '../domain-types/balance'
+import { BalanceDetails } from '../domain-types/balance'
+import { UserInfo } from '../domain-types/user'
 
 export interface LoginBackendResponse {
   token: string
@@ -10,15 +11,7 @@ export interface SetupPasswordBackendResponse {
   token: string
 }
 
-export interface InfoBackendResponse {
-  email: string
-  token: string
-  tokenInfo: {
-    scope: string[];
-    expiry: string;
-  }
-  twoFaEnabled: boolean
-}
+export type InfoBackendResponse = UserInfo
 
 export interface Init2faBackendResponse {
   qrCodeUrl: string
@@ -31,7 +24,7 @@ export interface Confirm2faBackendResponse {}
 export interface Disable2faBackendResponse {}
 
 export interface BalanceBackendResponse {
-  balances: BalanceWithChain[]
+  balances: BalanceDetails[]
 }
 
 export interface CreateAuthTokenBackendResponse {

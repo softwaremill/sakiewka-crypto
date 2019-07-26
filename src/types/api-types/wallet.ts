@@ -45,14 +45,14 @@ export interface CreateEosWalletBackendResponse
 
 export interface EditWalletBackendResponse {}
 
-export interface GetWalletBackendResponse extends WalletDetails {}
+export type GetWalletBackendResponse = WalletDetails
 
 export interface ListWalletsBackendResponse {
   wallets: Wallet[]
   nextPageToken?: string
 }
 
-export interface ListUnspentsBackendResponse extends Unspents {}
+export type ListUnspentsBackendResponse = Unspents
 
 export interface MaxTransferAmountBackendResponse {
   amount: string

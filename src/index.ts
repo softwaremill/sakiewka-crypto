@@ -118,6 +118,7 @@ export const sakiewkaModule = (
   }
 }
 
+export * from './types/api-types'
 export * from './types/response-types'
 export * from './types/domain-types'
 

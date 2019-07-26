@@ -12,19 +12,11 @@ import {
 export interface CreateWalletResponse extends CreateWalletBackendResponse {
   pdf: string
 }
-export interface EditWalletResponse extends EditWalletBackendResponse {}
 
-export interface GetWalletResponse extends GetWalletBackendResponse {}
-
-export interface ListWalletsResponse extends ListWalletsBackendResponse {}
-
-export interface ListUnspentsResponse extends ListUnspentsBackendResponse {}
-
-export interface MaxTransferAmountResponse
-  extends MaxTransferAmountBackendResponse {}
-
-export interface ListPoliciesForWalletResponse
-  extends ListPoliciesForWalletBackendResponse {}
-
-export interface ListUtxosByAddressResponse
-  extends ListUtxosByAddressBackendResponse {}
+export type EditWalletResponse = EditWalletBackendResponse
+export type GetWalletResponse = GetWalletBackendResponse
+export type ListWalletsResponse = ListWalletsBackendResponse
+export type ListUnspentsResponse = ListUnspentsBackendResponse
+export type MaxTransferAmountResponse = MaxTransferAmountBackendResponse
+export type ListPoliciesForWalletResponse = ListPoliciesForWalletBackendResponse
+export type ListUtxosByAddressResponse = ListUtxosByAddressBackendResponse

@@ -4,9 +4,9 @@ import {
   MonthlySummary,
 } from '../domain-types/transfer'
 
-export interface ListTransfersBackendResponse {
-  transfers: Transfer[]
-  nextPageToken?: string
+export type ListTransfersBackendResponse = {
+  transfers: Transfer[];
+  nextPageToken?: string;
 }
 
 export type FindTransferByTxHashBackendResponse = TransferDetails

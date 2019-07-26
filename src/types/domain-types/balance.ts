@@ -8,6 +8,6 @@ export interface Balance {
   fiatCurrency: string
 }
 
-export interface BalanceWithChain extends Balance {
+export interface BalanceDetails extends Balance {
   chain: Currency
 }

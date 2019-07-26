@@ -9,18 +9,13 @@ import {
   ListEosAddressesBackendResponse,
 } from '../api-types/address'
 
-export interface CreateNewAddressResponse
-  extends CreateNewAddressBackendResponse {}
-export interface CreateNewBitcoinAddressResponse
-  extends CreateNewBitcoinAddressBackendResponse {}
+export type CreateNewAddressResponse = CreateNewAddressBackendResponse
+export type CreateNewBitcoinAddressResponse = CreateNewBitcoinAddressBackendResponse
 
-export interface GetAddressResponse extends GetAddressBackendResponse {}
-export interface GetBitcoinAddressResponse
-  extends GetBitcoinAddressBackendResponse {}
-export interface GetEosAddressResponse extends GetEosAddressBackendResponse {}
+export type GetAddressResponse = GetAddressBackendResponse
+export type GetBitcoinAddressResponse = GetBitcoinAddressBackendResponse
+export type GetEosAddressResponse = GetEosAddressBackendResponse
 
-export interface ListAddressesResponse extends ListAddressesBackendResponse {}
-export interface ListBitcoinAddressesResponse
-  extends ListBitcoinAddressesBackendResponse {}
-export interface ListEosAddressesResponse
-  extends ListEosAddressesBackendResponse {}
+export type ListAddressesResponse = ListAddressesBackendResponse
+export type ListBitcoinAddressesResponse = ListBitcoinAddressesBackendResponse
+export type ListEosAddressesResponse = ListEosAddressesBackendResponse

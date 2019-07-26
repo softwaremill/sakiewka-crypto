@@ -5,7 +5,7 @@ import {
   DeleteWebhookBackendResponse,
 } from '../api-types/webhook'
 
-export interface ListWebhooksResponse extends ListWebhooksBackendResponse {}
-export interface GetWebhookResponse extends GetWebhookBackendResponse {}
-export interface CreateWebhookResponse extends CreateWebhookBackendResponse {}
-export interface DeleteWebhookResponse extends DeleteWebhookBackendResponse {}
+export type ListWebhooksResponse = ListWebhooksBackendResponse
+export type GetWebhookResponse = GetWebhookBackendResponse
+export type CreateWebhookResponse = CreateWebhookBackendResponse
+export type DeleteWebhookResponse = DeleteWebhookBackendResponse

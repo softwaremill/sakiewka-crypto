@@ -12,16 +12,14 @@ import {
   AddSupportSubmissionBackendResponse,
 } from '../api-types/user'
 
-export interface LoginResponse extends LoginBackendResponse {}
-export interface RegisterResponse extends RegisterBackendResponse {}
-export interface SetupPasswordResponse extends SetupPasswordBackendResponse {}
-export interface InfoResponse extends InfoBackendResponse {}
-export interface Confirm2faResponse extends Confirm2faBackendResponse {}
-export interface Disable2faResponse extends Disable2faBackendResponse {}
-export interface Init2faResponse extends Init2faBackendResponse {}
-export interface BalanceResponse extends BalanceBackendResponse {}
-export interface CreateAuthTokenResponse
-  extends CreateAuthTokenBackendResponse {}
-export interface DeleteAuthTokenResponse
-  extends DeleteAuthTokenBackendResponse {}
-export interface AddSupportSubmissionResponse extends AddSupportSubmissionBackendResponse {}
+export type LoginResponse = LoginBackendResponse
+export type RegisterResponse = RegisterBackendResponse
+export type SetupPasswordResponse = SetupPasswordBackendResponse
+export type InfoResponse = InfoBackendResponse
+export type Confirm2faResponse = Confirm2faBackendResponse
+export type Disable2faResponse = Disable2faBackendResponse
+export type Init2faResponse = Init2faBackendResponse
+export type BalanceResponse = BalanceBackendResponse
+export type CreateAuthTokenResponse = CreateAuthTokenBackendResponse
+export type DeleteAuthTokenResponse = DeleteAuthTokenBackendResponse
+export type AddSupportSubmissionResponse = AddSupportSubmissionBackendResponse
