@@ -1,8 +1,8 @@
 import {
-  EthGetTransactionParamsResponse,
-  SendETHResponse,
-  SendTokensResponse,
-} from '../../types/response'
+  EthGetTransactionParamsBackendResponse,
+  SendETHBackendResponse,
+  SendTokensBackendResponse,
+} from '../../types/api-types/transaction'
 import { createHttpClient } from '../utils/httpClient'
 
 const getZlevatorUrl = () => process.env.ZLEVATOR_URL
@@ -12,7 +12,7 @@ export const httpClient = createHttpClient(() => '')
 // ETH
 // transaction
 export const getNextNonce = async (): Promise<
-  EthGetTransactionParamsResponse
+  EthGetTransactionParamsBackendResponse
 > => {
   const options = {
     method: 'GET',
@@ -29,7 +29,7 @@ export const sendETH = async (
   data: string,
   signature: string,
   withdrawalId: string,
-): Promise<SendETHResponse> => {
+): Promise<SendETHBackendResponse> => {
   const options = {
     method: 'POST',
     body: JSON.stringify({
@@ -54,7 +54,7 @@ export const sendTokens = async (
   signature: string,
   contractAddress: string,
   withdrawalId: string,
-): Promise<SendTokensResponse> => {
+): Promise<SendTokensBackendResponse> => {
   const options = {
     method: 'POST',
     body: JSON.stringify({

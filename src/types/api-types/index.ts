@@ -1,4 +1,5 @@
 export * from './address'
+export * from './chain'
 export * from './feeRates'
 export * from './key'
 export * from './transfer'

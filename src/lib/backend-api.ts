@@ -1,11 +1,11 @@
 import {
-  ChainInfoResponse as ChainModeResponse,
   ListPoliciesForWalletResponse,
   ListPoliciesResponse,
   AssignPolicyBackendParams,
   ListWalletsForPolicyResponse,
   PolicyCreateRequest,
 } from '../types/response'
+import { ChainNetworkTypeBackendResponse } from '../types/api-types/chain'
 import {
   ListTransfersBackendResponse,
   MonthlySummaryBackendResponse,
@@ -108,7 +108,7 @@ export interface CoreBackendApi {
     limit: number,
     nextPageToken?: string,
   ): Promise<ListTransfersBackendResponse>
-  chainNetworkType(): Promise<ChainModeResponse>
+  chainNetworkType(): Promise<ChainNetworkTypeBackendResponse>
   balance(token: string, fiatCurrency: string): Promise<BalanceBackendResponse>
   createAuthToken(
     token: string,
@@ -300,7 +300,9 @@ export const create = (
     return response.data
   }
 
-  const chainNetworkType = async (): Promise<ChainModeResponse> => {
+  const chainNetworkType = async (): Promise<
+    ChainNetworkTypeBackendResponse
+  > => {
     const options = {
       method: 'GET',
     }

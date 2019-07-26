@@ -1,23 +1,5 @@
 import { Policy, PolicySettings } from './domain'
 
-// eth
-export interface EthGetTransactionParamsResponse {
-  contractNonce: string
-  currentBlock: string
-}
-
-export interface SendETHResponse {
-  tx: string
-}
-
-export interface SendTokensResponse {
-  tx: string
-}
-
-export interface ChainInfoResponse {
-  type: string
-}
-
 export interface ListPoliciesForWalletResponse {
   policies: Policy[]
 }
