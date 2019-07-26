@@ -1,4 +1,4 @@
-import { KeyPair, KeyType } from '../../types/domain'
+import { KeyPair, KeyType } from '../../types/domain-types/key'
 import { GetKeyBackendResponse } from '../../types/api-types/key'
 import { BitcoinBackendApi } from '../bitcoin/bitcoin-backend-api'
 

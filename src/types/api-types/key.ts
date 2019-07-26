@@ -1,4 +1,4 @@
-import { KeyType } from '../domain'
+import { KeyType } from '../domain-types/key'
 
 export interface GetKeyBackendResponse {
   id: string

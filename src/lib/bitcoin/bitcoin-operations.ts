@@ -7,7 +7,12 @@ import {
   In,
 } from 'bitcoinjs-lib'
 import bip69 from 'bip69'
-import { UTXO, Recipient, Path, TxOut } from '../../types/domain'
+import {
+  UTXO,
+  Receipient,
+  Path,
+  TxOut,
+} from '../../types/domain-types/transaction'
 import { BigNumber } from 'bignumber.js'
 
 const btcjsToUtxo = (input: UTXO_btcjs): UTXO => {
@@ -100,7 +105,7 @@ export class BitcoinOperations {
     return this.bitcoinLib.address.toOutputScript(address, this.network)
   }
 
-  decodeTxOutput = (output: Out): Recipient => ({
+  decodeTxOutput = (output: Out): Receipient => ({
     amount: new BigNumber(output.value),
     address: this.outputScriptToAddress(output.script),
   })
@@ -114,7 +119,7 @@ export class BitcoinOperations {
     return bip69.sortInputs(inputs.map(utxoToBtcJS)).map(btcjsToUtxo)
   }
 
-  recipientToTxOut = (recipient: Recipient): TxOut => {
+  recipientToTxOut = (recipient: Receipient): TxOut => {
     return {
       script: this.addressToOutputScript(recipient.address),
       value: recipient.amount,

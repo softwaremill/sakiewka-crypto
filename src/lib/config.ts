@@ -1,5 +1,5 @@
 import { SUPPORTED_NETWORKS } from './constants'
-import { Currency } from '../types/domain'
+import { Currency } from '../types/domain-types/currency'
 
 export const networkFactory = (btcNetwork: string, currency: Currency) => {
   const network = SUPPORTED_NETWORKS[currency][btcNetwork]

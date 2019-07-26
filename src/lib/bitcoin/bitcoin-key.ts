@@ -1,4 +1,4 @@
-import { KeyPair } from '../../types/domain'
+import { KeyPair } from '../../types/domain-types/key'
 import { getRandomBytes, encrypt, decrypt } from '../crypto'
 import { HDNode } from 'bitcoinjs-lib'
 import { BitcoinBackendApi } from './bitcoin-backend-api'

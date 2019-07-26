@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { Balance } from './balance'
-import { UTXO } from '../domain'
+import { UTXO } from '../domain-types/transaction'
 import { Key } from '../domain-types/key'
 
 export interface CreateWalletParams {

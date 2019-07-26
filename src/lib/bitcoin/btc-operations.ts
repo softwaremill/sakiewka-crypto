@@ -2,7 +2,7 @@ import * as btcLib from 'bitcoinjs-lib'
 import { ECPair, Transaction, TransactionBuilder } from 'bitcoinjs-lib'
 import { BitcoinOperations } from './bitcoin-operations'
 import { BigNumber } from 'bignumber.js'
-import { Currency } from '../../types/domain'
+import { Currency } from '../../types/domain-types/currency'
 
 export default class BtcOperations extends BitcoinOperations {
   protected bitcoinLib = btcLib

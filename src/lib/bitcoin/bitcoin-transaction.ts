@@ -1,4 +1,10 @@
-import { DecodedTx, Path, Recipient, TxOut, UTXO } from '../../types/domain'
+import {
+  DecodedTx,
+  Path,
+  Receipient,
+  TxOut,
+  UTXO,
+} from '../../types/domain-types/transaction'
 import { TransactionBuilder } from 'bgoldjs-lib'
 import { GetKeyBackendResponse } from '../../types/api-types/key'
 import { WalletDetails, Unspents } from '../../types/domain-types/wallet'
@@ -16,7 +22,7 @@ export interface TransactionApi {
   send(
     userToken: string,
     walletId: string,
-    recipients: Recipient[],
+    recipients: Receipient[],
     xprv?: string,
     passphrase?: string,
     feeRate?: number,
@@ -32,7 +38,7 @@ export const transactionApiFactory = (
   const send = async (
     userToken: string,
     walletId: string,
-    recipients: Recipient[],
+    recipients: Receipient[],
     xprv?: string,
     passphrase?: string,
     userProvidedFeeRate?: number,
@@ -68,7 +74,7 @@ export const transactionApiFactory = (
 
   const buildTxHex = (
     unspents: Unspents,
-    recipients: Recipient[],
+    recipients: Receipient[],
     xprv: string,
     changeAddres: string,
     pubKeys: string[],
@@ -133,15 +139,15 @@ export const transactionApiFactory = (
 
   const createOutputs = (
     unspents: Unspents,
-    recipients: Recipient[],
+    recipients: Receipient[],
     changeAddres: string,
   ): TxOut[] => {
     const { change, serviceFee } = unspents
-    const changeRecipient: Recipient = {
+    const changeReceipient: Receipient = {
       address: changeAddres,
       amount: new BigNumber(change),
     }
-    const serviceRecipient = serviceFee
+    const serviceReceipient = serviceFee
       ? [
         {
           address: serviceFee.address,
@@ -150,8 +156,8 @@ export const transactionApiFactory = (
       ]
       : []
     const txOuts = recipients
-      .concat(changeRecipient)
-      .concat(serviceRecipient)
+      .concat(changeReceipient)
+      .concat(serviceReceipient)
       .map(bitcoin.recipientToTxOut)
     return bitcoin.sortTxOuts(txOuts)
   }
@@ -199,9 +205,9 @@ export const transactionModuleFactory = (
 ): TransactionModule => {
   const decodeTransaction = (txHex: string): DecodedTx => {
     const tx = bitcoin.txFromHex(txHex)
-    const outputs: Recipient[] = tx.outs
+    const outputs: Receipient[] = tx.outs
       .map(bitcoin.decodeTxOutput)
-      .map((out: Recipient) => ({ ...out, amount: satoshiToBtc(out.amount) }))
+      .map((out: Receipient) => ({ ...out, amount: satoshiToBtc(out.amount) }))
 
     const inputs: UTXO[] = tx.ins.map(bitcoin.decodeTxInput)
 

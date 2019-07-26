@@ -1,4 +1,5 @@
-import { Path, Policy, UTXO } from '../domain'
+import { Policy } from '../domain'
+import { Path, UTXO } from '../domain-types/transaction'
 import { Wallet, WalletDetails, Unspents } from '../domain-types/wallet'
 import { Key } from '..//domain-types/key'
 
