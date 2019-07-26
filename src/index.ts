@@ -27,7 +27,7 @@ import {
   chainTransfersApiFactory,
   ChainTransfersApi,
 } from './lib/transfers'
-import { Currency } from './types/domain'
+import { Currency } from './types/domain-types/currency'
 import bitcoinOps from './lib/bitcoin/bitcoin'
 import { BitcoinOperations } from './lib/bitcoin/bitcoin-operations'
 import { WebhooksApi, webhooksApiFactory } from './lib/webhooks'
@@ -37,11 +37,11 @@ import {
   FeeRatesApi,
 } from './lib/bitcoin/bitcoin-fee-rates'
 
-export interface SakiewkaApi {
+type SakiewkaCurrencyApis = { [P in Currency]?: SakiewkaCurrencyApi }
+
+export interface SakiewkaApi extends SakiewkaCurrencyApis {
   user: UserApi
   transfers: TransfersApi
-  [Currency.BTC]: SakiewkaCurrencyApi
-  [Currency.BTG]: SakiewkaCurrencyApi
 }
 
 export interface SakiewkaCurrencyApi {
