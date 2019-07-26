@@ -5,8 +5,9 @@ import {
   GetWalletBackendResponse,
   ListWalletsBackendResponse,
   MaxTransferAmountBackendResponse,
-  ListPoliciesForWalletBackendResponse,
 } from '../../types/api-types/wallet'
+import { ListPoliciesForWalletBackendResponse } from '../../types/api-types/policy'
+
 import { Currency } from '../..'
 import * as backendApi from '../backend-api'
 import { HttpClient } from '../utils/httpClient'
@@ -58,7 +59,9 @@ export const create = (
     }
 
     const response = await httpClient.request(
-      `${backendApiUrl}/eos/wallet/${walletId}/max-transfer-amount?recipient=${params.recipient}`,
+      `${backendApiUrl}/eos/wallet/${walletId}/max-transfer-amount?recipient=${
+        params.recipient
+      }`,
       options,
     )
     return response.data

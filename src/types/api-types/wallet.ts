@@ -1,4 +1,3 @@
-import { Policy } from '../domain-types/policy'
 import { Path, UTXO } from '../domain-types/transaction'
 import { Wallet, WalletDetails, Unspents } from '../domain-types/wallet'
 import { Key } from '..//domain-types/key'
@@ -57,10 +56,6 @@ export type ListUnspentsBackendResponse = Unspents
 
 export interface MaxTransferAmountBackendResponse {
   amount: string
-}
-
-export interface ListPoliciesForWalletBackendResponse {
-  policies: Policy[]
 }
 
 export interface ListUtxosByAddressBackendResponse {

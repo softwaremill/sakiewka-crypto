@@ -5,7 +5,6 @@ import {
   ListWalletsBackendResponse,
   ListUnspentsBackendResponse,
   MaxTransferAmountBackendResponse,
-  ListPoliciesForWalletBackendResponse,
   ListUtxosByAddressBackendResponse,
 } from '../api-types/wallet'
 
@@ -18,5 +17,4 @@ export type GetWalletResponse = GetWalletBackendResponse
 export type ListWalletsResponse = ListWalletsBackendResponse
 export type ListUnspentsResponse = ListUnspentsBackendResponse
 export type MaxTransferAmountResponse = MaxTransferAmountBackendResponse
-export type ListPoliciesForWalletResponse = ListPoliciesForWalletBackendResponse
 export type ListUtxosByAddressResponse = ListUtxosByAddressBackendResponse

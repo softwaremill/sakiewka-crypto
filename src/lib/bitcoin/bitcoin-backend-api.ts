@@ -5,6 +5,7 @@ import {
   ListWalletsForPolicyBackendResponse,
   CreatePolicyBackendResponse,
   CreatePolicyBackendParams,
+  ListPoliciesForWalletBackendResponse,
 } from '../../types/api-types/policy'
 import {
   FindTransferByTxHashBackendResponse,
@@ -33,7 +34,6 @@ import {
   ListWalletsBackendResponse,
   ListUnspentsBackendResponse,
   MaxTransferAmountBackendResponse,
-  ListPoliciesForWalletBackendResponse,
   ListUtxosByAddressBackendResponse,
 } from '../../types/api-types/wallet'
 import { HttpClient } from '../utils/httpClient'

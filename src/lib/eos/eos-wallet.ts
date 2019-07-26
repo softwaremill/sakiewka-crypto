@@ -1,6 +1,5 @@
 import { CreateWalletParams } from '../../types/domain-types/wallet'
 import {
-  ListPoliciesForWalletResponse,
   ListWalletsResponse,
   GetWalletResponse,
   MaxTransferAmountResponse,
@@ -9,6 +8,7 @@ import {
   CreateWalletBackendParams,
   MaxTransferAmountEosBackendParams,
 } from '../../types/api-types/wallet'
+import { ListPoliciesForWalletResponse } from '../../types/response-types/policy'
 import { KeyModule } from './eos-key'
 import { EosBackendApi } from './eos-backend-api'
 

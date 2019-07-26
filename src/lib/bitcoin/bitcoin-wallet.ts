@@ -1,4 +1,7 @@
-import { CreateWalletParams, Receipient } from '../../types/domain-types/wallet'
+import {
+  CreateWalletParams,
+  Receipient,
+} from '../../types/domain-types/wallet'
 import {
   CreateWalletResponse,
   EditWalletResponse,
@@ -6,9 +9,9 @@ import {
   ListWalletsResponse,
   ListUnspentsResponse,
   MaxTransferAmountResponse,
-  ListPoliciesForWalletResponse,
   ListUtxosByAddressResponse,
 } from '../../types/response-types/wallet'
+import { ListPoliciesForWalletResponse } from '../../types/response-types/policy'
 import { ROOT_DERIVATION_PATH } from '../constants'
 import {
   GetUtxosBackendParams,
@@ -24,7 +27,11 @@ export interface WalletApi {
     userToken: string,
     params: CreateWalletParams,
   ): Promise<CreateWalletResponse>
-  editWallet(userToken: string, walletId: string, newName: string): Promise<EditWalletResponse>
+  editWallet(
+    userToken: string,
+    walletId: string,
+    newName: string,
+  ): Promise<EditWalletResponse>
   getWallet(userToken: string, walletId: string): Promise<GetWalletResponse>
   listWallets(
     userToken: string,
@@ -114,7 +121,8 @@ export const walletApiFactory = (
     userToken: string,
     walletId: string,
     newName: string,
-  ): Promise<EditWalletResponse> => backendApi.editWallet(userToken, walletId, newName)
+  ): Promise<EditWalletResponse> =>
+    backendApi.editWallet(userToken, walletId, newName)
 
   const getWallet = (
     userToken: string,
