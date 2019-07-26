@@ -1,31 +1,5 @@
 import { Policy, PolicySettings } from './domain'
 
-export interface MontlySummaryBackendResponse {
-  spentBTC: string
-  spentFiat: string
-  serviceFeeBTC: string
-  serviceFeeFiat: string
-}
-
-export interface ListTransfersBackendResponse {
-  transfers: TransferItemBackendResponse[]
-  nextPageToken?: string
-}
-
-export interface TransferItemBackendResponse {
-  chain: string
-  wallet: TransferItemWallet
-  timestamp: string
-  transaction: TransferItemTransaction
-  block?: TransferItemBlock
-}
-
-export interface TransferItemWallet {}
-
-export interface TransferItemBlock {}
-
-export interface TransferItemTransaction {}
-
 // eth
 export interface EthGetTransactionParamsResponse {
   contractNonce: string

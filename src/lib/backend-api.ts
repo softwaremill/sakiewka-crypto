@@ -1,14 +1,16 @@
 import {
   ChainInfoResponse as ChainModeResponse,
-  ListTransfersBackendResponse,
-  MontlySummaryBackendResponse,
-  TransferItemBackendResponse,
   ListPoliciesForWalletResponse,
   ListPoliciesResponse,
   AssignPolicyBackendParams,
   ListWalletsForPolicyResponse,
   PolicyCreateRequest,
 } from '../types/response'
+import {
+  ListTransfersBackendResponse,
+  MonthlySummaryBackendResponse,
+  FindTransferByTxHashBackendResponse,
+} from './../types/api-types/transfer'
 import {
   CreateWebhookBackendResponse,
   DeleteWebhookBackendResponse,
@@ -100,7 +102,7 @@ export interface CoreBackendApi {
     month: number,
     year: number,
     fiatCurrency: string,
-  ): Promise<MontlySummaryBackendResponse>
+  ): Promise<MonthlySummaryBackendResponse>
   listTransfers(
     token: string,
     limit: number,
@@ -259,7 +261,7 @@ export const create = (
     month: number,
     year: number,
     fiatCurrency: string,
-  ): Promise<MontlySummaryBackendResponse> => {
+  ): Promise<MonthlySummaryBackendResponse> => {
     const options = {
       method: 'GET',
       headers: {
@@ -710,7 +712,7 @@ export const currencyApi = (
     token: string,
     walletId: string,
     txHash: string,
-  ): Promise<TransferItemBackendResponse> => {
+  ): Promise<FindTransferByTxHashBackendResponse> => {
     const options = {
       method: 'GET',
       headers: {

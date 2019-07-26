@@ -1,12 +1,14 @@
 import {
   AssignPolicyBackendParams,
   ListPoliciesResponse,
-  ListTransfersBackendResponse,
   ListWalletsForPolicyResponse,
   PolicyCreatedResponse,
   PolicyCreateRequest,
-  TransferItemBackendResponse,
 } from '../../types/response'
+import {
+  FindTransferByTxHashBackendResponse,
+  ListTransfersBackendResponse,
+} from '../../types/api-types/transfer'
 import {
   CreateWebhookBackendResponse,
   DeleteWebhookBackendResponse,
@@ -34,7 +36,7 @@ import {
 } from '../../types/api-types/wallet'
 import { HttpClient } from '../utils/httpClient'
 import * as backendApi from '../backend-api'
-import { Currency } from '../..'
+import { Currency } from '../../types/domain-types/currency'
 
 export interface BitcoinBackendApi {
   createNewAddress(
@@ -122,7 +124,7 @@ export interface BitcoinBackendApi {
     token: string,
     walletId: string,
     txHash: string,
-  ): Promise<TransferItemBackendResponse>
+  ): Promise<FindTransferByTxHashBackendResponse>
   createPolicy(
     token: string,
     params: PolicyCreateRequest,

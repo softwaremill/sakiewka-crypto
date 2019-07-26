@@ -1,10 +1,10 @@
 import { CoreBackendApi } from './backend-api'
 import { BitcoinBackendApi } from './bitcoin/bitcoin-backend-api'
 import {
-  ListTransfersBackendResponse,
-  MontlySummaryBackendResponse,
-  TransferItemBackendResponse,
-} from '../types/response'
+  ListTransfersResponse,
+  MonthlySummaryResponse,
+  FindTransferByTxHashResponse,
+} from '../types/response-types/transfer'
 
 export interface TransfersApi {
   monthlySummary(
@@ -12,12 +12,12 @@ export interface TransfersApi {
     month: number,
     year: number,
     fiatCurrency: string,
-  ): Promise<MontlySummaryBackendResponse>
+  ): Promise<MonthlySummaryResponse>
   listTransfers(
     token: string,
     limit: number,
     nextPageToken?: string,
-  ): Promise<ListTransfersBackendResponse>
+  ): Promise<ListTransfersResponse>
 }
 
 export const transfersApiFactory = (backend: CoreBackendApi): TransfersApi => {
@@ -26,7 +26,7 @@ export const transfersApiFactory = (backend: CoreBackendApi): TransfersApi => {
     month: number,
     year: number,
     fiatCurrency: string,
-  ): Promise<MontlySummaryBackendResponse> => {
+  ): Promise<MonthlySummaryResponse> => {
     return backend.monthlySummary(token, month, year, fiatCurrency)
   }
 
@@ -34,7 +34,7 @@ export const transfersApiFactory = (backend: CoreBackendApi): TransfersApi => {
     token: string,
     limit: number,
     nextPageToken?: string,
-  ): Promise<ListTransfersBackendResponse> => {
+  ): Promise<ListTransfersResponse> => {
     return backend.listTransfers(token, limit, nextPageToken)
   }
 
@@ -50,12 +50,12 @@ export interface ChainTransfersApi {
     walletId: string,
     limit: number,
     nextPageToken?: string,
-  ): Promise<ListTransfersBackendResponse>
+  ): Promise<ListTransfersResponse>
   findTransferByTxHash(
     token: string,
     walletId: string,
     txHash: string,
-  ): Promise<TransferItemBackendResponse>
+  ): Promise<FindTransferByTxHashResponse>
 }
 
 export const chainTransfersApiFactory = (
@@ -66,7 +66,7 @@ export const chainTransfersApiFactory = (
     walletId: string,
     limit: number,
     nextPageToken?: string,
-  ): Promise<ListTransfersBackendResponse> => {
+  ): Promise<ListTransfersResponse> => {
     return backend.listTransfers(token, walletId, limit, nextPageToken)
   }
 
@@ -74,7 +74,7 @@ export const chainTransfersApiFactory = (
     token: string,
     walletId: string,
     txHash: string,
-  ): Promise<TransferItemBackendResponse> => {
+  ): Promise<FindTransferByTxHashResponse> => {
     return backend.findTransferByTxHash(token, walletId, txHash)
   }
 
