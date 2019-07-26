@@ -9,6 +9,7 @@ import {
   FindTransferByTxHashBackendResponse,
   ListTransfersBackendResponse,
 } from '../../types/api-types/transfer'
+import { SendBackendResponse } from '../../types/api-types/transaction'
 import {
   CreateWebhookBackendResponse,
   DeleteWebhookBackendResponse,
@@ -78,7 +79,11 @@ export interface BitcoinBackendApi {
     searchPhrase?: string,
     nextPageToken?: string,
   ): Promise<ListWalletsBackendResponse>
-  sendTransaction(token: string, walletId: string, txHex: string): Promise<any>
+  sendTransaction(
+    token: string,
+    walletId: string,
+    txHex: string,
+  ): Promise<SendBackendResponse>
   getFeeRates(): Promise<GetFeeRatesBackendResponse>
   maxTransferAmount(
     token: string,
@@ -234,7 +239,7 @@ export const withCurrency = (
     token: string,
     walletId: string,
     txHex: string,
-  ): Promise<string> => {
+  ): Promise<SendBackendResponse> => {
     const options = {
       method: 'POST',
       headers: {

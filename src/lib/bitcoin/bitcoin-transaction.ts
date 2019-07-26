@@ -7,6 +7,7 @@ import {
 } from '../../types/domain-types/transaction'
 import { TransactionBuilder } from 'bgoldjs-lib'
 import { GetKeyBackendResponse } from '../../types/api-types/key'
+import { SendResponse } from '../../types/response-types/transaction'
 import { WalletDetails, Unspents } from '../../types/domain-types/wallet'
 import { Key, KeyType } from '../../types/domain-types/key'
 import BigNumber from 'bignumber.js'
@@ -26,7 +27,7 @@ export interface TransactionApi {
     xprv?: string,
     passphrase?: string,
     feeRate?: number,
-  ): Promise<string>
+  ): Promise<SendResponse>
 }
 
 export const transactionApiFactory = (
