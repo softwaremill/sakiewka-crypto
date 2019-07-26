@@ -118,9 +118,9 @@ export const sakiewkaModule = (
   }
 }
 
-export * from './types/api'
-export * from './types/response'
-export * from './types/domain'
+export * from './types/api/index'
+export * from './types/response/index'
+export * from './types/domain/index'
 
 export { constants }
 export { crypto }
