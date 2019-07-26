@@ -1,8 +1,10 @@
-import { PolicySettings } from '../types/domain'
+import { PolicySettings } from '../types/domain-types/policy'
 import {
   ListPoliciesResponse,
   ListWalletsForPolicyResponse,
-} from '../types/response'
+  CreatePolicyResponse,
+  AssignPolicyResponse,
+} from '../types/response-types/policy'
 import { BitcoinBackendApi } from './bitcoin/bitcoin-backend-api'
 
 export interface PolicyApi {
@@ -10,7 +12,7 @@ export interface PolicyApi {
     token: string,
     name: string,
     policy: PolicySettings,
-  ): Promise<any>
+  ): Promise<CreatePolicyResponse>
   listWalletsForPolicy(
     token: string,
     policyId: string,
@@ -20,7 +22,11 @@ export interface PolicyApi {
     limit: number,
     nextPageToken?: string,
   ): Promise<ListPoliciesResponse>
-  assignPolicy(token: string, policyId: string, walletId: string): Promise<any>
+  assignPolicy(
+    token: string,
+    policyId: string,
+    walletId: string,
+  ): Promise<AssignPolicyResponse>
 }
 
 export const policyApiFactory = (backendApi: BitcoinBackendApi): PolicyApi => {
@@ -28,7 +34,7 @@ export const policyApiFactory = (backendApi: BitcoinBackendApi): PolicyApi => {
     token: string,
     name: string,
     policySettings: PolicySettings,
-  ): Promise<any> =>
+  ): Promise<CreatePolicyResponse> =>
     backendApi.createPolicy(token, { name, settings: policySettings })
 
   const listWalletsForPolicy = (
@@ -48,7 +54,8 @@ export const policyApiFactory = (backendApi: BitcoinBackendApi): PolicyApi => {
     token: string,
     policyId: string,
     walletId: string,
-  ): Promise<any> => backendApi.assignPolicy(token, policyId, { walletId })
+  ): Promise<AssignPolicyResponse> =>
+    backendApi.assignPolicy(token, policyId, { walletId })
   return {
     createPolicy,
     listPolicies,

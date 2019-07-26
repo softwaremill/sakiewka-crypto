@@ -1,10 +1,11 @@
 import {
   AssignPolicyBackendParams,
-  ListPoliciesResponse,
-  ListWalletsForPolicyResponse,
-  PolicyCreatedResponse,
-  PolicyCreateRequest,
-} from '../../types/response'
+  AssignPolicyBackendResponse,
+  ListPoliciesBackendResponse,
+  ListWalletsForPolicyBackendResponse,
+  CreatePolicyBackendResponse,
+  CreatePolicyBackendParams,
+} from '../../types/api-types/policy'
 import {
   FindTransferByTxHashBackendResponse,
   ListTransfersBackendResponse,
@@ -132,8 +133,8 @@ export interface BitcoinBackendApi {
   ): Promise<FindTransferByTxHashBackendResponse>
   createPolicy(
     token: string,
-    params: PolicyCreateRequest,
-  ): Promise<PolicyCreatedResponse>
+    params: CreatePolicyBackendParams,
+  ): Promise<CreatePolicyBackendResponse>
   listPoliciesForWallet(
     token: string,
     walletId: string,
@@ -142,16 +143,16 @@ export interface BitcoinBackendApi {
     token: string,
     limit: number,
     nextPageToken?: string,
-  ): Promise<ListPoliciesResponse>
+  ): Promise<ListPoliciesBackendResponse>
   assignPolicy(
     token: string,
     policyId: string,
     params: AssignPolicyBackendParams,
-  ): Promise<any>
+  ): Promise<AssignPolicyBackendResponse>
   listWalletsForPolicy(
     token: string,
     policyId: string,
-  ): Promise<ListWalletsForPolicyResponse>
+  ): Promise<ListWalletsForPolicyBackendResponse>
 }
 
 export const withCurrency = (

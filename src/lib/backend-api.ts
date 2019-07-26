@@ -1,10 +1,12 @@
 import {
-  ListPoliciesForWalletResponse,
-  ListPoliciesResponse,
+  ListPoliciesForWalletBackendResponse,
+  ListPoliciesBackendResponse,
   AssignPolicyBackendParams,
-  ListWalletsForPolicyResponse,
-  PolicyCreateRequest,
-} from '../types/response'
+  AssignPolicyBackendResponse,
+  ListWalletsForPolicyBackendResponse,
+  CreatePolicyBackendParams,
+  CreatePolicyBackendResponse,
+} from '../types/api-types/policy'
 import { ChainNetworkTypeBackendResponse } from '../types/api-types/chain'
 import {
   ListTransfersBackendResponse,
@@ -650,8 +652,8 @@ export const currencyApi = (
 
   const createPolicy = async (
     token: string,
-    params: PolicyCreateRequest,
-  ): Promise<any> => {
+    params: CreatePolicyBackendParams,
+  ): Promise<CreatePolicyBackendResponse> => {
     const options = {
       method: 'POST',
       headers: {
@@ -670,7 +672,7 @@ export const currencyApi = (
   const listPoliciesForWallet = async (
     token: string,
     walletId: string,
-  ): Promise<ListPoliciesForWalletResponse> => {
+  ): Promise<ListPoliciesForWalletBackendResponse> => {
     const options = {
       method: 'GET',
       headers: {
@@ -732,7 +734,7 @@ export const currencyApi = (
     token: string,
     limit: number,
     nextPageToken?: string,
-  ): Promise<ListPoliciesResponse> => {
+  ): Promise<ListPoliciesBackendResponse> => {
     const options = {
       method: 'GET',
       headers: {
@@ -755,7 +757,7 @@ export const currencyApi = (
     token: string,
     policyId: string,
     assignParams: AssignPolicyBackendParams,
-  ): Promise<any> => {
+  ): Promise<AssignPolicyBackendResponse> => {
     const options = {
       method: 'POST',
       headers: {
@@ -774,7 +776,7 @@ export const currencyApi = (
   const listWalletsForPolicy = async (
     token: string,
     policyId: string,
-  ): Promise<ListWalletsForPolicyResponse> => {
+  ): Promise<ListWalletsForPolicyBackendResponse> => {
     const options = {
       method: 'GET',
       headers: {

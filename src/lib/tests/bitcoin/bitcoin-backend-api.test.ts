@@ -9,7 +9,7 @@ import {
   DailyAmountPolicy,
   PolicyKind,
   PolicySettings,
-} from '../../../types/domain'
+} from '../../../types/domain-types/policy'
 
 const httpClient = createHttpClient(() => '')
 
