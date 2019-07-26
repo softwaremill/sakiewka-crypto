@@ -41,7 +41,7 @@ describe('generateNewMultisigAddress', () => {
     )
 
     expect(address).to.be.equal(
-      currency == Currency.BTG
+      currency === Currency.BTG
         ? 'AMjMb4MM1tRBprrFtgQY3pwrxsV9tXfdPM'
         : '37eVs6zAEe5R74LhT8QoKa3hdnrB8yRqY9',
     )
@@ -120,7 +120,7 @@ describe('getAddress', () => {
 
   it('should pass proper arguments to backend-api method and return result of its call', async () => {
     // @ts-ignore
-    const mockImplementation = jest.fn(() => 'backend response')
+    const mockImplementation = jest.fn(() => ({ address: 'test address' }))
     // @ts-ignore
     backendApi.getAddress = mockImplementation
 
@@ -134,7 +134,7 @@ describe('getAddress', () => {
     expect(token).to.eq('testToken')
     expect(walletId).to.eq('abcd')
     expect(address).to.eq('testAddress')
-    expect(res).to.eq('backend response')
+    expect(res.address).to.eq('test address')
   })
 })
 
@@ -147,7 +147,9 @@ describe('listAddresses', () => {
 
   it('should pass proper arguments to backend-api method and return result of its call', async () => {
     // @ts-ignore
-    const mockImplementation = jest.fn(() => 'backend response')
+    const mockImplementation = jest.fn(() => ({
+      addresses: [{ address: 'test address 1' }, { address: 'test address 2' }],
+    }))
     // @ts-ignore
     backendApi.listAddresses = mockImplementation
 
@@ -168,6 +170,7 @@ describe('listAddresses', () => {
     expect(walletId).to.eq('testWalletId')
     expect(limit).to.eq(101)
     expect(nextPageToken).to.eq('testNextPageToken')
-    expect(res).to.eq('backend response')
+    expect(res.addresses[0].address).to.eq('test address 1')
+    expect(res.addresses[1].address).to.eq('test address 2')
   })
 })

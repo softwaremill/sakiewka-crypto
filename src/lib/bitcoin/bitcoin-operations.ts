@@ -15,7 +15,7 @@ import {
 } from '../../types/domain/transaction'
 import { BigNumber } from 'bignumber.js'
 
-const btcjsToUtxo = (input: UTXO_btcjs): UTXO => {
+const btcjsToUtxo = (input: UTXObtcjs): UTXO => {
   return {
     txHash: input.txId,
     n: input.vout,
@@ -24,7 +24,7 @@ const btcjsToUtxo = (input: UTXO_btcjs): UTXO => {
   }
 }
 
-const utxoToBtcJS = (input: UTXO): UTXO_btcjs => {
+const utxoToBtcJS = (input: UTXO): UTXObtcjs => {
   return {
     txId: input.txHash,
     vout: input.n,
@@ -33,7 +33,7 @@ const utxoToBtcJS = (input: UTXO): UTXO_btcjs => {
   }
 }
 
-interface UTXO_btcjs {
+interface UTXObtcjs {
   txId: string
   vout: number
   amount?: BigNumber
@@ -129,9 +129,9 @@ export class BitcoinOperations {
   sortTxOuts = (outputs: TxOut[]): TxOut[] => {
     return bip69
       .sortOutputs(
-        outputs.map(tx => ({ script: tx.script, value: tx.value.toNumber() })),
+        outputs.map((tx: TxOut) => ({ script: tx.script, value: tx.value.toNumber() })),
       )
-      .map(tx => ({ script: tx.script, value: new BigNumber(tx.value) }))
+      .map((tx: TxOut) => ({ script: tx.script, value: new BigNumber(tx.value) }))
   }
 
   initializeTxBuilder: () => TransactionBuilder
