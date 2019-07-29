@@ -1,9 +1,3 @@
-import { KeyType } from '../domain/key'
+import { GetKeyResponse } from '../response/key'
 
-export interface GetKeyBackendResponse {
-  id: string
-  pubKey: string
-  prvKey?: string
-  keyType: KeyType
-  created: string
-}
+export type GetKeyBackendResponse = GetKeyResponse

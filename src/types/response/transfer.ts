@@ -1,9 +1,16 @@
 import {
-  FindTransferByTxHashBackendResponse,
-  ListTransfersBackendResponse,
-  MonthlySummaryBackendResponse,
-} from '../api/transfer'
+  Transfer,
+  TransferDetails,
+  MonthlySummary,
+} from '../domain/transfer'
 
-export type FindTransferByTxHashResponse = FindTransferByTxHashBackendResponse
-export type ListTransfersResponse = ListTransfersBackendResponse
-export type MonthlySummaryResponse = MonthlySummaryBackendResponse
+export type ListTransfersResponse = {
+  transfers: Transfer[];
+  nextPageToken?: string;
+}
+
+export type FindTransferByTxHashResponse = TransferDetails
+
+export interface MonthlySummaryResponse {
+  chains: MonthlySummary[]
+}

@@ -1,3 +1,3 @@
-import { SendBackendResponse } from '../api/transaction'
+export type TransactionHash = string
 
-export type SendResponse = SendBackendResponse
+export type SendResponse = TransactionHash

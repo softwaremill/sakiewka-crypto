@@ -1,5 +1,3 @@
-import { FeeRate } from '../domain/feeRates'
+import { GetFeeRatesResponse } from '../response/feeRates'
 
-export interface GetFeeRatesBackendResponse {
-  recommended: FeeRate
-}
+export type GetFeeRatesBackendResponse = GetFeeRatesResponse

@@ -1,11 +1,12 @@
-import {
-  ListWebhooksBackendResponse,
-  GetWebhookBackendResponse,
-  CreateWebhookBackendResponse,
-  DeleteWebhookBackendResponse,
-} from '../api/webhook'
+import { Webhook } from '../domain/webhook'
+import { NextPageToken } from '../domain/api'
 
-export type ListWebhooksResponse = ListWebhooksBackendResponse
-export type GetWebhookResponse = GetWebhookBackendResponse
-export type CreateWebhookResponse = CreateWebhookBackendResponse
-export type DeleteWebhookResponse = DeleteWebhookBackendResponse
+export type GetWebhookResponse = Webhook
+export interface ListWebhooksResponse {
+  webhooks: Webhook[]
+  nextPageToken?: NextPageToken
+}
+export interface DeleteWebhookResponse {}
+export interface CreateWebhookResponse {
+  id: string
+}

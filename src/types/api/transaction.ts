@@ -1,11 +1,4 @@
-export type TransactionHash = string
-
-export type SendBackendResponse = TransactionHash
-
-export interface EthGetTransactionParamsBackendResponse {
-  contractNonce: string
-  currentBlock: string
-}
+import { SendResponse } from '../response/transaction'
 
 export interface SendETHBackendResponse {
   tx: string
@@ -14,3 +7,10 @@ export interface SendETHBackendResponse {
 export interface SendTokensBackendResponse {
   tx: string
 }
+
+export interface EthGetTransactionParamsBackendResponse {
+  contractNonce: string
+  currentBlock: string
+}
+
+export type SendBackendResponse = SendResponse

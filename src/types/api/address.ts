@@ -1,32 +1,21 @@
-import { Address, AddressEos, AddressBitcoin } from '../domain/address'
-import { NextPageToken } from '../domain/api'
-export interface PathBitcoin {
-  cosignerIndex: string
-  change: string
-  addressIndex: string
-}
+import {
+  CreateNewBitcoinAddressResponse,
+  CreateNewAddressResponse,
+  GetAddressResponse,
+  GetEosAddressResponse,
+  GetBitcoinAddressResponse,
+  ListAddressesResponse,
+  ListBitcoinAddressesResponse,
+  ListEosAddressesResponse,
+} from '../response/address'
 
-export interface CreateNewAddressBackendResponse {
-  address: string
-}
-export interface CreateNewBitcoinAddressBackendResponse
-  extends CreateNewAddressBackendResponse {
-  path: PathBitcoin
-}
+export type CreateNewAddressBackendResponse = CreateNewAddressResponse
+export type CreateNewBitcoinAddressBackendResponse = CreateNewBitcoinAddressResponse
 
-export type GetAddressBackendResponse = Address
-export type GetEosAddressBackendResponse = AddressEos
-export type GetBitcoinAddressBackendResponse = AddressBitcoin
+export type GetAddressBackendResponse = GetAddressResponse
+export type GetBitcoinAddressBackendResponse = GetBitcoinAddressResponse
+export type GetEosAddressBackendResponse = GetEosAddressResponse
 
-export interface ListAddressesBackendResponse {
-  addresses: Address[]
-  nextPageToken?: NextPageToken
-}
-export interface ListBitcoinAddressesBackendResponse
-  extends ListAddressesBackendResponse {
-  addresses: AddressBitcoin[]
-}
-export interface ListEosAddressesBackendResponse
-  extends ListAddressesBackendResponse {
-  addresses: AddressEos[]
-}
+export type ListAddressesBackendResponse = ListAddressesResponse
+export type ListBitcoinAddressesBackendResponse = ListBitcoinAddressesResponse
+export type ListEosAddressesBackendResponse = ListEosAddressesResponse

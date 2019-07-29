@@ -31,3 +31,10 @@ export interface Policy {
   name: string
   settings: PolicySettings
 }
+
+export interface PolicyWalletData {
+  id: string
+  name: string
+  currency: string
+  created: string
+}

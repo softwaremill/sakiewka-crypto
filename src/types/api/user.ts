@@ -1,36 +1,25 @@
-import { BalanceDetails } from '../domain/balance'
-import { UserInfo } from '../domain/user'
+import {
+  LoginResponse,
+  RegisterResponse,
+  SetupPasswordResponse,
+  InfoResponse,
+  Confirm2faResponse,
+  Disable2faResponse,
+  Init2faResponse,
+  BalanceResponse,
+  CreateAuthTokenResponse,
+  DeleteAuthTokenResponse,
+  AddSupportSubmissionResponse,
+} from '../response/user'
 
-export interface LoginBackendResponse {
-  token: string
-}
-
-export interface RegisterBackendResponse {}
-
-export interface SetupPasswordBackendResponse {
-  token: string
-}
-
-export type InfoBackendResponse = UserInfo
-
-export interface Init2faBackendResponse {
-  qrCodeUrl: string
-  email: string
-  secretKey: string
-}
-
-export interface Confirm2faBackendResponse {}
-
-export interface Disable2faBackendResponse {}
-
-export interface BalanceBackendResponse {
-  balances: BalanceDetails[]
-}
-
-export interface CreateAuthTokenBackendResponse {
-  token: string
-}
-
-export interface DeleteAuthTokenBackendResponse {}
-
-export interface AddSupportSubmissionBackendResponse {}
+export type LoginBackendResponse = LoginResponse
+export type RegisterBackendResponse = RegisterResponse
+export type SetupPasswordBackendResponse = SetupPasswordResponse
+export type InfoBackendResponse = InfoResponse
+export type Confirm2faBackendResponse = Confirm2faResponse
+export type Disable2faBackendResponse = Disable2faResponse
+export type Init2faBackendResponse = Init2faResponse
+export type BalanceBackendResponse = BalanceResponse
+export type CreateAuthTokenBackendResponse = CreateAuthTokenResponse
+export type DeleteAuthTokenBackendResponse = DeleteAuthTokenResponse
+export type AddSupportSubmissionBackendResponse = AddSupportSubmissionResponse

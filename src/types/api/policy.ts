@@ -1,41 +1,23 @@
-import { Policy, PolicySettings } from '../domain/policy'
-import { NextPageToken } from '../domain/api'
-
-export interface ListPoliciesForWalletBackendResponse {
-  policies: Policy[]
-}
+import {
+  ListPoliciesResponse,
+  ListPoliciesForWalletResponse,
+  ListWalletsForPolicyResponse,
+  CreatePolicyResponse,
+  AssignPolicyResponse,
+} from '../response/policy'
+import { PolicySettings } from '../domain/policy'
 
 export interface CreatePolicyBackendParams {
   name: string
   settings: PolicySettings
 }
 
-export interface CreatePolicyBackendResponse {
-  policy: Policy
-}
-
-export interface PolicyCreatedBackendResponse {
-  policy: Policy
-}
-
-export interface ListPoliciesBackendResponse {
-  policies: Policy[]
-  nextPageToken?: NextPageToken
-}
-
 export interface AssignPolicyBackendParams {
   walletId: string
 }
 
-export interface AssignPolicyBackendResponse {}
-
-export interface PolicyWalletData {
-  id: string
-  name: string
-  currency: string
-  created: string
-}
-
-export interface ListWalletsForPolicyBackendResponse {
-  wallets: PolicyWalletData[]
-}
+export type ListPoliciesBackendResponse = ListPoliciesResponse
+export type ListPoliciesForWalletBackendResponse = ListPoliciesForWalletResponse
+export type ListWalletsForPolicyBackendResponse = ListWalletsForPolicyResponse
+export type CreatePolicyBackendResponse = CreatePolicyResponse
+export type AssignPolicyBackendResponse = AssignPolicyResponse
