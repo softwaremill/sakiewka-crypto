@@ -1,14 +1,21 @@
 import { expect } from 'chai'
 
 import { currency } from '../helpers'
-import { addressModuleFactory, addressApiFactory } from '../../bitcoin/bitcoin-address'
+import {
+  addressModuleFactory,
+  addressApiFactory,
+} from '../../bitcoin/bitcoin-address'
 import * as backendFactory from '../../bitcoin/bitcoin-backend-api'
 import { keyModuleFactory } from '../../bitcoin/bitcoin-key'
 import bitcoinFactory from '../../bitcoin/bitcoin'
-import { Currency } from '../../..';
-import { createHttpClient } from '../../utils/httpClient';
+import { Currency } from '../../..'
+import { createHttpClient } from '../../utils/httpClient'
 
-const backendApi = backendFactory.withCurrency('https://backendApiUrl', currency, createHttpClient(() => ''))
+const backendApi = backendFactory.withCurrency(
+  'https://backendApiUrl',
+  currency,
+  createHttpClient(() => ''),
+)
 describe('generateNewMultisigAddress', () => {
   it('should exist', () => {
     const bitcoin = bitcoinFactory(currency, 'mainnet')
@@ -25,14 +32,19 @@ describe('generateNewMultisigAddress', () => {
     const pubKeys = [
       'xpub661MyMwAqRbcEbQrpBDMTDgW5Hjg5BFxoJD2SnzTmTASPxD4i4j1xMCKojYwgaRXXBRAHB7WPECxA2aQVfL61G4mWjnHMj6BJtAQKMVAiYs',
       'xpub661MyMwAqRbcGukLdXtbs5TTqkddNUYzdWAmZ3mQTRZgtaySzU9ePfVEZWtQJBZGbfKfhPZfG74z6TXkeEx2atofMhn2n4bHLzjDWHREM5u',
-      'xpub661MyMwAqRbcGQQ9zYBFdkPxFBryTQwXCEr2zKsm2YBkeDFWbkKBUAWeRUaaseSmTWaat8npZ6nfyYqe1joSH6jsQdhK4W5fia35LgZfwVF'
+      'xpub661MyMwAqRbcGQQ9zYBFdkPxFBryTQwXCEr2zKsm2YBkeDFWbkKBUAWeRUaaseSmTWaat8npZ6nfyYqe1joSH6jsQdhK4W5fia35LgZfwVF',
     ]
 
     const { address, redeemScript } = addressModule.generateNewMultisigAddress(
       pubKeys,
-      '0/23')
+      '0/23',
+    )
 
-    expect(address).to.be.equal(currency == Currency.BTG ? 'AMjMb4MM1tRBprrFtgQY3pwrxsV9tXfdPM' : '37eVs6zAEe5R74LhT8QoKa3hdnrB8yRqY9')
+    expect(address).to.be.equal(
+      currency === Currency.BTG
+        ? 'AMjMb4MM1tRBprrFtgQY3pwrxsV9tXfdPM'
+        : '37eVs6zAEe5R74LhT8QoKa3hdnrB8yRqY9',
+    )
     expect(redeemScript).to.be.an('Uint8Array')
   })
 
@@ -43,12 +55,13 @@ describe('generateNewMultisigAddress', () => {
     const pubKeys = [
       'tpubD6NzVbkrYhZ4YLQpJAWwxCiNVAH13QSiFHWWTRmocy5zCMN6Nr8fbLVN38Y5nu7KwZ24ux74qotyyNkeF9KN52Gawcjr4ujHkQUDTBmw8Bu',
       'tpubD6NzVbkrYhZ4YWW2LBu48ZLMDtU6YZNug3dArpmhCZVCeRduVLF9FRNaLbwkND5Twf4DS1aXuFqvYd1S4BBTFGwjDM7iy1CK8vuwJHYqpdd',
-      'tpubD6NzVbkrYhZ4YjDKW7sGf2uqBaCPzstZwrEAXSNhWKze43HqujV38SeGLAtjq4XPts9D5Fb4dWbiP9DtuZPt75DQSeU5U9QLzoMtCtsf92b'
+      'tpubD6NzVbkrYhZ4YjDKW7sGf2uqBaCPzstZwrEAXSNhWKze43HqujV38SeGLAtjq4XPts9D5Fb4dWbiP9DtuZPt75DQSeU5U9QLzoMtCtsf92b',
     ]
 
     const { address, redeemScript } = addressModule.generateNewMultisigAddress(
       pubKeys,
-      '0/23')
+      '0/23',
+    )
 
     expect(address).to.be.equal('2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi')
     expect(redeemScript).to.be.an('Uint8Array')
@@ -83,7 +96,11 @@ describe('createNewAddress', () => {
     // @ts-ignore
     backendApi.createNewAddress = mockImplementation
 
-    const res = await addressApi.createNewAddress('testToken', 'abcd', 'testName')
+    const res = await addressApi.createNewAddress(
+      'testToken',
+      'abcd',
+      'testName',
+    )
 
     const [token, walletId, isChange, name] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
@@ -103,17 +120,21 @@ describe('getAddress', () => {
 
   it('should pass proper arguments to backend-api method and return result of its call', async () => {
     // @ts-ignore
-    const mockImplementation = jest.fn(() => 'backend response')
+    const mockImplementation = jest.fn(() => ({ address: 'test address' }))
     // @ts-ignore
     backendApi.getAddress = mockImplementation
 
-    const res = await addressModule.getAddress('testToken', 'abcd', 'testAddress')
+    const res = await addressModule.getAddress(
+      'testToken',
+      'abcd',
+      'testAddress',
+    )
 
     const [token, walletId, address] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
     expect(walletId).to.eq('abcd')
     expect(address).to.eq('testAddress')
-    expect(res).to.eq('backend response')
+    expect(res.address).to.eq('test address')
   })
 })
 
@@ -126,17 +147,30 @@ describe('listAddresses', () => {
 
   it('should pass proper arguments to backend-api method and return result of its call', async () => {
     // @ts-ignore
-    const mockImplementation = jest.fn(() => 'backend response')
+    const mockImplementation = jest.fn(() => ({
+      addresses: [{ address: 'test address 1' }, { address: 'test address 2' }],
+    }))
     // @ts-ignore
     backendApi.listAddresses = mockImplementation
 
-    const res = await addressModule.listAddresses('testToken', 'testWalletId', 101, 'testNextPageToken')
+    const res = await addressModule.listAddresses(
+      'testToken',
+      'testWalletId',
+      101,
+      'testNextPageToken',
+    )
 
-    const [token, walletId, limit, nextPageToken] = mockImplementation.mock.calls[0]
+    const [
+      token,
+      walletId,
+      limit,
+      nextPageToken,
+    ] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
     expect(walletId).to.eq('testWalletId')
     expect(limit).to.eq(101)
     expect(nextPageToken).to.eq('testNextPageToken')
-    expect(res).to.eq('backend response')
+    expect(res.addresses[0].address).to.eq('test address 1')
+    expect(res.addresses[1].address).to.eq('test address 2')
   })
 })

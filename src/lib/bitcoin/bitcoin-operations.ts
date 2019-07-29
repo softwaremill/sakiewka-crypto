@@ -7,54 +7,64 @@ import {
   In,
 } from 'bitcoinjs-lib'
 import bip69 from 'bip69'
-import { UTXO, Recipient, Path, TxOut } from '../../types/domain'
-import { BigNumber } from "bignumber.js";
+import {
+  UTXO,
+  Receipient,
+  Path,
+  TxOut,
+} from '../../types/domain/transaction'
+import { BigNumber } from 'bignumber.js'
 
-const btcjsToUtxo = (input: UTXO_btcjs): UTXO => {
+const btcjsToUtxo = (input: UTXObtcjs): UTXO => {
   return {
     txHash: input.txId,
     n: input.vout,
     amount: input.amount,
-    path: input.path
+    path: input.path,
   }
 }
 
-const utxoToBtcJS = (input: UTXO): UTXO_btcjs => {
+const utxoToBtcJS = (input: UTXO): UTXObtcjs => {
   return {
     txId: input.txHash,
     vout: input.n,
     amount: input.amount,
-    path: input.path
+    path: input.path,
   }
 }
 
-interface UTXO_btcjs {
-  txId: string,
-  vout: number,
-  amount?: BigNumber,
+interface UTXObtcjs {
+  txId: string
+  vout: number
+  amount?: BigNumber
   path?: Path
 }
 
 export class BitcoinOperations {
   protected bitcoinLib: any
-  protected network : any
+  protected network: any
 
   constructor(network: any) {
     this.network = network
   }
 
   private base58ToKeyBuffer = (key: string): Buffer => {
-    return this.bitcoinLib.HDNode.fromBase58(key, this.network ).getPublicKeyBuffer()
+    return this.bitcoinLib.HDNode.fromBase58(
+      key,
+      this.network,
+    ).getPublicKeyBuffer()
   }
 
   createMultisigRedeemScript = (base58Keys: string[]): Buffer => {
-    const keyBuffers = base58Keys.sort().map((key: string) => this.base58ToKeyBuffer(key))
+    const keyBuffers = base58Keys
+      .sort()
+      .map((key: string) => this.base58ToKeyBuffer(key))
     return this.bitcoinLib.script.multisig.output.encode(2, keyBuffers)
   }
 
   multisigRedeemScriptToScriptPubKey = (redeemScript: Buffer): Buffer => {
     return this.bitcoinLib.script.scriptHash.output.encode(
-      this.bitcoinLib.crypto.hash160(redeemScript)
+      this.bitcoinLib.crypto.hash160(redeemScript),
     )
   }
 
@@ -95,36 +105,44 @@ export class BitcoinOperations {
     return this.bitcoinLib.address.toOutputScript(address, this.network)
   }
 
-  decodeTxOutput = (output: Out): Recipient => ({
+  decodeTxOutput = (output: Out): Receipient => ({
     amount: new BigNumber(output.value),
-    address: this.outputScriptToAddress(output.script)
+    address: this.outputScriptToAddress(output.script),
   })
 
   decodeTxInput = (input: In): UTXO => ({
     txHash: (input.hash.reverse() as Buffer).toString('hex'),
-    n: input.index
+    n: input.index,
   })
 
   sortUnspents = (inputs: UTXO[]): UTXO[] => {
-    return bip69.sortInputs(inputs.map(utxoToBtcJS))
-      .map(btcjsToUtxo)
+    return bip69.sortInputs(inputs.map(utxoToBtcJS)).map(btcjsToUtxo)
   }
 
-  recipientToTxOut = (recipient: Recipient): TxOut => {
+  recipientToTxOut = (recipient: Receipient): TxOut => {
     return {
       script: this.addressToOutputScript(recipient.address),
-      value: recipient.amount
+      value: recipient.amount,
     }
   }
 
   sortTxOuts = (outputs: TxOut[]): TxOut[] => {
-    return bip69.sortOutputs(outputs.map(tx => ({ script: tx.script, value: tx.value.toNumber() })))
-      .map(tx => ({ script: tx.script, value: new BigNumber(tx.value) }))
+    return bip69
+      .sortOutputs(
+        outputs.map((tx: TxOut) => ({ script: tx.script, value: tx.value.toNumber() })),
+      )
+      .map((tx: TxOut) => ({ script: tx.script, value: new BigNumber(tx.value) }))
   }
 
   initializeTxBuilder: () => TransactionBuilder
 
   txBuilderFromTx: (tx: Transaction) => TransactionBuilder
 
-  sign: (txb: TransactionBuilder, idx: number, signingKey: ECPair, amount?: BigNumber, redeemScript?: Buffer) => void
+  sign: (
+    txb: TransactionBuilder,
+    idx: number,
+    signingKey: ECPair,
+    amount?: BigNumber,
+    redeemScript?: Buffer,
+  ) => void
 }

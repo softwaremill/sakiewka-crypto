@@ -4,14 +4,13 @@ import { encrypt, decrypt } from '../crypto'
 export interface KeyModule {
   generateNewKey(): Promise<PrivateKey>
   encryptKey(privateKey: PrivateKey, passphrase: string): string
-  decryptKey(privateKey: string, passphrase: string) : PrivateKey
+  decryptKey(privateKey: string, passphrase: string): PrivateKey
   deriveKey(rootKey: string, path: string): PrivateKey
 }
 
 export const keyModuleFactory = (): KeyModule => {
-
   const generateNewKey = async (): Promise<PrivateKey> => {
-    return PrivateKey.randomKey();
+    return PrivateKey.randomKey()
   }
 
   const encryptKey = (privateKey: PrivateKey, passPhrase: string): string => {

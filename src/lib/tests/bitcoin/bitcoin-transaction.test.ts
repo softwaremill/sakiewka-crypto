@@ -1,38 +1,51 @@
 import { expect, use } from 'chai'
 
-import { transactionModuleFactory, transactionApiFactory } from '../../bitcoin/bitcoin-transaction'
+import {
+  transactionModuleFactory,
+  transactionApiFactory,
+} from '../../bitcoin/bitcoin-transaction'
 import { keyModuleFactory } from '../../bitcoin/bitcoin-key'
 import { addressModuleFactory } from '../../bitcoin/bitcoin-address'
 import bitcoinModuleFactory from '../../bitcoin/bitcoin'
 import { ROOT_DERIVATION_PATH, API_ERROR } from '../../constants'
-import BigNumber from "bignumber.js";
+import BigNumber from 'bignumber.js'
 import * as backendFactory from '../../bitcoin/bitcoin-backend-api'
 import chaiBigNumber from 'chai-bignumber'
 import chaiAsPromised from 'chai-as-promised'
-import { encrypt } from '../../crypto';
+import { encrypt } from '../../crypto'
 import {
   stubGetWallet,
   stubUnspents,
   createPath,
   stubSendTx,
   stubCreateAddress,
-  stubFeesRates,
-  stubGetKey
-} from '../backend-stub';
-import { Currency, KeyType, UTXO } from '../../../types/domain'
-import { currency } from "../helpers";
-import { Transaction } from "bitcoinjs-lib";
-import { walletApiFactory } from '../../bitcoin/bitcoin-wallet';
-import { createHttpClient } from '../../utils/httpClient';
+  stubFeeRates,
+  stubGetKey,
+} from '../backend-stub'
+import { UTXO } from '../../../types/domain/transaction'
+import { Currency } from '../../../types/domain/currency'
+import { KeyType } from '../../../types/domain/key'
+import { currency } from '../helpers'
+import { Transaction } from 'bitcoinjs-lib'
+import { walletApiFactory } from '../../bitcoin/bitcoin-wallet'
+import { createHttpClient } from '../../utils/httpClient'
 
-const changeAddress = currency == Currency.BTG ? 'ATWyG3xpRdyYy1K6HBdVPBi629W4DNnB9m' : '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM'
-const serviceAddress = currency == Currency.BTG ? 'AWu3T7CWXXLxrHwuQ4tnHtubpdp1LHUZUK' : '3AnzyVbVSwfrre3vzQLwVMgZ34HH2Ja22d'
-const destinationAddress = currency == Currency.BTG ? 'Gh6q8MweJFqU5nVuoS8TC4hmPsAJJEtVuA' : '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN'
+const changeAddress =
+  currency === Currency.BTG
+    ? 'ATWyG3xpRdyYy1K6HBdVPBi629W4DNnB9m'
+    : '3DS7Y6bdePdnFCoXqddkevovh4s5M8NhgM'
+const serviceAddress =
+  currency === Currency.BTG
+    ? 'AWu3T7CWXXLxrHwuQ4tnHtubpdp1LHUZUK'
+    : '3AnzyVbVSwfrre3vzQLwVMgZ34HH2Ja22d'
+const destinationAddress =
+  currency === Currency.BTG
+    ? 'Gh6q8MweJFqU5nVuoS8TC4hmPsAJJEtVuA'
+    : '1QFuiEchKQEB1KCcsVULmJMsUhNTDb2PfN'
 
 const testnetChangeAddress = '2NEUaAjCuGc2M7YnzyrkvkE6LH1fx3M89Zi'
 const testnetServiceAddress = '2Mw4fCozNRMZE95rJBk25J4MvRJzwkQyVxg'
 const testnetDestinationAddress = '2Mt42Wi2JBbAc6Q4GXsxDWbkDTwaEQhqoEM'
-
 
 beforeEach(() => {
   use(chaiBigNumber(BigNumber))
@@ -40,15 +53,24 @@ beforeEach(() => {
 })
 
 describe('sendCoins', () => {
-  const backend = backendFactory.withCurrency("http://backendApiUrl", currency, createHttpClient(() => ''))
+  const backend = backendFactory.withCurrency(
+    'http://backendApiUrl',
+    currency,
+    createHttpClient(() => ''),
+  )
   stubCreateAddress(backend, changeAddress)
   const bitcoinModule = bitcoinModuleFactory(currency, 'mainnet')
   const keyModule = keyModuleFactory(bitcoinModule)
   const walletApi = walletApiFactory(backend, keyModule)
-  const transactionApi = transactionApiFactory(backend, keyModule, bitcoinModule, walletApi)
+  const transactionApi = transactionApiFactory(
+    backend,
+    keyModule,
+    bitcoinModule,
+    walletApi,
+  )
   const addressModule = addressModuleFactory(bitcoinModule, keyModule)
 
-  stubFeesRates(backend, 5)
+  stubFeeRates(backend, 5)
   it('should exist', () => {
     expect(transactionApi.send).to.be.a('function')
   })
@@ -61,26 +83,26 @@ describe('sendCoins', () => {
     const backupKeyPair = keyModule.generateNewKeyPair()
     const serverKeyPair = keyModule.generateNewKeyPair()
     const anotherKeyPair = keyModule.generateNewKeyPair()
-    const { address, redeemScript } = addressModule.generateNewMultisigAddress([
-      userKeyPair.pubKey,
-      backupKeyPair.pubKey,
-      serverKeyPair.pubKey
-    ], '2/0/0')
+    const { address, redeemScript } = addressModule.generateNewMultisigAddress(
+      [userKeyPair.pubKey, backupKeyPair.pubKey, serverKeyPair.pubKey],
+      '2/0/0',
+    )
     stubUnspents(backend, {
       change: 1.9,
       serviceFee: {
         amount: '0.09',
-        address: destinationAddress
+        address: destinationAddress,
       },
       outputs: [
         {
           address,
-          txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+          txHash:
+            '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           n: 0,
           path: createPath(2, 0, 0),
-          amount: inputValue
-        }
-      ]
+          amount: inputValue,
+        },
+      ],
     })
     stubGetWallet(backend, userKeyPair, backupKeyPair, serverKeyPair)
     const sendTxMock = stubSendTx(backend)
@@ -88,21 +110,27 @@ describe('sendCoins', () => {
     await transactionApi.send(
       '1234',
       '13',
-      [{
-        address: destinationAddress,
-        amount: new BigNumber('5'),
-      }, {
-        address,
-        amount: new BigNumber('1.99990000')
-      }],
+      [
+        {
+          address: destinationAddress,
+          amount: new BigNumber('5'),
+        },
+        {
+          address,
+          amount: new BigNumber('1.99990000'),
+        },
+      ],
       userKeyPair.prvKey!,
     )
 
     const [, , transactionHex] = sendTxMock.mock.calls[0]
 
-    const serverECPair = keyModule.deriveKey(serverKeyPair.prvKey!, '2/0/0').keyPair
-    const userECPair = keyModule.deriveKey(userKeyPair.prvKey!, '2/0/0').keyPair
-    const anotherECPair = keyModule.deriveKey(anotherKeyPair.prvKey!, '2/0/0').keyPair
+    const serverECPair = keyModule.deriveKey(serverKeyPair.prvKey!, '2/0/0')
+      .keyPair
+    const userECPair = keyModule.deriveKey(userKeyPair.prvKey!, '2/0/0')
+      .keyPair
+    const anotherECPair = keyModule.deriveKey(anotherKeyPair.prvKey!, '2/0/0')
+      .keyPair
 
     // recreates transaction builder
     const tx = bitcoinModule.txFromHex(transactionHex)
@@ -111,8 +139,11 @@ describe('sendCoins', () => {
     const txb = bitcoinModule.txBuilderFromTx(tx)
 
     // should be able to sign with other keys without errors
-    // @ts-ignore
-    const hashType = currency == Currency.BTG ? (Transaction.SIGHASH_ALL | Transaction.SIGHASH_FORKID) : Transaction.SIGHASH_ALL
+    const hashType =
+      currency === Currency.BTG
+      // @ts-ignore
+        ? Transaction.SIGHASH_ALL | Transaction.SIGHASH_FORKID
+        : Transaction.SIGHASH_ALL
     txb.sign(0, serverECPair, redeemScript, hashType, inputValueSatoshi)
 
     // signing again or using wrong key should throw errors
@@ -138,30 +169,33 @@ describe('sendCoins', () => {
       change: 1.9,
       serviceFee: {
         amount: '0.09',
-        address: serviceAddress
+        address: serviceAddress,
       },
       outputs: [
         {
           address: '',
-          txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+          txHash:
+            '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           n: 0,
           path: {
             cosignerIndex: 2,
             change: 0,
-            addressIndex: 0
+            addressIndex: 0,
           },
-          amount: new BigNumber('7')
-        }
-      ]
+          amount: new BigNumber('7'),
+        },
+      ],
     })
     stubGetWallet(backend, userKeyPair, backupKeyPair, serverKeyPair)
 
-    const promise = transactionApi.send('1234', '13', [{
-      address: serviceAddress,
-      amount: new BigNumber('5')
-    }]);
-    await expect(promise).to.eventually.be.rejected
-      .and.have.property('errors')
+    const promise = transactionApi.send('1234', '13', [
+      {
+        address: serviceAddress,
+        amount: new BigNumber('5'),
+      },
+    ])
+    await expect(promise)
+      .to.eventually.be.rejected.and.have.property('errors')
       .that.include(API_ERROR.XPRIV_OR_PASSWORD_REQUIRED.errors[0])
   })
 
@@ -170,39 +204,52 @@ describe('sendCoins', () => {
     const userKeyPair = keyModule.generateNewKeyPair()
     const backupKeyPair = keyModule.generateNewKeyPair()
     const serverKeyPair = keyModule.generateNewKeyPair()
-    const { address } = addressModule.generateNewMultisigAddress([
-      userKeyPair.pubKey,
-      backupKeyPair.pubKey,
-      serverKeyPair.pubKey
-    ], '2/0/0')
+    const { address } = addressModule.generateNewMultisigAddress(
+      [userKeyPair.pubKey, backupKeyPair.pubKey, serverKeyPair.pubKey],
+      '2/0/0',
+    )
     // @ts-ignore
     stubUnspents({
       change: 1.9,
       serviceFee: {
         amount: '0.09',
-        address: serviceAddress
+        address: serviceAddress,
       },
       outputs: [
         {
           address,
-          txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+          txHash:
+            '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           n: 0,
           path: createPath(2, 0, 0),
-          amount: new BigNumber('7')
-        }
-      ]
+          amount: new BigNumber('7'),
+        },
+      ],
     })
 
-    stubGetKey(backend, { id: '1', pubKey: 'pubKey', keyType: KeyType.USER, created: 'date' })
+    stubGetKey(backend, {
+      id: '1',
+      pubKey: 'pubKey',
+      keyType: KeyType.USER,
+      created: 'date',
+    })
     stubGetWallet(backend, userKeyPair, backupKeyPair, serverKeyPair)
 
-    const promise = transactionApi.send('1234', '13', [{
-      address: destinationAddress,
-      amount: new BigNumber('5')
-    }], undefined, "secretPassword");
+    const promise = transactionApi.send(
+      '1234',
+      '13',
+      [
+        {
+          address: destinationAddress,
+          amount: new BigNumber('5'),
+        },
+      ],
+      undefined,
+      'secretPassword',
+    )
 
-    await expect(promise).to.eventually.be.rejected
-      .and.have.property('errors')
+    await expect(promise)
+      .to.eventually.be.rejected.and.have.property('errors')
       .that.include(API_ERROR.NO_PRIV_KEY_ON_SERVER.errors[0])
   })
 
@@ -212,47 +259,56 @@ describe('sendCoins', () => {
     const backupKeyPair = keyModule.generateNewKeyPair()
     const serverKeyPair = keyModule.generateNewKeyPair()
 
-    const { address } = addressModule.generateNewMultisigAddress([
-      userKeyPair.pubKey,
-      backupKeyPair.pubKey,
-      serverKeyPair.pubKey
-    ], '2/0/0')
+    const { address } = addressModule.generateNewMultisigAddress(
+      [userKeyPair.pubKey, backupKeyPair.pubKey, serverKeyPair.pubKey],
+      '2/0/0',
+    )
 
     const inputValue = new BigNumber('7')
     stubUnspents(backend, {
       change: 1.9,
       serviceFee: {
         amount: '0.09',
-        address: serviceAddress
+        address: serviceAddress,
       },
       outputs: [
         {
           address,
-          txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+          txHash:
+            '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           n: 0,
           path: createPath(2, 0, 0),
-          amount: inputValue
-        }
-      ]
+          amount: inputValue,
+        },
+      ],
     })
-    const encryptedXprv = encrypt("secretPassword", userKeyPair.prvKey!)
+    const encryptedXprv = encrypt('secretPassword', userKeyPair.prvKey!)
 
-    stubGetKey(backend, { id: '1', pubKey: 'pubKey', keyType: KeyType.USER, prvKey: encryptedXprv, created: 'date' })
+    stubGetKey(backend, {
+      id: '1',
+      pubKey: 'pubKey',
+      keyType: KeyType.USER,
+      prvKey: encryptedXprv,
+      created: 'date',
+    })
     stubGetWallet(backend, userKeyPair, backupKeyPair, serverKeyPair)
     stubSendTx(backend)
 
     await transactionApi.send(
       '1234',
       '13',
-      [{
-        address: destinationAddress,
-        amount: new BigNumber('5')
-      }, {
-        address,
-        amount: new BigNumber('1.99990000')
-      }],
+      [
+        {
+          address: destinationAddress,
+          amount: new BigNumber('5'),
+        },
+        {
+          address,
+          amount: new BigNumber('1.99990000'),
+        },
+      ],
       undefined,
-      "secretPassword"
+      'secretPassword',
     )
   })
 
@@ -262,80 +318,97 @@ describe('sendCoins', () => {
     const backupKeyPair = keyModule.generateNewKeyPair()
     const serverKeyPair = keyModule.generateNewKeyPair()
 
-    const { address } = addressModule.generateNewMultisigAddress([
-      userKeyPair.pubKey,
-      backupKeyPair.pubKey,
-      serverKeyPair.pubKey
-    ], '2/0/0')
+    const { address } = addressModule.generateNewMultisigAddress(
+      [userKeyPair.pubKey, backupKeyPair.pubKey, serverKeyPair.pubKey],
+      '2/0/0',
+    )
 
     stubUnspents(backend, {
       change: 1.9,
       serviceFee: {
         amount: '0.09',
-        address: serviceAddress
+        address: serviceAddress,
       },
       outputs: [
         {
           address,
-          txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+          txHash:
+            '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           n: 0,
           path: createPath(2, 0, 0),
-          amount: new BigNumber('7')
-        }
-      ]
+          amount: new BigNumber('7'),
+        },
+      ],
     })
-    const encryptedXprv = encrypt("secretPassword", userKeyPair.prvKey!)
+    const encryptedXprv = encrypt('secretPassword', userKeyPair.prvKey!)
 
-    stubGetKey(backend, { id: '1', pubKey: 'pubKey', keyType: KeyType.USER, prvKey: encryptedXprv, created: 'date' })
+    stubGetKey(backend, {
+      id: '1',
+      pubKey: 'pubKey',
+      keyType: KeyType.USER,
+      prvKey: encryptedXprv,
+      created: 'date',
+    })
     stubGetWallet(backend, userKeyPair, backupKeyPair, serverKeyPair)
     stubSendTx(backend)
 
-    const promise = transactionApi.send('1234', '13', [{
-      address: destinationAddress,
-      amount: new BigNumber('5')
-    }], undefined, "otherPassword");
+    const promise = transactionApi.send(
+      '1234',
+      '13',
+      [
+        {
+          address: destinationAddress,
+          amount: new BigNumber('5'),
+        },
+      ],
+      undefined,
+      'otherPassword',
+    )
 
-    await expect(promise).to.eventually.be.rejected
-      .and.have.property('errors')
+    await expect(promise)
+      .to.eventually.be.rejected.and.have.property('errors')
       .that.include(API_ERROR.INCORRECT_PASSPHRASE.errors[0])
   })
 
-
   it('should sort inputs and outputs lexicographically', async () => {
-    const transactionModule = transactionModuleFactory(keyModule, bitcoinModule)
+    const transactionModule = transactionModuleFactory(
+      keyModule,
+      bitcoinModule,
+    )
     // generates keyPairs and address
     const userKeyPair = keyModule.generateNewKeyPair()
     const backupKeyPair = keyModule.generateNewKeyPair()
     const serverKeyPair = keyModule.generateNewKeyPair()
 
-    const { address } = addressModule.generateNewMultisigAddress([
-      userKeyPair.pubKey,
-      backupKeyPair.pubKey,
-      serverKeyPair.pubKey
-    ], '2/0/0')
+    const { address } = addressModule.generateNewMultisigAddress(
+      [userKeyPair.pubKey, backupKeyPair.pubKey, serverKeyPair.pubKey],
+      '2/0/0',
+    )
 
     stubUnspents(backend, {
       change: 1.9,
       serviceFee: {
         amount: 0.09,
-        address: serviceAddress
+        address: serviceAddress,
       },
       outputs: [
         {
           address,
-          txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+          txHash:
+            '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           n: 1,
           path: createPath(2, 0, 0),
-          amount: new BigNumber('6.5')
+          amount: new BigNumber('6.5'),
         },
         {
           address,
-          txHash: '10be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+          txHash:
+            '10be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           n: 0,
           path: createPath(2, 0, 0),
-          amount: new BigNumber('0.5')
-        }
-      ]
+          amount: new BigNumber('0.5'),
+        },
+      ],
     })
     stubGetWallet(backend, userKeyPair, backupKeyPair, serverKeyPair)
     const sendTxMock = stubSendTx(backend)
@@ -346,12 +419,12 @@ describe('sendCoins', () => {
       [
         {
           address: destinationAddress,
-          amount: new BigNumber('5')
+          amount: new BigNumber('5'),
         },
         {
           address: destinationAddress,
-          amount: new BigNumber('1500')
-        }
+          amount: new BigNumber('1500'),
+        },
       ],
       userKeyPair.prvKey!,
     )
@@ -372,27 +445,27 @@ describe('sendCoins', () => {
     const backupKeyPair = keyModule.generateNewKeyPair()
     const serverKeyPair = keyModule.generateNewKeyPair()
 
-    const { address } = addressModule.generateNewMultisigAddress([
-      userKeyPair.pubKey,
-      backupKeyPair.pubKey,
-      serverKeyPair.pubKey
-    ], '2/0/0')
+    const { address } = addressModule.generateNewMultisigAddress(
+      [userKeyPair.pubKey, backupKeyPair.pubKey, serverKeyPair.pubKey],
+      '2/0/0',
+    )
 
     const getUnspentsMock = stubUnspents(backend, {
       change: 1.9,
       serviceFee: {
         amount: 0.09,
-        address: serviceAddress
+        address: serviceAddress,
       },
       outputs: [
         {
           address,
-          txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+          txHash:
+            '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           n: 1,
           path: createPath(2, 0, 0),
-          amount: new BigNumber('6.5')
-        }
-      ]
+          amount: new BigNumber('6.5'),
+        },
+      ],
     })
     stubGetWallet(backend, userKeyPair, backupKeyPair, serverKeyPair)
     stubSendTx(backend)
@@ -403,16 +476,16 @@ describe('sendCoins', () => {
       [
         {
           address: destinationAddress,
-          amount: new BigNumber('5')
+          amount: new BigNumber('5'),
         },
         {
           address: destinationAddress,
-          amount: new BigNumber('1500')
-        }
+          amount: new BigNumber('1500'),
+        },
       ],
       userKeyPair.prvKey!,
       undefined,
-      332
+      332,
     )
     const [, , { feeRate }] = getUnspentsMock.mock.calls[0]
     expect(feeRate).to.be.eq(332)
@@ -420,14 +493,23 @@ describe('sendCoins', () => {
 })
 
 describe('sendCoins to multiple outputs', () => {
-  const backend = backendFactory.withCurrency("http://backendApiUrl", currency, createHttpClient(() => ''))
+  const backend = backendFactory.withCurrency(
+    'http://backendApiUrl',
+    currency,
+    createHttpClient(() => ''),
+  )
   const bitcoinModule = bitcoinModuleFactory(currency, 'mainnet')
   const keyModule = keyModuleFactory(bitcoinModule)
   const walletApi = walletApiFactory(backend, keyModule)
-  const transactionApi = transactionApiFactory(backend, keyModule, bitcoinModule, walletApi)
+  const transactionApi = transactionApiFactory(
+    backend,
+    keyModule,
+    bitcoinModule,
+    walletApi,
+  )
   const addressModule = addressModuleFactory(bitcoinModule, keyModule)
 
-  stubFeesRates(backend, 5)
+  stubFeeRates(backend, 5)
   stubCreateAddress(backend, changeAddress)
   it('should exist', () => {
     expect(transactionApi.send).to.be.a('function')
@@ -439,28 +521,28 @@ describe('sendCoins to multiple outputs', () => {
     const backupKeyPair = keyModule.generateNewKeyPair()
     const serverKeyPair = keyModule.generateNewKeyPair()
 
-    const { address } = addressModule.generateNewMultisigAddress([
-      userKeyPair.pubKey,
-      backupKeyPair.pubKey,
-      serverKeyPair.pubKey
-    ], '2/0/0')
+    const { address } = addressModule.generateNewMultisigAddress(
+      [userKeyPair.pubKey, backupKeyPair.pubKey, serverKeyPair.pubKey],
+      '2/0/0',
+    )
 
     const inputValue = new BigNumber('7')
     stubUnspents(backend, {
       change: 1.9,
       serviceFee: {
         amount: 0.09,
-        address: serviceAddress
+        address: serviceAddress,
       },
       outputs: [
         {
           address,
-          txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+          txHash:
+            '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           n: 0,
           path: createPath(2, 0, 0),
-          amount: inputValue
-        }
-      ]
+          amount: inputValue,
+        },
+      ],
     })
     stubGetWallet(backend, userKeyPair, backupKeyPair, serverKeyPair)
     const sendTxMock = stubSendTx(backend)
@@ -471,15 +553,15 @@ describe('sendCoins to multiple outputs', () => {
       [
         {
           address: destinationAddress,
-          amount: new BigNumber('5')
+          amount: new BigNumber('5'),
         },
         {
           address: destinationAddress,
-          amount: new BigNumber('1500')
+          amount: new BigNumber('1500'),
         },
         {
           address,
-          amount: new BigNumber('1.99900000')
+          amount: new BigNumber('1.99900000'),
         },
       ],
       userKeyPair.prvKey!,
@@ -494,22 +576,28 @@ describe('sendCoins to multiple outputs', () => {
 })
 
 describe('decodeTransaction', () => {
-  const backend = backendFactory.withCurrency("http://backendApiUrl", currency, createHttpClient(() => ''))
+  const backend = backendFactory.withCurrency(
+    'http://backendApiUrl',
+    currency,
+    createHttpClient(() => ''),
+  )
   const bitcoinModule = bitcoinModuleFactory(currency, 'mainnet')
   const keyModule = keyModuleFactory(bitcoinModule)
   const transactionModule = transactionModuleFactory(keyModule, bitcoinModule)
 
-  stubFeesRates(backend, 5)
+  stubFeeRates(backend, 5)
 
   it('shoud exist', () => {
     expect(transactionModule.decodeTransaction).to.be.a('function')
   })
 
   it('shoud decode transaction', () => {
-    const txHex = '0100000001145bb243544451ead3b8694a9597dc5e93583c0172ca16a2f2c74c8fd698be1102000000b40047304402205d30d1796f373290e554284fd333e3ea287709063b0461dae4577b2180787e980220121677e33785cc82b26b6a2146a34a759d15e5194dcf84c93db24e9ebcc6e374014c6952210214d16a77e4ddaa07d6dbef0ea757ea5d56f26b9bfc85534227004005c4ce102b2103e7cd55f382bcf7269dd813edd445d67de5c729b543bb20e31073ed835f661e322102c292a1d33bb482d6ab53a7328c0d0211808a785cc8769a9ac01cb3550144f37b53aeffffffff020065cd1d000000001976a914ff1cb7a5b23491534c66e7638f56d852ad47542288acf6bceb0b0000000017a91480cff499983050ec4268d749a1f898bec53e9fc28700000000'
+    const txHex =
+      '0100000001145bb243544451ead3b8694a9597dc5e93583c0172ca16a2f2c74c8fd698be1102000000b40047304402205d30d1796f373290e554284fd333e3ea287709063b0461dae4577b2180787e980220121677e33785cc82b26b6a2146a34a759d15e5194dcf84c93db24e9ebcc6e374014c6952210214d16a77e4ddaa07d6dbef0ea757ea5d56f26b9bfc85534227004005c4ce102b2103e7cd55f382bcf7269dd813edd445d67de5c729b543bb20e31073ed835f661e322102c292a1d33bb482d6ab53a7328c0d0211808a785cc8769a9ac01cb3550144f37b53aeffffffff020065cd1d000000001976a914ff1cb7a5b23491534c66e7638f56d852ad47542288acf6bceb0b0000000017a91480cff499983050ec4268d749a1f898bec53e9fc28700000000'
     const changeAmount = new BigNumber('1.99998710')
     const sentAmount = new BigNumber('5')
-    const utxoTxHash = '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14'
+    const utxoTxHash =
+      '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14'
     const utxoTxId = 2
 
     const result = transactionModule.decodeTransaction(txHex)
@@ -534,28 +622,36 @@ describe('decodeTransaction', () => {
 })
 
 describe('signTransaction', () => {
-  const backend = backendFactory.withCurrency("http://backendApiUrl", currency, createHttpClient(() => ''))
+  const backend = backendFactory.withCurrency(
+    'http://backendApiUrl',
+    currency,
+    createHttpClient(() => ''),
+  )
   const bitcoinModule = bitcoinModuleFactory(currency, 'mainnet')
   const keyModule = keyModuleFactory(bitcoinModule)
   const transactionModule = transactionModuleFactory(keyModule, bitcoinModule)
 
-  stubFeesRates(backend, 5)
+  stubFeeRates(backend, 5)
 
   it('shoud exist', () => {
     expect(transactionModule.signTransaction).to.be.a('function')
   })
 
   it('should sign transaction', () => {
-    const xprv = 'xprv9s21ZrQH143K4UVYCa2N59SDjavhZSqV2vjQYUJzV5tq4rpJNo2BjKvin1vcwFzfENabiU5eiPiXVKCsBxjNSZyQBjT36EEN4spgL1uvrTs'
-    const wrongXprv = 'xprv9s21ZrQH143K42jAsj3CsRB16Eh9MeN8SfKuiY23Aa33f2LEcVbDzBTn5QjtT83mr4wJ5LxHTMoU2DcqGVQwxrvorJJnDUL5YgQG7x2yP5c'
-    const txHex = '0100000001145bb243544451ead3b8694a9597dc5e93583c0172ca16a2f2c74c8fd698be1100000000b5004830450221009f71f64142b1381e0ccdf2b868310b1b62bb57b3de4aca0554c03c881927be0a0220236412b2c299a1fd34d1a5b1b134b5fe5f3b479bb0fb29221447adb68effb48f014c6952210317b3b652ead4367b83303c377e4b2000b707f43694a17122bd65484f9f9e76ad2102251b99fde4b9d855d6afd1782c769988f9c39fa748a90b5e8b126fb208d834302103f16c3c588e2c29d8987842823e6cf326178e60650ebc613c3fab28afc16ffc4a53aeffffffff030065cd1d000000001976a914ff1cb7a5b23491534c66e7638f56d852ad47542288ac802b530b0000000017a91480cff499983050ec4268d749a1f898bec53e9fc28740548900000000001976a914ff1cb7a5b23491534c66e7638f56d852ad47542288ac00000000'
+    const xprv =
+      'xprv9s21ZrQH143K4UVYCa2N59SDjavhZSqV2vjQYUJzV5tq4rpJNo2BjKvin1vcwFzfENabiU5eiPiXVKCsBxjNSZyQBjT36EEN4spgL1uvrTs'
+    const wrongXprv =
+      'xprv9s21ZrQH143K42jAsj3CsRB16Eh9MeN8SfKuiY23Aa33f2LEcVbDzBTn5QjtT83mr4wJ5LxHTMoU2DcqGVQwxrvorJJnDUL5YgQG7x2yP5c'
+    const txHex =
+      '0100000001145bb243544451ead3b8694a9597dc5e93583c0172ca16a2f2c74c8fd698be1100000000b5004830450221009f71f64142b1381e0ccdf2b868310b1b62bb57b3de4aca0554c03c881927be0a0220236412b2c299a1fd34d1a5b1b134b5fe5f3b479bb0fb29221447adb68effb48f014c6952210317b3b652ead4367b83303c377e4b2000b707f43694a17122bd65484f9f9e76ad2102251b99fde4b9d855d6afd1782c769988f9c39fa748a90b5e8b126fb208d834302103f16c3c588e2c29d8987842823e6cf326178e60650ebc613c3fab28afc16ffc4a53aeffffffff030065cd1d000000001976a914ff1cb7a5b23491534c66e7638f56d852ad47542288ac802b530b0000000017a91480cff499983050ec4268d749a1f898bec53e9fc28740548900000000001976a914ff1cb7a5b23491534c66e7638f56d852ad47542288ac00000000'
     const unspents: UTXO[] = [
       {
-        txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+        txHash:
+          '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
         n: 0,
         path: createPath(2, 0, 0),
-        amount: new BigNumber('7')
-      }
+        amount: new BigNumber('7'),
+      },
     ]
 
     const result = transactionModule.signTransaction(xprv, txHex, unspents)
@@ -572,46 +668,64 @@ describe('signTransaction', () => {
 })
 
 describe('testnet transactions', () => {
-  const backend = backendFactory.withCurrency("http://backendApiUrl", currency, createHttpClient(() => ''))
+  const backend = backendFactory.withCurrency(
+    'http://backendApiUrl',
+    currency,
+    createHttpClient(() => ''),
+  )
   const bitcoinModule = bitcoinModuleFactory(currency, 'testnet')
   const keyModule = keyModuleFactory(bitcoinModule)
   const walletApi = walletApiFactory(backend, keyModule)
-  const transactionApi = transactionApiFactory(backend, keyModule, bitcoinModule, walletApi)
+  const transactionApi = transactionApiFactory(
+    backend,
+    keyModule,
+    bitcoinModule,
+    walletApi,
+  )
   const addressModule = addressModuleFactory(bitcoinModule, keyModule)
   const transactionModule = transactionModuleFactory(keyModule, bitcoinModule)
-  stubFeesRates(backend, 5)
+  stubFeeRates(backend, 5)
 
   it('should send coins to testnet and signTransaction', async () => {
     stubCreateAddress(backend, testnetChangeAddress)
 
     // generates keyPairs and address
-    const userKeyPair = keyModule.deriveKeyPair(keyModule.generateNewKeyPair(), ROOT_DERIVATION_PATH)
-    const backupKeyPair = keyModule.deriveKeyPair(keyModule.generateNewKeyPair(), ROOT_DERIVATION_PATH)
-    const serverKeyPair = keyModule.deriveKeyPair(keyModule.generateNewKeyPair(), ROOT_DERIVATION_PATH)
+    const userKeyPair = keyModule.deriveKeyPair(
+      keyModule.generateNewKeyPair(),
+      ROOT_DERIVATION_PATH,
+    )
+    const backupKeyPair = keyModule.deriveKeyPair(
+      keyModule.generateNewKeyPair(),
+      ROOT_DERIVATION_PATH,
+    )
+    const serverKeyPair = keyModule.deriveKeyPair(
+      keyModule.generateNewKeyPair(),
+      ROOT_DERIVATION_PATH,
+    )
 
-    const { address } = addressModule.generateNewMultisigAddress([
-      userKeyPair.pubKey,
-      backupKeyPair.pubKey,
-      serverKeyPair.pubKey
-    ], '2/1/0')
+    const { address } = addressModule.generateNewMultisigAddress(
+      [userKeyPair.pubKey, backupKeyPair.pubKey, serverKeyPair.pubKey],
+      '2/1/0',
+    )
 
     const inputValue = new BigNumber('7')
     const unspents = [
       {
         address,
-        txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+        txHash:
+          '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
         n: 0,
         path: createPath(2, 0, 1),
-        amount: inputValue
-      }
-    ];
+        amount: inputValue,
+      },
+    ]
     stubUnspents(backend, {
       change: 1.9,
       serviceFee: {
         amount: 0.09,
-        address: testnetServiceAddress
+        address: testnetServiceAddress,
       },
-      outputs: unspents
+      outputs: unspents,
     })
     stubGetWallet(backend, userKeyPair, backupKeyPair, serverKeyPair)
     const sendTxMock = stubSendTx(backend)
@@ -619,21 +733,26 @@ describe('testnet transactions', () => {
     await transactionApi.send(
       '1234',
       '13',
-      [{
-        address: testnetDestinationAddress,
-        amount: new BigNumber('5')
-      }, {
-        address,
-        amount: new BigNumber('1.99990000')
-      }
-
+      [
+        {
+          address: testnetDestinationAddress,
+          amount: new BigNumber('5'),
+        },
+        {
+          address,
+          amount: new BigNumber('1.99990000'),
+        },
       ],
       userKeyPair.prvKey!,
     )
 
     const [, , transactionHex] = sendTxMock.mock.calls[0]
 
-    const { txHex, txHash } = transactionModule.signTransaction(serverKeyPair.prvKey!, transactionHex, unspents);
+    const { txHex, txHash } = transactionModule.signTransaction(
+      serverKeyPair.prvKey!,
+      transactionHex,
+      unspents,
+    )
     expect(txHash).to.not.eq('')
     expect(txHex).to.not.eq('')
   })
@@ -649,27 +768,27 @@ describe('testnet transactions', () => {
     const serverKeyPair = keyModule.generateNewKeyPair()
     const anotherKeyPair = keyModule.generateNewKeyPair()
 
-    const { address, redeemScript } = addressModule.generateNewMultisigAddress([
-      userKeyPair.pubKey,
-      backupKeyPair.pubKey,
-      serverKeyPair.pubKey
-    ], '2/0/0')
+    const { address, redeemScript } = addressModule.generateNewMultisigAddress(
+      [userKeyPair.pubKey, backupKeyPair.pubKey, serverKeyPair.pubKey],
+      '2/0/0',
+    )
 
     stubUnspents(backend, {
       change: 1.9,
       serviceFee: {
         amount: 0.09,
-        address: testnetServiceAddress
+        address: testnetServiceAddress,
       },
       outputs: [
         {
           address,
-          txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+          txHash:
+            '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           n: 0,
           path: createPath(2, 0, 0),
-          amount: inputValue
-        }
-      ]
+          amount: inputValue,
+        },
+      ],
     })
 
     stubGetWallet(backend, userKeyPair, backupKeyPair, serverKeyPair)
@@ -678,32 +797,41 @@ describe('testnet transactions', () => {
     await transactionApi.send(
       '1234',
       '13',
-      [{
-        address: testnetDestinationAddress,
-        amount: new BigNumber('5')
-      }, {
-        address,
-        amount: new BigNumber('1.99990000')
-      }],
+      [
+        {
+          address: testnetDestinationAddress,
+          amount: new BigNumber('5'),
+        },
+        {
+          address,
+          amount: new BigNumber('1.99990000'),
+        },
+      ],
       userKeyPair.prvKey!,
     )
 
     const [, , transactionHex] = sendTxMock.mock.calls[0]
 
-    const serverECPair = keyModule.deriveKey(serverKeyPair.prvKey!, '2/0/0').keyPair
-    const userECPair = keyModule.deriveKey(userKeyPair.prvKey!, '2/0/0').keyPair
-    const anotherECPair = keyModule.deriveKey(anotherKeyPair.prvKey!, '2/0/0').keyPair
+    const serverECPair = keyModule.deriveKey(serverKeyPair.prvKey!, '2/0/0')
+      .keyPair
+    const userECPair = keyModule.deriveKey(userKeyPair.prvKey!, '2/0/0')
+      .keyPair
+    const anotherECPair = keyModule.deriveKey(anotherKeyPair.prvKey!, '2/0/0')
+      .keyPair
 
     // recreates transaction builder
     const tx = bitcoinModule.txFromHex(transactionHex)
-    //@ts-ignore
+    // @ts-ignore
     tx.ins[0].value = inputValueSatoshi
     const txb = bitcoinModule.txBuilderFromTx(tx)
 
     // should be able to sign with other keys without errors
 
-    //@ts-ignore
-    const hashType = currency == Currency.BTG ? (Transaction.SIGHASH_ALL | Transaction.SIGHASH_FORKID) : Transaction.SIGHASH_ALL
+    const hashType =
+      currency === Currency.BTG
+        // @ts-ignore
+        ? Transaction.SIGHASH_ALL | Transaction.SIGHASH_FORKID
+        : Transaction.SIGHASH_ALL
     txb.sign(0, serverECPair, redeemScript, hashType, inputValueSatoshi)
 
     // signing again or using wrong key should throw errors
@@ -727,11 +855,10 @@ describe('testnet transactions', () => {
     const serverKeyPair = keyModule.generateNewKeyPair()
     const anotherKeyPair = keyModule.generateNewKeyPair()
 
-    const { address, redeemScript } = addressModule.generateNewMultisigAddress([
-      userKeyPair.pubKey,
-      backupKeyPair.pubKey,
-      serverKeyPair.pubKey
-    ], '2/0/0')
+    const { address, redeemScript } = addressModule.generateNewMultisigAddress(
+      [userKeyPair.pubKey, backupKeyPair.pubKey, serverKeyPair.pubKey],
+      '2/0/0',
+    )
 
     const inputValue = new BigNumber('7')
     const inputValueSatoshi = 700000000
@@ -740,12 +867,13 @@ describe('testnet transactions', () => {
       outputs: [
         {
           address,
-          txHash: '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
+          txHash:
+            '11be98d68f4cc7f2a216ca72013c58935edc97954a69b8d3ea51445443b25b14',
           n: 0,
           path: createPath(2, 0, 0),
-          amount: inputValue
-        }
-      ]
+          amount: inputValue,
+        },
+      ],
     })
 
     stubGetWallet(backend, userKeyPair, backupKeyPair, serverKeyPair)
@@ -754,32 +882,41 @@ describe('testnet transactions', () => {
     await transactionApi.send(
       '1234',
       '13',
-      [{
-        address: testnetDestinationAddress,
-        amount: new BigNumber('5')
-      }, {
-        address,
-        amount: new BigNumber('1.99990000')
-      }],
+      [
+        {
+          address: testnetDestinationAddress,
+          amount: new BigNumber('5'),
+        },
+        {
+          address,
+          amount: new BigNumber('1.99990000'),
+        },
+      ],
       userKeyPair.prvKey!,
     )
 
     const [, , transactionHex] = sendTxMock.mock.calls[0]
 
-    const serverECPair = keyModule.deriveKey(serverKeyPair.prvKey!, '2/0/0').keyPair
-    const userECPair = keyModule.deriveKey(userKeyPair.prvKey!, '2/0/0').keyPair
-    const anotherECPair = keyModule.deriveKey(anotherKeyPair.prvKey!, '2/0/0').keyPair
+    const serverECPair = keyModule.deriveKey(serverKeyPair.prvKey!, '2/0/0')
+      .keyPair
+    const userECPair = keyModule.deriveKey(userKeyPair.prvKey!, '2/0/0')
+      .keyPair
+    const anotherECPair = keyModule.deriveKey(anotherKeyPair.prvKey!, '2/0/0')
+      .keyPair
 
     // recreates transaction builder
     const tx = bitcoinModule.txFromHex(transactionHex)
-    //@ts-ignore
+    // @ts-ignore
     tx.ins[0].value = inputValueSatoshi
     const txb = bitcoinModule.txBuilderFromTx(tx)
 
     // should be able to sign with other keys without errors
 
-    //@ts-ignore
-    const hashType = currency == Currency.BTG ? (Transaction.SIGHASH_ALL | Transaction.SIGHASH_FORKID) : Transaction.SIGHASH_ALL
+    const hashType =
+      currency === Currency.BTG
+        // @ts-ignore
+        ? Transaction.SIGHASH_ALL | Transaction.SIGHASH_FORKID
+        : Transaction.SIGHASH_ALL
     txb.sign(0, serverECPair, redeemScript, hashType, inputValueSatoshi)
 
     // signing again or using wrong key should throw errors
@@ -795,4 +932,3 @@ describe('testnet transactions', () => {
     expect(tx.ins.length).to.be.eq(1)
   })
 })
-

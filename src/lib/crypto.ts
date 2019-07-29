@@ -9,16 +9,25 @@ import sjcl from 'sjcl'
   Description of all parameters can be found here - http://bitwiseshiftleft.github.io/sjcl/demo/
  */
 export const encrypt = (password: string, input: string): string => {
-  const { key: pbkdf2Key, salt: pbkdf2Salt } = sjcl.misc.cachedPbkdf2(password);
+  const { key: pbkdf2Key, salt: pbkdf2Salt } = sjcl.misc.cachedPbkdf2(password)
   const encryptionSalt = sjcl.random.randomWords(2, 0)
   const iv = sjcl.random.randomWords(2, 0)
-  const encryptOptions = { iter: 10000, ks: 256, salt: encryptionSalt, iv: iv, ts: 96, pbkdf2Salt }
+  const encryptOptions = {
+    iter: 10000,
+    ks: 256,
+    salt: encryptionSalt,
+    iv,
+    ts: 96,
+    pbkdf2Salt,
+  }
   return sjcl.encrypt(pbkdf2Key.toString(), input, encryptOptions).toString()
 }
 
 export const decrypt = (password: string, input: string): string => {
   const pbkdf2Salt = sjcl.codec.base64.toBits(JSON.parse(input).pbkdf2Salt)
-  const { key: pbkdf2Key } = sjcl.misc.cachedPbkdf2(password, { salt: pbkdf2Salt })
+  const { key: pbkdf2Key } = sjcl.misc.cachedPbkdf2(password, {
+    salt: pbkdf2Salt,
+  })
   return sjcl.decrypt(pbkdf2Key.toString(), input)
 }
 

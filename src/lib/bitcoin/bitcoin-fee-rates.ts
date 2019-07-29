@@ -1,11 +1,13 @@
 import { BitcoinBackendApi } from './bitcoin-backend-api'
-import { GetFeesRates } from '../../types/response'
+import { GetFeeRatesResponse } from '../../types/response/feeRates'
 
 export interface FeeRatesApi {
-  getFeeRate(): Promise<GetFeesRates>
+  getFeeRate(): Promise<GetFeeRatesResponse>
 }
 
-export const feeRatesApiFactory = (backendApi: BitcoinBackendApi): FeeRatesApi => {
-  const getFeeRate = (): Promise<GetFeesRates> => backendApi.getFeesRates()
+export const feeRatesApiFactory = (
+  backendApi: BitcoinBackendApi,
+): FeeRatesApi => {
+  const getFeeRate = () => backendApi.getFeeRates()
   return { getFeeRate }
 }

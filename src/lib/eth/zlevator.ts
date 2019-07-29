@@ -1,28 +1,35 @@
 import {
-  EthGetTransactionParamsResponse,
-  SendETHResponse,
-  SendTokensResponse
-} from '../../types/response'
+  EthGetTransactionParamsBackendResponse,
+  SendETHBackendResponse,
+  SendTokensBackendResponse,
+} from '../../types/api/transaction'
 import { createHttpClient } from '../utils/httpClient'
 
 const getZlevatorUrl = () => process.env.ZLEVATOR_URL
 
-export const httpClient = createHttpClient(() => "")
+export const httpClient = createHttpClient(() => '')
 
 // ETH
 // transaction
-export const getNextNonce = async (): Promise<EthGetTransactionParamsResponse> => {
+export const getNextNonce = async (): Promise<
+  EthGetTransactionParamsBackendResponse
+> => {
   const options = {
-    method: 'GET'
+    method: 'GET',
   }
 
   return await httpClient.request(`${getZlevatorUrl()}/withdraw/new`, options)
 }
 
 export const sendETH = async (
-  address: string, value: string, expireBlock: number, contractNonce: string, data: string, signature: string,
-  withdrawalId: string
-): Promise<SendETHResponse> => {
+  address: string,
+  value: string,
+  expireBlock: number,
+  contractNonce: string,
+  data: string,
+  signature: string,
+  withdrawalId: string,
+): Promise<SendETHBackendResponse> => {
   const options = {
     method: 'POST',
     body: JSON.stringify({
@@ -32,17 +39,22 @@ export const sendETH = async (
       contractNonce,
       signature,
       data,
-      value
-    })
+      value,
+    }),
   }
 
   return await httpClient.request(`${getZlevatorUrl()}/withdraw/eth`, options)
 }
 
 export const sendTokens = async (
-  address: string, value: string, expireBlock: number, contractNonce: string, signature: string, contractAddress: string,
-  withdrawalId: string
-): Promise<SendTokensResponse> => {
+  address: string,
+  value: string,
+  expireBlock: number,
+  contractNonce: string,
+  signature: string,
+  contractAddress: string,
+  withdrawalId: string,
+): Promise<SendTokensBackendResponse> => {
   const options = {
     method: 'POST',
     body: JSON.stringify({
@@ -52,8 +64,11 @@ export const sendTokens = async (
       contractNonce,
       signature,
       contractAddress,
-      value
-    })
+      value,
+    }),
   }
-  return await httpClient.request(`${getZlevatorUrl()}/withdraw/tokens`, options)
+  return await httpClient.request(
+    `${getZlevatorUrl()}/withdraw/tokens`,
+    options,
+  )
 }

@@ -2,14 +2,18 @@ import { expect } from 'chai'
 
 import { currency } from '../helpers'
 import * as backendApiFactory from '../../bitcoin/bitcoin-backend-api'
-import { feeRatesApiFactory } from '../../bitcoin/bitcoin-fee-rates';
-import { createHttpClient } from '../../utils/httpClient';
+import { feeRatesApiFactory } from '../../bitcoin/bitcoin-fee-rates'
+import { createHttpClient } from '../../utils/httpClient'
 
-const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency, createHttpClient(() => ''))
+const backendApi = backendApiFactory.withCurrency(
+  'http://backendApiUrl',
+  currency,
+  createHttpClient(() => ''),
+)
 // @ts-ignore
-backendApi.getFeesRates = jest.fn(() => {
+backendApi.getFeeRates = jest.fn(() => {
   return Promise.resolve({
-    recommended: 123
+    recommended: 123,
   })
 })
 

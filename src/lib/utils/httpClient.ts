@@ -1,29 +1,31 @@
 import crossFetch from 'cross-fetch'
-import { ApiError, ApiErrorDetails } from '../../types/api'
-import { ErrorResponse } from '../../types/response';
-import { INTERNAL_ERROR_CODE } from '../constants';
-import { CorrelationIdGetter } from '../backend-api';
+import { ApiError, ApiErrorDetails } from '../../types/domain/error'
+import { ErrorResponse } from '../../types/response/error'
+import { INTERNAL_ERROR_CODE } from '../constants'
+import { CorrelationIdGetter } from '../backend-api'
 
 const parseResponse = async (response: Response): Promise<any> => {
   const contentType = response.headers.get('content-type')
   if (contentType && contentType.includes('json')) {
     return response.json()
   }
-  return new Promise<any>((resolve) => (resolve(null)));
+  return new Promise<any>((resolve: (value: any) => void) => resolve(null))
 }
 
 const parseError = async (response: Response): Promise<ApiErrorDetails[]> => {
   const contentType = response.headers.get('content-type')
   if (contentType && contentType.includes('json')) {
     const json = await response.json()
-    const responseBody = (<ApiError>json)
+    const responseBody = <ApiError>json
     return responseBody.errors
   }
   if (contentType && contentType.includes('text')) {
     const text = await response.text()
-    return [<ApiErrorDetails>({ message: text, code: INTERNAL_ERROR_CODE })]
+    return [<ApiErrorDetails>{ message: text, code: INTERNAL_ERROR_CODE }]
   }
-  return [<ApiErrorDetails>({ message: response.statusText, code: 'SC-Unknown' })]
+  return [
+    <ApiErrorDetails>{ message: response.statusText, code: 'SC-Unknown' },
+  ]
 }
 
 const checkStatus = async (response: Response): Promise<Response> => {
@@ -32,33 +34,37 @@ const checkStatus = async (response: Response): Promise<Response> => {
   }
 
   const errors = await parseError(response)
-  throw <ErrorResponse>{ errors: errors, code: response.status }
+  throw <ErrorResponse>{ errors, code: response.status }
 }
 
 export interface OptionalQueryParam {
-  key: string,
+  key: string
   value?: string | number | boolean
 }
 
-export const buildQueryParamString = (params: OptionalQueryParam[]) => {
-  return params
-    .filter(param => param.value)
-    .map((param, index) => (index == 0 ? '?' : '&') + `${param.key}=${param.value}`)
+export const buildQueryParamString = (params: OptionalQueryParam[]) =>
+  params
+    .filter((param: OptionalQueryParam) => param.value)
+    .map(
+      (param: OptionalQueryParam, index: number) =>
+        `${index === 0 ? '?' : '&'}${param.key}=${param.value}`,
+    )
     .join('')
-}
 
 export interface HttpClient {
   request(url: string, options: any): Promise<any>
 }
 
-export const createHttpClient = (getCorrelationId: CorrelationIdGetter): HttpClient => {
+export const createHttpClient = (
+  getCorrelationId: CorrelationIdGetter,
+): HttpClient => {
   const request = async (url: string, options: any): Promise<any> => {
     const richOptions = {
       ...options,
       headers: {
         ...options.headers,
-        'X-Correlation-Id': getCorrelationId()
-      }
+        'X-Correlation-Id': getCorrelationId(),
+      },
     }
     return crossFetch(url, richOptions)
       .then(checkStatus)

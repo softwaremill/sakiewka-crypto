@@ -8,9 +8,13 @@ import chaiBigNumber from 'chai-bignumber'
 import * as pdfGen from '../../bitcoin/bitcoin-keycard-pdf'
 import { keyModuleFactory } from '../../bitcoin/bitcoin-key'
 import bitcoinFactory from '../../bitcoin/bitcoin'
-import { createHttpClient } from '../../utils/httpClient';
+import { createHttpClient } from '../../utils/httpClient'
 
-const backendApi = backendApiFactory.withCurrency('http://backendApiUrl', currency, createHttpClient(() => ''))
+const backendApi = backendApiFactory.withCurrency(
+  'http://backendApiUrl',
+  currency,
+  createHttpClient(() => ''),
+)
 
 const bitcoinOperation = bitcoinFactory(currency, 'mainnet')
 const keyModule = keyModuleFactory(bitcoinOperation)
@@ -37,7 +41,7 @@ describe('createWallet', () => {
 
     const params = {
       passphrase: 'abcd',
-      name: 'testLabel'
+      name: 'testLabel',
     }
 
     const result = await wallet.createWallet('abcd', params)
@@ -49,12 +53,15 @@ describe('createWallet', () => {
     expect(backendRequestParams).to.haveOwnProperty('name')
     expect(backendRequestParams).to.haveOwnProperty('userPubKey')
     expect(backendRequestParams).to.haveOwnProperty('backupPubKey')
-    expect(result.servicePubKey).to.eq('pubKey')
     expect(result.pdf).to.eq('pdf')
 
     // check if sending encrypted xprvs
-    expect(JSON.parse(backendRequestParams.userPrvKey)).to.haveOwnProperty('ct')
-    expect(JSON.parse(backendRequestParams.backupPrvKey)).to.haveOwnProperty('ct')
+    expect(JSON.parse(backendRequestParams.userPrvKey)).to.haveOwnProperty(
+      'ct',
+    )
+    expect(JSON.parse(backendRequestParams.backupPrvKey)).to.haveOwnProperty(
+      'ct',
+    )
 
     // check if really sending xpubs
     expect(backendRequestParams.userPubKey.slice(0, 4)).to.be.eq('xpub')
@@ -65,12 +72,12 @@ describe('createWallet', () => {
 describe('editWallet', () => {
   it('should pass proper arguments to backend-api method and return result of its call', async () => {
     // @ts-ignore
-    const mockImplementation = jest.fn(() => ({ }))
+    const mockImplementation = jest.fn(() => ({}))
     // @ts-ignore
     backendApi.editWallet = mockImplementation
 
-    await wallet.editWallet('token', 'walletId','newWalletName')
-    const [token, walletId,newWalletName] = mockImplementation.mock.calls[0]
+    await wallet.editWallet('token', 'walletId', 'newWalletName')
+    const [token, walletId, newWalletName] = mockImplementation.mock.calls[0]
 
     expect(token).to.eq('token')
     expect(walletId).to.eq('walletId')
@@ -109,9 +116,19 @@ describe('listWallets', () => {
     // @ts-ignore
     backendApi.listWallets = mockImplementation
 
-    const res = await wallet.listWallets('testToken', 10, 'wallet3', 'nextPageToken')
+    const res = await wallet.listWallets(
+      'testToken',
+      10,
+      'wallet3',
+      'nextPageToken',
+    )
 
-    const [token, limit, searchPhrase, nextPageToken] = mockImplementation.mock.calls[0]
+    const [
+      token,
+      limit,
+      searchPhrase,
+      nextPageToken,
+    ] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
     expect(limit).to.eq(10)
     expect(searchPhrase).to.eq('wallet3')
@@ -131,12 +148,23 @@ describe('listUnspents', () => {
     // @ts-ignore
     backendApi.listUnspents = mockImplementation
 
-    const res = await wallet.listUnspents('testToken', 'walletId', [{
-      address: '0x1',
-      amount: new BigNumber('0.00000123')
-    }], 2)
+    const res = await wallet.listUnspents(
+      'testToken',
+      'walletId',
+      [
+        {
+          address: '0x1',
+          amount: new BigNumber('0.00000123'),
+        },
+      ],
+      2,
+    )
 
-    const [token, walletId, { feeRate, recipients }] = mockImplementation.mock.calls[0]
+    const [
+      token,
+      walletId,
+      { feeRate, recipients },
+    ] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
     expect(walletId).to.eq('walletId')
     expect(feeRate).to.eq(2)
@@ -158,9 +186,18 @@ describe('getMaxTransferAmount', () => {
     // @ts-ignore
     backendApi.maxTransferAmount = mockImplementation
 
-    const res = await wallet.maxTransferAmount('testToken', 'walletId', 2, '0x1')
+    const res = await wallet.maxTransferAmount(
+      'testToken',
+      'walletId',
+      2,
+      '0x1',
+    )
 
-    const [token, walletId, { recipient, feeRate }] = mockImplementation.mock.calls[0]
+    const [
+      token,
+      walletId,
+      { recipient, feeRate },
+    ] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
     expect(walletId).to.eq('walletId')
     expect(feeRate).to.eq(2)
@@ -200,9 +237,21 @@ describe('list utxos by address', () => {
     // @ts-ignore
     backendApi.listUtxosByAddress = mockImplementation
 
-    const res = await wallet.listUtxosByAddress('testToken', '11', 'some-address', 11, 'nextpagetoken')
+    const res = await wallet.listUtxosByAddress(
+      'testToken',
+      '11',
+      'some-address',
+      11,
+      'nextpagetoken',
+    )
 
-    const [token, walletId, address, limit, nextPageToken] = mockImplementation.mock.calls[0]
+    const [
+      token,
+      walletId,
+      address,
+      limit,
+      nextPageToken,
+    ] = mockImplementation.mock.calls[0]
     expect(token).to.eq('testToken')
     expect(walletId).to.eq('11')
     expect(address).to.eq('some-address')
