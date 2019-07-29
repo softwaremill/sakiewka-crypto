@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { Balance } from './balance'
+import { Currency } from './currency'
 import { UTXO } from './transaction'
 import { Key } from './key'
 
@@ -13,7 +14,7 @@ export interface CreateWalletParams {
 export interface Wallet {
   id: string
   name: string
-  currency: string
+  currency: Currency
   created: string
   balance: Balance
 }
