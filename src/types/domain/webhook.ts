@@ -3,8 +3,8 @@ export enum WebhookType {
 }
 
 export interface WebhhokSettings {
-  type: WebhookType;
-  confirmations: number;
+  type: WebhookType
+  confirmations: number
 }
 
 export interface Webhook {
