@@ -1,20 +1,37 @@
-import {
-  CreateWalletBackendResponse,
-  EditWalletBackendResponse,
-  GetWalletBackendResponse,
-  ListWalletsBackendResponse,
-  ListUnspentsBackendResponse,
-  MaxTransferAmountBackendResponse,
-  ListUtxosByAddressBackendResponse,
-} from '../api/wallet'
+import { Path, UTXO } from '../domain/transaction'
+import { Wallet, WalletDetails, Unspents } from '../domain/wallet'
+import { Key } from '../domain/key'
 
-export interface CreateWalletResponse extends CreateWalletBackendResponse {
+export interface CreateWalletResponse {
+  id: string
+  keys: Key[]
   pdf: string
 }
+export interface CreateBitcoinWalletResponse extends CreateWalletResponse {
+  servicePubKey: string
+  initialAddress: {
+    address: string;
+    path: Path;
+  }
+}
+export interface CreateEosWalletResponse extends CreateWalletResponse {}
 
-export type EditWalletResponse = EditWalletBackendResponse
-export type GetWalletResponse = GetWalletBackendResponse
-export type ListWalletsResponse = ListWalletsBackendResponse
-export type ListUnspentsResponse = ListUnspentsBackendResponse
-export type MaxTransferAmountResponse = MaxTransferAmountBackendResponse
-export type ListUtxosByAddressResponse = ListUtxosByAddressBackendResponse
+export interface EditWalletResponse {}
+
+export type GetWalletResponse = WalletDetails
+
+export interface ListWalletsResponse {
+  wallets: Wallet[]
+  nextPageToken?: string
+}
+
+export type ListUnspentsResponse = Unspents
+
+export interface MaxTransferAmountResponse {
+  amount: string
+}
+
+export interface ListUtxosByAddressResponse {
+  transfers: UTXO[]
+  nextPageToken?: string
+}

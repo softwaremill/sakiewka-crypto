@@ -1,6 +1,13 @@
-import { Path, UTXO } from '../domain/transaction'
-import { Wallet, WalletDetails, Unspents } from '../domain/wallet'
-import { Key } from '..//domain/key'
+import {
+  EditWalletResponse,
+  GetWalletResponse,
+  ListWalletsResponse,
+  ListUnspentsResponse,
+  MaxTransferAmountResponse,
+  ListUtxosByAddressResponse,
+} from '../response/wallet'
+import { Key } from '../domain/key'
+import { Path } from '../domain/transaction'
 
 export interface CreateWalletBackendParams {
   name: string
@@ -43,22 +50,9 @@ export interface CreateBitcoinWalletBackendResponse
 export interface CreateEosWalletBackendResponse
   extends CreateWalletBackendResponse {}
 
-export interface EditWalletBackendResponse {}
-
-export type GetWalletBackendResponse = WalletDetails
-
-export interface ListWalletsBackendResponse {
-  wallets: Wallet[]
-  nextPageToken?: string
-}
-
-export type ListUnspentsBackendResponse = Unspents
-
-export interface MaxTransferAmountBackendResponse {
-  amount: string
-}
-
-export interface ListUtxosByAddressBackendResponse {
-  transfers: UTXO[]
-  nextPageToken?: string
-}
+export type EditWalletBackendResponse = EditWalletResponse
+export type GetWalletBackendResponse = GetWalletResponse
+export type ListWalletsBackendResponse = ListWalletsResponse
+export type ListUnspentsBackendResponse = ListUnspentsResponse
+export type MaxTransferAmountBackendResponse = MaxTransferAmountResponse
+export type ListUtxosByAddressBackendResponse = ListUtxosByAddressResponse
