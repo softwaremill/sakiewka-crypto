@@ -13,6 +13,7 @@ import {
   DeleteAuthTokenResponse,
   AddSupportSubmissionResponse,
 } from '../types/response/user'
+import { API_ERROR } from './constants'
 
 export interface UserApi {
   login(login: string, password: string, code?: number): Promise<LoginResponse>
@@ -61,10 +62,14 @@ export const userApiFactory = (backend: CoreBackendApi): UserApi => {
     return backend.register(login)
   }
 
-  const setupPassword = (
+  const setupPassword = async (
     token: string,
     password: string,
   ): Promise<SetupPasswordResponse> => {
+    const minPasswordLength = 8
+    if (password.length < minPasswordLength) {
+      throw API_ERROR.PASSWORD_TOO_SHORT(minPasswordLength)
+    }
     return backend.setupPassword(token, hashPassword(password))
   }
 

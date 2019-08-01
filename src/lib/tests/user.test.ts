@@ -1,15 +1,21 @@
-import { expect } from 'chai'
+import { expect, use } from 'chai'
 
 import { userApiFactory } from '../user'
 import * as backendApiFactory from '../backend-api'
+import chaiAsPromised from 'chai-as-promised'
 import { hashPassword } from '../crypto'
 import { createHttpClient } from '../utils/httpClient'
+import { API_ERROR } from '../constants'
 
 const api = backendApiFactory.create(
   'http://backendApiUrl',
   createHttpClient(() => ''),
 )
 const user = userApiFactory(api)
+
+beforeEach(() => {
+  use(chaiAsPromised)
+})
 
 describe('login', () => {
   it('should exist', () => {
@@ -146,13 +152,21 @@ describe('setupPassword', () => {
     // @ts-ignore
     api.setupPassword = mockImplementation
 
-    const password = 'b'
+    const password = 'bbbbbbbbb'
     const res = await user.setupPassword('testToken', password)
 
     const [tokenArg, passwordArg] = mockImplementation.mock.calls[0]
     expect(tokenArg).to.eq('testToken')
     expect(passwordArg).to.eq(hashPassword(password))
     expect(res).to.eq('backend response')
+  })
+
+  it('should fail if password is too short', async () => {
+    const password = 'b'
+    const promise = user.setupPassword('testToken', password)
+    await expect(promise)
+      .to.eventually.be.rejected.and.have.property('errors')
+      .that.deep.include(API_ERROR.PASSWORD_TOO_SHORT(8).errors[0])
   })
 })
 

@@ -34,6 +34,15 @@ export const API_ERROR = {
     errors: [{ message: 'There is no private key on server!', code: 'SKC6' }],
     code: 400,
   },
+  PASSWORD_TOO_SHORT: (minLength: number) => ({
+    errors: [
+      {
+        message: `Password must be longer than ${minLength - 1}!`,
+        code: 'SKC7',
+      },
+    ],
+    code: 400,
+  }),
 }
 
 export const SUPPORTED_NETWORKS: SupportedNetworks = {
