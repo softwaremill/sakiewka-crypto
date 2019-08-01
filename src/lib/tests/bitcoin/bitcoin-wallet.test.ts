@@ -9,6 +9,8 @@ import * as pdfGen from '../../bitcoin/bitcoin-keycard-pdf'
 import { keyModuleFactory } from '../../bitcoin/bitcoin-key'
 import bitcoinFactory from '../../bitcoin/bitcoin'
 import { createHttpClient } from '../../utils/httpClient'
+import chaiAsPromised from 'chai-as-promised'
+import { API_ERROR } from '../../constants'
 
 const backendApi = backendApiFactory.withCurrency(
   'http://backendApiUrl',
@@ -22,11 +24,22 @@ const wallet = walletApiFactory(backendApi, keyModule)
 
 beforeEach(() => {
   use(chaiBigNumber(BigNumber))
+  use(chaiAsPromised)
 })
 
 describe('createWallet', () => {
   it('should exist', () => {
     expect(wallet.createWallet).to.be.a('function')
+  })
+
+  it('should fail if password is too short', async () => {
+    const promise = wallet.createWallet('abcd', {
+      passphrase: 'aaa',
+      name: 'testLabel',
+    })
+    await expect(promise)
+      .to.eventually.be.rejected.and.have.property('errors')
+      .that.deep.include(API_ERROR.PASSPHRASE_TOO_SHORT(8).errors[0])
   })
 
   it('should pass proper arguments to backend-api method and return result of its call', async () => {
@@ -40,7 +53,7 @@ describe('createWallet', () => {
     pdfGen.generatePdf = mockPdfGen
 
     const params = {
-      passphrase: 'abcd',
+      passphrase: 'abcdabcd',
       name: 'testLabel',
     }
 

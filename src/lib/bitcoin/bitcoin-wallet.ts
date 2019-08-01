@@ -1,7 +1,4 @@
-import {
-  CreateWalletParams,
-  Receipient,
-} from '../../types/domain/wallet'
+import { CreateWalletParams, Receipient } from '../../types/domain/wallet'
 import {
   CreateWalletResponse,
   EditWalletResponse,
@@ -12,7 +9,7 @@ import {
   ListUtxosByAddressResponse,
 } from '../../types/response/wallet'
 import { ListPoliciesForWalletResponse } from '../../types/response/policy'
-import { ROOT_DERIVATION_PATH } from '../constants'
+import { ROOT_DERIVATION_PATH, API_ERROR } from '../constants'
 import {
   GetUtxosBackendParams,
   CreateWalletBackendParams,
@@ -72,6 +69,10 @@ export const walletApiFactory = (
     userToken: string,
     params: CreateWalletParams,
   ): Promise<CreateWalletResponse> => {
+    const minPassphraseLength = 8
+    if (params.passphrase.length < minPassphraseLength) {
+      throw API_ERROR.PASSPHRASE_TOO_SHORT(minPassphraseLength)
+    }
     const userKeyPair = params.userPubKey
       ? { pubKey: params.userPubKey }
       : keyModule.deriveKeyPair(

@@ -43,6 +43,15 @@ export const API_ERROR = {
     ],
     code: 400,
   }),
+  PASSPHRASE_TOO_SHORT: (minLength: number) => ({
+    errors: [
+      {
+        message: `Passphrase must be longer than ${minLength - 1}!`,
+        code: 'SKC8',
+      },
+    ],
+    code: 400,
+  }),
 }
 
 export const SUPPORTED_NETWORKS: SupportedNetworks = {
