@@ -1,9 +1,9 @@
-import { WalletApi, walletApiFactory } from './eos-wallet'
+import { EosWalletApi, walletApiFactory } from './eos-wallet'
 import { EosBackendApi } from './eos-backend-api'
 import { keyModuleFactory } from './eos-key'
 
 export interface SakiewkaEosCurrencyApi {
-  wallet: WalletApi
+  wallet: EosWalletApi
 }
 
 export const eosApiFactory = (

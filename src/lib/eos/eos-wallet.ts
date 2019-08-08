@@ -13,7 +13,7 @@ import { ListPoliciesForWalletResponse } from '../../types/response/policy'
 import { KeyModule } from './eos-key'
 import { EosBackendApi } from './eos-backend-api'
 
-export interface WalletApi {
+export interface EosWalletApi {
   createWallet(userToken: string, params: CreateWalletParams): Promise<any>
 
   getWallet(userToken: string, walletId: string): Promise<GetWalletResponse>
@@ -47,7 +47,7 @@ export interface WalletApi {
 export const walletApiFactory = (
   backendApi: EosBackendApi,
   keyModule: KeyModule,
-): WalletApi => {
+): EosWalletApi => {
   const createWallet = async (
     userToken: string,
     params: CreateWalletParams,
