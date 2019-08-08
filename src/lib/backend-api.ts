@@ -418,11 +418,97 @@ export const create = (
   }
 }
 
+interface BackendCurrencyApi {
+  createWallet<T>(
+    userToken: string,
+    params: CreateWalletBackendParams,
+  ): Promise<T>
+  editWallet<T>(
+    userToken: string,
+    walletId: string,
+    newName: string,
+  ): Promise<T>
+  getWallet(token: string, walletId: string): Promise<GetWalletBackendResponse>
+  listWallets(
+    token: string,
+    limit: number,
+    searchPhrase?: string,
+    nextPageToken?: string,
+  ): Promise<ListWalletsBackendResponse>
+  listWebhooks(
+    token: string,
+    walletId: string,
+    limit: number,
+    nextPageToken?: string,
+  ): Promise<ListWebhooksBackendResponse>
+  getWebhook(
+    token: string,
+    walletId: string,
+    webhookId: string,
+  ): Promise<GetWebhookBackendResponse>
+  createWebhook(
+    token: string,
+    walletId: string,
+    callbackUrl: string,
+    settings: Object,
+  ): Promise<CreateWebhookBackendResponse>
+  deleteWebhook(
+    token: string,
+    walletId: string,
+    webhookId: string,
+  ): Promise<DeleteWebhookBackendResponse>
+  getAddress<T>(token: string, walletId: string, address: string): Promise<T>
+  listAddresses<T>(
+    token: string,
+    walletId: string,
+    limit: number,
+    nextPageToken?: string,
+  ): Promise<T>
+  getKey(
+    token: string,
+    keyId: string,
+    includePrivate?: boolean,
+  ): Promise<GetKeyBackendResponse>
+  createPolicy(
+    token: string,
+    params: CreatePolicyBackendParams,
+  ): Promise<CreatePolicyBackendResponse>
+  listPoliciesForWallet(
+    token: string,
+    walletId: string,
+  ): Promise<ListPoliciesForWalletBackendResponse>
+  listTransfers(
+    token: string,
+    walletId: string,
+    limit: number,
+    nextPageToken?: string,
+  ): Promise<ListTransfersBackendResponse>
+  findTransferByTxHash(
+    token: string,
+    walletId: string,
+    txHash: string,
+  ): Promise<FindTransferByTxHashBackendResponse>
+  listPolicies(
+    token: string,
+    limit: number,
+    nextPageToken?: string,
+  ): Promise<ListPoliciesBackendResponse>
+  assignPolicy(
+    token: string,
+    policyId: string,
+    assignParams: AssignPolicyBackendParams,
+  ): Promise<AssignPolicyBackendResponse>
+  listWalletsForPolicy(
+    token: string,
+    policyId: string,
+  ): Promise<ListWalletsForPolicyBackendResponse>
+}
+
 export const currencyApi = (
   backendApiUrl: string,
   currency: Currency,
   httpClient: HttpClient,
-) => {
+): BackendCurrencyApi => {
   // wallet
   const createWallet = async <T>(
     token: string,
