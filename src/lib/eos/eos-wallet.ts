@@ -3,6 +3,7 @@ import {
   ListWalletsResponse,
   GetWalletResponse,
   MaxTransferAmountResponse,
+  EditWalletResponse,
 } from '../../types/response/wallet'
 import {
   CreateWalletBackendParams,
@@ -12,7 +13,7 @@ import { ListPoliciesForWalletResponse } from '../../types/response/policy'
 import { KeyModule } from './eos-key'
 import { EosBackendApi } from './eos-backend-api'
 
-export interface WalletApi {
+export interface EosWalletApi {
   createWallet(userToken: string, params: CreateWalletParams): Promise<any>
 
   getWallet(userToken: string, walletId: string): Promise<GetWalletResponse>
@@ -35,12 +36,18 @@ export interface WalletApi {
     token: string,
     walletId: string,
   ): Promise<ListPoliciesForWalletResponse>
+
+  editWallet(
+    userToken: string,
+    walletId: string,
+    newName: string,
+  ): Promise<EditWalletResponse>
 }
 
 export const walletApiFactory = (
   backendApi: EosBackendApi,
   keyModule: KeyModule,
-): WalletApi => {
+): EosWalletApi => {
   const createWallet = async (
     userToken: string,
     params: CreateWalletParams,
@@ -82,6 +89,13 @@ export const walletApiFactory = (
     return { ...response }
   }
 
+  const editWallet = (
+    userToken: string,
+    walletId: string,
+    newName: string,
+  ): Promise<EditWalletResponse> =>
+    backendApi.editWallet(userToken, walletId, newName)
+
   const getWallet = (
     userToken: string,
     walletId: string,
@@ -116,6 +130,7 @@ export const walletApiFactory = (
 
   return {
     createWallet,
+    editWallet,
     getWallet,
     listWallets,
     maxTransferAmount,

@@ -15,7 +15,7 @@ import { btcToSatoshi, satoshiToBtc } from '../utils/helpers'
 import { decrypt } from '../crypto'
 import { API_ERROR } from '../constants'
 import { KeyModule } from './bitcoin-key'
-import { WalletApi } from './bitcoin-wallet'
+import { BitcoinWalletApi } from './bitcoin-wallet'
 import { BitcoinBackendApi } from './bitcoin-backend-api'
 import { BitcoinOperations } from './bitcoin-operations'
 
@@ -34,7 +34,7 @@ export const transactionApiFactory = (
   backendApi: BitcoinBackendApi,
   keyModule: KeyModule,
   bitcoin: BitcoinOperations,
-  walletApi: WalletApi,
+  walletApi: BitcoinWalletApi,
 ): TransactionApi => {
   const send = async (
     userToken: string,

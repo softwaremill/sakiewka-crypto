@@ -13,7 +13,10 @@ import {
   TransactionModule,
   transactionModuleFactory,
 } from './lib/bitcoin/bitcoin-transaction'
-import { WalletApi, walletApiFactory } from './lib/bitcoin/bitcoin-wallet'
+import {
+  BitcoinWalletApi,
+  walletApiFactory,
+} from './lib/bitcoin/bitcoin-wallet'
 import {
   KeyApi,
   keyApiFactory,
@@ -36,18 +39,27 @@ import {
   feeRatesApiFactory,
   FeeRatesApi,
 } from './lib/bitcoin/bitcoin-fee-rates'
+import {
+  eosModuleFactory,
+  SakiewkaEosModule,
+} from './lib/eos/eos-currency-module'
+import {
+  eosApiFactory,
+  SakiewkaEosCurrencyApi,
+} from './lib/eos/eos-currency-api'
 
-type SakiewkaCurrencyApis = { [P in Currency]?: SakiewkaCurrencyApi }
-
-export interface SakiewkaApi extends SakiewkaCurrencyApis {
+export interface SakiewkaApi {
   user: UserApi
   transfers: TransfersApi
+  [Currency.BTC]: SakiewkaCurrencyApi
+  [Currency.BTG]: SakiewkaCurrencyApi
+  [Currency.EOS]: SakiewkaEosCurrencyApi
 }
 
 export interface SakiewkaCurrencyApi {
   address: AddressApi
   transaction: TransactionApi
-  wallet: WalletApi
+  wallet: BitcoinWalletApi
   key: KeyApi
   webhooks: WebhooksApi
   policy: PolicyApi
@@ -59,9 +71,9 @@ export const sakiewkaApi = (
   sakiewkaBackend: SakiewkaBackend,
   chainInfo: string,
 ): SakiewkaApi => {
-  function createCurrencyApi(
+  function createBitcoinCurrencyApi(
     backendApi: SakiewkaBackend,
-    currency: Currency,
+    currency: Currency.BTC | Currency.BTG,
   ): SakiewkaCurrencyApi {
     const operationsModule = bitcoinOps(currency, chainInfo)
     const keyApi = keyApiFactory(backendApi[currency])
@@ -87,34 +99,51 @@ export const sakiewkaApi = (
   return {
     user: userApiFactory(sakiewkaBackend.core),
     transfers: transfersApiFactory(sakiewkaBackend.core),
-    [Currency.BTC]: createCurrencyApi(sakiewkaBackend, Currency.BTC),
-    [Currency.BTG]: createCurrencyApi(sakiewkaBackend, Currency.BTG),
+    [Currency.BTC]: createBitcoinCurrencyApi(sakiewkaBackend, Currency.BTC),
+    [Currency.BTG]: createBitcoinCurrencyApi(sakiewkaBackend, Currency.BTG),
+    [Currency.EOS]: eosApiFactory(sakiewkaBackend[Currency.EOS]),
   }
 }
 
-export interface SakiewkaModule {
+export interface SakiewkaBitcoinModule {
   transaction: TransactionModule
   address: AddressModule
   key: KeyModule
   bitcoin: BitcoinOperations
 }
 
-export const sakiewkaModule = (
-  currency: Currency,
-  btcNetwork: string,
-): SakiewkaModule => {
-  const bitcoinOperations = bitcoinOps(currency, btcNetwork)
-  const keyModule = keyModuleFactory(bitcoinOperations)
-  const transactionModule = transactionModuleFactory(
-    keyModule,
-    bitcoinOperations,
-  )
-  const addressModule = addressModuleFactory(bitcoinOperations, keyModule)
+export interface SakiewkaModule {
+  [Currency.BTC]: (btcNetwork: String) => SakiewkaBitcoinModule
+  [Currency.BTG]: (btcNetwork: String) => SakiewkaBitcoinModule
+  [Currency.EOS]: SakiewkaEosModule
+}
+
+export const sakiewkaModule = (): SakiewkaModule => {
+  function createBitcoinCurrencyModule(
+    currency: Currency.BTC | Currency.BTG,
+    btcNetwork: string,
+  ): SakiewkaBitcoinModule {
+    const bitcoinOperations = bitcoinOps(currency, btcNetwork)
+    const keyModule = keyModuleFactory(bitcoinOperations)
+    const transactionModule = transactionModuleFactory(
+      keyModule,
+      bitcoinOperations,
+    )
+    const addressModule = addressModuleFactory(bitcoinOperations, keyModule)
+    return {
+      transaction: transactionModule,
+      address: addressModule,
+      key: keyModule,
+      bitcoin: bitcoinOperations,
+    }
+  }
+
   return {
-    transaction: transactionModule,
-    address: addressModule,
-    key: keyModule,
-    bitcoin: bitcoinOperations,
+    [Currency.BTC]: (btcNetwork: string) =>
+      createBitcoinCurrencyModule(Currency.BTC, btcNetwork),
+    [Currency.BTG]: (btcNetwork: string) =>
+      createBitcoinCurrencyModule(Currency.BTG, btcNetwork),
+    [Currency.EOS]: eosModuleFactory(),
   }
 }
 

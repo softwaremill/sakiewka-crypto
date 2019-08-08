@@ -19,7 +19,7 @@ import { generatePdf } from './bitcoin-keycard-pdf'
 import { KeyModule } from './bitcoin-key'
 import { BitcoinBackendApi } from './bitcoin-backend-api'
 
-export interface WalletApi {
+export interface BitcoinWalletApi {
   createWallet(
     userToken: string,
     params: CreateWalletParams,
@@ -64,7 +64,7 @@ export interface WalletApi {
 export const walletApiFactory = (
   backendApi: BitcoinBackendApi,
   keyModule: KeyModule,
-): WalletApi => {
+): BitcoinWalletApi => {
   const createWallet = async (
     userToken: string,
     params: CreateWalletParams,
