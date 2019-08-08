@@ -6,6 +6,7 @@ export const ROOT_DERIVATION_PATH = "m/45'"
 export const BASE_API_PATH = 'api/v1.0'
 
 export const BAD_REQUEST_CODE = 'SKC3'
+export const INTERNAL_ERROR_CODE = 'SKC9'
 
 export const API_ERROR = {
   NOT_FOUND: {
