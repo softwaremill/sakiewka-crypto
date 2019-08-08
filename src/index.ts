@@ -45,15 +45,12 @@ import {
   SakiewkaEosCurrencyApi,
 } from './lib/eos/eos-currency-api'
 
-type SakiewkaCurrencyApis = {
-  [Currency.BTC]: SakiewkaCurrencyApi;
-  [Currency.BTG]: SakiewkaCurrencyApi;
-  [Currency.EOS]: SakiewkaEosCurrencyApi;
-}
-
-export interface SakiewkaApi extends SakiewkaCurrencyApis {
+export interface SakiewkaApi {
   user: UserApi
   transfers: TransfersApi
+  [Currency.BTC]: SakiewkaCurrencyApi
+  [Currency.BTG]: SakiewkaCurrencyApi
+  [Currency.EOS]: SakiewkaEosCurrencyApi
 }
 
 export interface SakiewkaCurrencyApi {
@@ -112,13 +109,11 @@ export interface SakiewkaBitcoinModule {
   bitcoin: BitcoinOperations
 }
 
-type SakiewkaCurrencyModules = {
-  [Currency.BTC]: (btcNetwork: String) => SakiewkaBitcoinModule;
-  [Currency.BTG]: (btcNetwork: String) => SakiewkaBitcoinModule;
-  [Currency.EOS]: SakiewkaEosModule;
+export interface SakiewkaModule {
+  [Currency.BTC]: (btcNetwork: String) => SakiewkaBitcoinModule
+  [Currency.BTG]: (btcNetwork: String) => SakiewkaBitcoinModule
+  [Currency.EOS]: SakiewkaEosModule
 }
-
-export interface SakiewkaModule extends SakiewkaCurrencyModules {}
 
 export const sakiewkaModule = (): SakiewkaModule => {
   function createBitcoinCurrencyModule(
