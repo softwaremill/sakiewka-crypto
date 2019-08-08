@@ -3,6 +3,7 @@ import {
   ListWalletsResponse,
   GetWalletResponse,
   MaxTransferAmountResponse,
+  EditWalletResponse,
 } from '../../types/response/wallet'
 import {
   CreateWalletBackendParams,
@@ -35,6 +36,12 @@ export interface WalletApi {
     token: string,
     walletId: string,
   ): Promise<ListPoliciesForWalletResponse>
+
+  editWallet(
+    userToken: string,
+    walletId: string,
+    newName: string,
+  ): Promise<EditWalletResponse>
 }
 
 export const walletApiFactory = (
@@ -82,6 +89,13 @@ export const walletApiFactory = (
     return { ...response }
   }
 
+  const editWallet = (
+    userToken: string,
+    walletId: string,
+    newName: string,
+  ): Promise<EditWalletResponse> =>
+    backendApi.editWallet(userToken, walletId, newName)
+
   const getWallet = (
     userToken: string,
     walletId: string,
@@ -116,6 +130,7 @@ export const walletApiFactory = (
 
   return {
     createWallet,
+    editWallet,
     getWallet,
     listWallets,
     maxTransferAmount,
