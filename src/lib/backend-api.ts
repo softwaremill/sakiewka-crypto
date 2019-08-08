@@ -47,8 +47,6 @@ import * as bitcoinBackendFactory from './bitcoin/bitcoin-backend-api'
 import * as eosBackendFactory from './eos/eos-backend-api'
 
 export interface SakiewkaBackend {
-  httpClient: HttpClient
-  backendApiUrl: string
   core: CoreBackendApi
   [Currency.BTC]: bitcoinBackendFactory.BitcoinBackendApi
   [Currency.BTG]: bitcoinBackendFactory.BitcoinBackendApi
@@ -79,8 +77,6 @@ export const backendFactory = (
   )
 
   return {
-    httpClient,
-    backendApiUrl,
     core: backendApi,
     [Currency.BTC]: btcBackendApi,
     [Currency.BTG]: btgBackendApi,

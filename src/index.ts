@@ -44,7 +44,6 @@ import {
   eosApiFactory,
   SakiewkaEosCurrencyApi,
 } from './lib/eos/eos-currency-api'
-import { eosBackendApiFactory } from './lib/eos/eos-backend-api'
 
 type SakiewkaCurrencyApis = {
   [Currency.BTC]: SakiewkaCurrencyApi;
@@ -102,12 +101,7 @@ export const sakiewkaApi = (
     transfers: transfersApiFactory(sakiewkaBackend.core),
     [Currency.BTC]: createBitcoinCurrencyApi(sakiewkaBackend, Currency.BTC),
     [Currency.BTG]: createBitcoinCurrencyApi(sakiewkaBackend, Currency.BTG),
-    [Currency.EOS]: eosApiFactory(
-      eosBackendApiFactory(
-        sakiewkaBackend.backendApiUrl,
-        sakiewkaBackend.httpClient,
-      ),
-    ),
+    [Currency.EOS]: eosApiFactory(sakiewkaBackend[Currency.EOS]),
   }
 }
 
