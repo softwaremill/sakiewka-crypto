@@ -7,7 +7,7 @@ import chaiBigNumber from 'chai-bignumber'
 import { keyModuleFactory } from '../../eos/eos-key'
 import { createHttpClient } from '../../utils/httpClient'
 
-const backendApi = backendApiFactory.create(
+const backendApi = backendApiFactory.eosBackendApiFactory(
   'http://backendApiUrl',
   createHttpClient(() => ''),
 )

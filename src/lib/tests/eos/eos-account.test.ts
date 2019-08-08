@@ -1,10 +1,10 @@
 import { expect } from 'chai'
-import { buildNewAccountTransaction } from '../../eos/eos-account'
-import moment from "moment";
+import { accountModuleFactory } from '../../eos/eos-account'
+import moment from 'moment'
 
 describe('eos account', () => {
   it('should create offline signed newaccount transaction', async () => {
-    const res = await buildNewAccountTransaction(
+    const res = await accountModuleFactory().buildNewAccountTransaction(
       'newacc',
       'creator',
       '5JLiZAmXhWWhTAab3YEXRSsJm4mybgFmE4DHb6Eqf9KZk9UbBci',
@@ -14,10 +14,18 @@ describe('eos account', () => {
       'EOS8AFvsywPipDmqUFiSSZTJWVnb5bk9sCo813jq1ewmd4SGpVsxs',
       1055,
       4035814219,
-      moment("2019-12-31")
+      moment('2019-12-31'),
     )
-    expect(res.signatures).to.deep.eq(['SIG_K1_K5o1uAhoY4gPHPWydo6SegkffGtDRts3tyE3LbgLF5LMkkV3qRXHeBhH79YzyCThyS8BszqvMyQCSjBXaJ589Kj4SwBAkt'],JSON.stringify(res))
-    expect(res.serializedTransaction).to.be.a('uint8array',JSON.stringify(res))
+    expect(res.signatures).to.deep.eq(
+      [
+        'SIG_K1_K5o1uAhoY4gPHPWydo6SegkffGtDRts3tyE3LbgLF5LMkkV3qRXHeBhH79YzyCThyS8BszqvMyQCSjBXaJ589Kj4SwBAkt',
+      ],
+      JSON.stringify(res),
+    )
+    expect(res.serializedTransaction).to.be.a(
+      'uint8array',
+      JSON.stringify(res),
+    )
     expect(res.serializedTransaction.length).to.eq(362)
   })
 })

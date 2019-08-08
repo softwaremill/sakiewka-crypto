@@ -44,11 +44,15 @@ import {
 } from './utils/httpClient'
 import { Currency } from '..'
 import * as bitcoinBackendFactory from './bitcoin/bitcoin-backend-api'
+import * as eosBackendFactory from './eos/eos-backend-api'
 
 export interface SakiewkaBackend {
+  httpClient: HttpClient
+  backendApiUrl: string
   core: CoreBackendApi
   [Currency.BTC]: bitcoinBackendFactory.BitcoinBackendApi
   [Currency.BTG]: bitcoinBackendFactory.BitcoinBackendApi
+  [Currency.EOS]: eosBackendFactory.EosBackendApi
 }
 
 export type CorrelationIdGetter = () => string
@@ -69,10 +73,18 @@ export const backendFactory = (
     Currency.BTG,
     httpClient,
   )
+  const eosBackendApi = eosBackendFactory.eosBackendApiFactory(
+    backendApiUrl,
+    httpClient,
+  )
+
   return {
+    httpClient,
+    backendApiUrl,
     core: backendApi,
     [Currency.BTC]: btcBackendApi,
     [Currency.BTG]: btgBackendApi,
+    [Currency.EOS]: eosBackendApi,
   }
 }
 

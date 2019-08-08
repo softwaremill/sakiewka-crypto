@@ -36,7 +36,7 @@ export interface EosBackendApi {
   ): Promise<ListPoliciesForWalletBackendResponse>
 }
 
-export const create = (
+export const eosBackendApiFactory = (
   backendApiUrl: string,
   httpClient: HttpClient,
 ): EosBackendApi => {
