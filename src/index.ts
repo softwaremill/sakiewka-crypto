@@ -13,7 +13,10 @@ import {
   TransactionModule,
   transactionModuleFactory,
 } from './lib/bitcoin/bitcoin-transaction'
-import { WalletApi, walletApiFactory } from './lib/bitcoin/bitcoin-wallet'
+import {
+  BitcoinWalletApi,
+  walletApiFactory,
+} from './lib/bitcoin/bitcoin-wallet'
 import {
   KeyApi,
   keyApiFactory,
@@ -56,7 +59,7 @@ export interface SakiewkaApi {
 export interface SakiewkaCurrencyApi {
   address: AddressApi
   transaction: TransactionApi
-  wallet: WalletApi
+  wallet: BitcoinWalletApi
   key: KeyApi
   webhooks: WebhooksApi
   policy: PolicyApi
