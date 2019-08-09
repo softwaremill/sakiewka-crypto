@@ -13,10 +13,10 @@ export const API_ERROR = {
     errors: [{ message: 'Not found', code: 'SKC1' }],
     code: 404,
   },
-  SERVER_ERROR: {
-    errors: [{ message: 'Server error', code: 'SKC2' }],
+  SERVER_ERROR: (message: string = 'Server error') => ({
+    errors: [{ message, code: 'SKC2' }],
     code: 500,
-  },
+  }),
   BAD_REQUEST: (message: string = 'Malformed request') => ({
     errors: [{ message, code: BAD_REQUEST_CODE }],
     code: 400,
