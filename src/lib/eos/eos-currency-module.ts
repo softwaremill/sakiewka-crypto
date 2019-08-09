@@ -6,9 +6,9 @@ export interface SakiewkaEosModule {
   key: KeyModule
 }
 
-export const eosModuleFactory = (): SakiewkaEosModule => {
+export const eosModuleFactory = (chainId: string): SakiewkaEosModule => {
   return {
-    account: accountModuleFactory(),
+    account: accountModuleFactory(chainId),
     key: keyModuleFactory(),
   }
 }

@@ -113,9 +113,9 @@ export interface SakiewkaBitcoinModule {
 }
 
 export interface SakiewkaModule {
-  [Currency.BTC]: (btcNetwork: String) => SakiewkaBitcoinModule
-  [Currency.BTG]: (btcNetwork: String) => SakiewkaBitcoinModule
-  [Currency.EOS]: SakiewkaEosModule
+  [Currency.BTC]: (btcNetwork: string) => SakiewkaBitcoinModule
+  [Currency.BTG]: (btcNetwork: string) => SakiewkaBitcoinModule
+  [Currency.EOS]: (chainId: string) => SakiewkaEosModule
 }
 
 export const sakiewkaModule = (): SakiewkaModule => {
@@ -143,7 +143,7 @@ export const sakiewkaModule = (): SakiewkaModule => {
       createBitcoinCurrencyModule(Currency.BTC, btcNetwork),
     [Currency.BTG]: (btcNetwork: string) =>
       createBitcoinCurrencyModule(Currency.BTG, btcNetwork),
-    [Currency.EOS]: eosModuleFactory(),
+    [Currency.EOS]: (chainId: string) => eosModuleFactory(chainId),
   }
 }
 

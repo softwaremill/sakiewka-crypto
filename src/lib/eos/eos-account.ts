@@ -16,7 +16,6 @@ export interface AccountModule {
     newAccountName: string,
     creatorName: string,
     creatorPrvKey: string,
-    chainId: string,
     userKey: string,
     backupKey: string,
     serviceKey: string,
@@ -26,9 +25,31 @@ export interface AccountModule {
   ): Promise<any>
 }
 
-export const accountModuleFactory = (): AccountModule => {
+export const accountModuleFactory = (chainId: string): AccountModule => {
   return {
-    buildNewAccountTransaction,
+    buildNewAccountTransaction: (
+      newAccountName: string,
+      creatorName: string,
+      creatorPrvKey: string,
+      userKey: string,
+      backupKey: string,
+      serviceKey: string,
+      refBlockNum: number,
+      refBlockPrefix: number,
+      now?: moment.Moment,
+    ) =>
+      buildNewAccountTransaction(
+        newAccountName,
+        creatorName,
+        creatorPrvKey,
+        chainId,
+        userKey,
+        backupKey,
+        serviceKey,
+        refBlockNum,
+        refBlockPrefix,
+        now,
+      ),
   }
 }
 

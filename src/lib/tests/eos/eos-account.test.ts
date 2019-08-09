@@ -4,11 +4,12 @@ import moment from 'moment'
 
 describe('eos account', () => {
   it('should create offline signed newaccount transaction', async () => {
-    const res = await accountModuleFactory().buildNewAccountTransaction(
+    const res = await accountModuleFactory(
+      'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
+    ).buildNewAccountTransaction(
       'newacc',
       'creator',
       '5JLiZAmXhWWhTAab3YEXRSsJm4mybgFmE4DHb6Eqf9KZk9UbBci',
-      'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
       'EOS7q6ny3Hmbm9oCgUh7NqbfvQauiBqBQRVDB5NH1aQr2QLa4EA3r',
       'EOS6ocq7DSmtpbjtzodGAvLNbwtJUK3mYKvUUG3Sot8CLWtbPgh4g',
       'EOS8AFvsywPipDmqUFiSSZTJWVnb5bk9sCo813jq1ewmd4SGpVsxs',
