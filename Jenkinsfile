@@ -6,11 +6,10 @@ String getGitCommitHash() {
     return sh(script: 'git rev-parse HEAD', returnStdout: true)?.trim()
 }
 
-def label = "node10-${UUID.randomUUID().toString()}"
 def serviceAccount = "jenkins"
 podFactory.withNode10 {
     podFactory.withServiceAccount(serviceAccount) {
-        node(label) {
+        node(POD_LABEL) {
             stage('Checkout') {
                 checkout scm
                 gitCommitHash = getGitCommitHash()
