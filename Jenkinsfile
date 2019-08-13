@@ -2,17 +2,13 @@
 
 @Library('sml-common')
 
-String getGitCommitHash() {
-    return sh(script: 'git rev-parse HEAD', returnStdout: true)?.trim()
-}
-
 def serviceAccount = "jenkins"
 podFactory.withNode10 {
     podFactory.withServiceAccount(serviceAccount) {
         node(POD_LABEL) {
             stage('Checkout') {
                 checkout scm
-                gitCommitHash = getGitCommitHash()
+                gitCommitHash = git.getShortCommitHash()
             }
             try{
                 container('node10') {
