@@ -120,7 +120,7 @@ const buildNewAccountTransaction = async (
 
   const sortedActiveKeys = [userKey,backupKey,serviceKey].sort()
   if(sortedActiveKeys.length < 3){
-    throw new Error(`Keys are missing userKey=${userKey} backupKey=${backupKey} serviceKey=${serviceKey}`)
+    throw new Error(`Keys are missing userKey=${userKey} backupKey=${backupKey} serviceKey=${serviceKey} sortedActiveKeys=${sortedActiveKeys}`)
   }
 
   const transaction = {
