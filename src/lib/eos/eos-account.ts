@@ -116,6 +116,13 @@ const buildNewAccountTransaction = async (
     textDecoder: new TextDecoder(),
     textEncoder: new TextEncoder(),
   })
+
+
+  const sortedActiveKeys = [userKey,backupKey,serviceKey].sort()
+  if(sortedActiveKeys.length < 3){
+    throw new Error(`Keys are missing userKey=${userKey} backupKey=${backupKey} serviceKey=${serviceKey}`)
+  }
+
   const transaction = {
     actions: [
       {
@@ -131,20 +138,10 @@ const buildNewAccountTransaction = async (
           creator: creatorName,
           name: newAccountName,
           active: {
-            keys: [
-              {
-                key: userKey,
-                weight: 1,
-              },
-              {
-                key: backupKey,
-                weight: 1,
-              },
-              {
-                key: serviceKey,
-                weight: 1,
-              },
-            ],
+            keys: sortedActiveKeys.map(key => ({
+              key:key,
+              weight:1
+            })),
             threshold: 2,
             accounts: [],
             waits: [],
