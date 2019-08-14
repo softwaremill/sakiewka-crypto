@@ -1,20 +1,19 @@
 import { expect } from 'chai'
 
-import { keyModuleFactory } from '../../eos/eos-key'
-import { PrivateKey } from 'eosjs-ecc'
+import { eosKeyModuleFactory } from '../../eos/eos-key'
 
-const keyModule = keyModuleFactory()
+const keyModule = eosKeyModuleFactory()
 
 describe('deriveKeyPair', () => {
   it('should create new keyPair with derived pubKey', () => {
-    const result = keyModule.deriveKey(
-      'KxFAzT7QM1ezWbu83MjTiWeRDYmRv6TEZkvZsUgtxsEY69wMcjpA',
+    const result = keyModule.deriveKeyPair(
+      {prvKey:'KxFAzT7QM1ezWbu83MjTiWeRDYmRv6TEZkvZsUgtxsEY69wMcjpA',pubKey:'EOS7dmmArn981QQtC4h3XrpTfepRfHw3ALmeEt58GNxjM6kueKEk8'},
       '1',
     )
-    expect(result.toString()).to.eq(
+    expect(result.prvKey).to.eq(
       '5HuYhazz1EhGNA1BnUxcxvqF2XyeB6z6tkwngQYDw1c8JzXSj2x',
     )
-    expect(result.toPublic().toString()).to.eq(
+    expect(result.pubKey).to.eq(
       'EOS611o2E8845Qsew3xmPAnH5MCz7B3TWZaSVMD6BTsyYaobybxB8',
     )
   })
@@ -22,14 +21,13 @@ describe('deriveKeyPair', () => {
 
 describe('generateNewKey', () => {
   it('should return new key', async () => {
-    const result = await keyModule.generateNewKey()
+    const result = await keyModule.generateNewKeyPair()
 
-    expect(result.toString()).to.have.lengthOf(51)
-    expect(result.toPublic().toString()).to.have.lengthOf(53)
+    expect(result.prvKey).to.have.lengthOf(51)
+    expect(result.pubKey).to.have.lengthOf(53)
     expect(
       result
-        .toPublic()
-        .toString()
+        .pubKey
         .slice(0, 3),
     ).to.eq('EOS')
   })
@@ -37,17 +35,13 @@ describe('generateNewKey', () => {
 
 describe('encrypt/decrypt Key', () => {
   it('should encryp/decrypt keyPair', () => {
-    const keyAsString = '5Jf4zZa4MAF8StLxc4VvLGHruum48pYufUbVYgZfLmWZK4nCERE'
-    const key = PrivateKey(keyAsString)
-    const encryptedResults = keyModule.encryptKey(key, 'pass')
+    const keyPair = { prvKey:'5Jf4zZa4MAF8StLxc4VvLGHruum48pYufUbVYgZfLmWZK4nCERE',pubKey: 'EOS6V8g6491aR6iJqk1gNET6mscAqw3vwu36TTjPnqBKvcpguqhWa' }
+    const encryptedResults = keyModule.encryptKeyPair(keyPair, 'pass')
 
-    expect(JSON.parse(encryptedResults)).to.haveOwnProperty('cipher')
+    expect(JSON.parse(encryptedResults.prvKey!)).to.haveOwnProperty('cipher')
 
-    const decryptedResults = keyModule.decryptKey(encryptedResults, 'pass')
-    expect(decryptedResults.toString()).to.eq(keyAsString)
-    expect(decryptedResults.toPublic().toString()).to.eq(
-      key.toPublic().toString(),
-    )
-    expect(JSON.stringify(decryptedResults)).to.eq(JSON.stringify(key))
+    const decryptedResults = keyModule.decryptKeyPair(encryptedResults, 'pass')
+    expect(decryptedResults.prvKey).to.eq(keyPair.prvKey)
+    expect(decryptedResults.pubKey).to.eq(keyPair.pubKey)
   })
 })
