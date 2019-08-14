@@ -10,7 +10,7 @@ import {
   MaxTransferAmountEosBackendParams,
 } from '../../types/api/wallet'
 import { ListPoliciesForWalletResponse } from '../../types/response/policy'
-import { KeyModule } from './eos-key'
+import { EosKeyModule } from './eos-key'
 import { EosBackendApi } from './eos-backend-api'
 
 export interface EosWalletApi {
@@ -46,7 +46,7 @@ export interface EosWalletApi {
 
 export const walletApiFactory = (
   backendApi: EosBackendApi,
-  keyModule: KeyModule,
+  keyModule: EosKeyModule,
 ): EosWalletApi => {
   const createWallet = async (
     userToken: string,
