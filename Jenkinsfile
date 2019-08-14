@@ -1,7 +1,4 @@
-#!/usr/bin/env groovy
-
-@Library('sml-common') l1
-@Library('sakiewka-jenkins-library') l2
+@Library(['sml-common', 'sakiewka-jenkins-library']) _
 
 podFactory.withNode10 {
     podFactory.withSakiewkaSettings {
