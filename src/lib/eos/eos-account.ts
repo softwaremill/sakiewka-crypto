@@ -53,16 +53,6 @@ export const accountModuleFactory = (chainId: string): AccountModule => {
   }
 }
 
-function arrayToHex(data: Uint8Array) {
-  let result = '';
-  for (const x of data) {
-    result += ('00' + x.toString(16)).slice(-2);
-  }
-  return result;
-}
-
-
-
 /*
   Constructs transaction completely offline
  * chainId - can be queried from /chain_info
@@ -199,6 +189,6 @@ const buildNewAccountTransaction = async (
   const response = await api.transact(transaction, { broadcast: false, sign: true })
   return {
     signature: response.signatures[0],
-    serializedTransaction: arrayToHex(response.serializedTransaction)
+    serializedTransaction: Buffer.from(response.serializedTransaction).toString('hex')
   }
 }
