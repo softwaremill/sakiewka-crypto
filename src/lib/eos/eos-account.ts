@@ -60,7 +60,7 @@ export const accountModuleFactory = (chainId: string): AccountModule => {
  * refBlockPrefix - can be queried from /get_block on the newest block
  * now - used for testing to mock current time
 */
-const buildNewAccountTransaction = (
+const buildNewAccountTransaction = async (
   newAccountName: string,
   creatorName: string,
   creatorPrvKey: string,
@@ -93,7 +93,7 @@ const buildNewAccountTransaction = (
     },
   }
   const expiration = (now || moment())
-    .add(2, 'hours')
+    .add(30, 'minutes')
     .toDate()
     .toString()
   const rpc = new JsonRpc('http://should-never-be-called') // The transaction is created offline but eosjs api requires providing nodeos url
@@ -106,6 +106,13 @@ const buildNewAccountTransaction = (
     textDecoder: new TextDecoder(),
     textEncoder: new TextEncoder(),
   })
+
+
+  const sortedActiveKeys = [userKey,backupKey,serviceKey].sort()
+  if(sortedActiveKeys.length < 3){
+    throw new Error(`Keys are missing userKey=${userKey} backupKey=${backupKey} serviceKey=${serviceKey} sortedActiveKeys=${sortedActiveKeys}`)
+  }
+
   const transaction = {
     actions: [
       {
@@ -121,20 +128,10 @@ const buildNewAccountTransaction = (
           creator: creatorName,
           name: newAccountName,
           active: {
-            keys: [
-              {
-                key: userKey,
-                weight: 1,
-              },
-              {
-                key: backupKey,
-                weight: 1,
-              },
-              {
-                key: serviceKey,
-                weight: 1,
-              },
-            ],
+            keys: sortedActiveKeys.map(key => ({
+              key:key,
+              weight:1
+            })),
             threshold: 2,
             accounts: [],
             waits: [],
@@ -189,5 +186,9 @@ const buildNewAccountTransaction = (
     ref_block_num: refBlockNum,
     ref_block_prefix: refBlockPrefix,
   }
-  return api.transact(transaction, { broadcast: false, sign: true })
+  const response = await api.transact(transaction, { broadcast: false, sign: true })
+  return {
+    signature: response.signatures[0],
+    serializedTransaction: Buffer.from(response.serializedTransaction).toString('hex')
+  }
 }
