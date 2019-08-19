@@ -8,26 +8,15 @@ podFactory.withNode10 {
                     checkout scm
                     gitCommitHash = git.getShortCommitHash()
                 }
-                try{
-                    container('node10') {
-                        stage('Execute test') {
-                            sh """
-                            set -e
-                            npm ci
-                            npm run-script build
-                            npm test
-                            """
-                        }
+                container('node10') {
+                    stage('Execute test') {
+                        sh """
+                        set -e
+                        npm ci
+                        npm run-script build
+                        npm test
+                        """
                     }
-                } catch(e) {
-                    currentBuild.result = 'FAILED'
-                    throw e
-                } finally  {
-                    slackNotify(
-                        buildStatus: currentBuild.currentResult,
-                        slackChannel: "#sakiewka",
-                        slackTeam: "softwaremill",
-                        slackTokenCredentialId: 'sml-slack-token')
                 }
             }
         }
