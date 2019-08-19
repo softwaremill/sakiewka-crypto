@@ -94,8 +94,8 @@ const buildNewAccountTransaction = async (
   }
   const expiration = (now || moment())
     .add(30, 'minutes')
-    .format('YYYY-MM-DDTHH:mm:ss.SSS')
-  console.log(expiration)
+    .toDate()
+    .toISOString()
   const rpc = new JsonRpc('http://should-never-be-called') // The transaction is created offline but eosjs api requires providing nodeos url
   const api = new Api({
     rpc,
