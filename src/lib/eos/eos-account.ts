@@ -95,7 +95,7 @@ const buildNewAccountTransaction = async (
   const expiration = (now || moment())
     .add(30, 'minutes')
     .toDate()
-    .toString()
+    .toISOString()
   const rpc = new JsonRpc('http://should-never-be-called') // The transaction is created offline but eosjs api requires providing nodeos url
   const api = new Api({
     rpc,
@@ -107,10 +107,11 @@ const buildNewAccountTransaction = async (
     textEncoder: new TextEncoder(),
   })
 
-
-  const sortedActiveKeys = [userKey,backupKey,serviceKey].sort()
-  if(sortedActiveKeys.length < 3){
-    throw new Error(`Keys are missing userKey=${userKey} backupKey=${backupKey} serviceKey=${serviceKey} sortedActiveKeys=${sortedActiveKeys}`)
+  const sortedActiveKeys = [userKey, backupKey, serviceKey].sort()
+  if (sortedActiveKeys.length < 3) {
+    throw new Error(
+      `Keys are missing userKey=${userKey} backupKey=${backupKey} serviceKey=${serviceKey} sortedActiveKeys=${sortedActiveKeys}`,
+    )
   }
 
   const transaction = {
@@ -129,8 +130,8 @@ const buildNewAccountTransaction = async (
           name: newAccountName,
           active: {
             keys: sortedActiveKeys.map(key => ({
-              key:key,
-              weight:1
+              key,
+              weight: 1,
             })),
             threshold: 2,
             accounts: [],
@@ -186,9 +187,14 @@ const buildNewAccountTransaction = async (
     ref_block_num: refBlockNum,
     ref_block_prefix: refBlockPrefix,
   }
-  const response = await api.transact(transaction, { broadcast: false, sign: true })
+  const response = await api.transact(transaction, {
+    broadcast: false,
+    sign: true,
+  })
   return {
     signature: response.signatures[0],
-    serializedTransaction: Buffer.from(response.serializedTransaction).toString('hex')
+    serializedTransaction: Buffer.from(response.serializedTransaction).toString(
+      'hex',
+    ),
   }
 }
