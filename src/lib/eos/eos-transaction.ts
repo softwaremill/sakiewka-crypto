@@ -106,11 +106,8 @@ const packedTransfer = async (
     broadcast: false,
     sign: false,
   })
-  console.log(response)
   return {
-    serializedTransaction: Buffer.from(response.serializedTransaction).toString(
-      'hex',
-    ),
+    serializedTransaction: response.serializedTransaction,
   }
 }
 
