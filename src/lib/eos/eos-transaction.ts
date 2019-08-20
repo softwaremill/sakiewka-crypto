@@ -104,10 +104,10 @@ const packedTransfer = async (
   )
   const response = await api.transact(t, {
     broadcast: false,
-    sign: true,
+    sign: false,
   })
+  console.log(response)
   return {
-    signature: response.signatures,
     serializedTransaction: Buffer.from(response.serializedTransaction).toString(
       'hex',
     ),
