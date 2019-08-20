@@ -107,7 +107,7 @@ const packedTransfer = async (
     sign: true,
   })
   return {
-    signature: response.signatures[0],
+    signature: response.signatures,
     serializedTransaction: Buffer.from(response.serializedTransaction).toString(
       'hex',
     ),
