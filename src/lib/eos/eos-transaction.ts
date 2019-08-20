@@ -11,7 +11,7 @@ import { PrivateKey } from 'eosjs-ecc'
 
 const { TextDecoder, TextEncoder } = require('util')
 
-export interface TransactionModule {
+export interface EosTransactionModule {
   transfer(
     privateKeys: string[],
     refBlockNumber: number,
@@ -23,9 +23,9 @@ export interface TransactionModule {
   ): Promise<any>
 }
 
-export const transactionModuleFactory = (
+export const eosTransactionModuleFactory = (
   chainId: string,
-): TransactionModule => {
+): EosTransactionModule => {
   return {
     transfer: (
       privateKeys: string[],
