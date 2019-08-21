@@ -143,10 +143,3 @@ const signTx = async (
   })
   return s2.signatures[0]
 }
-
-// utworzyc transakcje
-// podpisac (funkcja)
-// wyslac do api
-// podpisac (funkcja)
-
-/// TODO skoptiowac kod tworzenia tx, przyjac tx jako param i single key, uzyc sign = true i zrobic to dwa razy
