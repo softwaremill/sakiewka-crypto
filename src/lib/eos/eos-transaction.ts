@@ -48,7 +48,7 @@ export const eosTransactionModuleFactory = (
       ),
   }
 }
-
+// @ts-ignore
 const packedTransfer = async (
   chainId: string,
   privateKeys: string[],
@@ -138,11 +138,11 @@ const packedTransfer2 = async (
     .toString()
   const api = new Api({
     // @ts-ignore
-    rpc: null,
+    rpc: null as JsonRpc,
     // @ts-ignore
-    signatureProvider: null,
+    signatureProvider: null as JsSignatureProvider,
     // @ts-ignore
-    authorityProvider: null,
+    authorityProvider: null as AuthorityProvider,
     abiProvider,
     chainId,
     textDecoder: new TextDecoder(),
