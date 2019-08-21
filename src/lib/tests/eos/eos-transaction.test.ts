@@ -16,7 +16,7 @@ describe('eos transaction', () => {
       refBlockPrefix,
       'someaccount2',
       'accfeeclctor',
-      '5.0000 EOS',
+      { amount: '5.0000', currency: 'EOS' },
       currentTime,
     )
     expect(tx).to.be.eq(

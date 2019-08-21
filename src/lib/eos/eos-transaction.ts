@@ -13,7 +13,7 @@ export interface EosTransactionModule {
     refBlockPrefix: number,
     from: string,
     to: string,
-    quantity: string,
+    quantity: { amount: string; currency: string },
     now?: moment.Moment,
   ): Promise<string>
   signTx(prvKey: string, serializedTransaction: string): Promise<string>
@@ -28,7 +28,7 @@ export const eosTransactionModuleFactory = (
       refBlockPrefix: number,
       from: string,
       to: string,
-      quantity: string,
+      quantity: { amount: string; currency: string },
       now?: moment.Moment,
     ) =>
       createTransferTx(
@@ -37,7 +37,8 @@ export const eosTransactionModuleFactory = (
         refBlockPrefix,
         from,
         to,
-        quantity,
+        quantity.amount,
+        quantity.currency,
         now,
       ),
     signTx: (prvKey: string, serializedTransaction: string) =>
@@ -51,7 +52,8 @@ const createTransferTx = async (
   refBlockPrefix: number,
   from: string,
   to: string,
-  quantity: string,
+  amount: string,
+  currency: string,
   now?: moment.Moment,
 ): Promise<string> => {
   const abiProvider = {
@@ -85,7 +87,7 @@ const createTransferTx = async (
     refBlockPrefix,
     from,
     to,
-    quantity,
+    `${amount} ${currency}`,
   )
   const response = await api.transact(t, {
     broadcast: false,
