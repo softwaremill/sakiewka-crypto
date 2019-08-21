@@ -3,9 +3,17 @@ import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig'
 import { AuthorityProvider, BinaryAbi } from 'eosjs/dist/eosjs-api-interfaces'
 import { base64ToBinary } from 'eosjs/dist/eosjs-numeric'
 import moment from 'moment'
+import {
+  Transaction,
+  TransferActionData,
+} from '../../types/domain/eos/transaction'
 import { PrivateKey } from 'eosjs-ecc'
 
 const { TextDecoder, TextEncoder } = require('util')
+// This base64 encoded eosio.token abi
+// Once you install the contract you can get the base64 version by calling curl --request POST --data '{"account_name":"eosio.token"}' --url http://127.0.0.1:8888/v1/chain/get_raw_abi
+const eosioTokenBase64Abi =
+  'DmVvc2lvOjphYmkvMS4xAAgHYWNjb3VudAABB2JhbGFuY2UFYXNzZXQFY2xvc2UAAgVvd25lcgRuYW1lBnN5bWJvbAZzeW1ib2wGY3JlYXRlAAIGaXNzdWVyBG5hbWUObWF4aW11bV9zdXBwbHkFYXNzZXQOY3VycmVuY3lfc3RhdHMAAwZzdXBwbHkFYXNzZXQKbWF4X3N1cHBseQVhc3NldAZpc3N1ZXIEbmFtZQVpc3N1ZQADAnRvBG5hbWUIcXVhbnRpdHkFYXNzZXQEbWVtbwZzdHJpbmcEb3BlbgADBW93bmVyBG5hbWUGc3ltYm9sBnN5bWJvbAlyYW1fcGF5ZXIEbmFtZQZyZXRpcmUAAghxdWFudGl0eQVhc3NldARtZW1vBnN0cmluZwh0cmFuc2ZlcgAEBGZyb20EbmFtZQJ0bwRuYW1lCHF1YW50aXR5BWFzc2V0BG1lbW8Gc3RyaW5nBgAAAAAAhWlEBWNsb3NlAAAAAACobNRFBmNyZWF0ZQAAAAAAAKUxdgVpc3N1ZQAAAAAAADBVpQRvcGVuAAAAAACo67K6BnJldGlyZQAAAABXLTzNzQh0cmFuc2ZlcgACAAAAOE9NETIDaTY0AAAHYWNjb3VudAAAAAAAkE3GA2k2NAAADmN1cnJlbmN5X3N0YXRzAAAAAA==='
 
 export interface EosTransactionModule {
   createTransferTx(
@@ -15,8 +23,12 @@ export interface EosTransactionModule {
     to: string,
     quantity: { amount: string; currency: string },
     now?: moment.Moment,
+    memo?: string,
   ): Promise<string>
   signTx(prvKey: string, serializedTransaction: string): Promise<string>
+  decodeTransferTransaction(
+    txHex: string,
+  ): Promise<Transaction<TransferActionData>>
 }
 
 export const eosTransactionModuleFactory = (
@@ -30,6 +42,7 @@ export const eosTransactionModuleFactory = (
       to: string,
       quantity: { amount: string; currency: string },
       now?: moment.Moment,
+      memo?: string,
     ) =>
       createTransferTx(
         chainId,
@@ -40,9 +53,11 @@ export const eosTransactionModuleFactory = (
         quantity.amount,
         quantity.currency,
         now,
+        memo,
       ),
     signTx: (prvKey: string, serializedTransaction: string) =>
       signTx(chainId, prvKey, serializedTransaction),
+    decodeTransferTransaction,
   }
 }
 
@@ -55,14 +70,14 @@ const createTransferTx = async (
   amount: string,
   currency: string,
   now?: moment.Moment,
+  memo?: string,
 ): Promise<string> => {
   const abiProvider = {
     getRawAbi: (accountName: string): Promise<BinaryAbi> => {
-      // This base64 encoded eosio.token abi
-      // Once you install the contract you can get the base64 version by calling curl --request POST --data '{"account_name":"eosio.token"}' --url http://127.0.0.1:8888/v1/chain/get_raw_abi
-      const base64Abi =
-        'DmVvc2lvOjphYmkvMS4xAAgHYWNjb3VudAABB2JhbGFuY2UFYXNzZXQFY2xvc2UAAgVvd25lcgRuYW1lBnN5bWJvbAZzeW1ib2wGY3JlYXRlAAIGaXNzdWVyBG5hbWUObWF4aW11bV9zdXBwbHkFYXNzZXQOY3VycmVuY3lfc3RhdHMAAwZzdXBwbHkFYXNzZXQKbWF4X3N1cHBseQVhc3NldAZpc3N1ZXIEbmFtZQVpc3N1ZQADAnRvBG5hbWUIcXVhbnRpdHkFYXNzZXQEbWVtbwZzdHJpbmcEb3BlbgADBW93bmVyBG5hbWUGc3ltYm9sBnN5bWJvbAlyYW1fcGF5ZXIEbmFtZQZyZXRpcmUAAghxdWFudGl0eQVhc3NldARtZW1vBnN0cmluZwh0cmFuc2ZlcgAEBGZyb20EbmFtZQJ0bwRuYW1lCHF1YW50aXR5BWFzc2V0BG1lbW8Gc3RyaW5nBgAAAAAAhWlEBWNsb3NlAAAAAACobNRFBmNyZWF0ZQAAAAAAAKUxdgVpc3N1ZQAAAAAAADBVpQRvcGVuAAAAAACo67K6BnJldGlyZQAAAABXLTzNzQh0cmFuc2ZlcgACAAAAOE9NETIDaTY0AAAHYWNjb3VudAAAAAAAkE3GA2k2NAAADmN1cnJlbmN5X3N0YXRzAAAAAA==='
-      return Promise.resolve({ abi: base64ToBinary(base64Abi), accountName })
+      return Promise.resolve({
+        abi: base64ToBinary(eosioTokenBase64Abi),
+        accountName,
+      })
     },
   }
   const expiration = (now || moment())
@@ -88,6 +103,7 @@ const createTransferTx = async (
     from,
     to,
     `${amount} ${currency}`,
+    memo || '', // TODO moze dac tutaj jakis random number, albo correlationId?
   )
   const response = await api.transact(t, {
     broadcast: false,
@@ -103,6 +119,7 @@ const transfer = (
   from: string,
   to: string,
   quantity: string,
+  memo: string,
 ) => ({
   expiration,
   ref_block_num: refBlockNumber,
@@ -121,7 +138,7 @@ const transfer = (
         from,
         to,
         quantity,
-        memo: 'x',
+        memo,
       },
     },
   ],
@@ -144,4 +161,27 @@ const signTx = async (
     abis: [],
   })
   return s2.signatures[0]
+}
+
+const decodeTransferTransaction = async (
+  txHex: string,
+): Promise<Transaction<TransferActionData>> => {
+  const abiProvider = {
+    getRawAbi: (accountName: string): Promise<BinaryAbi> => {
+      return Promise.resolve({
+        abi: base64ToBinary(eosioTokenBase64Abi),
+        accountName,
+      })
+    },
+  }
+  const api = new Api({
+    // @ts-ignore
+    rpc: null as JsonRpc,
+    // @ts-ignore
+    signatureProvider: null as JsSignatureProvider,
+    abiProvider,
+    textDecoder: new TextDecoder(),
+    textEncoder: new TextEncoder(),
+  })
+  return await api.deserializeTransactionWithActions(txHex)
 }
