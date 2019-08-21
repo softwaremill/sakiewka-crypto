@@ -104,10 +104,13 @@ const packedTransfer = async (
   )
   const response = await api.transact(t, {
     broadcast: false,
-    sign: false,
+    sign: true,
   })
   return {
-    serializedTransaction: response.serializedTransaction,
+    signature: response.signatures[0],
+    serializedTransaction: Buffer.from(response.serializedTransaction).toString(
+      'hex',
+    ),
   }
 }
 
@@ -146,3 +149,5 @@ const transfer = (
 // podpisac (funkcja)
 // wyslac do api
 // podpisac (funkcja)
+
+/// TODO skoptiowac kod tworzenia tx, przyjac tx jako param i single key, uzyc sign = true i zrobic to dwa razy
