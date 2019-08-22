@@ -59,6 +59,6 @@ export type ListUtxosByAddressBackendResponse = ListUtxosByAddressResponse
 
 export interface GetCurrentTxParamsResponse {
   irreversibleBlockNumber: number
-  irreversibleBlockPerfix: number
+  irreversibleBlockPrefix: number
   latestBlockTime: string
 }

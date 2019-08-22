@@ -55,7 +55,7 @@ export const eosTransactionApiFactory = (
     const txParams = await backendApi.getCurrentTxParams()
     const txHex = await transactionModule.createTransferTx(
       txParams.irreversibleBlockNumber,
-      txParams.irreversibleBlockPerfix,
+      txParams.irreversibleBlockPrefix,
       from,
       to,
       quantity,
