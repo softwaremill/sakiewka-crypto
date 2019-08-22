@@ -235,7 +235,6 @@ export const withCurrency = (
     return response.data
   }
 
-  // transaction
   const sendTransaction = async (
     token: string,
     walletId: string,

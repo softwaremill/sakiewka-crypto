@@ -56,3 +56,9 @@ export type ListWalletsBackendResponse = ListWalletsResponse
 export type ListUnspentsBackendResponse = ListUnspentsResponse
 export type MaxTransferAmountBackendResponse = MaxTransferAmountResponse
 export type ListUtxosByAddressBackendResponse = ListUtxosByAddressResponse
+
+export interface GetCurrentTxParamsResponse {
+  irreversibleBlockNumber: number
+  irreversibleBlockPerfix: number
+  latestBlockTime: string
+}

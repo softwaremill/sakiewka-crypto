@@ -2,6 +2,7 @@ import { expect } from 'chai'
 import moment from 'moment'
 import { eosTransactionModuleFactory } from '../../eos/eos-transaction'
 import { TransferActionData } from '../../../types/domain/eos/transaction'
+
 const eosModule = eosTransactionModuleFactory(
   '8be32650b763690b95b7d7e32d7637757a0a7392ad04f1c393872e525a2ce82b',
 )

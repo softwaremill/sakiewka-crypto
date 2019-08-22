@@ -101,7 +101,7 @@ export const sakiewkaApi = (
     transfers: transfersApiFactory(sakiewkaBackend.core),
     [Currency.BTC]: createBitcoinCurrencyApi(sakiewkaBackend, Currency.BTC),
     [Currency.BTG]: createBitcoinCurrencyApi(sakiewkaBackend, Currency.BTG),
-    [Currency.EOS]: eosApiFactory(sakiewkaBackend[Currency.EOS]),
+    [Currency.EOS]: eosApiFactory(sakiewkaBackend[Currency.EOS], chainInfo),
   }
 }
 

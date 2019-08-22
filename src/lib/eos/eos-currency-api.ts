@@ -1,17 +1,24 @@
 import { EosWalletApi, walletApiFactory } from './eos-wallet'
 import { EosBackendApi } from './eos-backend-api'
-import { EosKeyModule, eosKeyModuleFactory } from './eos-key'
-
+import {
+  EosTransactionApi,
+  eosTransactionApiFactory,
+  eosTransactionModuleFactory,
+} from './eos-transaction'
+import { eosKeyModuleFactory } from './eos-key'
 export interface SakiewkaEosCurrencyApi {
   wallet: EosWalletApi
-  key: EosKeyModule
+  transaction: EosTransactionApi
 }
 
 export const eosApiFactory = (
   backend: EosBackendApi,
+  chainId: string,
 ): SakiewkaEosCurrencyApi => {
+  const keyModule = eosKeyModuleFactory()
+  const transactionModule = eosTransactionModuleFactory(chainId)
   return {
-    wallet: walletApiFactory(backend, eosKeyModuleFactory()),
-    key: eosKeyModuleFactory()
+    wallet: walletApiFactory(backend, keyModule),
+    transaction: eosTransactionApiFactory(backend, keyModule, transactionModule),
   }
 }

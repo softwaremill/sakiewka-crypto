@@ -5,12 +5,15 @@ import {
   GetWalletBackendResponse,
   ListWalletsBackendResponse,
   MaxTransferAmountBackendResponse,
+  GetCurrentTxParamsResponse,
 } from '../../types/api/wallet'
 import { ListPoliciesForWalletBackendResponse } from '../../types/api/policy'
 
 import { Currency } from '../..'
 import * as backendApi from '../backend-api'
 import { HttpClient } from '../utils/httpClient'
+import { SendResponse } from '../../types/response/transaction'
+import { GetKeyBackendResponse } from '../../types/api/key'
 
 export interface EosBackendApi {
   createWallet(
@@ -34,6 +37,18 @@ export interface EosBackendApi {
     token: string,
     walletId: string,
   ): Promise<ListPoliciesForWalletBackendResponse>
+  sendTransaction(
+    token: string,
+    walletId: string,
+    txHex: string,
+    signature: string,
+  ): Promise<SendResponse>
+  getKey(
+    token: string,
+    keyId: string,
+    includePrivate?: boolean,
+  ): Promise<GetKeyBackendResponse>
+  getCurrentTxParams(): Promise<GetCurrentTxParamsResponse>
 }
 
 export const eosBackendApiFactory = (
@@ -67,6 +82,41 @@ export const eosBackendApiFactory = (
     return response.data
   }
 
+  const getCurrentTxParams = async (): Promise<GetCurrentTxParamsResponse> => {
+    const options = {
+      method: 'GET',
+    }
+    const response = await httpClient.request(
+      `${backendApiUrl}/eos/tx/params`,
+      options,
+    )
+    return response.data
+  }
+
+  const sendTransaction = async (
+    token: string,
+    walletId: string,
+    txHex: string,
+    signature: string,
+  ): Promise<SendResponse> => {
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        txHex,
+        signature,
+      }),
+    }
+
+    const response = await httpClient.request(
+      `${backendApiUrl}/eos/wallet/${walletId}/send`,
+      options,
+    )
+    return response.data
+  }
+
   return {
     createWallet: baseCurrencyApi.createWallet,
     editWallet: baseCurrencyApi.editWallet,
@@ -74,5 +124,8 @@ export const eosBackendApiFactory = (
     listWallets: baseCurrencyApi.listWallets,
     maxTransferAmount,
     listPoliciesForWallet: baseCurrencyApi.listPoliciesForWallet,
+    getCurrentTxParams,
+    getKey: baseCurrencyApi.getKey,
+    sendTransaction,
   }
 }
