@@ -2,14 +2,14 @@ import { Currency } from '../types/domain/currency'
 export type ChainNetwork = { [C in Currency]: string }
 
 export const networks = (eosChainId?: string) => ({
-  testnet: {
+  mainnet: {
     [Currency.BTC]: 'mainnet',
     [Currency.BTG]: 'mainnet',
     [Currency.EOS]:
       eosChainId ||
       'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
   } as ChainNetwork,
-  mainnet: {
+  testnet: {
     [Currency.BTC]: 'testnet',
     [Currency.BTG]: 'testnet',
     [Currency.EOS]:
