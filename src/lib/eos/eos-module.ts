@@ -19,8 +19,4 @@ export const eosModuleFactory = (chainId: string): SakiewkaEosModule => {
   }
 }
 
-export {
-  EosAccountModule as AccountModule,
-  EosKeyModule,
-  EosTransactionModule,
-}
+export { EosAccountModule, EosKeyModule, EosTransactionModule }
