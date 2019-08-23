@@ -59,8 +59,7 @@ export const sakiewkaModuleFactory = (
 export * from './types/response/index'
 export * from './types/domain/index'
 
-export { constants }
-export { crypto }
+export { constants, crypto, UserApi, TransfersApi }
 export * from './lib/backend-api'
 export * from './lib/network'
 export * from './lib/eos/eos-module'
