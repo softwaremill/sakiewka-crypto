@@ -1,7 +1,7 @@
 import { Currency } from '../types/domain/currency'
 export type ChainNetwork = { [C in Currency]: string }
 
-export const networks = {
+export const networks = (eosChainId?: string) => ({
   testnet: {
     [Currency.BTC]: 'testnet',
     [Currency.BTG]: 'testnet',
@@ -14,10 +14,9 @@ export const networks = {
     [Currency.EOS]:
       'e70aaab8997e1dfce58fbfac80cbbb8fecec7b99cf982a9444273cbc64c41473', // jungle testnet v2
   } as ChainNetwork,
-  regtest: (eosChainId: string) =>
-    ({
-      [Currency.BTC]: 'testnet',
-      [Currency.BTG]: 'testnet',
-      [Currency.EOS]: eosChainId,
-    } as ChainNetwork),
-}
+  regtest: {
+    [Currency.BTC]: 'testnet',
+    [Currency.BTG]: 'testnet',
+    [Currency.EOS]: eosChainId || 'NOT SET',
+  } as ChainNetwork,
+})
