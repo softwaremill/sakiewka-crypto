@@ -14,7 +14,7 @@ import {
   bitcoinApiFactory,
   SakiewkaBitcoinApi,
 } from './lib/bitcoin/bitcoin-api'
-import { ChainNetwork } from './lib/network'
+import { ChainNetwork, networks } from './lib/network'
 
 export interface SakiewkaApi {
   user: UserApi
@@ -60,3 +60,4 @@ export * from './types/domain/index'
 export { constants }
 export { crypto }
 export { backendFactory, SakiewkaBackend }
+export { ChainNetwork, networks }
