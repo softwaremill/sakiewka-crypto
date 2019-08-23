@@ -61,3 +61,7 @@ export { constants }
 export { crypto }
 export { backendFactory, SakiewkaBackend }
 export { ChainNetwork, networks }
+export * from './lib/eos/eos-module'
+export * from './lib/eos/eos-api'
+export * from './lib/bitcoin/bitcoin-api'
+export * from './lib/bitcoin/bitcoin-module'
