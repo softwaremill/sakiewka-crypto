@@ -6,7 +6,7 @@ import {
   eosTransactionModuleFactory,
 } from './eos-transaction'
 import { eosKeyModuleFactory } from './eos-key'
-export interface SakiewkaEosCurrencyApi {
+export interface SakiewkaEosApi {
   wallet: EosWalletApi
   transaction: EosTransactionApi
 }
@@ -14,7 +14,7 @@ export interface SakiewkaEosCurrencyApi {
 export const eosApiFactory = (
   backend: EosBackendApi,
   chainId: string,
-): SakiewkaEosCurrencyApi => {
+): SakiewkaEosApi => {
   const keyModule = eosKeyModuleFactory()
   const transactionModule = eosTransactionModuleFactory(chainId)
   return {
