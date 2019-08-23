@@ -28,6 +28,7 @@ import {
   FeeRatesApi,
 } from './../../lib/bitcoin/bitcoin-fee-rates'
 import bitcoinOps from './../../lib/bitcoin/bitcoin'
+import { ChainNetwork } from '../network'
 
 export interface SakiewkaBitcoinApi {
   address: AddressApi
@@ -43,9 +44,9 @@ export interface SakiewkaBitcoinApi {
 export function bitcoinApiFactory(
   backendApi: SakiewkaBackend,
   currency: Currency.BTC | Currency.BTG,
-  btcNetwork: string,
+  network: ChainNetwork,
 ): SakiewkaBitcoinApi {
-  const operationsModule = bitcoinOps(currency, btcNetwork)
+  const operationsModule = bitcoinOps(currency, network[currency])
   const keyApi = keyApiFactory(backendApi[currency])
   const keyModule = keyModuleFactory(operationsModule)
   const walletApi = walletApiFactory(backendApi[currency], keyModule)

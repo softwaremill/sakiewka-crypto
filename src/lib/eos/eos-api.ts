@@ -6,6 +6,7 @@ import {
   eosTransactionModuleFactory,
 } from './eos-transaction'
 import { eosKeyModuleFactory } from './eos-key'
+
 export interface SakiewkaEosApi {
   wallet: EosWalletApi
   transaction: EosTransactionApi
