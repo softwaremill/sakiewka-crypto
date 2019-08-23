@@ -24,7 +24,7 @@ export interface SakiewkaApi {
   [Currency.EOS]: SakiewkaEosApi
 }
 
-export const sakiewkaApi = (
+export const sakiewkaApiFactory = (
   sakiewkaBackend: SakiewkaBackend,
   network: ChainNetwork,
 ): SakiewkaApi => {
@@ -46,7 +46,9 @@ export interface SakiewkaModule {
   [Currency.EOS]: SakiewkaEosModule
 }
 
-export const sakiewkaModule = (network: ChainNetwork): SakiewkaModule => {
+export const sakiewkaModuleFactory = (
+  network: ChainNetwork,
+): SakiewkaModule => {
   return {
     [Currency.BTC]: bitcoinModuleFactory(Currency.BTC, network[Currency.BTC]),
     [Currency.BTG]: bitcoinModuleFactory(Currency.BTG, network[Currency.BTG]),
