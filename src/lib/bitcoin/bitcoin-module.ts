@@ -33,3 +33,5 @@ export function bitcoinModuleFactory(
     bitcoin: bitcoinOperations,
   }
 }
+
+export { AddressModule, KeyModule, TransactionModule, BitcoinOperations }

@@ -1,6 +1,6 @@
 import * as constants from './lib/constants'
 import * as crypto from './lib/crypto'
-import { backendFactory, SakiewkaBackend } from './lib/backend-api'
+import { SakiewkaBackend } from './lib/backend-api'
 import { UserApi, userApiFactory } from './lib/user'
 import { TransfersApi, transfersApiFactory } from './lib/transfers'
 import { Currency } from './types/domain/currency'
@@ -14,7 +14,7 @@ import {
   bitcoinApiFactory,
   SakiewkaBitcoinApi,
 } from './lib/bitcoin/bitcoin-api'
-import { ChainNetwork, networks } from './lib/network'
+import { ChainNetwork } from './lib/network'
 
 export interface SakiewkaApi {
   user: UserApi
@@ -59,8 +59,8 @@ export * from './types/domain/index'
 
 export { constants }
 export { crypto }
-export { backendFactory, SakiewkaBackend }
-export { ChainNetwork, networks }
+export * from './lib/backend-api'
+export * from './lib/network'
 export * from './lib/eos/eos-module'
 export * from './lib/eos/eos-api'
 export * from './lib/bitcoin/bitcoin-api'

@@ -23,3 +23,5 @@ export const eosApiFactory = (
     transaction: eosTransactionApiFactory(backend, keyModule, transactionModule),
   }
 }
+
+export { EosWalletApi, EosTransactionApi }

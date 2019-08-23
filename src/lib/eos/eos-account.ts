@@ -11,7 +11,7 @@ import { PrivateKey } from 'eosjs-ecc'
 
 const { TextDecoder, TextEncoder } = require('util')
 
-export interface AccountModule {
+export interface EosAccountModule {
   buildNewAccountTransaction(
     newAccountName: string,
     creatorName: string,
@@ -25,7 +25,7 @@ export interface AccountModule {
   ): Promise<any>
 }
 
-export const accountModuleFactory = (chainId: string): AccountModule => {
+export const eosAccountModuleFactory = (chainId: string): EosAccountModule => {
   return {
     buildNewAccountTransaction: (
       newAccountName: string,
@@ -107,10 +107,11 @@ const buildNewAccountTransaction = async (
     textEncoder: new TextEncoder(),
   })
 
-
-  const sortedActiveKeys = [userKey,backupKey,serviceKey].sort()
-  if(sortedActiveKeys.length < 3){
-    throw new Error(`Keys are missing userKey=${userKey} backupKey=${backupKey} serviceKey=${serviceKey} sortedActiveKeys=${sortedActiveKeys}`)
+  const sortedActiveKeys = [userKey, backupKey, serviceKey].sort()
+  if (sortedActiveKeys.length < 3) {
+    throw new Error(
+      `Keys are missing userKey=${userKey} backupKey=${backupKey} serviceKey=${serviceKey} sortedActiveKeys=${sortedActiveKeys}`,
+    )
   }
 
   const transaction = {
@@ -129,8 +130,8 @@ const buildNewAccountTransaction = async (
           name: newAccountName,
           active: {
             keys: sortedActiveKeys.map(key => ({
-              key:key,
-              weight:1
+              key,
+              weight: 1,
             })),
             threshold: 2,
             accounts: [],
@@ -186,9 +187,14 @@ const buildNewAccountTransaction = async (
     ref_block_num: refBlockNum,
     ref_block_prefix: refBlockPrefix,
   }
-  const response = await api.transact(transaction, { broadcast: false, sign: true })
+  const response = await api.transact(transaction, {
+    broadcast: false,
+    sign: true,
+  })
   return {
     signature: response.signatures[0],
-    serializedTransaction: Buffer.from(response.serializedTransaction).toString('hex')
+    serializedTransaction: Buffer.from(response.serializedTransaction).toString(
+      'hex',
+    ),
   }
 }

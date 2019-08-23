@@ -1,4 +1,4 @@
-import { AccountModule, accountModuleFactory } from './eos-account'
+import { EosAccountModule, eosAccountModuleFactory } from './eos-account'
 import { EosKeyModule, eosKeyModuleFactory } from './eos-key'
 import {
   EosTransactionModule,
@@ -6,15 +6,21 @@ import {
 } from './eos-transaction'
 
 export interface SakiewkaEosModule {
-  account: AccountModule
+  account: EosAccountModule
   key: EosKeyModule
   transaction: EosTransactionModule
 }
 
 export const eosModuleFactory = (chainId: string): SakiewkaEosModule => {
   return {
-    account: accountModuleFactory(chainId),
+    account: eosAccountModuleFactory(chainId),
     key: eosKeyModuleFactory(),
     transaction: eosTransactionModuleFactory(chainId),
   }
+}
+
+export {
+  EosAccountModule as AccountModule,
+  EosKeyModule,
+  EosTransactionModule,
 }

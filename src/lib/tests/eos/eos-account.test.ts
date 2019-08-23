@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { accountModuleFactory } from '../../eos/eos-account'
+import { eosAccountModuleFactory } from '../../eos/eos-account'
 import moment from 'moment'
 import { Api, JsonRpc } from 'eosjs'
 import { BinaryAbi } from 'eosjs/dist/eosjs-api-interfaces'
@@ -10,7 +10,7 @@ const { TextDecoder, TextEncoder } = require('util')
 
 describe('eos account', () => {
   it('should create offline signed newaccount transaction', async () => {
-    const res = await accountModuleFactory(
+    const res = await eosAccountModuleFactory(
       'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
     ).buildNewAccountTransaction(
       'newacc',

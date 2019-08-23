@@ -66,3 +66,14 @@ export function bitcoinApiFactory(
     feeRates: feeRatesApiFactory(backendApi[currency]),
   }
 }
+
+export {
+  AddressApi,
+  TransactionApi,
+  BitcoinWalletApi,
+  KeyApi,
+  WebhooksApi,
+  PolicyApi,
+  ChainTransfersApi,
+  FeeRatesApi,
+}
