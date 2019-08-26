@@ -1,6 +1,6 @@
 import { CreateWalletParams, Receipient } from '../../types/domain/wallet'
 import {
-  CreateWalletResponse,
+  CreateBitcoinWalletResponse,
   EditWalletResponse,
   GetWalletResponse,
   ListWalletsResponse,
@@ -23,7 +23,7 @@ export interface BitcoinWalletApi {
   createWallet(
     userToken: string,
     params: CreateWalletParams,
-  ): Promise<CreateWalletResponse>
+  ): Promise<CreateBitcoinWalletResponse>
   editWallet(
     userToken: string,
     walletId: string,
@@ -68,7 +68,7 @@ export const walletApiFactory = (
   const createWallet = async (
     userToken: string,
     params: CreateWalletParams,
-  ): Promise<CreateWalletResponse> => {
+  ): Promise<CreateBitcoinWalletResponse> => {
     const minPassphraseLength = 8
     if (params.passphrase.length < minPassphraseLength) {
       throw API_ERROR.PASSPHRASE_TOO_SHORT(minPassphraseLength)
@@ -103,10 +103,12 @@ export const walletApiFactory = (
       backupPubKey: encryptedBackupKeyPair.pubKey,
       backupPrvKey: encryptedBackupKeyPair.prvKey,
     }
-    const { id, keys, servicePubKey } = await backendApi.createWallet(
-      userToken,
-      backendRequestParams,
-    )
+    const {
+      id,
+      keys,
+      servicePubKey,
+      initialAddress,
+    } = await backendApi.createWallet(userToken, backendRequestParams)
 
     const pdf = await generatePdf(
       params.name,
@@ -115,7 +117,7 @@ export const walletApiFactory = (
       backendRequestParams.backupPrvKey,
     )
 
-    return { id, keys, pdf }
+    return { id, keys, pdf, servicePubKey, initialAddress }
   }
 
   const editWallet = (
