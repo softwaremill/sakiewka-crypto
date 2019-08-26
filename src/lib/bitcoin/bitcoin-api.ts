@@ -1,6 +1,6 @@
 import {
-  AddressApi,
-  addressApiFactory,
+  BitcoinAddressApi,
+  bitcoinAddressApiFactory,
 } from './../../lib/bitcoin/bitcoin-address'
 import { SakiewkaBackend } from './../../lib/backend-api'
 import {
@@ -31,7 +31,7 @@ import bitcoinOps from './../../lib/bitcoin/bitcoin'
 import { ChainNetwork } from '../network'
 
 export interface SakiewkaBitcoinApi {
-  address: AddressApi
+  address: BitcoinAddressApi
   transaction: TransactionApi
   wallet: BitcoinWalletApi
   key: KeyApi
@@ -51,7 +51,7 @@ export function bitcoinApiFactory(
   const keyModule = keyModuleFactory(operationsModule)
   const walletApi = walletApiFactory(backendApi[currency], keyModule)
   return {
-    address: addressApiFactory(backendApi[currency]),
+    address: bitcoinAddressApiFactory(backendApi[currency]),
     transaction: transactionApiFactory(
       backendApi[currency],
       keyModule,
@@ -68,7 +68,7 @@ export function bitcoinApiFactory(
 }
 
 export {
-  AddressApi,
+  BitcoinAddressApi as AddressApi,
   TransactionApi,
   BitcoinWalletApi,
   KeyApi,

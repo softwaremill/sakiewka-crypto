@@ -2,43 +2,35 @@ import { KeyModule } from './bitcoin-key'
 import { BitcoinBackendApi } from './bitcoin-backend-api'
 import { BitcoinOperations } from './bitcoin-operations'
 import {
-  CreateNewAddressResponse,
-  GetAddressResponse,
-  ListAddressesResponse,
+  CreateNewBitcoinAddressResponse,
+  GetBitcoinAddressResponse,
+  ListBitcoinAddressesResponse,
 } from '../../types/response/address'
-import { Address, AddressBitcoin } from '../../types/domain/address'
 
-export interface AddressApi {
+export interface BitcoinAddressApi {
   createNewAddress(
     userToken: string,
     walletId: string,
     name?: string,
-  ): Promise<CreateNewAddressResponse>
+  ): Promise<CreateNewBitcoinAddressResponse>
 
   getAddress(
     userToken: string,
     walletId: string,
     address: string,
-  ): Promise<GetAddressResponse>
+  ): Promise<GetBitcoinAddressResponse>
 
   listAddresses(
     userToken: string,
     walletId: string,
     limit: number,
     nextPageToken?: string,
-  ): Promise<ListAddressesResponse>
+  ): Promise<ListBitcoinAddressesResponse>
 }
 
-export const addressApiFactory = (
+export const bitcoinAddressApiFactory = (
   backendApi: BitcoinBackendApi,
-): AddressApi => {
-  const castAddressBitcoinToAddress = ({
-    address,
-    id,
-    name,
-    created,
-  }: AddressBitcoin): Address => ({ address, id, name, created } as Address)
-
+): BitcoinAddressApi => {
   const createNewAddress = (
     userToken: string,
     walletId: string,
@@ -49,17 +41,15 @@ export const addressApiFactory = (
     userToken: string,
     walletId: string,
     address: string,
-  ): Promise<GetAddressResponse> =>
-    castAddressBitcoinToAddress(
-      await backendApi.getAddress(userToken, walletId, address),
-    )
+  ): Promise<GetBitcoinAddressResponse> =>
+    await backendApi.getAddress(userToken, walletId, address)
 
   const listAddresses = async (
     userToken: string,
     walletId: string,
     limit: number,
     nextPageToken?: string,
-  ): Promise<ListAddressesResponse> => {
+  ): Promise<ListBitcoinAddressesResponse> => {
     const response = await backendApi.listAddresses(
       userToken,
       walletId,
@@ -68,7 +58,7 @@ export const addressApiFactory = (
     )
     return {
       ...response,
-      addresses: response.addresses.map(castAddressBitcoinToAddress),
+      addresses: response.addresses,
     }
   }
 
