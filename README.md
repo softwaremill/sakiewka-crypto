@@ -21,11 +21,6 @@ To run integration tests you have to specify `BACKEND_API_URL` in `.env` file.
 ##### Build: 
 `npm run build` - Builds files into dist/ folder  
 
-##### Local api:  
-`npm run serve` - Runs local server.  
-`npm run serve-debug` - Runs local server in debug mode.  
-`npm run watch-debug` - Runs local server and watches files for changes.  
-
 ### package.json modification:
 
 Do not modify package.lock manually. Always use `npm install` when adding or updating packages.
