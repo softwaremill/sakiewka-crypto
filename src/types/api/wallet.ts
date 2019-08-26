@@ -9,6 +9,11 @@ import {
 import { Key } from '../domain/key'
 import { Path } from '../domain/transaction'
 
+export interface CreateEosWalletBackendParams
+  extends CreateWalletBackendParams {
+  firstAddressName: string
+}
+
 export interface CreateWalletBackendParams {
   name: string
   userPubKey: string

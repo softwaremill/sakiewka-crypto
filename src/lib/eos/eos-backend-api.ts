@@ -1,5 +1,5 @@
 import {
-  CreateWalletBackendParams,
+  CreateEosWalletBackendParams,
   MaxTransferAmountEosBackendParams,
   CreateEosWalletBackendResponse,
   GetWalletBackendResponse,
@@ -18,7 +18,7 @@ import { GetKeyBackendResponse } from '../../types/api/key'
 export interface EosBackendApi {
   createWallet(
     token: string,
-    params: CreateWalletBackendParams,
+    params: CreateEosWalletBackendParams,
   ): Promise<CreateEosWalletBackendResponse>
   editWallet(token: string, walletId: string, name: string): Promise<any>
   getWallet(token: string, walletId: string): Promise<GetWalletBackendResponse>

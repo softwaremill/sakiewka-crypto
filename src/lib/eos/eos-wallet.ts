@@ -1,4 +1,4 @@
-import { CreateWalletParams } from '../../types/domain/wallet'
+import { CreateEosWalletParams } from '../../types/domain/wallet'
 import {
   ListWalletsResponse,
   GetWalletResponse,
@@ -6,7 +6,7 @@ import {
   EditWalletResponse,
 } from '../../types/response/wallet'
 import {
-  CreateWalletBackendParams,
+  CreateEosWalletBackendParams,
   MaxTransferAmountEosBackendParams,
 } from '../../types/api/wallet'
 import { ListPoliciesForWalletResponse } from '../../types/response/policy'
@@ -14,7 +14,7 @@ import { EosKeyModule } from './eos-key'
 import { EosBackendApi } from './eos-backend-api'
 
 export interface EosWalletApi {
-  createWallet(userToken: string, params: CreateWalletParams): Promise<any>
+  createWallet(userToken: string, params: CreateEosWalletParams): Promise<any>
 
   getWallet(userToken: string, walletId: string): Promise<GetWalletResponse>
 
@@ -50,7 +50,7 @@ export const walletApiFactory = (
 ): EosWalletApi => {
   const createWallet = async (
     userToken: string,
-    params: CreateWalletParams,
+    params: CreateEosWalletParams,
   ): Promise<any> => {
     const generateKeyPair = async (): Promise<{
       pubKey: string;
@@ -75,8 +75,9 @@ export const walletApiFactory = (
       }
       : generateKeyPair())
 
-    const backendRequestParams: CreateWalletBackendParams = {
+    const backendRequestParams: CreateEosWalletBackendParams = {
       name: params.name,
+      firstAddressName: params.firstAddressName,
       userPubKey: userKey.pubKey,
       userPrvKey: userKey.prvKey,
       backupPubKey: backupKey.pubKey,

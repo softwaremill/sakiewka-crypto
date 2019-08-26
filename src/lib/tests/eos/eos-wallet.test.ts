@@ -28,6 +28,7 @@ describe('createWallet', () => {
     const params = {
       passphrase: 'abcd',
       name: 'testLabel',
+      firstAddressName: 'asdasd',
     }
 
     const result = await wallet.createWallet('abcd', params)
@@ -39,6 +40,7 @@ describe('createWallet', () => {
     expect(backendRequestParams).to.haveOwnProperty('name')
     expect(backendRequestParams).to.haveOwnProperty('userPubKey')
     expect(backendRequestParams).to.haveOwnProperty('backupPubKey')
+    expect(backendRequestParams).to.haveOwnProperty('firstAddressName')
     expect(result.servicePubKey).to.eq('pubKey')
 
     // check if sending encrypted xprvs
