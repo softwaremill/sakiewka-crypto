@@ -40,7 +40,7 @@ describe('createWallet', () => {
     expect(backendRequestParams).to.haveOwnProperty('name')
     expect(backendRequestParams).to.haveOwnProperty('userPubKey')
     expect(backendRequestParams).to.haveOwnProperty('backupPubKey')
-    expect(backendRequestParams).to.haveOwnProperty('firstAddressName')
+    expect(backendRequestParams).to.haveOwnProperty('eosAccountName')
     expect(result.servicePubKey).to.eq('pubKey')
 
     // check if sending encrypted xprvs
