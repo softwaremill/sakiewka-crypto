@@ -29,6 +29,10 @@ import {
 } from './../../lib/bitcoin/bitcoin-fee-rates'
 import bitcoinOps from './../../lib/bitcoin/bitcoin'
 import { ChainNetwork } from '../network'
+import {
+  ExchangeRatesApi,
+  exchangeRatesApiFactory,
+} from './bitcon-exchange-rates'
 
 export interface SakiewkaBitcoinApi {
   address: BitcoinAddressApi
@@ -39,6 +43,7 @@ export interface SakiewkaBitcoinApi {
   policy: PolicyApi
   transfers: ChainTransfersApi
   feeRates: FeeRatesApi
+  exchangeRates: ExchangeRatesApi
 }
 
 export function bitcoinApiFactory(
@@ -64,6 +69,7 @@ export function bitcoinApiFactory(
     policy: policyApiFactory(backendApi[currency]),
     transfers: chainTransfersApiFactory(backendApi[currency]),
     feeRates: feeRatesApiFactory(backendApi[currency]),
+    exchangeRates: exchangeRatesApiFactory(backendApi[currency]),
   }
 }
 
@@ -76,4 +82,5 @@ export {
   PolicyApi,
   ChainTransfersApi,
   FeeRatesApi,
+  ExchangeRatesApi,
 }

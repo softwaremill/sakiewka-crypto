@@ -39,6 +39,8 @@ import {
 import { HttpClient } from '../utils/httpClient'
 import * as backendApi from '../backend-api'
 import { Currency } from '../../types/domain/currency'
+import { GetExchangeRatesResponse } from 'response/exchangeRates'
+import { FiatCurrency } from 'domain/exchangeRates'
 
 export interface BitcoinBackendApi {
   createNewAddress(
@@ -86,6 +88,11 @@ export interface BitcoinBackendApi {
     txHex: string,
   ): Promise<SendBackendResponse>
   getFeeRates(): Promise<GetFeeRatesBackendResponse>
+  getExchangeRates(
+    fiatCurrency: FiatCurrency,
+    fromDate: string,
+    toDate: string,
+  ): Promise<GetExchangeRatesResponse>
   maxTransferAmount(
     token: string,
     walletId: string,
@@ -270,9 +277,7 @@ export const withCurrency = (
     }
 
     const response = await httpClient.request(
-      `${backendApiUrl}/${currency}/wallet/${walletId}/max-transfer-amount?recipient=${
-        params.recipient
-      }&feeRate=${params.feeRate}`,
+      `${backendApiUrl}/${currency}/wallet/${walletId}/max-transfer-amount?recipient=${params.recipient}&feeRate=${params.feeRate}`,
       options,
     )
     return response.data
@@ -281,6 +286,18 @@ export const withCurrency = (
   const getFeeRates = async (): Promise<GetFeeRatesBackendResponse> => {
     const response = await httpClient.request(
       `${backendApiUrl}/${currency}/fees`,
+      { method: 'GET' },
+    )
+    return response.data
+  }
+
+  const getExchangeRates = async (
+    fiatCurrency: FiatCurrency,
+    fromDate: string,
+    toDate: string,
+  ): Promise<GetExchangeRatesResponse> => {
+    const response = await httpClient.request(
+      `${backendApiUrl}/${currency}/rates/${fiatCurrency}?fromDate=${fromDate}&toDate=${toDate}`,
       { method: 'GET' },
     )
     return response.data
@@ -298,6 +315,7 @@ export const withCurrency = (
     listWallets: currencyApi.listWallets,
     sendTransaction,
     getFeeRates,
+    getExchangeRates,
     maxTransferAmount,
     listUtxosByAddress,
     listWebhooks: currencyApi.listWebhooks,
