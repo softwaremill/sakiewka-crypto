@@ -11,7 +11,7 @@ import { Path } from '../domain/transaction'
 
 export interface CreateEosWalletBackendParams
   extends CreateWalletBackendParams {
-  firstAddressName: string
+  eosAccountName: string
 }
 
 export interface CreateWalletBackendParams {

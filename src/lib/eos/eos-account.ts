@@ -13,7 +13,7 @@ const { TextDecoder, TextEncoder } = require('util')
 
 export interface EosAccountModule {
   buildNewAccountTransaction(
-    newAccountName: string,
+    eosAccountName: string,
     creatorName: string,
     creatorPrvKey: string,
     userKey: string,
@@ -28,7 +28,7 @@ export interface EosAccountModule {
 export const eosAccountModuleFactory = (chainId: string): EosAccountModule => {
   return {
     buildNewAccountTransaction: (
-      newAccountName: string,
+      eosAccountName: string,
       creatorName: string,
       creatorPrvKey: string,
       userKey: string,
@@ -39,7 +39,7 @@ export const eosAccountModuleFactory = (chainId: string): EosAccountModule => {
       now?: moment.Moment,
     ) =>
       buildNewAccountTransaction(
-        newAccountName,
+        eosAccountName,
         creatorName,
         creatorPrvKey,
         chainId,
@@ -61,7 +61,7 @@ export const eosAccountModuleFactory = (chainId: string): EosAccountModule => {
  * now - used for testing to mock current time
 */
 const buildNewAccountTransaction = async (
-  newAccountName: string,
+  eosAccountName: string,
   creatorName: string,
   creatorPrvKey: string,
   chainId: string,
@@ -127,7 +127,7 @@ const buildNewAccountTransaction = async (
         ],
         data: {
           creator: creatorName,
-          name: newAccountName,
+          name: eosAccountName,
           active: {
             keys: sortedActiveKeys.map(key => ({
               key,
@@ -161,7 +161,7 @@ const buildNewAccountTransaction = async (
         ],
         data: {
           payer: creatorName,
-          receiver: newAccountName,
+          receiver: eosAccountName,
           bytes: 8192,
         },
       },
@@ -176,7 +176,7 @@ const buildNewAccountTransaction = async (
         ],
         data: {
           from: creatorName,
-          receiver: newAccountName,
+          receiver: eosAccountName,
           stake_net_quantity: '1.0000 SYS',
           stake_cpu_quantity: '1.0000 SYS',
           transfer: false,

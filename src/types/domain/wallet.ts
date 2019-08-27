@@ -5,7 +5,7 @@ import { UTXO } from './transaction'
 import { Key } from './key'
 
 export interface CreateEosWalletParams extends CreateWalletParams {
-  firstAddressName: string
+  eosAccountName: string
 }
 
 export interface CreateWalletParams {

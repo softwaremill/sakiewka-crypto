@@ -77,7 +77,7 @@ export const walletApiFactory = (
 
     const backendRequestParams: CreateEosWalletBackendParams = {
       name: params.name,
-      firstAddressName: params.firstAddressName,
+      eosAccountName: params.eosAccountName,
       userPubKey: userKey.pubKey,
       userPrvKey: userKey.prvKey,
       backupPubKey: backupKey.pubKey,

@@ -28,7 +28,7 @@ describe('createWallet', () => {
     const params = {
       passphrase: 'abcd',
       name: 'testLabel',
-      firstAddressName: 'asdasd',
+      eosAccountName: 'asdasd',
     }
 
     const result = await wallet.createWallet('abcd', params)
