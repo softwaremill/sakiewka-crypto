@@ -257,6 +257,7 @@ const signTx = async (
   serializedTransaction: string,
 ): Promise<string> => {
   const jsSig2 = new JsSignatureProvider([prvKey])
+  console.log('signing tx with key:',prvKey,' tx:',serializedTransaction)
   const s2 = await jsSig2.sign({
     chainId,
     requiredKeys: [
