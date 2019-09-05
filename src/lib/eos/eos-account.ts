@@ -187,6 +187,7 @@ const buildNewAccountTransaction = async (
     ref_block_num: refBlockNum,
     ref_block_prefix: refBlockPrefix,
   }
+  console.log('creting acc transaction',JSON.stringify(transaction))
   const response = await api.transact(transaction, {
     broadcast: false,
     sign: true,
