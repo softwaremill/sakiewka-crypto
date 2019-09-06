@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { eosTransactionModuleFactory } from './eos-transaction'
+import { EosTransactionModule } from './eos-transaction'
 
 export interface EosAccountModule {
   buildNewAccountTransaction(
@@ -15,7 +15,9 @@ export interface EosAccountModule {
   ): Promise<any>
 }
 
-export const eosAccountModuleFactory = (chainId: string): EosAccountModule => {
+export const eosAccountModuleFactory = (
+  eosTransactionModule: EosTransactionModule,
+): EosAccountModule => {
   return {
     buildNewAccountTransaction: (
       eosAccountName: string,
@@ -32,7 +34,7 @@ export const eosAccountModuleFactory = (chainId: string): EosAccountModule => {
         eosAccountName,
         creatorName,
         creatorPrvKey,
-        chainId,
+        eosTransactionModule,
         userKey,
         backupKey,
         serviceKey,
@@ -54,7 +56,7 @@ const buildNewAccountTransaction = async (
   eosAccountName: string,
   creatorName: string,
   creatorPrvKey: string,
-  chainId: string,
+  eosTransactionModule: EosTransactionModule,
   userKey: string,
   backupKey: string,
   serviceKey: string,
@@ -148,8 +150,6 @@ const buildNewAccountTransaction = async (
     ref_block_num: refBlockNum,
     ref_block_prefix: refBlockPrefix,
   }
-
-  const eosTransactionModule = eosTransactionModuleFactory(chainId)
 
   console.log('creting acc transaction', JSON.stringify(transaction))
   const createAccountTxHex = await eosTransactionModule.createEosTransaction(
