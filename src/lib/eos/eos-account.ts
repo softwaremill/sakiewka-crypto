@@ -76,7 +76,6 @@ const buildNewAccountTransaction = async (
   const creatorPublicKey = PrivateKey.fromString(creatorPrvKey)
     .toPublic()
     .toString()
-  console.log('pubkey', creatorPublicKey)
   const signatureProvider = new JsSignatureProvider(privateKeys)
   const authorityProvider: AuthorityProvider = {
     getRequiredKeys: (args: AuthorityProviderArgs): Promise<string[]> => {
@@ -187,7 +186,6 @@ const buildNewAccountTransaction = async (
     ref_block_num: refBlockNum,
     ref_block_prefix: refBlockPrefix,
   }
-  console.log('creting acc transaction',JSON.stringify(transaction))
   const response = await api.transact(transaction, {
     broadcast: false,
     sign: true,
