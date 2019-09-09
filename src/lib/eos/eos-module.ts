@@ -13,7 +13,7 @@ export interface SakiewkaEosModule {
 
 export const eosModuleFactory = (chainId: string): SakiewkaEosModule => {
   return {
-    account: eosAccountModuleFactory(chainId),
+    account: eosAccountModuleFactory(eosTransactionModuleFactory(chainId)),
     key: eosKeyModuleFactory(),
     transaction: eosTransactionModuleFactory(chainId),
   }

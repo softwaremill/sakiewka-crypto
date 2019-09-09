@@ -5,13 +5,16 @@ import { Api, JsonRpc } from 'eosjs'
 import { BinaryAbi } from 'eosjs/dist/eosjs-api-interfaces'
 import { base64ToBinary } from 'eosjs/dist/eosjs-numeric'
 import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig'
+import { eosTransactionModuleFactory } from '../../eos/eos-transaction'
 
 const { TextDecoder, TextEncoder } = require('util')
 
 describe('eos account', () => {
   it('should create offline signed newaccount transaction', async () => {
     const res = await eosAccountModuleFactory(
-      'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
+      eosTransactionModuleFactory(
+        'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
+      ),
     ).buildNewAccountTransaction(
       'newacc',
       'creator',

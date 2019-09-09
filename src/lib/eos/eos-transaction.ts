@@ -136,6 +136,7 @@ export interface EosTransactionModule {
   decodeTransferTransaction(
     txHex: string,
   ): Promise<Transaction<TransferActionData>>
+  createEosTransaction(transaction: any, eisoTokenAbi: string): Promise<string>
 }
 
 export const eosTransactionModuleFactory = (
@@ -165,6 +166,8 @@ export const eosTransactionModuleFactory = (
     signTx: (prvKey: string, serializedTransaction: string) =>
       signTx(chainId, prvKey, serializedTransaction),
     decodeTransferTransaction,
+    createEosTransaction: (transaction: any, eisoTokenAbi: string) =>
+      createEosTransaction(transaction, chainId, eisoTokenAbi),
   }
 }
 
@@ -179,18 +182,35 @@ const createTransferTx = async (
   now?: moment.Moment,
   memo?: string,
 ): Promise<string> => {
-  const abiProvider = {
-    getRawAbi: (accountName: string): Promise<BinaryAbi> => {
-      return Promise.resolve({
-        abi: base64ToBinary(eosioTokenBase64Abi),
-        accountName,
-      })
-    },
-  }
   const expiration = (now || moment())
     .add(30, 'minutes')
     .toDate()
     .toString()
+  const t = transfer(
+    expiration,
+    refBlockNumber,
+    refBlockPrefix,
+    from,
+    to,
+    `${amount} ${currency}`,
+    memo || '', // TODO moze dac tutaj jakis random number, albo correlationId?
+  )
+  return createEosTransaction(t, chainId, eosioTokenBase64Abi)
+}
+
+const createEosTransaction = async (
+  transaction: any,
+  chainId: string,
+  eisoTokenAbi: string,
+) => {
+  const abiProvider = {
+    getRawAbi: (accountName: string): Promise<BinaryAbi> => {
+      return Promise.resolve({
+        abi: base64ToBinary(eisoTokenAbi),
+        accountName,
+      })
+    },
+  }
   const api = new Api({
     // @ts-ignore
     rpc: null as JsonRpc,
@@ -203,20 +223,11 @@ const createTransferTx = async (
     textDecoder: new TextDecoder(),
     textEncoder: new TextEncoder(),
   })
-  const t = transfer(
-    expiration,
-    refBlockNumber,
-    refBlockPrefix,
-    from,
-    to,
-    `${amount} ${currency}`,
-    memo || '', // TODO moze dac tutaj jakis random number, albo correlationId?
-  )
-  const response = await api.transact(t, {
+  const apiResponse = await api.transact(transaction, {
     broadcast: false,
     sign: false,
   })
-  return Buffer.from(response.serializedTransaction).toString('hex')
+  return Buffer.from(apiResponse.serializedTransaction).toString('hex')
 }
 
 const transfer = (
