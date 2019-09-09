@@ -279,7 +279,6 @@ const signTx = async (
     serializedTransaction: Buffer.from(serializedTransaction, 'hex'),
     abis: [],
   })
-  console.log('signing tx with key:',prvKey,'sig:',s2.signatures[0],' tx:',serializedTransaction)
   return s2.signatures[0]
 }
 
