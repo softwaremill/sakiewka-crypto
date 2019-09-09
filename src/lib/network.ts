@@ -19,6 +19,6 @@ export const networks = (eosChainId?: string) => ({
   regtest: {
     [Currency.BTC]: 'regtest',
     [Currency.BTG]: 'regtest',
-    [Currency.EOS]: eosChainId || 'NOT SET',
+    [Currency.EOS]: eosChainId || '8be32650b763690b95b7d7e32d7637757a0a7392ad04f1c393872e525a2ce82b',
   } as ChainNetwork,
 })
