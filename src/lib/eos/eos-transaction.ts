@@ -23,7 +23,9 @@ export interface EosTransactionApi {
     walletId: string,
     from: string,
     to: string,
+    serviceAccount: string,
     quantity: { amount: string; currency: string },
+    serviceFeeAmount: string,
     memo?: string,
     xprv?: string,
     passphrase?: string,
@@ -40,7 +42,9 @@ export const eosTransactionApiFactory = (
     walletId: string,
     from: string,
     to: string,
+    serviceAccount: string,
     quantity: { amount: string; currency: string },
+    serviceFeeAmount: string,
     memo?: string,
     xprv?: string,
     passphrase?: string,
@@ -58,7 +62,9 @@ export const eosTransactionApiFactory = (
       txParams.irreversibleBlockPrefix,
       from,
       to,
+      serviceAccount,
       quantity,
+      serviceFeeAmount,
       moment(txParams.latestBlockTime),
       memo,
     )
@@ -128,7 +134,9 @@ export interface EosTransactionModule {
     refBlockPrefix: number,
     from: string,
     to: string,
+    serviceAccount: string,
     quantity: { amount: string; currency: string },
+    serviceFeeAmount: string,
     now?: moment.Moment,
     memo?: string,
   ): Promise<string>
@@ -148,7 +156,9 @@ export const eosTransactionModuleFactory = (
       refBlockPrefix: number,
       from: string,
       to: string,
+      serviceAccount: string,
       quantity: { amount: string; currency: string },
+      serviceFeeAmount: string,
       now?: moment.Moment,
       memo?: string,
     ) =>
@@ -158,7 +168,9 @@ export const eosTransactionModuleFactory = (
         refBlockPrefix,
         from,
         to,
+        serviceAccount,
         quantity.amount,
+        serviceFeeAmount,
         quantity.currency,
         now,
         memo,
@@ -177,7 +189,9 @@ const createTransferTx = async (
   refBlockPrefix: number,
   from: string,
   to: string,
+  serviceAccount: string,
   amount: string,
+  serviceFeeAmount: string,
   currency: string,
   now?: moment.Moment,
   memo?: string,
@@ -193,6 +207,8 @@ const createTransferTx = async (
     from,
     to,
     `${amount} ${currency}`,
+    `${serviceFeeAmount} ${currency}`,
+    serviceAccount,
     memo || '', // TODO moze dac tutaj jakis random number, albo correlationId?
   )
   return createEosTransaction(t, chainId, eosioTokenBase64Abi)
@@ -237,6 +253,8 @@ const transfer = (
   from: string,
   to: string,
   quantity: string,
+  serviceFeeQuantity: string,
+  serviceAccount: string,
   memo: string,
 ) => ({
   expiration,
@@ -259,6 +277,22 @@ const transfer = (
         memo,
       },
     },
+    {
+        account: 'eosio.token',
+        name: 'transfer',
+        authorization: [
+            {
+                actor: from,
+                permission: 'active',
+            },
+        ],
+        data: {
+            from: from,
+            to: serviceAccount,
+            quantity: serviceFeeQuantity,
+            memo:''
+        }
+    }
   ],
 })
 
