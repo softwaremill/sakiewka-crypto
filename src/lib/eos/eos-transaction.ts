@@ -16,6 +16,7 @@ import { WalletDetails } from '../../types/domain/wallet'
 import { GetKeyBackendResponse } from '../../types/api/key'
 import { API_ERROR } from '../constants'
 import moment from 'moment'
+import { ServiceFeeData } from "../../types/response/transaction";
 
 export interface EosTransactionApi {
   send(
@@ -23,9 +24,7 @@ export interface EosTransactionApi {
     walletId: string,
     from: string,
     to: string,
-    serviceAccount: string,
     quantity: { amount: string; currency: string },
-    serviceFeeAmount: string,
     memo?: string,
     xprv?: string,
     passphrase?: string,
@@ -42,9 +41,7 @@ export const eosTransactionApiFactory = (
     walletId: string,
     from: string,
     to: string,
-    serviceAccount: string,
     quantity: { amount: string; currency: string },
-    serviceFeeAmount: string,
     memo?: string,
     xprv?: string,
     passphrase?: string,
@@ -57,14 +54,14 @@ export const eosTransactionApiFactory = (
       passphrase,
     )
     const txParams = await backendApi.getCurrentTxParams()
+    const serviceFee = await backendApi.getServiceFee(userToken,walletId,to,quantity.amount)
     const txHex = await transactionModule.createTransferTx(
       txParams.irreversibleBlockNumber,
       txParams.irreversibleBlockPrefix,
       from,
       to,
-      serviceAccount,
       quantity,
-      serviceFeeAmount,
+      serviceFee.fee,
       moment(txParams.latestBlockTime),
       memo,
     )
@@ -134,9 +131,8 @@ export interface EosTransactionModule {
     refBlockPrefix: number,
     from: string,
     to: string,
-    serviceAccount: string,
     quantity: { amount: string; currency: string },
-    serviceFeeAmount: string,
+    serviceFee?: ServiceFeeData,
     now?: moment.Moment,
     memo?: string,
   ): Promise<string>
@@ -156,9 +152,8 @@ export const eosTransactionModuleFactory = (
       refBlockPrefix: number,
       from: string,
       to: string,
-      serviceAccount: string,
       quantity: { amount: string; currency: string },
-      serviceFeeAmount: string,
+      serviceFee?: ServiceFeeData,
       now?: moment.Moment,
       memo?: string,
     ) =>
@@ -168,10 +163,9 @@ export const eosTransactionModuleFactory = (
         refBlockPrefix,
         from,
         to,
-        serviceAccount,
         quantity.amount,
-        serviceFeeAmount,
         quantity.currency,
+        serviceFee,
         now,
         memo,
       ),
@@ -189,10 +183,9 @@ const createTransferTx = async (
   refBlockPrefix: number,
   from: string,
   to: string,
-  serviceAccount: string,
   amount: string,
-  serviceFeeAmount: string,
   currency: string,
+  serviceFee?: ServiceFeeData,
   now?: moment.Moment,
   memo?: string,
 ): Promise<string> => {
@@ -206,10 +199,10 @@ const createTransferTx = async (
     refBlockPrefix,
     from,
     to,
-    `${amount} ${currency}`,
-    `${serviceFeeAmount} ${currency}`,
-    serviceAccount,
-    memo || '', // TODO moze dac tutaj jakis random number, albo correlationId?
+    amount,
+    currency,
+    memo || '',
+    serviceFee
   )
   return createEosTransaction(t, chainId, eosioTokenBase64Abi)
 }
@@ -246,17 +239,15 @@ const createEosTransaction = async (
   return Buffer.from(apiResponse.serializedTransaction).toString('hex')
 }
 
-const transfer = (
-  expiration: string,
-  refBlockNumber: number,
-  refBlockPrefix: number,
-  from: string,
-  to: string,
-  quantity: string,
-  serviceFeeQuantity: string,
-  serviceAccount: string,
-  memo: string,
-) => ({
+const transfer = (expiration: string,
+                  refBlockNumber: number,
+                  refBlockPrefix: number,
+                  from: string,
+                  to: string,
+                  amount: string,
+                  currency: string,
+                  memo: string,
+                  serviceFee?: ServiceFeeData) => ({
   expiration,
   ref_block_num: refBlockNumber,
   ref_block_prefix: refBlockPrefix,
@@ -273,27 +264,27 @@ const transfer = (
       data: {
         from,
         to,
-        quantity,
+        quantity: `${amount} ${currency}`,
         memo,
       },
     },
-    {
-        account: 'eosio.token',
-        name: 'transfer',
-        authorization: [
-            {
-                actor: from,
-                permission: 'active',
-            },
-        ],
-        data: {
-            from: from,
-            to: serviceAccount,
-            quantity: serviceFeeQuantity,
-            memo:''
-        }
-    }
-  ],
+    ...(serviceFee ? [{
+      account: 'eosio.token',
+      name: 'transfer',
+      authorization: [
+        {
+          actor: from,
+          permission: 'active',
+        },
+      ],
+      data: {
+        from: from,
+        to: serviceFee.serviceAddress,
+        quantity: `${serviceFee.amount} ${currency}`,
+        memo: ''
+      }
+    }] : [])
+  ]
 })
 
 const signTx = async (

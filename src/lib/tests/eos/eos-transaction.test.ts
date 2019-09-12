@@ -17,9 +17,8 @@ describe('eos transaction', () => {
       refBlockPrefix,
       'someaccount2',
       'accfeeclctor',
-      'srvceaccount',
       { amount: '5.0000', currency: 'EOS' },
-      '0.5',
+      { amount: "0.5", serviceAddress: 'srvceaccount' },
       currentTime,
       'x'
     )
