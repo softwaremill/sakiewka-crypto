@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import { currency } from '../helpers'
 import {
   addressModuleFactory,
-  addressApiFactory,
+  bitcoinAddressApiFactory,
 } from '../../bitcoin/bitcoin-address'
 import * as backendFactory from '../../bitcoin/bitcoin-backend-api'
 import { keyModuleFactory } from '../../bitcoin/bitcoin-key'
@@ -69,7 +69,7 @@ describe('generateNewMultisigAddress', () => {
 })
 
 describe('createNewAddress', () => {
-  const addressApi = addressApiFactory(backendApi)
+  const addressApi = bitcoinAddressApiFactory(backendApi)
   it('should exist', () => {
     expect(addressApi.createNewAddress).to.be.a('function')
   })
@@ -112,7 +112,7 @@ describe('createNewAddress', () => {
 })
 
 describe('getAddress', () => {
-  const addressModule = addressApiFactory(backendApi)
+  const addressModule = bitcoinAddressApiFactory(backendApi)
 
   it('should exist', () => {
     expect(addressModule.getAddress).to.be.a('function')
@@ -139,7 +139,7 @@ describe('getAddress', () => {
 })
 
 describe('listAddresses', () => {
-  const addressModule = addressApiFactory(backendApi)
+  const addressModule = bitcoinAddressApiFactory(backendApi)
 
   it('should exist', () => {
     expect(addressModule.listAddresses).to.be.a('function')

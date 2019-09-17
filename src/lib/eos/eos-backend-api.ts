@@ -1,21 +1,28 @@
 import {
-  CreateWalletBackendParams,
+  CreateEosWalletBackendParams,
   MaxTransferAmountEosBackendParams,
   CreateEosWalletBackendResponse,
   GetWalletBackendResponse,
   ListWalletsBackendResponse,
   MaxTransferAmountBackendResponse,
+  GetCurrentTxParamsResponse,
 } from '../../types/api/wallet'
 import { ListPoliciesForWalletBackendResponse } from '../../types/api/policy'
 
 import { Currency } from '../..'
 import * as backendApi from '../backend-api'
 import { HttpClient } from '../utils/httpClient'
+import {
+  GetServiceFeeResponse,
+  SendResponse,
+} from '../../types/response/transaction'
+import { GetKeyBackendResponse } from '../../types/api/key'
+import { GetAccountFee } from 'response/account-fee'
 
 export interface EosBackendApi {
   createWallet(
     token: string,
-    params: CreateWalletBackendParams,
+    params: CreateEosWalletBackendParams,
   ): Promise<CreateEosWalletBackendResponse>
   editWallet(token: string, walletId: string, name: string): Promise<any>
   getWallet(token: string, walletId: string): Promise<GetWalletBackendResponse>
@@ -34,6 +41,25 @@ export interface EosBackendApi {
     token: string,
     walletId: string,
   ): Promise<ListPoliciesForWalletBackendResponse>
+  sendTransaction(
+    token: string,
+    walletId: string,
+    txHex: string,
+    signature: string,
+  ): Promise<SendResponse>
+  getKey(
+    token: string,
+    keyId: string,
+    includePrivate?: boolean,
+  ): Promise<GetKeyBackendResponse>
+  getCurrentTxParams(): Promise<GetCurrentTxParamsResponse>
+  getAccountFee(token: string): Promise<GetAccountFee>
+  getServiceFee(
+    token: string,
+    walletId: string,
+    recipient: string,
+    transferAmount: string,
+  ): Promise<GetServiceFeeResponse>
 }
 
 export const eosBackendApiFactory = (
@@ -59,9 +85,75 @@ export const eosBackendApiFactory = (
     }
 
     const response = await httpClient.request(
-      `${backendApiUrl}/eos/wallet/${walletId}/max-transfer-amount?recipient=${
-        params.recipient
-      }`,
+      `${backendApiUrl}/eos/wallet/${walletId}/max-transfer-amount?recipient=${params.recipient}`,
+      options,
+    )
+    return response.data
+  }
+
+  const getCurrentTxParams = async (): Promise<GetCurrentTxParamsResponse> => {
+    const options = {
+      method: 'GET',
+    }
+    const response = await httpClient.request(
+      `${backendApiUrl}/eos/tx/params`,
+      options,
+    )
+    return response.data
+  }
+
+  const sendTransaction = async (
+    token: string,
+    walletId: string,
+    txHex: string,
+    signature: string,
+  ): Promise<SendResponse> => {
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        txHex,
+        signature,
+      }),
+    }
+
+    const response = await httpClient.request(
+      `${backendApiUrl}/eos/wallet/${walletId}/send`,
+      options,
+    )
+    return response.data
+  }
+
+  const getAccountFee = async (token: string): Promise<GetAccountFee> => {
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: token,
+      },
+    }
+    const response = await httpClient.request(
+      `${backendApiUrl}/eos/account-fee`,
+      options,
+    )
+    return response.data
+  }
+
+  const getServiceFee = async (
+    token: string,
+    walletId: string,
+    recipient: string,
+    transferAmount: string,
+  ): Promise<GetServiceFeeResponse> => {
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: token,
+      },
+    }
+    const response = await httpClient.request(
+      `${backendApiUrl}/eos/wallet/${walletId}/service-fee?recipient=${recipient}&transferAmount=${transferAmount}`,
       options,
     )
     return response.data
@@ -74,5 +166,10 @@ export const eosBackendApiFactory = (
     listWallets: baseCurrencyApi.listWallets,
     maxTransferAmount,
     listPoliciesForWallet: baseCurrencyApi.listPoliciesForWallet,
+    getCurrentTxParams,
+    getKey: baseCurrencyApi.getKey,
+    sendTransaction,
+    getAccountFee,
+    getServiceFee,
   }
 }

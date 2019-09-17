@@ -4,6 +4,10 @@ import { Currency } from './currency'
 import { UTXO } from './transaction'
 import { Key } from './key'
 
+export interface CreateEosWalletParams extends CreateWalletParams {
+  eosAccountName: string
+}
+
 export interface CreateWalletParams {
   passphrase: string
   name: string

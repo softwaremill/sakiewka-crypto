@@ -9,6 +9,11 @@ import {
 import { Key } from '../domain/key'
 import { Path } from '../domain/transaction'
 
+export interface CreateEosWalletBackendParams
+  extends CreateWalletBackendParams {
+  eosAccountName: string
+}
+
 export interface CreateWalletBackendParams {
   name: string
   userPubKey: string
@@ -56,3 +61,9 @@ export type ListWalletsBackendResponse = ListWalletsResponse
 export type ListUnspentsBackendResponse = ListUnspentsResponse
 export type MaxTransferAmountBackendResponse = MaxTransferAmountResponse
 export type ListUtxosByAddressBackendResponse = ListUtxosByAddressResponse
+
+export interface GetCurrentTxParamsResponse {
+  irreversibleBlockNumber: number
+  irreversibleBlockPrefix: number
+  latestBlockTime: string
+}

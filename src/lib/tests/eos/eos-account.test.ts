@@ -1,20 +1,20 @@
 import { expect } from 'chai'
-import { accountModuleFactory } from '../../eos/eos-account'
+import { eosAccountModuleFactory } from '../../eos/eos-account'
 import moment from 'moment'
 import { Api, JsonRpc } from 'eosjs'
-import {
-  BinaryAbi
-} from 'eosjs/dist/eosjs-api-interfaces'
-import { base64ToBinary } from 'eosjs/dist/eosjs-numeric';
+import { BinaryAbi } from 'eosjs/dist/eosjs-api-interfaces'
+import { base64ToBinary } from 'eosjs/dist/eosjs-numeric'
 import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig'
+import { eosTransactionModuleFactory } from '../../eos/eos-transaction'
 
 const { TextDecoder, TextEncoder } = require('util')
 
-
 describe('eos account', () => {
   it('should create offline signed newaccount transaction', async () => {
-    const res = await accountModuleFactory(
-      'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
+    const res = await eosAccountModuleFactory(
+      eosTransactionModuleFactory(
+        'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
+      ),
     ).buildNewAccountTransaction(
       'newacc',
       'creator',
@@ -26,24 +26,41 @@ describe('eos account', () => {
       4035814219,
       moment('2019-12-31'),
     )
-    expect(res.signature).to.eq('SIG_K1_Jx6nt3F1gYq4Y7steiBMo55NWLYsKpkwvtQ5FKLDgv4dA1WXfR584aTy3xr4Zj6PH3T1mTwcWgEfjHXMpBAp2dNMAj8FF5', JSON.stringify(res))
-    expect(res.serializedTransaction).to.eq('88960a5e1f044ba38df000000000030000000000ea305500409e9a2264b89a01000000e0d26cd44500000000a8ed3232ae01000000e0d26cd445000000002064b89a01000000010003aee489123e488124be1446fb7a84b1bff66e1c534f62dd323afe1508af357c340100000002000000030002fc54ef6b50d6ea072d64ec13cd50619398bd18281bdceb6e577032b38321aba2010000038364a9a0a424b73670c160713ac49366808051093b02db5131d0bd40dbfe380301000003aee489123e488124be1446fb7a84b1bff66e1c534f62dd323afe1508af357c34010000000000000000ea305500b0cafe4873bd3e01000000e0d26cd44500000000a8ed323214000000e0d26cd445000000002064b89a002000000000000000ea305500003f2a1ba6a24a01000000e0d26cd44500000000a8ed323231000000e0d26cd445000000002064b89a10270000000000000453595300000000102700000000000004535953000000000000', JSON.stringify(res))
+    expect(res.signature).to.eq(
+      'SIG_K1_Jx6nt3F1gYq4Y7steiBMo55NWLYsKpkwvtQ5FKLDgv4dA1WXfR584aTy3xr4Zj6PH3T1mTwcWgEfjHXMpBAp2dNMAj8FF5',
+      JSON.stringify(res),
+    )
+    expect(res.serializedTransaction).to.eq(
+      '88960a5e1f044ba38df000000000030000000000ea305500409e9a2264b89a01000000e0d26cd44500000000a8ed3232ae01000000e0d26cd445000000002064b89a01000000010003aee489123e488124be1446fb7a84b1bff66e1c534f62dd323afe1508af357c340100000002000000030002fc54ef6b50d6ea072d64ec13cd50619398bd18281bdceb6e577032b38321aba2010000038364a9a0a424b73670c160713ac49366808051093b02db5131d0bd40dbfe380301000003aee489123e488124be1446fb7a84b1bff66e1c534f62dd323afe1508af357c34010000000000000000ea305500b0cafe4873bd3e01000000e0d26cd44500000000a8ed323214000000e0d26cd445000000002064b89a002000000000000000ea305500003f2a1ba6a24a01000000e0d26cd44500000000a8ed323231000000e0d26cd445000000002064b89a10270000000000000453595300000000102700000000000004535953000000000000',
+      JSON.stringify(res),
+    )
     const builtTx = await deserializeRawTx(res.serializedTransaction)
-    const newAccountAction = builtTx.actions[0];
-    const buyRamAction = builtTx.actions[1];
-    const delegateBWAction = builtTx.actions[2];
+    const newAccountAction = builtTx.actions[0]
+    const buyRamAction = builtTx.actions[1]
+    const delegateBWAction = builtTx.actions[2]
     expect(newAccountAction.name).to.eq('newaccount')
     expect(newAccountAction.data.creator).to.eq('creator')
     expect(newAccountAction.data.owner.threshold).to.eq(1)
-    expect(newAccountAction.data.owner.keys).to.deep.eq([{
-      key: 'PUB_K1_8AFvsywPipDmqUFiSSZTJWVnb5bk9sCo813jq1ewmd4SGG7qeZ',
-      weight: 1
-    }])
+    expect(newAccountAction.data.owner.keys).to.deep.eq([
+      {
+        key: 'PUB_K1_8AFvsywPipDmqUFiSSZTJWVnb5bk9sCo813jq1ewmd4SGG7qeZ',
+        weight: 1,
+      },
+    ])
     expect(newAccountAction.data.active.threshold).to.eq(2)
     expect(newAccountAction.data.active.keys).to.deep.eq([
-      { key: 'PUB_K1_6ocq7DSmtpbjtzodGAvLNbwtJUK3mYKvUUG3Sot8CLWtbaw3Vk', weight: 1 },
-      { key: 'PUB_K1_7q6ny3Hmbm9oCgUh7NqbfvQauiBqBQRVDB5NH1aQr2QLab1R3B', weight: 1 },
-      { key: 'PUB_K1_8AFvsywPipDmqUFiSSZTJWVnb5bk9sCo813jq1ewmd4SGG7qeZ', weight: 1 }
+      {
+        key: 'PUB_K1_6ocq7DSmtpbjtzodGAvLNbwtJUK3mYKvUUG3Sot8CLWtbaw3Vk',
+        weight: 1,
+      },
+      {
+        key: 'PUB_K1_7q6ny3Hmbm9oCgUh7NqbfvQauiBqBQRVDB5NH1aQr2QLab1R3B',
+        weight: 1,
+      },
+      {
+        key: 'PUB_K1_8AFvsywPipDmqUFiSSZTJWVnb5bk9sCo813jq1ewmd4SGG7qeZ',
+        weight: 1,
+      },
     ])
     expect(buyRamAction.name).to.eq('buyrambytes')
     expect(buyRamAction.data.bytes).to.eq(8192)
