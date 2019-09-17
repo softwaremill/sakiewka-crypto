@@ -9,7 +9,7 @@ import {
 import { PrivateKey } from 'eosjs-ecc'
 import { Key, KeyType } from '../../types/domain/key'
 
-import { SendResponse } from '../../types/response/transaction'
+import { ServiceFeeData, SendResponse } from '../../types/response/transaction'
 import { EosBackendApi } from './eos-backend-api'
 import { EosKeyModule } from './eos-key'
 import { WalletDetails } from '../../types/domain/wallet'
@@ -53,12 +53,19 @@ export const eosTransactionApiFactory = (
       passphrase,
     )
     const txParams = await backendApi.getCurrentTxParams()
+    const serviceFee = await backendApi.getServiceFee(
+      userToken,
+      walletId,
+      to,
+      quantity.amount,
+    )
     const txHex = await transactionModule.createTransferTx(
       txParams.irreversibleBlockNumber,
       txParams.irreversibleBlockPrefix,
       from,
       to,
       quantity,
+      serviceFee.fee,
       moment(txParams.latestBlockTime),
       memo,
     )
@@ -129,6 +136,7 @@ export interface EosTransactionModule {
     from: string,
     to: string,
     quantity: { amount: string; currency: string },
+    serviceFee?: ServiceFeeData,
     now?: moment.Moment,
     memo?: string,
   ): Promise<string>
@@ -149,6 +157,7 @@ export const eosTransactionModuleFactory = (
       from: string,
       to: string,
       quantity: { amount: string; currency: string },
+      serviceFee?: ServiceFeeData,
       now?: moment.Moment,
       memo?: string,
     ) =>
@@ -160,6 +169,7 @@ export const eosTransactionModuleFactory = (
         to,
         quantity.amount,
         quantity.currency,
+        serviceFee,
         now,
         memo,
       ),
@@ -179,6 +189,7 @@ const createTransferTx = async (
   to: string,
   amount: string,
   currency: string,
+  serviceFee?: ServiceFeeData,
   now?: moment.Moment,
   memo?: string,
 ): Promise<string> => {
@@ -192,8 +203,10 @@ const createTransferTx = async (
     refBlockPrefix,
     from,
     to,
-    `${amount} ${currency}`,
-    memo || '', // TODO moze dac tutaj jakis random number, albo correlationId?
+    amount,
+    currency,
+    memo || '',
+    serviceFee,
   )
   return createEosTransaction(t, chainId, eosioTokenBase64Abi)
 }
@@ -236,8 +249,10 @@ const transfer = (
   refBlockPrefix: number,
   from: string,
   to: string,
-  quantity: string,
+  amount: string,
+  currency: string,
   memo: string,
+  serviceFee?: ServiceFeeData,
 ) => ({
   expiration,
   ref_block_num: refBlockNumber,
@@ -255,10 +270,30 @@ const transfer = (
       data: {
         from,
         to,
-        quantity,
+        quantity: `${amount} ${currency}`,
         memo,
       },
     },
+    ...(serviceFee
+      ? [
+        {
+          account: 'eosio.token',
+          name: 'transfer',
+          authorization: [
+              {
+                actor: from,
+                permission: 'active',
+              },
+            ],
+          data: {
+              from,
+              to: serviceFee.serviceAddress,
+              quantity: `${serviceFee.amount} ${currency}`,
+              memo: '',
+            },
+        },
+      ]
+      : []),
   ],
 })
 

@@ -12,7 +12,10 @@ import { ListPoliciesForWalletBackendResponse } from '../../types/api/policy'
 import { Currency } from '../..'
 import * as backendApi from '../backend-api'
 import { HttpClient } from '../utils/httpClient'
-import { SendResponse } from '../../types/response/transaction'
+import {
+  GetServiceFeeResponse,
+  SendResponse,
+} from '../../types/response/transaction'
 import { GetKeyBackendResponse } from '../../types/api/key'
 import { GetAccountFee } from 'response/account-fee'
 
@@ -51,6 +54,12 @@ export interface EosBackendApi {
   ): Promise<GetKeyBackendResponse>
   getCurrentTxParams(): Promise<GetCurrentTxParamsResponse>
   getAccountFee(token: string): Promise<GetAccountFee>
+  getServiceFee(
+    token: string,
+    walletId: string,
+    recipient: string,
+    transferAmount: string,
+  ): Promise<GetServiceFeeResponse>
 }
 
 export const eosBackendApiFactory = (
@@ -131,6 +140,25 @@ export const eosBackendApiFactory = (
     return response.data
   }
 
+  const getServiceFee = async (
+    token: string,
+    walletId: string,
+    recipient: string,
+    transferAmount: string,
+  ): Promise<GetServiceFeeResponse> => {
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: token,
+      },
+    }
+    const response = await httpClient.request(
+      `${backendApiUrl}/eos/wallet/${walletId}/service-fee?recipient=${recipient}&transferAmount=${transferAmount}`,
+      options,
+    )
+    return response.data
+  }
+
   return {
     createWallet: baseCurrencyApi.createWallet,
     editWallet: baseCurrencyApi.editWallet,
@@ -142,5 +170,6 @@ export const eosBackendApiFactory = (
     getKey: baseCurrencyApi.getKey,
     sendTransaction,
     getAccountFee,
+    getServiceFee,
   }
 }
