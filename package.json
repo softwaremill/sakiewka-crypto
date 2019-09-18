@@ -50,7 +50,7 @@
     "@types/uuid": "3.4.4",
     "base64-stream": "1.0.0",
     "bgoldjs-lib": "3.3.3",
-    "bignumber.js": "8.0.1",
+    "bignumber.js": "9.0.0",
     "bip69": "2.1.4",
     "bitcoinjs-lib": "3.3.2",
     "chai": "4.2.0",
