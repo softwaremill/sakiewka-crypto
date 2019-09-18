@@ -18,7 +18,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "tslint 'src/**/*.ts?(x)' --fix"
+      "pre-commit": "echo soon"
     }
   },
   "repository": {
