@@ -1,30 +1,33 @@
 import { expect } from 'chai'
 
-import { currency } from '../helpers'
 import * as backendApiFactory from '../../bitcoin/bitcoin-backend-api'
 import { feeRatesApiFactory } from '../../bitcoin/bitcoin-fee-rates'
 import { createHttpClient } from '../../utils/httpClient'
+import { forBTCandBTG } from '../../utils/helpers'
 
-const backendApi = backendApiFactory.withCurrency(
-  'http://backendApiUrl',
-  currency,
-  createHttpClient(() => ''),
-)
+forBTCandBTG('bitcoin fee rates', currency => {
+
+  const backendApi = backendApiFactory.withCurrency(
+    'http://backendApiUrl',
+    currency,
+    createHttpClient(() => ''),
+  )
 // @ts-ignore
-backendApi.getFeeRates = jest.fn(() => {
-  return Promise.resolve({
-    recommended: 123,
-  })
-})
-
-describe('getKey', () => {
-  const keyModule = feeRatesApiFactory(backendApi)
-  it('should exist', () => {
-    expect(keyModule.getFeeRate).to.be.a('function')
+  backendApi.getFeeRates = jest.fn(() => {
+    return Promise.resolve({
+      recommended: 123,
+    })
   })
 
-  it('should pass proper arguments to backend-api method and return result of its call', async () => {
-    const res = await keyModule.getFeeRate()
-    expect(res.recommended).to.eq(123)
+  describe('getKey', () => {
+    const keyModule = feeRatesApiFactory(backendApi)
+    it('should exist', () => {
+      expect(keyModule.getFeeRate).to.be.a('function')
+    })
+
+    it('should pass proper arguments to backend-api method and return result of its call', async () => {
+      const res = await keyModule.getFeeRate()
+      expect(res.recommended).to.eq(123)
+    })
   })
 })

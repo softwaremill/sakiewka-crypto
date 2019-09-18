@@ -1,121 +1,125 @@
 import { expect, use } from 'chai'
 
-import { currency } from './helpers'
 import * as backendApiFactory from '../bitcoin/bitcoin-backend-api'
 import BigNumber from 'bignumber.js'
 import chaiBigNumber from 'chai-bignumber'
 import { DailyAmountPolicy } from '../../types/domain/policy'
 import { policyApiFactory } from '../policies'
 import { createHttpClient } from '../utils/httpClient'
-const backendApi = backendApiFactory.withCurrency(
-  'http://backendApiUrl',
-  currency,
-  createHttpClient(() => ''),
-)
+import { forAllCurrencies } from '../utils/helpers'
 
-const policy = policyApiFactory(backendApi)
+forAllCurrencies('policy', currency => {
 
-beforeEach(() => {
-  use(chaiBigNumber(BigNumber))
-})
+  const backendApi = backendApiFactory.withCurrency(
+    'http://backendApiUrl',
+    currency,
+    createHttpClient(() => ''),
+  )
 
-describe('addPolicy', () => {
-  it('should exist', () => {
-    expect(policy.createPolicy).to.be.a('function')
+  const policy = policyApiFactory(backendApi)
+
+  beforeEach(() => {
+    use(chaiBigNumber(BigNumber))
   })
 
-  it('should pass proper arguments to backend-api method', async () => {
-    // @ts-ignore
-    const mockImplementation = jest.fn(() => 'backend response')
-    // @ts-ignore
-    backendApi.createPolicy = mockImplementation
+  describe('addPolicy', () => {
+    it('should exist', () => {
+      expect(policy.createPolicy).to.be.a('function')
+    })
 
-    const res = await policy.createPolicy(
-      'testToken',
-      'name',
-      new DailyAmountPolicy('11'),
-    )
+    it('should pass proper arguments to backend-api method', async () => {
+      // @ts-ignore
+      const mockImplementation = jest.fn(() => 'backend response')
+      // @ts-ignore
+      backendApi.createPolicy = mockImplementation
 
-    const [token, { name, settings }] = mockImplementation.mock.calls[0]
-    expect(token).to.eq('testToken')
-    expect(name).to.eq('name')
-    expect(settings).to.eql(new DailyAmountPolicy('11'))
-    expect(res).to.eq('backend response')
-  })
-})
+      const res = await policy.createPolicy(
+        'testToken',
+        'name',
+        new DailyAmountPolicy('11'),
+      )
 
-describe('listPolicies', () => {
-  it('should exist', () => {
-    expect(policy.listPolicies).to.be.a('function')
-  })
-
-  it('should pass proper arguments to backend-api method - only limit', async () => {
-    // @ts-ignore
-    const mockImplementation = jest.fn(() => 'backend response')
-    // @ts-ignore
-    backendApi.listPolicies = mockImplementation
-
-    const res = await policy.listPolicies('testToken', 10)
-
-    const [token, limit] = mockImplementation.mock.calls[0]
-    expect(token).to.eq('testToken')
-    expect(limit).to.eq(10)
-    expect(res).to.eq('backend response')
+      const [token, { name, settings }] = mockImplementation.mock.calls[0]
+      expect(token).to.eq('testToken')
+      expect(name).to.eq('name')
+      expect(settings).to.eql(new DailyAmountPolicy('11'))
+      expect(res).to.eq('backend response')
+    })
   })
 
-  it('should pass proper arguments to backend-api method - with nextPageToken', async () => {
-    // @ts-ignore
-    const mockImplementation = jest.fn(() => 'backend response')
-    // @ts-ignore
-    backendApi.listPolicies = mockImplementation
+  describe('listPolicies', () => {
+    it('should exist', () => {
+      expect(policy.listPolicies).to.be.a('function')
+    })
 
-    const res = await policy.listPolicies('testToken', 10, '123444')
+    it('should pass proper arguments to backend-api method - only limit', async () => {
+      // @ts-ignore
+      const mockImplementation = jest.fn(() => 'backend response')
+      // @ts-ignore
+      backendApi.listPolicies = mockImplementation
 
-    const [token, limit, nextPageToken] = mockImplementation.mock.calls[0]
-    expect(token).to.eq('testToken')
-    expect(limit).to.eq(10)
-    expect(nextPageToken).to.eq('123444')
-    expect(res).to.eq('backend response')
-  })
-})
+      const res = await policy.listPolicies('testToken', 10)
 
-describe('listWalletsForPolicy', () => {
-  it('should exist', () => {
-    expect(policy.listWalletsForPolicy).to.be.a('function')
-  })
+      const [token, limit] = mockImplementation.mock.calls[0]
+      expect(token).to.eq('testToken')
+      expect(limit).to.eq(10)
+      expect(res).to.eq('backend response')
+    })
 
-  it('should pass proper arguments to backend-api method', async () => {
-    // @ts-ignore
-    const mockImplementation = jest.fn(() => 'backend response')
-    // @ts-ignore
-    backendApi.listWalletsForPolicy = mockImplementation
+    it('should pass proper arguments to backend-api method - with nextPageToken', async () => {
+      // @ts-ignore
+      const mockImplementation = jest.fn(() => 'backend response')
+      // @ts-ignore
+      backendApi.listPolicies = mockImplementation
 
-    const res = await policy.listWalletsForPolicy('testToken', '11')
+      const res = await policy.listPolicies('testToken', 10, '123444')
 
-    const [token, policyId] = mockImplementation.mock.calls[0]
-    expect(token).to.eq('testToken')
-    expect(policyId).to.eq('11')
-    expect(res).to.eq('backend response')
-  })
-})
-
-describe('assignPolicy', () => {
-  it('should exist', () => {
-    expect(policy.assignPolicy).to.be.a('function')
+      const [token, limit, nextPageToken] = mockImplementation.mock.calls[0]
+      expect(token).to.eq('testToken')
+      expect(limit).to.eq(10)
+      expect(nextPageToken).to.eq('123444')
+      expect(res).to.eq('backend response')
+    })
   })
 
-  it('should pass proper arguments to backend-api method', async () => {
-    // @ts-ignore
-    const mockImplementation = jest.fn(() => 'backend response')
-    // @ts-ignore
-    backendApi.assignPolicy = mockImplementation
+  describe('listWalletsForPolicy', () => {
+    it('should exist', () => {
+      expect(policy.listWalletsForPolicy).to.be.a('function')
+    })
 
-    const res = await policy.assignPolicy('testToken', 'policyId', 'walletId')
+    it('should pass proper arguments to backend-api method', async () => {
+      // @ts-ignore
+      const mockImplementation = jest.fn(() => 'backend response')
+      // @ts-ignore
+      backendApi.listWalletsForPolicy = mockImplementation
 
-    const [token, policyId, walletId] = mockImplementation.mock.calls[0]
-    expect(token).to.eq('testToken')
-    expect(policyId).to.eq('policyId')
-    expect(walletId).to.eql({ walletId: 'walletId' })
-    expect(res).to.eq('backend response')
+      const res = await policy.listWalletsForPolicy('testToken', '11')
+
+      const [token, policyId] = mockImplementation.mock.calls[0]
+      expect(token).to.eq('testToken')
+      expect(policyId).to.eq('11')
+      expect(res).to.eq('backend response')
+    })
+  })
+
+  describe('assignPolicy', () => {
+    it('should exist', () => {
+      expect(policy.assignPolicy).to.be.a('function')
+    })
+
+    it('should pass proper arguments to backend-api method', async () => {
+      // @ts-ignore
+      const mockImplementation = jest.fn(() => 'backend response')
+      // @ts-ignore
+      backendApi.assignPolicy = mockImplementation
+
+      const res = await policy.assignPolicy('testToken', 'policyId', 'walletId')
+
+      const [token, policyId, walletId] = mockImplementation.mock.calls[0]
+      expect(token).to.eq('testToken')
+      expect(policyId).to.eq('policyId')
+      expect(walletId).to.eql({ walletId: 'walletId' })
+      expect(res).to.eq('backend response')
+    })
   })
 })

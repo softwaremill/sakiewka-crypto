@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import bitcoinFactory from '../../bitcoin/bitcoin'
 import { Currency } from '../../..'
 
-describe('btc redeem script', () => {
+describe('redeem script', () => {
   const test = (
     currency: Currency,
     key1: string,

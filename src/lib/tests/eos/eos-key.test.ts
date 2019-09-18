@@ -7,7 +7,7 @@ const keyModule = eosKeyModuleFactory()
 describe('deriveKeyPair', () => {
   it('should create new keyPair with derived pubKey', () => {
     const result = keyModule.deriveKeyPair(
-      {prvKey:'KxFAzT7QM1ezWbu83MjTiWeRDYmRv6TEZkvZsUgtxsEY69wMcjpA',pubKey:'EOS7dmmArn981QQtC4h3XrpTfepRfHw3ALmeEt58GNxjM6kueKEk8'},
+      { prvKey:'KxFAzT7QM1ezWbu83MjTiWeRDYmRv6TEZkvZsUgtxsEY69wMcjpA', pubKey:'EOS7dmmArn981QQtC4h3XrpTfepRfHw3ALmeEt58GNxjM6kueKEk8' },
       '1',
     )
     expect(result.prvKey).to.eq(
@@ -35,7 +35,7 @@ describe('generateNewKey', () => {
 
 describe('encrypt/decrypt Key', () => {
   it('should encryp/decrypt keyPair', () => {
-    const keyPair = { prvKey:'5Jf4zZa4MAF8StLxc4VvLGHruum48pYufUbVYgZfLmWZK4nCERE',pubKey: 'EOS6V8g6491aR6iJqk1gNET6mscAqw3vwu36TTjPnqBKvcpguqhWa' }
+    const keyPair = { prvKey:'5Jf4zZa4MAF8StLxc4VvLGHruum48pYufUbVYgZfLmWZK4nCERE', pubKey: 'EOS6V8g6491aR6iJqk1gNET6mscAqw3vwu36TTjPnqBKvcpguqhWa' }
     const encryptedResults = keyModule.encryptKeyPair(keyPair, 'pass')
 
     expect(JSON.parse(encryptedResults.prvKey!)).to.haveOwnProperty('cipher')

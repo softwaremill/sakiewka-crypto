@@ -9,8 +9,7 @@
   },
   "scripts": {
     "postinstall": "tsc --skipLibCheck",
-    "test-single-currency": "jest --forceExit --verbose false --detectOpenHandles",
-    "test": "CURRENCY_UNDER_TEST=BTG npm run test-single-currency && CURRENCY_UNDER_TEST=BTC npm run test-single-currency",
+    "test": "jest --forceExit --verbose false --detectOpenHandles",
     "watch-test": "npm run test -- --watchAll",
     "build": "tsc",
     "watch": "tsc -w",

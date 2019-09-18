@@ -12,7 +12,7 @@ import { ListPoliciesForWalletBackendResponse } from '../../types/api/policy'
 import { Currency } from '../..'
 import * as backendApi from '../backend-api'
 import { HttpClient } from '../utils/httpClient'
-import {GetServiceFeeResponse, SendResponse} from '../../types/response/transaction'
+import { GetServiceFeeResponse, SendResponse } from '../../types/response/transaction'
 import { GetKeyBackendResponse } from '../../types/api/key'
 import { GetAccountFee } from 'response/account-fee'
 
@@ -55,7 +55,7 @@ export interface EosBackendApi {
     token: string,
     walletId: string,
     recipient: string,
-    transferAmount:string
+    transferAmount:string,
   ): Promise<GetServiceFeeResponse>
 }
 
@@ -165,6 +165,6 @@ export const eosBackendApiFactory = (
     getKey: baseCurrencyApi.getKey,
     sendTransaction,
     getAccountFee,
-    getServiceFee
+    getServiceFee,
   }
 }
