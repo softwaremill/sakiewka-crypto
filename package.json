@@ -14,7 +14,8 @@
     "watch-test": "npm run test -- --watchAll",
     "build": "tsc",
     "watch": "tsc -w",
-    "generate-docs": "typedoc --options ./typedoc.js"
+    "generate-docs": "typedoc --options ./typedoc.js",
+    "tslint-check": "tslint-config-prettier-check ./tslint.json"
   },
   "husky": {
     "hooks": {
