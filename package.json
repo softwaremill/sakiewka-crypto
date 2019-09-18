@@ -15,7 +15,10 @@
     "build": "tsc",
     "watch": "tsc -w",
     "generate-docs": "typedoc --options ./typedoc.js",
-    "tslint-check": "tslint-config-prettier-check ./tslint.json"
+    "tslint": "tslint './src/**/*.{ts,tsx}'",
+    "tslint:fix": "npm run tslint -- --fix",
+    "tslint:check": "tslint-config-prettier-check ./tslint.json",
+    "prettier": "prettier --write --config ./.prettierrc './src/**/*.{ts,tsx}'"
   },
   "husky": {
     "hooks": {

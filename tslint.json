@@ -1,11 +1,9 @@
 {
   "extends": [
   "tslint-config-airbnb",
-  "tslint-plugin-prettier",
   "tslint:latest",
   "tslint-config-prettier"],
   "rules": {
-    "prettier": true,
     "object-shorthand-properties-first": false,
     "mocha-no-side-effect-code": false,
     "missing-jsdoc": false,
