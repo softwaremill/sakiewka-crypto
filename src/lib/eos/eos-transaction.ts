@@ -280,17 +280,17 @@ const transfer = (
           account: 'eosio.token',
           name: 'transfer',
           authorization: [
-              {
-                actor: from,
-                permission: 'active',
-              },
-            ],
-          data: {
-              from,
-              to: serviceFee.serviceAddress,
-              quantity: `${serviceFee.amount} ${currency}`,
-              memo: '',
+            {
+              actor: from,
+              permission: 'active',
             },
+          ],
+          data: {
+            from,
+            to: serviceFee.serviceAddress,
+            quantity: `${serviceFee.amount} ${currency}`,
+            memo: '',
+          },
         },
       ]
       : []),

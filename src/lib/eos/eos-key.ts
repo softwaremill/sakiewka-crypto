@@ -1,6 +1,6 @@
 import { PrivateKey } from 'eosjs-ecc'
 import { encrypt, decrypt } from '../crypto'
-import { KeyPair } from "../../types/domain";
+import { KeyPair } from '../../types/domain'
 
 export interface EosKeyModule {
   generateNewKeyPair(): Promise<KeyPair>
@@ -16,7 +16,7 @@ export interface EosKeyModule {
 export const eosKeyModuleFactory = (): EosKeyModule => {
   const generateNewKeyPair = async (): Promise<KeyPair> => {
     const prvKey = await generateNewKey()
-    return { pubKey: prvKey.toPublic().toString(), prvKey: prvKey.toString() };
+    return { pubKey: prvKey.toPublic().toString(), prvKey: prvKey.toString() }
   }
 
   const generateNewKey = async (): Promise<PrivateKey> => {
@@ -59,6 +59,6 @@ export const eosKeyModuleFactory = (): EosKeyModule => {
     decryptKeyPair,
     decryptKey,
     deriveKeyPair,
-    deriveKey
+    deriveKey,
   }
 }
