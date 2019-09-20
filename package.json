@@ -69,7 +69,7 @@
     "ethereumjs-util": "5.2.0",
     "moment": "2.24.0",
     "pdfkit": "0.10.0",
-    "qrcode": "1.4.1",
+    "qrcode": "1.4.2",
     "sjcl": "1.0.8",
     "typescript": "2.9.2"
   },
