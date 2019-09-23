@@ -37,7 +37,7 @@
     "tslint-config-airbnb": "5.11.1",
     "tslint-config-prettier": "1.18.0",
     "typedoc": "0.15.0",
-    "uuid": "3.3.2"
+    "uuid": "3.3.3"
   },
   "dependencies": {
     "@types/bitcoinjs-lib": "3.4.0",
