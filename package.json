@@ -64,7 +64,7 @@
     "cross-fetch": "3.0.1",
     "dotenv": "8.1.0",
     "eosjs": "20.0.0",
-    "eosjs-ecc": "4.0.4",
+    "eosjs-ecc": "4.0.7",
     "ethereumjs-abi": "0.6.5",
     "ethereumjs-util": "5.2.0",
     "moment": "2.24.0",
