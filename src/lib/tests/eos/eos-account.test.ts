@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { expect, use } from 'chai'
 import { eosAccountModuleFactory } from '../../eos/eos-account'
 import moment from 'moment'
 import { Api, JsonRpc } from 'eosjs'
@@ -6,6 +6,7 @@ import { BinaryAbi } from 'eosjs/dist/eosjs-api-interfaces'
 import { base64ToBinary } from 'eosjs/dist/eosjs-numeric'
 import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig'
 import { eosTransactionModuleFactory } from '../../eos/eos-transaction'
+import chaiAsPromised from 'chai-as-promised'
 
 const { TextDecoder, TextEncoder } = require('util')
 
@@ -13,6 +14,10 @@ const transactionModule = eosTransactionModuleFactory(
   'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
 )
 const accountModule = eosAccountModuleFactory(transactionModule)
+
+beforeEach(() => {
+  use(chaiAsPromised)
+})
 
 describe('eos account', () => {
   it('should create offline signed newaccount transaction', async () => {
@@ -66,6 +71,22 @@ describe('eos account', () => {
     expect(delegateBWAction.data.receiver).to.eq('newacc')
     expect(delegateBWAction.data.stake_net_quantity).to.eq('1.0000 SYS')
     expect(delegateBWAction.data.stake_cpu_quantity).to.eq('1.0000 SYS')
+  })
+
+  it('should not accept undefined keys', async () => {
+    const promise = accountModule.buildNewAccountTransaction(
+      'newacc',
+      'creator',
+      '5JLiZAmXhWWhTAab3YEXRSsJm4mybgFmE4DHb6Eqf9KZk9UbBci',
+      // @ts-ignore
+      undefined,
+      'PUB_K1_6ocq7DSmtpbjtzodGAvLNbwtJUK3mYKvUUG3Sot8CLWtbaw3Vk',
+      'PUB_K1_8AFvsywPipDmqUFiSSZTJWVnb5bk9sCo813jq1ewmd4SGG7qeZ',
+      1055,
+      4035814219,
+      moment('2019-12-31'),
+    )
+    await expect(promise).to.eventually.be.rejected
   })
 
   const deserializeRawTx = async (txHex: string) => {
