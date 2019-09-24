@@ -17,6 +17,18 @@ podFactory.withNode10 {
                         npm test
                         """
                     }
+                    parallel(
+                        'Test crypto-local': {
+                            stage('Test crypto-local') {
+                                build job: '../sakiewka-crypto-local/master', parameters: [string(name: 'CRYPTO_VERSION', value: gitCommitHash)]
+                            }
+                        },
+                        'Test crypto-private': {
+                            stage('Test crypto-private') {
+                                build job: '../sakiewka-crypto-private/master', parameters: [string(name: 'CRYPTO_VERSION', value: gitCommitHash)]
+                            }
+                        }
+                    )
                 }
             }
         }
