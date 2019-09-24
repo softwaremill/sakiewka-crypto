@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { expect, use } from 'chai'
 import { eosAccountModuleFactory } from '../../eos/eos-account'
 import moment from 'moment'
 import { Api, JsonRpc } from 'eosjs'
@@ -6,16 +6,22 @@ import { BinaryAbi } from 'eosjs/dist/eosjs-api-interfaces'
 import { base64ToBinary } from 'eosjs/dist/eosjs-numeric'
 import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig'
 import { eosTransactionModuleFactory } from '../../eos/eos-transaction'
+import chaiAsPromised from 'chai-as-promised'
 
 const { TextDecoder, TextEncoder } = require('util')
 
+const transactionModule = eosTransactionModuleFactory(
+  'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
+)
+const accountModule = eosAccountModuleFactory(transactionModule)
+
+beforeEach(() => {
+  use(chaiAsPromised)
+})
+
 describe('eos account', () => {
   it('should create offline signed newaccount transaction', async () => {
-    const res = await eosAccountModuleFactory(
-      eosTransactionModuleFactory(
-        'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
-      ),
-    ).buildNewAccountTransaction(
+    const res = await accountModule.buildNewAccountTransaction(
       'newacc',
       'creator',
       '5JLiZAmXhWWhTAab3YEXRSsJm4mybgFmE4DHb6Eqf9KZk9UbBci',
@@ -27,11 +33,11 @@ describe('eos account', () => {
       moment('2019-12-31'),
     )
     expect(res.signature).to.eq(
-      'SIG_K1_Jx6nt3F1gYq4Y7steiBMo55NWLYsKpkwvtQ5FKLDgv4dA1WXfR584aTy3xr4Zj6PH3T1mTwcWgEfjHXMpBAp2dNMAj8FF5',
+      'SIG_K1_KY4RExyRYn6UrP9G4vGTDUd8VdvFKa91qLzeYSxvt1q59jpJesynNbwT6cQZZRQhTWXaYzsAGkfNrWTbNtdYLBpme4mxcy',
       JSON.stringify(res),
     )
     expect(res.serializedTransaction).to.eq(
-      '88960a5e1f044ba38df000000000030000000000ea305500409e9a2264b89a01000000e0d26cd44500000000a8ed3232ae01000000e0d26cd445000000002064b89a01000000010003aee489123e488124be1446fb7a84b1bff66e1c534f62dd323afe1508af357c340100000002000000030002fc54ef6b50d6ea072d64ec13cd50619398bd18281bdceb6e577032b38321aba2010000038364a9a0a424b73670c160713ac49366808051093b02db5131d0bd40dbfe380301000003aee489123e488124be1446fb7a84b1bff66e1c534f62dd323afe1508af357c34010000000000000000ea305500b0cafe4873bd3e01000000e0d26cd44500000000a8ed323214000000e0d26cd445000000002064b89a002000000000000000ea305500003f2a1ba6a24a01000000e0d26cd44500000000a8ed323231000000e0d26cd445000000002064b89a10270000000000000453595300000000102700000000000004535953000000000000',
+      '88960a5e1f044ba38df000000000030000000000ea305500409e9a2264b89a01000000e0d26cd44500000000a8ed3232f601000000e0d26cd445000000002064b89a02000000030002fc54ef6b50d6ea072d64ec13cd50619398bd18281bdceb6e577032b38321aba2010000038364a9a0a424b73670c160713ac49366808051093b02db5131d0bd40dbfe380301000003aee489123e488124be1446fb7a84b1bff66e1c534f62dd323afe1508af357c340100000002000000030002fc54ef6b50d6ea072d64ec13cd50619398bd18281bdceb6e577032b38321aba2010000038364a9a0a424b73670c160713ac49366808051093b02db5131d0bd40dbfe380301000003aee489123e488124be1446fb7a84b1bff66e1c534f62dd323afe1508af357c34010000000000000000ea305500b0cafe4873bd3e01000000e0d26cd44500000000a8ed323214000000e0d26cd445000000002064b89a002000000000000000ea305500003f2a1ba6a24a01000000e0d26cd44500000000a8ed323231000000e0d26cd445000000002064b89a10270000000000000453595300000000102700000000000004535953000000000000',
       JSON.stringify(res),
     )
     const builtTx = await deserializeRawTx(res.serializedTransaction)
@@ -40,15 +46,7 @@ describe('eos account', () => {
     const delegateBWAction = builtTx.actions[2]
     expect(newAccountAction.name).to.eq('newaccount')
     expect(newAccountAction.data.creator).to.eq('creator')
-    expect(newAccountAction.data.owner.threshold).to.eq(1)
-    expect(newAccountAction.data.owner.keys).to.deep.eq([
-      {
-        key: 'PUB_K1_8AFvsywPipDmqUFiSSZTJWVnb5bk9sCo813jq1ewmd4SGG7qeZ',
-        weight: 1,
-      },
-    ])
-    expect(newAccountAction.data.active.threshold).to.eq(2)
-    expect(newAccountAction.data.active.keys).to.deep.eq([
+    const sortedKeys = [
       {
         key: 'PUB_K1_6ocq7DSmtpbjtzodGAvLNbwtJUK3mYKvUUG3Sot8CLWtbaw3Vk',
         weight: 1,
@@ -61,7 +59,11 @@ describe('eos account', () => {
         key: 'PUB_K1_8AFvsywPipDmqUFiSSZTJWVnb5bk9sCo813jq1ewmd4SGG7qeZ',
         weight: 1,
       },
-    ])
+    ]
+    expect(newAccountAction.data.owner.threshold).to.eq(2)
+    expect(newAccountAction.data.owner.keys).to.deep.eq(sortedKeys)
+    expect(newAccountAction.data.active.threshold).to.eq(2)
+    expect(newAccountAction.data.active.keys).to.deep.eq(sortedKeys)
     expect(buyRamAction.name).to.eq('buyrambytes')
     expect(buyRamAction.data.bytes).to.eq(8192)
     expect(buyRamAction.data.receiver).to.eq('newacc')
@@ -69,6 +71,22 @@ describe('eos account', () => {
     expect(delegateBWAction.data.receiver).to.eq('newacc')
     expect(delegateBWAction.data.stake_net_quantity).to.eq('1.0000 SYS')
     expect(delegateBWAction.data.stake_cpu_quantity).to.eq('1.0000 SYS')
+  })
+
+  it('should not accept undefined keys', async () => {
+    const promise = accountModule.buildNewAccountTransaction(
+      'newacc',
+      'creator',
+      '5JLiZAmXhWWhTAab3YEXRSsJm4mybgFmE4DHb6Eqf9KZk9UbBci',
+      // @ts-ignore
+      undefined,
+      'PUB_K1_6ocq7DSmtpbjtzodGAvLNbwtJUK3mYKvUUG3Sot8CLWtbaw3Vk',
+      'PUB_K1_8AFvsywPipDmqUFiSSZTJWVnb5bk9sCo813jq1ewmd4SGG7qeZ',
+      1055,
+      4035814219,
+      moment('2019-12-31'),
+    )
+    await expect(promise).to.eventually.be.rejected
   })
 
   const deserializeRawTx = async (txHex: string) => {
