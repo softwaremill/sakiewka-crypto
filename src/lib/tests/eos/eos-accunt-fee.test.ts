@@ -14,15 +14,33 @@ backendApi.getAccountFee = jest.fn(() => {
     balance: '1337',
   })
 })
+// @ts-ignore
+backendApi.getReferentialAccountId = jest.fn(() => {
+  return Promise.resolve({
+    id: 'abcd',
+  })
+})
 
 describe('getAccountFee', () => {
-  const keyModule = accountFeeApiFactory(backendApi)
+  const module = accountFeeApiFactory(backendApi)
   it('should exist', () => {
-    expect(keyModule.getAccountFee).to.be.a('function')
+    expect(module.getAccountFee).to.be.a('function')
   })
 
   it('should pass proper arguments to backend-api and return result', async () => {
-    const res = await keyModule.getAccountFee('testToken')
+    const res = await module.getAccountFee('testToken')
     expect(res.balance).to.eq('1337')
+  })
+})
+
+describe('getReferentialAccountId', () => {
+  const module = accountFeeApiFactory(backendApi)
+  it('should exist', () => {
+    expect(module.getReferentialAccountId).to.be.a('function')
+  })
+
+  it('should pass proper arguments to backend-api and return result', async () => {
+    const res = await module.getReferentialAccountId('testToken')
+    expect(res.id).to.eq('abcd')
   })
 })

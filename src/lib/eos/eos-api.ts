@@ -6,10 +6,12 @@ import {
   eosTransactionModuleFactory,
 } from './eos-transaction'
 import { eosKeyModuleFactory } from './eos-key'
+import { AccountFeeApi, accountFeeApiFactory } from "./eos-account-fee"
 
 export interface SakiewkaEosApi {
   wallet: EosWalletApi
-  transaction: EosTransactionApi
+  transaction: EosTransactionApi,
+  accountFee: AccountFeeApi
 }
 
 export const eosApiFactory = (
@@ -21,7 +23,8 @@ export const eosApiFactory = (
   return {
     wallet: walletApiFactory(backend, keyModule),
     transaction: eosTransactionApiFactory(backend, keyModule, transactionModule),
+    accountFee: accountFeeApiFactory(backend)
   }
 }
 
-export { EosWalletApi, EosTransactionApi }
+export { EosWalletApi, EosTransactionApi, AccountFeeApi }
