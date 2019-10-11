@@ -27,4 +27,4 @@ export const eosApiFactory = (
   }
 }
 
-export { EosWalletApi, EosTransactionApi }
+export { EosWalletApi, EosTransactionApi, AccountFeeApi }
