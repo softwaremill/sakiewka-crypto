@@ -135,7 +135,7 @@ export const eosBackendApiFactory = (
       },
     }
     const response = await httpClient.request(
-      `${backendApiUrl}/eos/account-fee`,
+      `${backendApiUrl}/eos/fees-account`,
       options,
     )
     return response.data
