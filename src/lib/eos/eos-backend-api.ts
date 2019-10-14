@@ -18,6 +18,12 @@ import {
 } from '../../types/response/transaction'
 import { GetKeyBackendResponse } from '../../types/api/key'
 import { GetAccountFee, GetReferentialAccountId } from 'response/account-fee'
+import {
+  CreateWebhookBackendResponse,
+  DeleteWebhookBackendResponse,
+  GetWebhookBackendResponse,
+  ListWebhooksBackendResponse
+} from "api"
 
 export interface EosBackendApi {
   createWallet(
@@ -60,7 +66,29 @@ export interface EosBackendApi {
     walletId: string,
     recipient: string,
     transferAmount: string,
-  ): Promise<GetServiceFeeResponse>
+  ): Promise<GetServiceFeeResponse>,
+  createWebhook(
+    token: string,
+    walletId: string,
+    callbackUrl: string,
+    settings: Object,
+  ): Promise<CreateWebhookBackendResponse>,
+  listWebhooks(
+    token: string,
+    walletId: string,
+    limit: number,
+    nextPageToken?: string,
+  ): Promise<ListWebhooksBackendResponse>,
+  getWebhook(
+    token: string,
+    walletId: string,
+    webhookId: string,
+  ): Promise<GetWebhookBackendResponse>,
+  deleteWebhook(
+    token: string,
+    walletId: string,
+    webhookId: string,
+  ): Promise<DeleteWebhookBackendResponse>
 }
 
 export const eosBackendApiFactory = (
@@ -187,5 +215,9 @@ export const eosBackendApiFactory = (
     getAccountFee,
     getReferentialAccountId,
     getServiceFee,
+    createWebhook: baseCurrencyApi.createWebhook,
+    listWebhooks: baseCurrencyApi.listWebhooks,
+    getWebhook: baseCurrencyApi.getWebhook,
+    deleteWebhook: baseCurrencyApi.deleteWebhook
   }
 }

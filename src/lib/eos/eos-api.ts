@@ -7,11 +7,13 @@ import {
 } from './eos-transaction'
 import { eosKeyModuleFactory } from './eos-key'
 import { AccountFeeApi, accountFeeApiFactory } from "./eos-account-fee"
+import { WebhooksApi, webhooksApiFactory } from "../webhooks"
 
 export interface SakiewkaEosApi {
   wallet: EosWalletApi
   transaction: EosTransactionApi,
-  accountFee: AccountFeeApi
+  accountFee: AccountFeeApi,
+  webhooks: WebhooksApi
 }
 
 export const eosApiFactory = (
@@ -23,7 +25,8 @@ export const eosApiFactory = (
   return {
     wallet: walletApiFactory(backend, keyModule),
     transaction: eosTransactionApiFactory(backend, keyModule, transactionModule),
-    accountFee: accountFeeApiFactory(backend)
+    accountFee: accountFeeApiFactory(backend),
+    webhooks: webhooksApiFactory(backend)
   }
 }
 

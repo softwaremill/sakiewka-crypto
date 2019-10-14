@@ -6,6 +6,7 @@ import {
   GetWebhookResponse,
   ListWebhooksResponse,
 } from '../types/response/webhook'
+import { EosBackendApi } from "./eos/eos-backend-api"
 
 export interface WebhooksApi {
   createWebhook(
@@ -31,7 +32,7 @@ export interface WebhooksApi {
     webhookId: string,
   ): Promise<DeleteWebhookResponse>
 }
-export const webhooksApiFactory = (backend: BitcoinBackendApi): WebhooksApi => {
+export const webhooksApiFactory = (backend: BitcoinBackendApi | EosBackendApi): WebhooksApi => {
   const getWebhook = (
     userToken: string,
     walletId: string,
