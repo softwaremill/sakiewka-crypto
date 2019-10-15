@@ -16,6 +16,7 @@ import { WalletDetails } from '../../types/domain/wallet'
 import { GetKeyBackendResponse } from '../../types/api/key'
 import { API_ERROR } from '../constants'
 import moment from 'moment'
+import { BigNumber } from 'bignumber.js'
 
 export interface EosTransactionApi {
   send(
@@ -276,23 +277,25 @@ const transfer = (
     },
     ...(serviceFee
       ? [
-        {
-          account: 'eosio.token',
-          name: 'transfer',
-          authorization: [
-            {
-              actor: from,
-              permission: 'active',
+          {
+            account: 'eosio.token',
+            name: 'transfer',
+            authorization: [
+              {
+                actor: from,
+                permission: 'active',
+              },
+            ],
+            data: {
+              from,
+              to: serviceFee.serviceAddress,
+              quantity: `${new BigNumber(serviceFee.amount).toPrecision(
+                4,
+              )} ${currency}`,
+              memo: '',
             },
-          ],
-          data: {
-            from,
-            to: serviceFee.serviceAddress,
-            quantity: `${serviceFee.amount} ${currency}`,
-            memo: '',
           },
-        },
-      ]
+        ]
       : []),
   ],
 })
