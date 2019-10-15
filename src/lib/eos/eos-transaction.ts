@@ -289,7 +289,7 @@ const transfer = (
             data: {
               from,
               to: serviceFee.serviceAddress,
-              quantity: `${new BigNumber(serviceFee.amount).toPrecision(
+              quantity: `${new BigNumber(serviceFee.amount).toFixed(
                 4,
               )} ${currency}`,
               memo: '',
