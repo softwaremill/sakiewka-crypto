@@ -11,7 +11,6 @@ import { ChainNetworkTypeBackendResponse } from '../types/api/chain'
 import {
   ListTransfersBackendResponse,
   MonthlySummaryBackendResponse,
-  FindTransferByTxHashBackendResponse,
 } from './../types/api/transfer'
 import {
   CreateWebhookBackendResponse,
@@ -477,17 +476,17 @@ interface BackendCurrencyApi {
     token: string,
     walletId: string,
   ): Promise<ListPoliciesForWalletBackendResponse>
-  listTransfers(
+  listTransfers<T>(
     token: string,
     walletId: string,
     limit: number,
     nextPageToken?: string,
-  ): Promise<ListTransfersBackendResponse>
-  findTransferByTxHash(
+  ): Promise<T>
+  findTransferByTxHash<T>(
     token: string,
     walletId: string,
     txHash: string,
-  ): Promise<FindTransferByTxHashBackendResponse>
+  ): Promise<T>
   listPolicies(
     token: string,
     limit: number,
@@ -781,12 +780,12 @@ export const currencyApi = (
     return response.data
   }
 
-  const listTransfers = async (
+  const listTransfers = async <T>(
     token: string,
     walletId: string,
     limit: number,
     nextPageToken?: string,
-  ): Promise<ListTransfersBackendResponse> => {
+  ): Promise<T> => {
     const options = {
       method: 'GET',
       headers: {
@@ -806,11 +805,11 @@ export const currencyApi = (
     return response.data
   }
 
-  const findTransferByTxHash = async (
+  const findTransferByTxHash = async <T>(
     token: string,
     walletId: string,
     txHash: string,
-  ): Promise<FindTransferByTxHashBackendResponse> => {
+  ): Promise<T> => {
     const options = {
       method: 'GET',
       headers: {

@@ -22,7 +22,7 @@ export interface TransferDataFlowItem {
   [hash: string]: string
 }
 
-interface TransferDataFlow {
+export interface TransferDataFlow {
   wallet?: TransferDataFlowItem
   service?: TransferDataFlowItem
   other?: TransferDataFlowItem
@@ -32,9 +32,9 @@ export interface TransferHistory {
   timestamp: string
   type: TransferTypes
   block?: {
-    hash: string;
-    number: number;
-    timestamp: string;
+    hash: string
+    number: number
+    timestamp: string
   }
 }
 

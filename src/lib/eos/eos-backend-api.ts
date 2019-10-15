@@ -22,8 +22,12 @@ import {
   CreateWebhookBackendResponse,
   DeleteWebhookBackendResponse,
   GetWebhookBackendResponse,
-  ListWebhooksBackendResponse
-} from "api"
+  ListWebhooksBackendResponse,
+} from 'api'
+import {
+  FindEosTransferByTxHashBackendResponse,
+  ListEosTransfersBackendResponse,
+} from 'api/eos/eos-transfer'
 
 export interface EosBackendApi {
   createWallet(
@@ -66,29 +70,40 @@ export interface EosBackendApi {
     walletId: string,
     recipient: string,
     transferAmount: string,
-  ): Promise<GetServiceFeeResponse>,
+  ): Promise<GetServiceFeeResponse>
   createWebhook(
     token: string,
     walletId: string,
     callbackUrl: string,
     settings: Object,
-  ): Promise<CreateWebhookBackendResponse>,
+  ): Promise<CreateWebhookBackendResponse>
   listWebhooks(
     token: string,
     walletId: string,
     limit: number,
     nextPageToken?: string,
-  ): Promise<ListWebhooksBackendResponse>,
+  ): Promise<ListWebhooksBackendResponse>
   getWebhook(
     token: string,
     walletId: string,
     webhookId: string,
-  ): Promise<GetWebhookBackendResponse>,
+  ): Promise<GetWebhookBackendResponse>
   deleteWebhook(
     token: string,
     walletId: string,
     webhookId: string,
   ): Promise<DeleteWebhookBackendResponse>
+  listTransfers(
+    token: string,
+    walletId: string,
+    limit: number,
+    nextPageParam?: string,
+  ): Promise<ListEosTransfersBackendResponse>
+  findTransferByTxHash(
+    token: string,
+    walletId: string,
+    txHash: string,
+  ): Promise<FindEosTransferByTxHashBackendResponse>
 }
 
 export const eosBackendApiFactory = (
@@ -169,7 +184,9 @@ export const eosBackendApiFactory = (
     return response.data
   }
 
-  const getReferentialAccountId = async (token: string): Promise<GetReferentialAccountId> => {
+  const getReferentialAccountId = async (
+    token: string,
+  ): Promise<GetReferentialAccountId> => {
     const options = {
       method: 'GET',
       headers: {
@@ -218,6 +235,8 @@ export const eosBackendApiFactory = (
     createWebhook: baseCurrencyApi.createWebhook,
     listWebhooks: baseCurrencyApi.listWebhooks,
     getWebhook: baseCurrencyApi.getWebhook,
-    deleteWebhook: baseCurrencyApi.deleteWebhook
+    deleteWebhook: baseCurrencyApi.deleteWebhook,
+    listTransfers: baseCurrencyApi.listTransfers,
+    findTransferByTxHash: baseCurrencyApi.findTransferByTxHash,
   }
 }
