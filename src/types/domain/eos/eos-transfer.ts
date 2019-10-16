@@ -1,4 +1,5 @@
 import { TransferDataFlow, TransferTypes } from 'domain/transfer'
+import { TransferActionData } from 'domain/eos/transaction'
 
 export interface EosTransfer {
   id: string
@@ -11,7 +12,7 @@ export interface EosTransfer {
   irreversible: boolean
   balanceAfter: string
   timestamp: string
-  actions: EosAction[]
+  actions: TransferActionData[]
   inputRecipients: TransferDataFlow
   outputRecipients: TransferDataFlow
 }
@@ -22,13 +23,4 @@ export interface EosTransferHistoryItem {
   blockHash?: string
   blockNumber?: string
   type: TransferTypes
-}
-
-export interface EosAction {}
-
-export interface EosActionTransfer extends EosAction {
-  from: string
-  to: string
-  amount: string
-  memo: string
 }
