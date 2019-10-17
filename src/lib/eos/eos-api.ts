@@ -6,14 +6,19 @@ import {
   eosTransactionModuleFactory,
 } from './eos-transaction'
 import { eosKeyModuleFactory } from './eos-key'
-import { AccountFeeApi, accountFeeApiFactory } from "./eos-account-fee"
-import { WebhooksApi, webhooksApiFactory } from "../webhooks"
+import { AccountFeeApi, accountFeeApiFactory } from './eos-account-fee'
+import { WebhooksApi, webhooksApiFactory } from '../webhooks'
+import {
+  eosChainTransferApiFactory,
+  EosChainTransfersApi,
+} from './eos-transfer'
 
 export interface SakiewkaEosApi {
   wallet: EosWalletApi
-  transaction: EosTransactionApi,
-  accountFee: AccountFeeApi,
+  transaction: EosTransactionApi
+  accountFee: AccountFeeApi
   webhooks: WebhooksApi
+  transfers: EosChainTransfersApi
 }
 
 export const eosApiFactory = (
@@ -24,10 +29,15 @@ export const eosApiFactory = (
   const transactionModule = eosTransactionModuleFactory(chainId)
   return {
     wallet: walletApiFactory(backend, keyModule),
-    transaction: eosTransactionApiFactory(backend, keyModule, transactionModule),
+    transaction: eosTransactionApiFactory(
+      backend,
+      keyModule,
+      transactionModule,
+    ),
     accountFee: accountFeeApiFactory(backend),
-    webhooks: webhooksApiFactory(backend)
+    webhooks: webhooksApiFactory(backend),
+    transfers: eosChainTransferApiFactory(backend),
   }
 }
 
-export { EosWalletApi, EosTransactionApi, AccountFeeApi }
+export { EosWalletApi, EosTransactionApi, AccountFeeApi, EosChainTransfersApi }
